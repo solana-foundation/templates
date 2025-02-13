@@ -8,5 +8,8 @@
   },
   "keywords": [],
   "author": "Solana Developers",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^3.5.1"
+  }
 }

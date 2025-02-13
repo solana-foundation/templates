@@ -1,0 +1,8 @@
+# Add files here to ignore them from prettier formatting
+/.yarn
+/coverage
+/dist
+/tmp
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
