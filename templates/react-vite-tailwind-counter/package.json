@@ -11,6 +11,7 @@
     "anchor-test": "cd anchor && anchor test",
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "ci": "npm run build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

@@ -9,6 +9,7 @@
     "anchor-test": "cd anchor && anchor test",
     "dev": "next dev",
     "build": "next build",
+    "ci": "npm run build",
     "start": "next start",
     "lint": "next lint"
   },
