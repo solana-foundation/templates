@@ -1,4 +1,4 @@
-# next-tailwind1
+# legacy-next-tailwind
 
 ### Usage
 
@@ -7,11 +7,11 @@ on this template (recommended).
 
 ```shell
 # created an npm based project
-npx create-solana-dapp --template next-tailwind
+npx create-solana-dapp --template gh:solana-developers/solana-templates/templates/legacy-next-tailwind
 # created an pnpm based project
-pnpx create-solana-dapp --template next-tailwind
+pnpx create-solana-dapp --template gh:solana-developers/solana-templates/templates/legacy-next-tailwind
 # created an yarn based project
-yarn create solana-dapp --template next-tailwind
+yarn create solana-dapp --template gh:solana-developers/solana-templates/templates/legacy-next-tailwind
 ```
 
 ### Prerequisites
@@ -24,7 +24,7 @@ yarn create solana-dapp --template next-tailwind
 
 ```shell
 git clone https://github.com/solana-developers/solana-templates
-cd solana-templates/next-tailwind
+cd solana-templates/legacy-next-tailwind
 ```
 
 #### Install Dependencies

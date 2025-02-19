@@ -11,16 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ 18, 20, 22 ]
-        pm: [ npm, pnpm, yarn ]
+        node: [18, 20, 22]
+        pm: [npm, pnpm, yarn]
         template:
           [
-            next-tailwind,
-            next-tailwind-basic,
-            next-tailwind-counter,
-            react-vite-tailwind,
-            react-vite-tailwind-basic,
-            react-vite-tailwind-counter,
+            legacy-next-tailwind,
+            legacy-next-tailwind-basic,
+            legacy-next-tailwind-counter,
+            legacy-react-vite-tailwind,
+            legacy-react-vite-tailwind-basic,
+            legacy-react-vite-tailwind-counter,
           ]
 
     steps:

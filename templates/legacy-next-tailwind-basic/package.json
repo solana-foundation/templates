@@ -1,5 +1,5 @@
 {
-  "name": "next-tailwind",
+  "name": "legacy-next-tailwind-basic",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,6 +14,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@coral-xyz/anchor": "0.30.1",
     "@solana/spl-token": "0.4.9",
     "@solana/wallet-adapter-base": "0.9.23",
     "@solana/wallet-adapter-react": "0.15.35",
@@ -51,6 +52,14 @@
           "src"
         ]
       }
+    },
+    "instructions": [
+      "Run Anchor commands:",
+      "+{pm} run anchor build | test | localnet | deploy"
+    ],
+    "versions": {
+      "anchor": "0.30.1",
+      "solana": "1.18.0"
     }
   }
 }

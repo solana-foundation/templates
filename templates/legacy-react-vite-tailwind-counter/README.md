@@ -52,4 +52,4 @@ export default tseslint.config({
 })
 ```
 
-# react-vite-tailwind
+# legacy-react-vite-tailwindtailwind

@@ -1,4 +1,4 @@
-# next-tailwind-counter
+# legacy-next-tailwind-counter
 
 ## Getting Started
 

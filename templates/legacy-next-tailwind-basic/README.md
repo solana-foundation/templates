@@ -1,4 +1,4 @@
-# next-tailwind-basic
+# legacy-next-tailwind-basic
 
 ## Getting Started
 
