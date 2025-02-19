@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [18, 20, 22]
+        node: [20, 22]
         pm: [npm, pnpm, yarn]
         template:
           [
@@ -21,6 +21,7 @@ jobs:
             legacy-react-vite-tailwind,
             legacy-react-vite-tailwind-basic,
             legacy-react-vite-tailwind-counter,
+            template-next-tailwind,
           ]
 
     steps:
