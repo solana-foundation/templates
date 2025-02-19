@@ -1,3 +1,5 @@
+import { HomeFeature } from '@/components/home/home-feature'
+
 export default function Home() {
-  return <div>HOME PAGE</div>
+  return <HomeFeature />
 }
