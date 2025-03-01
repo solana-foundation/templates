@@ -13,15 +13,15 @@ jobs:
       matrix:
         node: [20, 22]
         pm: [npm, pnpm, yarn]
-        template:
-          [
+        template: [
             legacy-next-tailwind,
             legacy-next-tailwind-basic,
             legacy-next-tailwind-counter,
             legacy-react-vite-tailwind,
             legacy-react-vite-tailwind-basic,
             legacy-react-vite-tailwind-counter,
-            template-next-tailwind,
+            # TODO: enable this template when this weeks dependency hell is over
+            #            template-next-tailwind,
           ]
 
     steps:
