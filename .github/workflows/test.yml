@@ -1,5 +1,9 @@
 name: Test Templates
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
@@ -22,6 +26,7 @@ jobs:
             legacy-react-vite-tailwind-counter,
             # TODO: enable this template when this weeks dependency hell is over
             #            template-next-tailwind,
+            template-node-script,
           ]
 
     steps:
