@@ -1,0 +1,4 @@
+.env
+/tmp
+node_modules
+keypair-*.json

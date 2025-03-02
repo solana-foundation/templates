@@ -26,6 +26,7 @@ jobs:
             legacy-react-vite-tailwind-counter,
             # TODO: enable this template when this weeks dependency hell is over
             #            template-next-tailwind,
+            template-node-express,
             template-node-script,
           ]
 

@@ -1,0 +1,60 @@
+{
+  "name": "template-node-express",
+  "version": "1.0.0",
+  "description": "Node.js Express API with the Solana Gill SDK",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "ci": "npm run build",
+    "dev": "esrun --watch src/index.ts",
+    "docker:build": "docker build -t template-node-express:latest .",
+    "docker:run": "docker run --rm --name template-node-express -p 3000:3000 --env-file .env -e SOLANA_SIGNER_PATH=keypair-signer.json -v ./keypair-signer.json:/srv/api/keypair-signer.json template-node-express:latest",
+    "fmt": "prettier --write .",
+    "fmt:check": "prettier --check .",
+    "generate-keypair-signer": "solana-keygen new --no-bip39-passphrase -o keypair-signer.json",
+    "lint": "eslint .",
+    "start": "node ./dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Bram Borggreve",
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.7",
+    "eslint": "^9.21.0",
+    "esrun": "^3.2.26",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.2",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.25.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "gill": "0.5.0",
+    "lru-cache": "^11.0.2",
+    "ws": "^8.18.1",
+    "zod": "^3.24.2"
+  },
+  "create-solana-dapp": {
+    "rename": {
+      "scaffold": {
+        "to": "{{name}}",
+        "paths": [
+          "src"
+        ]
+      }
+    },
+    "instructions": [
+      "To build the Docker image, run this:",
+      "+{pm} run docker:build",
+      "To run the Docker image, run this:",
+      "+{pm} run docker:run",
+      "When running it with the command above, the Docker image expects a the file `keypair-signer.json` in the current directory. You can generate one with:",
+      "+{pm} run generate-keypair-signer"
+    ]
+  }
+}
