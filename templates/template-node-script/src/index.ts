@@ -5,10 +5,9 @@ import pico from 'picocolors'
 import prompts from 'prompts'
 
 // Solana Client SDK
-import { Address, createSolanaClient, getMonikerFromGenesisHash } from 'gill'
+import { Address, createSolanaClient, getMonikerFromGenesisHash, isAddress } from 'gill'
 // Solana Client SDK (Node.js)
 import { loadKeypairSignerFromFile } from 'gill/node'
-import { isAddress } from '@solana/web3.js'
 
 // Welcome message
 console.log(pico.green(pico.bold('Gm! Say hi to your new Solana script!')))
