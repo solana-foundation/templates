@@ -1,7 +1,7 @@
 // Load environment variables from .env file
 import 'dotenv/config'
 // Colors and prompts, yay!
-import pico from 'picocolors'
+import c from 'picocolors'
 import prompts from 'prompts'
 
 // Solana Client SDK
@@ -21,30 +21,30 @@ const signer = await loadKeypairSignerFromFile(process.env.SOLANA_SIGNER_PATH)
 // Get the balance of the provided address and print it to the console
 async function showBalance(address: Address) {
   const balance = await client.rpc.getBalance(address).send()
-  console.log(pico.gray(`Address : ${pico.magenta(address)}`))
-  console.log(pico.gray(`Balance : ${pico.magenta(Number(balance.value) / 10 ** 9)} SOL`))
+  console.log(c.gray(`Address : ${c.magenta(address)}`))
+  console.log(c.gray(`Balance : ${c.magenta(Number(balance.value) / 10 ** 9)} SOL`))
 }
 
 // Welcome message
-console.log(pico.green(pico.bold('Gm! Say hi to your new Solana script!')))
+console.log(c.green(c.bold('Gm! Say hi to your new Solana script!')))
 
 // Show the endpoint and cluster
-console.log(pico.gray(`Endpoint: ${urlOrMoniker.split('?')[0]}`))
+console.log(c.gray(`Endpoint: ${urlOrMoniker.split('?')[0]}`))
 const cluster = getMonikerFromGenesisHash(await client.rpc.getGenesisHash().send())
-console.log(pico.gray(`Cluster : ${pico.whiteBright(cluster)}`))
+console.log(c.gray(`Cluster : ${c.whiteBright(cluster)}`))
 
 // Show the signer's address and balance
-console.log(pico.magenta(pico.bold('Signer Keypair')))
+console.log(c.magenta(c.bold('Signer Keypair')))
 await showBalance(signer.address)
 
 // Prompt the user for an address
 const res = await prompts({ type: 'text', name: 'address', message: 'Check another address', validate: isAddress })
 if (!res.address) {
-  console.log(pico.red('No address provided'))
+  console.log(c.red('No address provided'))
   process.exit(1)
 }
 // Show the address and balance
 await showBalance(res.address)
 
 // And we're done!
-console.log(pico.green(`Now go build something awesome!`))
+console.log(c.green(`Now go build something awesome!`))
