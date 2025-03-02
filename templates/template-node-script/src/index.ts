@@ -1,7 +1,7 @@
 // Load environment variables from .env file
 import 'dotenv/config'
 // Colors and prompts, yay!
-import c from 'picocolors'
+import c from 'kleur'
 import prompts from 'prompts'
 
 // Solana Client SDK
@@ -31,7 +31,7 @@ console.log(c.green(c.bold('Gm! Say hi to your new Solana script!')))
 // Show the endpoint and cluster
 console.log(c.gray(`Endpoint: ${urlOrMoniker.split('?')[0]}`))
 const cluster = getMonikerFromGenesisHash(await client.rpc.getGenesisHash().send())
-console.log(c.gray(`Cluster : ${c.whiteBright(cluster)}`))
+console.log(c.gray(`Cluster : ${c.white(cluster)}`))
 
 // Show the signer's address and balance
 console.log(c.magenta(c.bold('Signer Keypair')))
