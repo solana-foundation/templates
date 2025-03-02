@@ -9,35 +9,42 @@ import { Address, createSolanaClient, getMonikerFromGenesisHash, isAddress } fro
 // Solana Client SDK (Node.js)
 import { loadKeypairSignerFromFile } from 'gill/node'
 
-// Welcome message
-console.log(pico.green(pico.bold('Gm! Say hi to your new Solana script!')))
-
 // Get the Solana RPC endpoint from the environment variable or default to devnet
 const urlOrMoniker = process.env.SOLANA_RPC_ENDPOINT || 'devnet'
 const client = createSolanaClient({ urlOrMoniker })
-const cluster = getMonikerFromGenesisHash(await client.rpc.getGenesisHash().send())
-console.log(pico.gray(`Endpoint: ${urlOrMoniker.split('?')[0]}`))
-console.log(pico.gray(`Cluster : ${pico.whiteBright(cluster)}`))
 
-console.log(pico.magenta(pico.bold('Signer Keypair')))
+// Load the keypair from the .env file or use the default (~/.config/solana/id.json)
+const signer = await loadKeypairSignerFromFile(process.env.SOLANA_SIGNER_PATH)
 
-// Load the keypair from the .env file
-const signer = await loadKeypairSignerFromFile('~/.config/solana/id.json')
-await showBalance(signer.address)
+// BELOW IS AN EXAMPLE, YOU CAN REMOVE IT AND REPLACE IT WITH YOUR OWN CODE
 
-// This is how you can prompt the user for input
-const res = await prompts({ type: 'text', name: 'address', message: 'Check another address', validate: isAddress })
-if (!res.address) {
-  console.log(pico.red('No address provided'))
-  process.exit(1)
-}
-await showBalance(res.address)
-
-// And we're done!
-console.log(pico.green(`Now go build something awesome!`))
-
+// Get the balance of the provided address and print it to the console
 async function showBalance(address: Address) {
   const balance = await client.rpc.getBalance(address).send()
   console.log(pico.gray(`Address : ${pico.magenta(address)}`))
   console.log(pico.gray(`Balance : ${pico.magenta(Number(balance.value) / 10 ** 9)} SOL`))
 }
+
+// Welcome message
+console.log(pico.green(pico.bold('Gm! Say hi to your new Solana script!')))
+
+// Show the endpoint and cluster
+console.log(pico.gray(`Endpoint: ${urlOrMoniker.split('?')[0]}`))
+const cluster = getMonikerFromGenesisHash(await client.rpc.getGenesisHash().send())
+console.log(pico.gray(`Cluster : ${pico.whiteBright(cluster)}`))
+
+// Show the signer's address and balance
+console.log(pico.magenta(pico.bold('Signer Keypair')))
+await showBalance(signer.address)
+
+// Prompt the user for an address
+const res = await prompts({ type: 'text', name: 'address', message: 'Check another address', validate: isAddress })
+if (!res.address) {
+  console.log(pico.red('No address provided'))
+  process.exit(1)
+}
+// Show the address and balance
+await showBalance(res.address)
+
+// And we're done!
+console.log(pico.green(`Now go build something awesome!`))
