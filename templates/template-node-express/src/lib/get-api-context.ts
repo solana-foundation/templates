@@ -1,9 +1,11 @@
 import { createSolanaClient, KeyPairSigner, SolanaClient } from 'gill'
 import { loadKeypairSignerFromFile } from 'gill/node'
 import { ApiConfig, getApiConfig } from './get-api-config.js'
+import { ApiLogger, log } from './api-logger.js'
 
 export interface ApiContext {
   client: SolanaClient
+  log: ApiLogger
   signer: KeyPairSigner
 }
 
@@ -18,7 +20,7 @@ export async function getApiContext(): Promise<ApiContext> {
   const client = createSolanaClient({ urlOrMoniker: config.solanaRpcEndpoint })
   const signer = await loadKeypairSignerFromFile(config.solanaSignerPath)
 
-  context = { client, signer }
+  context = { client, log, signer }
 
   return context
 }

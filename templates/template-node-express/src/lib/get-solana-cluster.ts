@@ -1,8 +1,7 @@
 import { getMonikerFromGenesisHash } from 'gill'
-import { getApiContext } from './get-api-context.js'
+import { ApiContext } from './get-api-context.js'
 
-export async function getSolanaCluster() {
-  const { client } = await getApiContext()
+export async function getSolanaCluster({ client }: ApiContext) {
   const genesis = await client.rpc.getGenesisHash().send()
 
   const cluster = getMonikerFromGenesisHash(genesis)

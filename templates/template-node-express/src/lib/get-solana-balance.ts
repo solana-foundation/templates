@@ -1,10 +1,8 @@
 import { assertIsAddress } from 'gill'
-import { getApiContext } from './get-api-context.js'
+import { ApiContext } from './get-api-context.js'
 
-export async function getSolanaBalance(address: string) {
+export async function getSolanaBalance({ client }: ApiContext, address: string) {
   assertIsAddress(address)
-  const { client } = await getApiContext()
-
   const balance = await client.rpc
     .getBalance(address)
     .send()
