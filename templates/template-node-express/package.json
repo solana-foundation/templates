@@ -14,7 +14,7 @@
     "fmt:check": "prettier --check .",
     "setup": "npm run setup-env && npm run setup-keypair-signer",
     "setup-env": "shx test -e .env || shx cp .env.example .env",
-    "setup-keypair-signer": "shx test -e keypair-signer.json || npm run generate-keypair-signer",
+    "setup-keypair-signer": "shx test -e keypair-signer.json || solana-keygen new --no-bip39-passphrase --outfile keypair-signer.json",
     "lint": "eslint .",
     "start": "node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
