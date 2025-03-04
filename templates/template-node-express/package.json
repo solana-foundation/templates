@@ -34,6 +34,7 @@
     "typescript-eslint": "^8.25.0"
   },
   "dependencies": {
+    "@solana/web3.js": "2.0.0",
     "@types/cors": "^2.8.17",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
