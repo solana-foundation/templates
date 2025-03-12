@@ -633,8 +633,8 @@ importers:
         specifier: ^12.4.5
         version: 12.4.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       gill:
-        specifier: 0.6.0
-        version: 0.6.0(@solana/kit@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(@solana/sysvars@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+        specifier: 0.7.0
+        version: 0.7.0(@solana/sysvars@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       lucide-react:
         specifier: ^0.475.0
         version: 0.475.0(react@19.0.0)
@@ -696,9 +696,6 @@ importers:
 
   templates/template-node-express:
     dependencies:
-      '@solana/kit':
-        specifier: 2.1.0
-        version: 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@types/cors':
         specifier: ^2.8.17
         version: 2.8.17
@@ -712,8 +709,8 @@ importers:
         specifier: ^5.0.1
         version: 5.0.1
       gill:
-        specifier: 0.6.0
-        version: 0.6.0(@solana/kit@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(@solana/sysvars@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+        specifier: 0.7.0
+        version: 0.7.0(@solana/sysvars@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       kleur:
         specifier: ^4.1.5
         version: 4.1.5
@@ -760,15 +757,12 @@ importers:
 
   templates/template-node-script:
     dependencies:
-      '@solana/kit':
-        specifier: 2.1.0
-        version: 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       esrun:
         specifier: ^3.2.26
         version: 3.2.26
       gill:
-        specifier: 0.6.0
-        version: 0.6.0(@solana/kit@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(@solana/sysvars@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+        specifier: 0.7.0
+        version: 0.7.0(@solana/sysvars@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       kleur:
         specifier: ^4.1.5
         version: 4.1.5
@@ -5021,18 +5015,11 @@ packages:
       '@solana/web3.js@^2.0.0':
         optional: true
 
-  gill@0.6.0:
-    resolution: {integrity: sha512-kHLsb13P4CmMPdzilSaXGtQ+oCvoM+91XrAaE6sqcTMXlPqUtvceMwv3OQ63WIomoDRyoZz5ncTv4AGtfdweNQ==}
+  gill@0.7.0:
+    resolution: {integrity: sha512-vA7Kd+tD+uuxr+OBhmUtQeGPZBtzRD2LwaCxeBT4oy1s7/hqj/kdOmIY8pepOeXgfe+rVJ2kcOF0ymqZl6hNJQ==}
     engines: {node: '>=20.18.0'}
     peerDependencies:
-      '@solana/kit': '*'
-      '@solana/web3.js@^2.0.0': '*'
       typescript: '>=5'
-    peerDependenciesMeta:
-      '@solana/kit':
-        optional: true
-      '@solana/web3.js@^2.0.0':
-        optional: true
 
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -12246,8 +12233,8 @@ snapshots:
       '@typescript-eslint/parser': 8.25.0(eslint@8.57.1)(typescript@5.4.5)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.8.2(eslint-plugin-import@2.31.0)(eslint@8.57.1)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@3.8.2)(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.8.2(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@3.8.2(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.4(eslint@8.57.1)
       eslint-plugin-react-hooks: 5.0.0-canary-7118f5dd7-20230705(eslint@8.57.1)
@@ -12286,7 +12273,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.8.2(eslint-plugin-import@2.31.0)(eslint@8.57.1):
+  eslint-import-resolver-typescript@3.8.2(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.0
@@ -12297,7 +12284,7 @@ snapshots:
       stable-hash: 0.0.4
       tinyglobby: 0.2.11
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@3.8.2)(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@3.8.2(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -12327,14 +12314,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.8.2)(eslint@8.57.1):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.8.2(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.25.0(eslint@8.57.1)(typescript@5.4.5)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.8.2(eslint-plugin-import@2.31.0)(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.8.2(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -12367,7 +12354,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@3.8.2)(eslint@8.57.1):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@3.8.2(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -12378,7 +12365,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.8.2)(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.8.2(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@8.57.1)(typescript@5.4.5))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -12975,33 +12962,17 @@ snapshots:
       - fastestsmallesttextencoderdecoder
       - ws
 
-  gill@0.6.0(@solana/kit@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(@solana/sysvars@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
+  gill@0.7.0(@solana/sysvars@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
     dependencies:
       '@solana-program/address-lookup-table': 0.7.0(@solana/kit@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/compute-budget': 0.7.0(@solana/kit@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/system': 0.7.0(@solana/kit@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/token-2022': 0.4.0(@solana/kit@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(@solana/sysvars@2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3))
-      '@solana/accounts': 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)
-      '@solana/addresses': 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)
       '@solana/assertions': 2.1.0(typescript@5.7.3)
       '@solana/codecs': 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)
-      '@solana/errors': 2.1.0(typescript@5.7.3)
-      '@solana/functional': 2.1.0(typescript@5.7.3)
-      '@solana/instructions': 2.1.0(typescript@5.7.3)
-      '@solana/keys': 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)
-      '@solana/programs': 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)
-      '@solana/rpc': 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)
-      '@solana/rpc-parsed-types': 2.1.0(typescript@5.7.3)
-      '@solana/rpc-spec-types': 2.1.0(typescript@5.7.3)
-      '@solana/rpc-subscriptions': 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@solana/rpc-types': 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)
-      '@solana/signers': 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)
-      '@solana/transaction-confirmation': 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@solana/transaction-messages': 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)
-      '@solana/transactions': 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)
-      typescript: 5.7.3
-    optionalDependencies:
       '@solana/kit': 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@solana/transaction-confirmation': 2.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.7.3)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      typescript: 5.7.3
     transitivePeerDependencies:
       - '@solana/sysvars'
       - fastestsmallesttextencoderdecoder
