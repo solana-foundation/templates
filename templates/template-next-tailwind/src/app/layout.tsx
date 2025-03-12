@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
+import { ThemeProvider } from '@/components/theme-provider'
+import { AppLayout } from '@/components/app-layout'
+import { AppHeaderLink } from '@/components/app-header'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -13,14 +16,23 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Placeholder',
-  description: 'Description of Placeholder',
+  title: 'Scaffold',
+  description: 'Description of Scaffold',
 }
+
+const links: AppHeaderLink[] = [
+  { href: '/', label: 'Dashboard' },
+  { href: '/account', label: 'Account' },
+]
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <AppLayout links={links}>{children}</AppLayout>
+        </ThemeProvider>
+      </body>
     </html>
   )
 }

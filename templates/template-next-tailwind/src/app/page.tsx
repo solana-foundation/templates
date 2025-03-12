@@ -1,7 +1,5 @@
-export default function Home() {
-  return (
-    <div>
-      <main>Placeholder</main>
-    </div>
-  )
+import DashboardFeature from '@/components/dashboard/dashboard-feature'
+
+export default function Page() {
+  return <DashboardFeature />
 }
