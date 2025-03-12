@@ -1,5 +1,7 @@
-import { DashboardFeature } from '@/components/dashboard/dashboard-feature'
-
 export default function Home() {
-  return <DashboardFeature />
+  return (
+    <div>
+      <main>Placeholder</main>
+    </div>
+  )
 }

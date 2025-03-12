@@ -1,30 +1,26 @@
 import type { Metadata } from 'next'
+import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
-import { AppProviders } from '@/components/app-providers'
-import { AppLayout } from '@/components/app-layout'
+
+const geistSans = Geist({
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
+})
+
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+})
 
 export const metadata: Metadata = {
   title: 'Placeholder',
-  description: 'Description of placeholder',
+  description: 'Description of Placeholder',
 }
 
-const links: { label: string; path: string }[] = [
-  // More links...
-  { label: 'Account', path: '/account' },
-]
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body>
-        <AppProviders>
-          <AppLayout links={links}>{children}</AppLayout>
-        </AppProviders>
-      </body>
+    <html lang="en">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
     </html>
   )
 }
