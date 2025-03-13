@@ -18,16 +18,16 @@ jobs:
         node: [20, 22]
         pm: [npm, pnpm, yarn]
         template: [
-            legacy-next-tailwind,
-            legacy-next-tailwind-basic,
-            legacy-next-tailwind-counter,
-            legacy-react-vite-tailwind,
-            legacy-react-vite-tailwind-basic,
-            legacy-react-vite-tailwind-counter,
+            templates/legacy-next-tailwind,
+            templates/legacy-next-tailwind-basic,
+            templates/legacy-next-tailwind-counter,
+            templates/legacy-react-vite-tailwind,
+            templates/legacy-react-vite-tailwind-basic,
+            templates/legacy-react-vite-tailwind-counter,
             # TODO: enable this template when this weeks dependency hell is over
             #            template-next-tailwind,
-            template-node-express,
-            template-node-script,
+            templates/template-node-express,
+            templates/template-node-script,
           ]
 
     steps:
@@ -67,9 +67,9 @@ jobs:
           BRANCH=${GITHUB_REF#refs/heads/}
 
           case ${{ matrix.pm }} in
-          npm) npx create-solana-dapp@latest --template gh:${{ github.repository }}/templates/${{ matrix.template }}#${BRANCH} sandbox ;;
-          pnpm) pnpx create-solana-dapp@latest --template gh:${{ github.repository }}/templates/${{ matrix.template }}#${BRANCH} sandbox ;;
-          yarn) yarn create solana-dapp --template gh:${{ github.repository }}/templates/${{ matrix.template }}#${BRANCH} sandbox ;;
+          npm) npx create-solana-dapp@latest --template gh:${{ github.repository }}/${{ matrix.template }}#${BRANCH} sandbox ;;
+          pnpm) pnpx create-solana-dapp@latest --template gh:${{ github.repository }}/${{ matrix.template }}#${BRANCH} sandbox ;;
+          yarn) yarn create solana-dapp --template gh:${{ github.repository }}/${{ matrix.template }}#${BRANCH} sandbox ;;
           esac
 
           cd sandbox
