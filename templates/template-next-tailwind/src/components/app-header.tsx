@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Menu } from 'lucide-react'
+import { SolanaWalletUiButton } from '@wallet-ui/react'
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 
 export interface AppHeaderLink {
@@ -39,6 +40,7 @@ export function AppHeader({ links, pathname }: AppHeaderProps) {
         </div>
         <div className="flex items-center space-x-2">
           <ThemeToggle />
+          <SolanaWalletUiButton />
         </div>
       </div>
     </header>
