@@ -6,6 +6,7 @@ import { AppHeader } from '@/components/app-header'
 import React from 'react'
 import { AppFooter } from '@/components/app-footer'
 import { ClusterChecker } from '@/components/cluster/cluster-ui'
+import { AccountChecker } from '@/components/account/account-ui'
 
 export function AppLayout({
   children,
@@ -20,7 +21,7 @@ export function AppLayout({
         <AppHeader links={links} />
         <main className="flex-grow container mx-auto p-4">
           <ClusterChecker>
-            <div />
+            <AccountChecker />
           </ClusterChecker>
           {children}
         </main>

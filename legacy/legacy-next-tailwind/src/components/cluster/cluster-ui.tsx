@@ -9,6 +9,7 @@ import { ReactNode } from 'react'
 import { useCluster } from './cluster-data-access'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
+import { AppAlert } from '@/components/app-alert'
 
 export function ExplorerLink({ path, label, className }: { path: string; label: string; className?: string }) {
   const { getExplorerUrl } = useCluster()
@@ -38,14 +39,15 @@ export function ClusterChecker({ children }: { children: ReactNode }) {
   }
   if (query.isError || !query.data) {
     return (
-      <div className="alert alert-warning text-warning-content/80 rounded-none flex justify-center">
-        <span>
-          Error connecting to cluster <strong>{cluster.name}</strong>
-        </span>
-        <button className="btn btn-xs btn-neutral" onClick={() => query.refetch()}>
-          Refresh
-        </button>
-      </div>
+      <AppAlert
+        action={
+          <Button variant="outline" onClick={() => query.refetch()}>
+            Refresh
+          </Button>
+        }
+      >
+        Error connecting to cluster <span className="font-bold">{cluster.name}</span>.
+      </AppAlert>
     )
   }
   return children

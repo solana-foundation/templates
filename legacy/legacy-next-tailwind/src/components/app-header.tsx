@@ -13,7 +13,7 @@ export function AppHeader({ links = [] }: { links: { label: string; path: string
   const [showMenu, setShowMenu] = useState(false)
 
   function isActive(path: string) {
-    return pathname === '/' ? pathname === path : path.startsWith(pathname)
+    return path === '/' ? pathname === '/' : pathname.startsWith(path)
   }
 
   return (
