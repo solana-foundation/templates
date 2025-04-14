@@ -5,6 +5,7 @@ import { Toaster } from './ui/sonner'
 import { AppHeader } from '@/components/app-header'
 import React from 'react'
 import { AppFooter } from '@/components/app-footer'
+import { ClusterChecker } from '@/components/cluster/cluster-ui'
 
 export function AppLayout({
   children,
@@ -17,7 +18,12 @@ export function AppLayout({
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
       <div className="flex flex-col min-h-screen">
         <AppHeader links={links} />
-        <main className="flex-grow container mx-auto p-4">{children}</main>
+        <main className="flex-grow container mx-auto p-4">
+          <ClusterChecker>
+            <div />
+          </ClusterChecker>
+          {children}
+        </main>
         <AppFooter />
       </div>
       <Toaster />
