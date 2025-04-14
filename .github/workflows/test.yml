@@ -18,6 +18,7 @@ jobs:
         node: [20, 22]
         pm: [npm, pnpm, yarn]
         template: [
+            legacy/legacy-next-tailwind,
             templates/legacy-next-tailwind,
             templates/legacy-next-tailwind-basic,
             templates/legacy-next-tailwind-counter,
