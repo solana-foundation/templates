@@ -1,13 +1,28 @@
 # Add files here to ignore them from prettier formatting
 /dist
 /coverage
-tmp
+/tmp
 pnpm-lock.yaml
 .next
 
 # Ignore any dist, tmp, or node_modules directories
+legacy/**/.env
+legacy/**/anchor/target/debug
+legacy/**/anchor/target/deploy
+legacy/**/anchor/target/release
+legacy/**/anchor/target/sbf-solana-solana
+legacy/**/anchor/target/test-ledger
+legacy/**/anchor/target/.rustc_info.json
+legacy/**/dist
+legacy/**/node_modules
+legacy/**/tmp
 templates/**/.env
-templates/**/anchor/target
+templates/**/anchor/target/debug
+templates/**/anchor/target/deploy
+templates/**/anchor/target/release
+templates/**/anchor/target/sbf-solana-solana
+templates/**/anchor/target/test-ledger
+templates/**/anchor/target/.rustc_info.json
 templates/**/dist
 templates/**/node_modules
 templates/**/tmp

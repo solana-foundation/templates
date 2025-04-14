@@ -1,2 +1,3 @@
 packages:
+  - 'legacy/*'
   - 'templates/*'
