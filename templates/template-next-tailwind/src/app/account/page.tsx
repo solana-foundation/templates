@@ -1,5 +1,5 @@
 import AccountListFeature from '@/components/account/account-list-feature'
 
-export default function AccountPage() {
+export default function Page() {
   return <AccountListFeature />
 }

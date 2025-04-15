@@ -1,4 +1,4 @@
-import { AppHero } from '../app-layout'
+import { AppHero } from '@/components/app-hero'
 
 const links: { label: string; href: string }[] = [
   { label: 'Solana Docs', href: 'https://docs.solana.com/' },
@@ -6,8 +6,6 @@ const links: { label: string; href: string }[] = [
   { label: 'Solana Cookbook', href: 'https://solana.com/developers/cookbook/' },
   { label: 'Solana Stack Overflow', href: 'https://solana.stackexchange.com/' },
   { label: 'Solana Developers GitHub', href: 'https://github.com/solana-developers/' },
-  { label: 'Solana Gill SDK by Nick Frostbutter', href: 'https://youtu.be/qfogmHaICg8' },
-  { label: 'Solana web3.js v2 tutorial by Solandy ', href: 'https://youtu.be/mufu5KLS5yY' },
 ]
 
 export function DashboardFeature() {

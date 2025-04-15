@@ -8,9 +8,11 @@ const alertVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-background text-foreground',
+        default: 'bg-card text-card-foreground',
         destructive:
-          'border-destructive/50 text-destructive dark:text-destructive-foreground/80 dark:border-destructive [&>svg]:text-current dark:bg-destructive/50',
+          'text-destructive bg-card [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90',
+        warning:
+          'text-yellow-500 bg-card [&>svg]:text-current *:data-[slot=alert-description]:text-yellow-500/90 border-yellow-500 dark:bg-yellow-900/10',
       },
     },
     defaultVariants: {
@@ -37,7 +39,10 @@ function AlertDescription({ className, ...props }: React.ComponentProps<'div'>) 
   return (
     <div
       data-slot="alert-description"
-      className={cn('col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed', className)}
+      className={cn(
+        'text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed',
+        className,
+      )}
       {...props}
     />
   )

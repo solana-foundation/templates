@@ -1,21 +1,22 @@
 'use client'
 
-import { AppHero } from '@/components/app-layout'
-import { useSolanaWallet } from '@wallet-ui/react'
+import { WalletButton } from '../solana/solana-provider'
 
 import { redirect } from 'next/navigation'
-import { ConnectWalletMenu } from '../wallet-ui'
+import { useWalletUi } from '@wallet-ui/react'
 
 export default function AccountListFeature() {
-  const [selectedWallet] = useSolanaWallet()
+  const { account } = useWalletUi()
 
-  if (selectedWallet?.address) {
-    return redirect(`/account/${selectedWallet.address}`)
+  if (account) {
+    return redirect(`/account/${account.address.toString()}`)
   }
 
   return (
-    <AppHero>
-      <ConnectWalletMenu>Connect Wallet</ConnectWalletMenu>
-    </AppHero>
+    <div className="hero py-[64px]">
+      <div className="hero-content text-center">
+        <WalletButton />
+      </div>
+    </div>
   )
 }
