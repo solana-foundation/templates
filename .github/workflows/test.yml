@@ -28,6 +28,7 @@ jobs:
             templates/template-next-tailwind,
             templates/template-node-express,
             templates/template-node-script,
+            templates/template-react-vite-tailwind,
           ]
 
     steps:
