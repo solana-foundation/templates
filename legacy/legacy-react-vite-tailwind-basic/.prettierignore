@@ -7,8 +7,5 @@
 /anchor/target/.rustc_info.json
 /dist
 /coverage
-.next
-/tmp
-package-lock.json
+tmp
 pnpm-lock.yaml
-yarn.lock

@@ -22,6 +22,7 @@ jobs:
             legacy/legacy-next-tailwind-basic,
             legacy/legacy-next-tailwind-counter,
             legacy/legacy-react-vite-tailwind,
+            legacy/legacy-react-vite-tailwind-basic,
             templates/legacy-next-tailwind,
             templates/legacy-next-tailwind-basic,
             templates/legacy-next-tailwind-counter,
