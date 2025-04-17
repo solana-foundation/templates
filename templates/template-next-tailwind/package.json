@@ -1,50 +1,59 @@
 {
   "name": "template-next-tailwind",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "build": "next build",
-    "ci": "npm run build && npm run lint",
+    "ci": "npm run build && npm run lint && npm run format:check",
     "dev": "next dev --turbopack",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "next lint",
     "start": "next start"
   },
   "dependencies": {
-    "@radix-ui/react-alert-dialog": "^1.1.6",
-    "@radix-ui/react-avatar": "^1.1.3",
-    "@radix-ui/react-dialog": "^1.1.6",
-    "@radix-ui/react-dropdown-menu": "^2.1.6",
-    "@radix-ui/react-slot": "^1.1.2",
-    "@solana/react": "^2.0.0",
-    "@tanstack/react-query": "^5.66.7",
-    "@wallet-standard/core": "^1.1.0",
-    "@wallet-standard/react": "^1.0.0",
-    "@wallet-ui/core": "1.1.0-canary-20250302003059",
-    "@wallet-ui/react": "1.1.0-canary-20250302003059",
+    "@radix-ui/react-dialog": "^1.1.7",
+    "@radix-ui/react-dropdown-menu": "^2.1.7",
+    "@radix-ui/react-label": "^2.1.3",
+    "@radix-ui/react-slot": "^1.2.0",
+    "@tanstack/react-query": "^5.74.3",
+    "@wallet-ui/react": "1.1.0-canary-20250415034938",
+    "@wallet-ui/tailwind": "1.1.0-canary-20250415034938",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.4.5",
-    "gill": "0.7.0",
-    "lucide-react": "^0.475.0",
-    "next": "15.2.0-canary.65",
-    "next-themes": "^0.4.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "gill": "^0.8.2",
+    "jotai": "^2.12.3",
+    "lucide-react": "^0.488.0",
+    "next": "15.3.0",
+    "next-themes": "^0.4.6",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "react-error-boundary": "^5.0.0",
-    "sonner": "^2.0.0",
-    "tailwind-merge": "^3.0.1",
-    "tailwindcss-animate": "^1.0.7",
-    "ws": "^8.18.1"
+    "sonner": "^2.0.3",
+    "tailwind-merge": "^3.2.0",
+    "tw-animate-css": "^1.2.5"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.2.0",
-    "@tailwindcss/postcss": "^4.0.7",
-    "@types/node": "^22.13.4",
-    "@types/react": "^19.0.10",
-    "@types/react-dom": "^19.0.4",
-    "eslint": "^9.20.1",
-    "eslint-config-next": "15.2.0-canary.65",
-    "tailwindcss": "^4.0.7",
-    "typescript": "^5.7.3"
+    "@eslint/eslintrc": "^3.3.1",
+    "@tailwindcss/postcss": "^4.1.4",
+    "@types/node": "^22.14.1",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "eslint": "^9.24.0",
+    "eslint-config-next": "15.3.0",
+    "prettier": "^3.5.3",
+    "tailwindcss": "^4.1.4",
+    "typescript": "^5.8.3",
+    "ws": "^8.18.1"
+  },
+  "create-solana-dapp": {
+    "rename": {
+      "scaffold": {
+        "to": "{{name}}",
+        "paths": [
+          "src"
+        ]
+      }
+    }
   }
 }

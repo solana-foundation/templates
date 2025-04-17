@@ -1,13 +1,12 @@
 'use client'
 
-import { AppHero } from '@/components/app-layout'
-import { ellipsify } from '@/components/ellipsify'
-import { ExplorerLink } from '@/components/explorer-link'
-import { address as addressFn } from 'gill'
-import { useParams } from 'next/navigation'
+import { assertIsAddress } from 'gill'
 import { useMemo } from 'react'
-
+import { useParams } from 'next/navigation'
+import { ExplorerLink } from '../cluster/cluster-ui'
 import { AccountBalance, AccountButtons, AccountTokens, AccountTransactions } from './account-ui'
+import { AppHero } from '../app-hero'
+import { ellipsify } from '@/lib/utils'
 
 export default function AccountDetailFeature() {
   const params = useParams()
@@ -15,13 +14,9 @@ export default function AccountDetailFeature() {
     if (!params.address || typeof params.address !== 'string') {
       return
     }
-    try {
-      return addressFn(params.address)
-    } catch (e) {
-      console.log(`Invalid public key`, e)
-    }
+    assertIsAddress(params.address)
+    return params.address
   }, [params])
-
   if (!address) {
     return <div>Error loading account</div>
   }
@@ -32,20 +27,17 @@ export default function AccountDetailFeature() {
         title={<AccountBalance address={address} />}
         subtitle={
           <div className="my-4">
-            <ExplorerLink path={`account/${address}`} label={ellipsify(address.toString())} />
+            <ExplorerLink address={address.toString()} label={ellipsify(address.toString())} />
           </div>
         }
       >
-        <div className="my-4">{<AccountButtons address={address} />}</div>
+        <div className="my-4">
+          <AccountButtons address={address} />
+        </div>
       </AppHero>
-
       <div className="space-y-8">
-        <div>
-          <AccountTokens address={address} />
-        </div>
-        <div>
-          <AccountTransactions address={address} />
-        </div>
+        <AccountTokens address={address} />
+        <AccountTransactions address={address} />
       </div>
     </div>
   )
