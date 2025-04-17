@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [20, 22]
-        pm: [npm, pnpm, yarn]
+        node: [ 22 ]
+        pm: [ npm, pnpm, yarn ]
         template:
           [
             legacy/legacy-next-tailwind,
