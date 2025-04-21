@@ -113,7 +113,12 @@ app.listen(port, () => {
   context.log.info(`🐠 Signer  : ${context.signer.address}`)
 })
 
-// Patch BigInt so we can log it using JSON.stringify without any errors
-;(BigInt.prototype as unknown as { toJSON: () => string }).toJSON = function () {
+declare global {
+  interface BigInt {
+    toJSON(): string
+  }
+}
+
+BigInt.prototype.toJSON = function () {
   return this.toString()
 }

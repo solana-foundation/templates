@@ -221,7 +221,7 @@ export function AccountTransactions({ address }: { address: Address }) {
                     <TableCell>{new Date((Number(item.blockTime) ?? 0) * 1000).toISOString()}</TableCell>
                     <TableCell className="text-right">
                       {item.err ? (
-                        <span className="text-red-500" title={JSON.stringify(item.err)}>
+                        <span className="text-red-500" title={item.err.toString()}>
                           Failed
                         </span>
                       ) : (
