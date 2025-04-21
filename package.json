@@ -12,6 +12,6 @@
   "author": "Solana Developers",
   "license": "MIT",
   "devDependencies": {
-    "prettier": "^3.5.1"
+    "prettier": "^3.5.3"
   }
 }
