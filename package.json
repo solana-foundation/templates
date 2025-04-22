@@ -6,7 +6,8 @@
   "scripts": {
     "clean": "rm -rf node_modules && pnpm -r exec rm -rf node_modules",
     "fmt": "prettier --write .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "update-deps": "pnpm -r update --latest"
   },
   "keywords": [],
   "author": "Solana Developers",
