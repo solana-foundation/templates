@@ -24,7 +24,7 @@
   "devDependencies": {
     "@eslint/js": "^9.25.1",
     "@types/express": "^5.0.1",
-    "@types/node": "^22.14.1",
+    "@types/node": "^22.15.3",
     "eslint": "^9.25.1",
     "esrun": "^3.2.26",
     "globals": "^16.0.0",
@@ -37,7 +37,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "gill": "0.8.2",
+    "gill": "0.8.3",
     "kleur": "^4.1.5",
     "lru-cache": "^11.1.0",
     "shx": "^0.4.0",
