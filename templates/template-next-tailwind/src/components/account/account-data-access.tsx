@@ -107,11 +107,11 @@ export function useTransferSol({ address, account }: { address: Address; account
         return
       }
     },
-    onSuccess: (signature) => {
+    onSuccess: async (signature) => {
       if (signature?.length) {
         toastTransaction(signature)
       }
-      return Promise.all([
+      await Promise.all([
         queryClient.invalidateQueries({
           queryKey: ['get-balance', { cluster, address }],
         }),
@@ -141,9 +141,9 @@ export function useRequestAirdrop({ address }: { address: Address }) {
         recipientAddress: address,
         lamports: lamports(BigInt(Math.round(amount * 1_000_000_000))),
       }),
-    onSuccess: (signature) => {
+    onSuccess: async (signature) => {
       toastTransaction(signature)
-      return Promise.all([
+      await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['get-balance', { cluster, address }] }),
         queryClient.invalidateQueries({ queryKey: ['get-signatures', { cluster, address }] }),
       ])

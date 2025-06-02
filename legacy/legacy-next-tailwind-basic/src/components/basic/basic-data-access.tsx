@@ -29,7 +29,9 @@ export function useBasicProgram() {
     onSuccess: (signature) => {
       transactionToast(signature)
     },
-    onError: () => toast.error('Failed to run program'),
+    onError: () => {
+      toast.error('Failed to run program')
+    },
   })
 
   return {

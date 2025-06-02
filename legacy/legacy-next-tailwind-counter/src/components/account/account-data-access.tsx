@@ -82,13 +82,13 @@ export function useTransferSol({ address }: { address: PublicKey }) {
         return
       }
     },
-    onSuccess: (signature) => {
+    onSuccess: async (signature) => {
       if (signature) {
         // TODO: Add back Toast
         // transactionToast(signature)
         console.log('Transaction sent', signature)
       }
-      return Promise.all([
+      await Promise.all([
         client.invalidateQueries({
           queryKey: ['get-balance', { endpoint: connection.rpcEndpoint, address }],
         }),
@@ -120,11 +120,11 @@ export function useRequestAirdrop({ address }: { address: PublicKey }) {
       await connection.confirmTransaction({ signature, ...latestBlockhash }, 'confirmed')
       return signature
     },
-    onSuccess: (signature) => {
+    onSuccess: async (signature) => {
       // TODO: Add back Toast
       // transactionToast(signature)
       console.log('Airdrop sent', signature)
-      return Promise.all([
+      await Promise.all([
         client.invalidateQueries({
           queryKey: ['get-balance', { endpoint: connection.rpcEndpoint, address }],
         }),

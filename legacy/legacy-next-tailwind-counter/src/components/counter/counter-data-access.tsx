@@ -32,11 +32,13 @@ export function useCounterProgram() {
     mutationKey: ['counter', 'initialize', { cluster }],
     mutationFn: (keypair: Keypair) =>
       program.methods.initialize().accounts({ counter: keypair.publicKey }).signers([keypair]).rpc(),
-    onSuccess: (signature) => {
+    onSuccess: async (signature) => {
       transactionToast(signature)
-      return accounts.refetch()
+      await accounts.refetch()
     },
-    onError: () => toast.error('Failed to initialize account'),
+    onError: () => {
+      toast.error('Failed to initialize account')
+    },
   })
 
   return {
@@ -61,36 +63,36 @@ export function useCounterProgramAccount({ account }: { account: PublicKey }) {
   const closeMutation = useMutation({
     mutationKey: ['counter', 'close', { cluster, account }],
     mutationFn: () => program.methods.close().accounts({ counter: account }).rpc(),
-    onSuccess: (tx) => {
+    onSuccess: async (tx) => {
       transactionToast(tx)
-      return accounts.refetch()
+      await accounts.refetch()
     },
   })
 
   const decrementMutation = useMutation({
     mutationKey: ['counter', 'decrement', { cluster, account }],
     mutationFn: () => program.methods.decrement().accounts({ counter: account }).rpc(),
-    onSuccess: (tx) => {
+    onSuccess: async (tx) => {
       transactionToast(tx)
-      return accountQuery.refetch()
+      await accountQuery.refetch()
     },
   })
 
   const incrementMutation = useMutation({
     mutationKey: ['counter', 'increment', { cluster, account }],
     mutationFn: () => program.methods.increment().accounts({ counter: account }).rpc(),
-    onSuccess: (tx) => {
+    onSuccess: async (tx) => {
       transactionToast(tx)
-      return accountQuery.refetch()
+      await accountQuery.refetch()
     },
   })
 
   const setMutation = useMutation({
     mutationKey: ['counter', 'set', { cluster, account }],
     mutationFn: (value: number) => program.methods.set(value).accounts({ counter: account }).rpc(),
-    onSuccess: (tx) => {
+    onSuccess: async (tx) => {
       transactionToast(tx)
-      return accountQuery.refetch()
+      await accountQuery.refetch()
     },
   })
 
