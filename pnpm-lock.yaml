@@ -735,11 +735,11 @@ importers:
         specifier: ^5.79.0
         version: 5.79.0(react@19.1.0)
       '@wallet-ui/react':
-        specifier: 1.1.0-canary-20250602184812
-        version: 1.1.0-canary-20250602184812(fastestsmallesttextencoderdecoder@1.0.22)(gill@0.10.0(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
+        specifier: 1.1.0-canary-20250605143849
+        version: 1.1.0-canary-20250605143849(fastestsmallesttextencoderdecoder@1.0.22)(gill@0.9.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
       '@wallet-ui/tailwind':
-        specifier: 1.1.0-canary-20250602184812
-        version: 1.1.0-canary-20250602184812(tailwindcss@4.1.8)
+        specifier: 1.1.0-canary-20250605143849
+        version: 1.1.0-canary-20250605143849(tailwindcss@4.1.8)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -747,8 +747,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       gill:
-        specifier: 0.10.0
-        version: 0.10.0(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+        specifier: 0.9.1
+        version: 0.9.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       jotai:
         specifier: ^2.12.5
         version: 2.12.5(@types/react@19.1.6)(react@19.1.0)
@@ -829,8 +829,8 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0
       gill:
-        specifier: 0.10.0
-        version: 0.10.0(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+        specifier: 0.9.1
+        version: 0.9.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       kleur:
         specifier: ^4.1.5
         version: 4.1.5
@@ -881,8 +881,8 @@ importers:
         specifier: ^3.2.26
         version: 3.2.26
       gill:
-        specifier: 0.10.0
-        version: 0.10.0(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+        specifier: 0.9.1
+        version: 0.9.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       kleur:
         specifier: ^4.1.5
         version: 4.1.5
@@ -945,11 +945,11 @@ importers:
         specifier: ^5.79.0
         version: 5.79.0(react@19.1.0)
       '@wallet-ui/react':
-        specifier: 1.1.0-canary-20250602184812
-        version: 1.1.0-canary-20250602184812(fastestsmallesttextencoderdecoder@1.0.22)(gill@0.10.0(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
+        specifier: 1.1.0-canary-20250605143849
+        version: 1.1.0-canary-20250605143849(fastestsmallesttextencoderdecoder@1.0.22)(gill@0.9.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
       '@wallet-ui/tailwind':
-        specifier: 1.1.0-canary-20250602184812
-        version: 1.1.0-canary-20250602184812(tailwindcss@4.1.8)
+        specifier: 1.1.0-canary-20250605143849
+        version: 1.1.0-canary-20250605143849(tailwindcss@4.1.8)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -957,8 +957,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       gill:
-        specifier: 0.10.0
-        version: 0.10.0(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+        specifier: 0.9.1
+        version: 0.9.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       jotai:
         specifier: ^2.12.5
         version: 2.12.5(@types/react@19.1.6)(react@19.1.0)
@@ -3736,21 +3736,21 @@ packages:
     resolution: {integrity: sha512-Gt8TnSlDZpAl+RWOOAB/kuvC7RpcdWAlFbHNoi4gsXsfaWa1QCT6LBcfIYTPdOZC9OVZUDwqGuGAcqZejDmHjg==}
     engines: {node: '>=16'}
 
-  '@wallet-ui/core@1.1.0-canary-20250602184812':
-    resolution: {integrity: sha512-L/oxcZ7ldablLPXOx/L1MqA0eVCRIMFcsfYKofeUt/Dvc3tioFWh7vlXtBte7bv50bi+Vp8l3IPTsspU/LPylQ==}
+  '@wallet-ui/core@1.1.0-canary-20250605143849':
+    resolution: {integrity: sha512-gUngZNmM63diSij1BI6/qvd4h+VH4Tn1NSYuwcAZwqFU03frhU63M9aUQnjF3aaQfKzvbnhA8dEOt0wE856/qQ==}
     engines: {node: '>=20.18.0'}
     peerDependencies:
-      gill: ^0.10.0
+      gill: 0.9.1
 
-  '@wallet-ui/react@1.1.0-canary-20250602184812':
-    resolution: {integrity: sha512-9+f9S4ptXCXLXps6DO5K6suBfOcKYZc1FRgAVQoXlun4BsdY+FBSMKRb6hxCrEYm4flBEpKwiWLImC6D1zKriA==}
+  '@wallet-ui/react@1.1.0-canary-20250605143849':
+    resolution: {integrity: sha512-1BhG2V8Td9xjVgAPXHJlRw+xNcKArWlTWw82NosYsemeS2OR1Oi/LfTOG7twZmNC2ywfcSXwn4q9RGtcLe1iZQ==}
     engines: {node: '>=20.18.0'}
     peerDependencies:
-      gill: ^0.10.0
+      gill: 0.9.1
       react: '>=18'
 
-  '@wallet-ui/tailwind@1.1.0-canary-20250602184812':
-    resolution: {integrity: sha512-i74L5581wbfxIsYGH3dEwTQUTGu3IPD4Z/n/5DjTsjKgewB3gTEPYyD1I+ByaarYbyWJHmua6xneCmc5gvzkbg==}
+  '@wallet-ui/tailwind@1.1.0-canary-20250605143849':
+    resolution: {integrity: sha512-J6f/DI1eM+i74Zrg4JjBSN5JqDXeXRSRwLtpyQJanNnQIeqindqvLwNv/35HHiXfauASn1J/2hQlwNbAFMOR6A==}
     engines: {node: '>=20.18.0'}
     peerDependencies:
       tailwindcss: ^4.1.5
@@ -4910,8 +4910,8 @@ packages:
   get-tsconfig@4.10.1:
     resolution: {integrity: sha512-auHyJ4AgMz7vgS8Hp3N6HXSmlMdUyhSUrfBF16w153rxtLIEOE+HGqaBppczZvnHLqQJfiHotCYpNhl0lUROFQ==}
 
-  gill@0.10.0:
-    resolution: {integrity: sha512-kPu0CJxRQfYExpW5wEFfaRWCKz/gdlQKgLLR0jvNsv9nEVnM8Lime39Sk0BOyfAASHK2/O+5ZlMEXN4aBtPVbQ==}
+  gill@0.9.1:
+    resolution: {integrity: sha512-3t9zkzd1SheAqIoRaDr8J+exooGgIgt9ruN+wcc24f79yvvuRanmtQ/meRRxLE9MCeb9ej8Ldp0pXtUN8P22lA==}
     engines: {node: '>=20.18.0'}
     peerDependencies:
       typescript: '>=5'
@@ -10308,24 +10308,24 @@ snapshots:
     dependencies:
       '@wallet-standard/base': 1.1.0
 
-  '@wallet-ui/core@1.1.0-canary-20250602184812(gill@0.10.0(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))':
+  '@wallet-ui/core@1.1.0-canary-20250605143849(gill@0.9.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))':
     dependencies:
       '@nanostores/persistent': 1.0.0(nanostores@1.0.1)
-      gill: 0.10.0(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      gill: 0.9.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       nanostores: 1.0.1
 
-  '@wallet-ui/react@1.1.0-canary-20250602184812(fastestsmallesttextencoderdecoder@1.0.22)(gill@0.10.0(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)':
+  '@wallet-ui/react@1.1.0-canary-20250605143849(fastestsmallesttextencoderdecoder@1.0.22)(gill@0.9.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)':
     dependencies:
       '@nanostores/react': 1.0.0(nanostores@1.0.1)(react@19.1.0)
       '@solana/react': 2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(react@19.1.0)(typescript@5.8.3)
       '@solana/wallet-standard-features': 1.3.0
       '@wallet-standard/core': 1.1.1
       '@wallet-standard/react': 1.0.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@wallet-ui/core': 1.1.0-canary-20250602184812(gill@0.10.0(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
+      '@wallet-ui/core': 1.1.0-canary-20250605143849(gill@0.9.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@zag-js/dialog': 1.12.0
       '@zag-js/menu': 1.12.0
       '@zag-js/react': 1.12.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      gill: 0.10.0(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      gill: 0.9.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       nanostores: 1.0.1
       react: 19.1.0
     transitivePeerDependencies:
@@ -10333,7 +10333,7 @@ snapshots:
       - react-dom
       - typescript
 
-  '@wallet-ui/tailwind@1.1.0-canary-20250602184812(tailwindcss@4.1.8)':
+  '@wallet-ui/tailwind@1.1.0-canary-20250605143849(tailwindcss@4.1.8)':
     dependencies:
       tailwindcss: 4.1.8
 
@@ -11883,7 +11883,7 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
-  gill@0.10.0(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
+  gill@0.9.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
     dependencies:
       '@solana-program/address-lookup-table': 0.7.0(@solana/kit@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/compute-budget': 0.8.0(@solana/kit@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
