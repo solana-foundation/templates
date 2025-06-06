@@ -24,13 +24,13 @@
   "devDependencies": {
     "@eslint/js": "^9.28.0",
     "@types/express": "^5.0.2",
-    "@types/node": "^22.15.29",
+    "@types/node": "^22.15.30",
     "eslint": "^9.28.0",
-    "esrun": "^3.2.26",
+    "esrun": "^3.2.30",
     "globals": "^16.2.0",
     "prettier": "^3.5.3",
     "typescript": "~5.8.3",
-    "typescript-eslint": "^8.33.0"
+    "typescript-eslint": "^8.33.1"
   },
   "dependencies": {
     "@types/cors": "^2.8.18",
@@ -42,7 +42,7 @@
     "lru-cache": "^11.1.0",
     "shx": "^0.4.0",
     "ws": "^8.18.2",
-    "zod": "^3.25.48"
+    "zod": "^3.25.56"
   },
   "create-solana-dapp": {
     "rename": {
