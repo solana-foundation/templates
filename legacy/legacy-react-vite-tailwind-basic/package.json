@@ -73,5 +73,15 @@
     "vite": "^6.3.5",
     "vite-plugin-node-polyfills": "^0.23.0",
     "vite-tsconfig-paths": "^5.1.4"
+  },
+  "create-solana-dapp": {
+    "rename": {
+      "scaffold": {
+        "to": "{{name}}",
+        "paths": [
+          "src"
+        ]
+      }
+    }
   }
 }

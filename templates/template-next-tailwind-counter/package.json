@@ -64,6 +64,13 @@
   },
   "create-solana-dapp": {
     "rename": {
+      "counter": {
+        "to": "{{name}}",
+        "paths": [
+          "anchor",
+          "src"
+        ]
+      },
       "scaffold": {
         "to": "{{name}}",
         "paths": [
