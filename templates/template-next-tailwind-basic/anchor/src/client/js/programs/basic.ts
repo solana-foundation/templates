@@ -6,7 +6,7 @@
  * @see https://github.com/codama-idl/codama
  */
 
-import { containsBytes, fixEncoderSize, getBytesEncoder, type Address, type ReadonlyUint8Array } from '@solana/kit'
+import { containsBytes, fixEncoderSize, getBytesEncoder, type Address, type ReadonlyUint8Array } from 'gill'
 import { type ParsedGreetInstruction } from '../instructions'
 
 export const BASIC_PROGRAM_ADDRESS =

@@ -24,7 +24,7 @@ import {
   type IInstructionWithAccounts,
   type IInstructionWithData,
   type ReadonlyUint8Array,
-} from '@solana/kit'
+} from 'gill'
 import { BASIC_PROGRAM_ADDRESS } from '../programs'
 
 export const GREET_DISCRIMINATOR = new Uint8Array([203, 194, 3, 150, 228, 58, 181, 62])
