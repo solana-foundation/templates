@@ -2,5 +2,11 @@ packages:
   - legacy/*
   - templates/*
 onlyBuiltDependencies:
+  - '@parcel/watcher'
   - '@tailwindcss/oxide'
+  - bigint-buffer
+  - bufferutil
+  - esbuild
+  - sharp
   - unrs-resolver
+  - utf-8-validate

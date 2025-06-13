@@ -7,6 +7,7 @@ pnpm-lock.yaml
 
 # Ignore any dist, tmp, or node_modules directories
 legacy/**/.env
+legacy/**/.anchor
 legacy/**/anchor/target/debug
 legacy/**/anchor/target/deploy
 legacy/**/anchor/target/release
@@ -17,6 +18,7 @@ legacy/**/dist
 legacy/**/node_modules
 legacy/**/tmp
 templates/**/.env
+templates/**/.anchor
 templates/**/anchor/target/debug
 templates/**/anchor/target/deploy
 templates/**/anchor/target/release
