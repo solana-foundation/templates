@@ -15,9 +15,9 @@
   "author": "Solana Developers",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^22.15.29",
+    "@types/node": "^24.0.1",
     "automd": "^0.4.0",
-    "esrun": "^3.2.26",
+    "esrun": "^3.2.30",
     "prettier": "^3.5.3"
   },
   "templateGroups": [

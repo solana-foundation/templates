@@ -1,3 +1,6 @@
 packages:
-  - 'legacy/*'
-  - 'templates/*'
+  - legacy/*
+  - templates/*
+onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - unrs-resolver
