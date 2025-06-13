@@ -26,6 +26,7 @@ jobs:
             legacy/legacy-react-vite-tailwind-basic,
             legacy/legacy-react-vite-tailwind-counter,
             templates/template-next-tailwind,
+            templates/template-next-tailwind-basic,
             templates/template-node-express,
             templates/template-node-script,
             templates/template-react-vite-tailwind,
@@ -65,7 +66,8 @@ jobs:
           TEMP_DIR=$(mktemp -d)
           cd "$TEMP_DIR"
 
-          BRANCH=${GITHUB_REF#refs/heads/}
+          BRANCH="${{ github.head_ref || github.ref_name }}"
+          echo "Installing from branch: $BRANCH"
 
           case ${{ matrix.pm }} in
           npm) npx create-solana-dapp@latest --template gh:${{ github.repository }}/${{ matrix.template }}#${BRANCH} sandbox ;;
