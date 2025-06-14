@@ -1,26 +1,33 @@
 'use client'
 
-import { UiWalletAccount } from '@wallet-ui/react'
-import { useBasicProgram } from './basic-data-access'
+import { ellipsify } from '@wallet-ui/react'
 import { Button } from '@/components/ui/button'
+import { ExplorerLink } from '@/components/cluster/cluster-ui'
+import { useBasicProgramId, useGetProgramAccountQuery, useGreetMutation } from './basic-data-access'
 
-export function BasicCreate({ account }: { account: UiWalletAccount }) {
-  const { greet } = useBasicProgram({ account })
+export function BasicProgramExplorerLink() {
+  const programId = useBasicProgramId()
+
+  return <ExplorerLink address={programId.toString()} label={ellipsify(programId.toString())} />
+}
+
+export function BasicCreate() {
+  const greetMutation = useGreetMutation()
 
   return (
-    <Button onClick={() => greet.mutateAsync()} disabled={greet.isPending}>
-      Run program{greet.isPending && '...'}
+    <Button onClick={() => greetMutation.mutateAsync()} disabled={greetMutation.isPending}>
+      Run program{greetMutation.isPending && '...'}
     </Button>
   )
 }
 
-export function BasicProgram({ account }: { account: UiWalletAccount }) {
-  const { getProgramAccount } = useBasicProgram({ account })
+export function BasicProgram() {
+  const query = useGetProgramAccountQuery()
 
-  if (getProgramAccount.isLoading) {
+  if (query.isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>
   }
-  if (!getProgramAccount.data?.value) {
+  if (!query.data?.value) {
     return (
       <div className="alert alert-info flex justify-center">
         <span>Program account not found. Make sure you have deployed the program and are on the correct cluster.</span>
@@ -29,7 +36,7 @@ export function BasicProgram({ account }: { account: UiWalletAccount }) {
   }
   return (
     <div className={'space-y-6'}>
-      <pre>{JSON.stringify(getProgramAccount.data.value.data, null, 2)}</pre>
+      <pre>{JSON.stringify(query.data.value.data, null, 2)}</pre>
     </div>
   )
 }

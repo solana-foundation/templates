@@ -67,7 +67,7 @@ export function AccountButtons({ address }: { address: Address }) {
   return (
     <div>
       <div className="space-x-2">
-        {cluster.urlOrMoniker === 'mainnet' ? null : <ModalAirdrop address={address} />}
+        {cluster.id === 'solana:mainnet' ? null : <ModalAirdrop address={address} />}
         <ErrorBoundary fallback={null}>
           {account ? <ModalSend address={address} account={account} /> : null}
         </ErrorBoundary>
