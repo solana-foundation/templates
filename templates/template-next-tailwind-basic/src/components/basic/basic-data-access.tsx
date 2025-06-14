@@ -16,16 +16,10 @@ import {
   setTransactionMessageLifetimeUsingBlockhash,
   signAndSendTransactionMessageWithSigners,
 } from 'gill'
-import {
-  UiWalletAccount,
-  useWalletAccountTransactionSendingSigner,
-  useWalletUi,
-  useWalletUiCluster,
-} from '@wallet-ui/react'
+import { UiWalletAccount, useWalletAccountTransactionSendingSigner, useWalletUi } from '@wallet-ui/react'
 
 export function useBasicProgram({ account }: { account: UiWalletAccount }) {
-  const { client } = useWalletUi()
-  const { cluster } = useWalletUiCluster()
+  const { client, cluster } = useWalletUi()
   const txSigner = useWalletAccountTransactionSendingSigner(account, cluster.id)
   const programId = useMemo(() => getBasicProgramId(cluster.id), [cluster])
   const transactionToast = useTransactionToast()

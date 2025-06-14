@@ -1,12 +1,7 @@
 import { TOKEN_2022_PROGRAM_ADDRESS, TOKEN_PROGRAM_ADDRESS } from 'gill/programs/token'
 import { getTransferSolInstruction } from 'gill/programs'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import {
-  UiWalletAccount,
-  useWalletAccountTransactionSendingSigner,
-  useWalletUi,
-  useWalletUiCluster,
-} from '@wallet-ui/react'
+import { UiWalletAccount, useWalletAccountTransactionSendingSigner, useWalletUi } from '@wallet-ui/react'
 import {
   address,
   Address,
@@ -28,8 +23,7 @@ import { toast } from 'sonner'
 import { useTransactionToast } from '../use-transaction-toast'
 
 export function useGetBalance({ address }: { address: Address }) {
-  const { cluster } = useWalletUiCluster()
-  const { client } = useWalletUi()
+  const { client, cluster } = useWalletUi()
 
   return useQuery({
     queryKey: ['get-balance', { cluster, address }],
@@ -42,8 +36,7 @@ export function useGetBalance({ address }: { address: Address }) {
 }
 
 export function useGetSignatures({ address }: { address: Address }) {
-  const { cluster } = useWalletUiCluster()
-  const { client } = useWalletUi()
+  const { client, cluster } = useWalletUi()
 
   return useQuery({
     queryKey: ['get-signatures', { cluster, address }],
@@ -52,8 +45,7 @@ export function useGetSignatures({ address }: { address: Address }) {
 }
 
 export function useGetTokenAccounts({ address }: { address: Address }) {
-  const { cluster } = useWalletUiCluster()
-  const { client } = useWalletUi()
+  const { client, cluster } = useWalletUi()
 
   return useQuery({
     queryKey: ['get-token-accounts', { cluster, address }],
@@ -80,8 +72,7 @@ export function useGetTokenAccounts({ address }: { address: Address }) {
 }
 
 export function useTransferSol({ address, account }: { address: Address; account: UiWalletAccount }) {
-  const { cluster } = useWalletUiCluster()
-  const { client } = useWalletUi()
+  const { client, cluster } = useWalletUi()
   const toastTransaction = useTransactionToast()
   const txSigner = useWalletAccountTransactionSendingSigner(account, cluster.id)
   const queryClient = useQueryClient()
@@ -125,8 +116,7 @@ export function useTransferSol({ address, account }: { address: Address; account
 }
 
 export function useRequestAirdrop({ address }: { address: Address }) {
-  const { cluster } = useWalletUiCluster()
-  const { client } = useWalletUi()
+  const { client, cluster } = useWalletUi()
   const queryClient = useQueryClient()
   const toastTransaction = useTransactionToast()
   const airdrop = airdropFactory(client)

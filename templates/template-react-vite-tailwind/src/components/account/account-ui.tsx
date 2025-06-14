@@ -16,7 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { AppModal } from '@/components/app-modal'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { UiWalletAccount, useWalletUi, useWalletUiCluster } from '@wallet-ui/react'
+import { UiWalletAccount, useWalletUi } from '@wallet-ui/react'
 import { address, Address, Lamports, lamportsToSol } from 'gill'
 import { ErrorBoundary } from 'react-error-boundary'
 
@@ -39,7 +39,7 @@ export function AccountChecker() {
 }
 
 export function AccountBalanceCheck({ address }: { address: Address }) {
-  const { cluster } = useWalletUiCluster()
+  const { cluster } = useWalletUi()
   const mutation = useRequestAirdrop({ address })
   const query = useGetBalance({ address })
 
@@ -63,8 +63,7 @@ export function AccountBalanceCheck({ address }: { address: Address }) {
 }
 
 export function AccountButtons({ address }: { address: Address }) {
-  const { cluster } = useWalletUiCluster()
-  const { account } = useWalletUi()
+  const { account, cluster } = useWalletUi()
   return (
     <div>
       <div className="space-x-2">

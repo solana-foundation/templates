@@ -3,7 +3,7 @@ import * as React from 'react'
 import { getExplorerLink, GetExplorerLinkArgs } from 'gill'
 import { Button } from '@/components/ui/button'
 import { AppAlert } from '@/components/app-alert'
-import { useWalletUi, useWalletUiCluster } from '@wallet-ui/react'
+import { useWalletUi } from '@wallet-ui/react'
 
 export function ExplorerLink({
   className,
@@ -26,8 +26,7 @@ export function ExplorerLink({
 }
 
 export function ClusterChecker({ children }: { children: React.ReactNode }) {
-  const { client } = useWalletUi()
-  const { cluster } = useWalletUiCluster()
+  const { client, cluster } = useWalletUi()
 
   const query = useQuery({
     queryKey: ['version', { cluster, endpoint: cluster.urlOrMoniker }],

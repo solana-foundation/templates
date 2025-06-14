@@ -744,11 +744,11 @@ importers:
         specifier: ^5.80.7
         version: 5.80.7(react@19.1.0)
       '@wallet-ui/react':
-        specifier: 1.1.0-canary-20250613001246
-        version: 1.1.0-canary-20250613001246(fastestsmallesttextencoderdecoder@1.0.22)(gill@0.10.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
+        specifier: 1.1.0-canary-20250614160139
+        version: 1.1.0-canary-20250614160139(fastestsmallesttextencoderdecoder@1.0.22)(gill@0.10.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
       '@wallet-ui/tailwind':
-        specifier: 1.1.0-canary-20250613001246
-        version: 1.1.0-canary-20250613001246(tailwindcss@4.1.10)
+        specifier: 1.1.0-canary-20250614160139
+        version: 1.1.0-canary-20250614160139(tailwindcss@4.1.10)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -853,11 +853,11 @@ importers:
         specifier: ^5.80.7
         version: 5.80.7(react@19.1.0)
       '@wallet-ui/react':
-        specifier: 1.1.0-canary-20250613001246
-        version: 1.1.0-canary-20250613001246(fastestsmallesttextencoderdecoder@1.0.22)(gill@0.10.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
+        specifier: 1.1.0-canary-20250614160139
+        version: 1.1.0-canary-20250614160139(fastestsmallesttextencoderdecoder@1.0.22)(gill@0.10.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
       '@wallet-ui/tailwind':
-        specifier: 1.1.0-canary-20250613001246
-        version: 1.1.0-canary-20250613001246(tailwindcss@4.1.10)
+        specifier: 1.1.0-canary-20250614160139
+        version: 1.1.0-canary-20250614160139(tailwindcss@4.1.10)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1069,11 +1069,11 @@ importers:
         specifier: ^5.80.7
         version: 5.80.7(react@19.1.0)
       '@wallet-ui/react':
-        specifier: 1.1.0-canary-20250613001246
-        version: 1.1.0-canary-20250613001246(fastestsmallesttextencoderdecoder@1.0.22)(gill@0.10.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
+        specifier: 1.1.0-canary-20250614160139
+        version: 1.1.0-canary-20250614160139(fastestsmallesttextencoderdecoder@1.0.22)(gill@0.10.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
       '@wallet-ui/tailwind':
-        specifier: 1.1.0-canary-20250613001246
-        version: 1.1.0-canary-20250613001246(tailwindcss@4.1.10)
+        specifier: 1.1.0-canary-20250614160139
+        version: 1.1.0-canary-20250614160139(tailwindcss@4.1.10)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -4104,21 +4104,21 @@ packages:
     resolution: {integrity: sha512-Gt8TnSlDZpAl+RWOOAB/kuvC7RpcdWAlFbHNoi4gsXsfaWa1QCT6LBcfIYTPdOZC9OVZUDwqGuGAcqZejDmHjg==}
     engines: {node: '>=16'}
 
-  '@wallet-ui/core@1.1.0-canary-20250613001246':
-    resolution: {integrity: sha512-YMiSXeqUca0HtJF5ofKV4VWSgWQB5kc8ZNlZLW1S02BEqobyaJErGyvPYgDPI0DdOA5ZS0cH6ZSks6+8/3gP9A==}
+  '@wallet-ui/core@1.1.0-canary-20250614160139':
+    resolution: {integrity: sha512-Yg7fwOB7KicYHj9UsYcgkZxDhGEqDQhi4Le38xrFpgFNijKntl89ytNJETYP/YI6kIpvP3hD7j1rtHplSE0jsw==}
     engines: {node: '>=20.18.0'}
     peerDependencies:
       gill: 0.10.1
 
-  '@wallet-ui/react@1.1.0-canary-20250613001246':
-    resolution: {integrity: sha512-ycBo5Bi4vkGfhbuTwUjzony6PhEo/gCHiMgxUZFyLgcwGuCoJxtUu/a+QlOj4rqbE7EWg74HEnPBxJXSdX3rTg==}
+  '@wallet-ui/react@1.1.0-canary-20250614160139':
+    resolution: {integrity: sha512-wOUU6qv+0ioPt7PXv4axWaEHWOLsfCPPr07NfJgZXX/ntsN+t1CJxge/V2S0/BToMcpMShF24TUpvWCuKLcLCw==}
     engines: {node: '>=20.18.0'}
     peerDependencies:
       gill: 0.10.1
       react: '>=18'
 
-  '@wallet-ui/tailwind@1.1.0-canary-20250613001246':
-    resolution: {integrity: sha512-JdgprtU4nIqbH+DfmGBCwU3ZvnhbwFU7yiaSQaO2ubmtZZE8ICx4LOvAZq0KfqZ43lOkTyU5TYGfC7u7n15UnQ==}
+  '@wallet-ui/tailwind@1.1.0-canary-20250614160139':
+    resolution: {integrity: sha512-+Rb7ZkciundiMYojMnXmtLdDX3VoDAbb3szattbnoFlHD/8MdkuDFg4rywaf3YLPmaEzHgIu4ZyRJbfaDcqSrg==}
     engines: {node: '>=20.18.0'}
     peerDependencies:
       tailwindcss: ^4.1.5
@@ -11254,20 +11254,20 @@ snapshots:
     dependencies:
       '@wallet-standard/base': 1.1.0
 
-  '@wallet-ui/core@1.1.0-canary-20250613001246(gill@0.10.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))':
+  '@wallet-ui/core@1.1.0-canary-20250614160139(gill@0.10.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))':
     dependencies:
       '@nanostores/persistent': 1.0.0(nanostores@1.0.1)
       gill: 0.10.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       nanostores: 1.0.1
 
-  '@wallet-ui/react@1.1.0-canary-20250613001246(fastestsmallesttextencoderdecoder@1.0.22)(gill@0.10.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)':
+  '@wallet-ui/react@1.1.0-canary-20250614160139(fastestsmallesttextencoderdecoder@1.0.22)(gill@0.10.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)':
     dependencies:
       '@nanostores/react': 1.0.0(nanostores@1.0.1)(react@19.1.0)
       '@solana/react': 2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(react@19.1.0)(typescript@5.8.3)
       '@solana/wallet-standard-features': 1.3.0
       '@wallet-standard/core': 1.1.1
       '@wallet-standard/react': 1.0.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@wallet-ui/core': 1.1.0-canary-20250613001246(gill@0.10.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
+      '@wallet-ui/core': 1.1.0-canary-20250614160139(gill@0.10.1(@solana/sysvars@2.1.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@zag-js/dialog': 1.15.2
       '@zag-js/menu': 1.15.2
       '@zag-js/react': 1.15.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -11279,7 +11279,7 @@ snapshots:
       - react-dom
       - typescript
 
-  '@wallet-ui/tailwind@1.1.0-canary-20250613001246(tailwindcss@4.1.10)':
+  '@wallet-ui/tailwind@1.1.0-canary-20250614160139(tailwindcss@4.1.10)':
     dependencies:
       tailwindcss: 4.1.10
 
