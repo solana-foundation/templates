@@ -1,26 +1,3 @@
-# solana-templates
-
-Official templates for the [create-solana-dapp](https://github.com/solana-developers/create-solana-dapp) CLI.
-
-## Usage
-
-Run the `create-solana-dapp` command and use the interactive prompts to create a new project.
-
-Provide the `-t <template-name>` option to use a specific template, use `--help` to see all the options.
-
-```sh
-# npm
-npm create solana-dapp@latest [-t <template-name>]
-
-# pnpm
-pnpm create solana-dapp@latest [-t <template-name>]
-
-# yarn
-yarn create-solana-dapp [-t <template-name>]
-```
-
-<!-- automd:file src="TEMPLATES.md" -->
-
 # Templates
 
 Templates using gill (based on @solana/kit)
@@ -100,18 +77,3 @@ Legacy templates using @solana/web3.js
 > React + Vite, Tailwind, @solana/web3.js, Wallet Adapter, Anchor Counter program
 
 `anchor-counter` `legacy` `react` `solana-web3js` `tailwind` `typescript` `vite` `wallet-adapter`
-
-<!-- /automd -->
-
-## Contributors
-
-<!-- automd:contributors github="solana-developers/solana-templates" license="MIT" -->
-
-Published under the [MIT](https://github.com/solana-developers/solana-templates/blob/main/LICENSE) license.
-Made by [community](https://github.com/solana-developers/solana-templates/graphs/contributors) 💛
-<br><br>
-<a href="https://github.com/solana-developers/solana-templates/graphs/contributors">
-<img src="https://contrib.rocks/image?repo=solana-developers/solana-templates" />
-</a>
-
-<!-- /automd -->

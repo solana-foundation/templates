@@ -22,11 +22,20 @@ interface Template {
   name: string
 }
 
-generate()
+function main() {
+  const groups = readTemplateGroups()
+  const lines: string[] = []
+  for (const group of groups) {
+    lines.push(...createTemplateReadme(group))
+  }
+  writeFileSync(join(process.cwd(), 'TEMPLATES.md'), lines.join('\n'))
+  createTemplateJson(groups)
+}
+
+main()
 
 function createTemplateReadme({ description, directory, name, templates }: TemplateGroup) {
   const tag = `[${directory}]`
-  const targetDir = join(process.cwd(), directory)
   const lines: string[] = []
 
   console.log(`${tag} ${name}`)
@@ -35,15 +44,15 @@ function createTemplateReadme({ description, directory, name, templates }: Templ
 
   for (const template of templates) {
     const { description, name, keywords } = template
-    lines.push(`### ${name}\n`)
+    lines.push(`### [${name}](${directory}/${name})\n`)
     lines.push(`> ${description}\n`)
     lines.push(`${keywords.map((keyword) => '`' + keyword + '`').join(' ')}\n`)
-    console.log(`${tag} -> ${name}`)
+    console.log(`${tag} -> [${name}]`)
     console.log(`${tag} ->    ${description}`)
     console.log(`${tag} ->    [${keywords.join('|')}]`)
   }
 
-  writeFileSync(join(targetDir, 'README.md'), lines.join('\n'))
+  return lines
 }
 
 function createTemplateJson(groups: TemplateGroup[]) {
@@ -57,14 +66,6 @@ function createTemplateJson(groups: TemplateGroup[]) {
 
   const rootTemplatesJsonPath = join(process.cwd(), 'templates.json')
   writeFileSync(rootTemplatesJsonPath, JSON.stringify(groups, null, 2) + '\n')
-}
-
-function generate() {
-  const groups = readTemplateGroups()
-  for (const group of groups) {
-    createTemplateReadme(group)
-  }
-  createTemplateJson(groups)
 }
 
 function getDirectories(directory: string): string[] {

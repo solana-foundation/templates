@@ -1,5 +1,16 @@
 {
-  "name": "template-next-tailwind",
+  "name": "template-next-tailwind-basic",
+  "description": "Next.js, Tailwind, basic Anchor example, gill (based on @solana/kit), Wallet UI",
+  "keywords": [
+    "anchor-basic",
+    "gill",
+    "nextjs",
+    "react",
+    "solana-kit",
+    "tailwind",
+    "typescript",
+    "wallet-ui"
+  ],
   "version": "0.0.0",
   "private": true,
   "type": "module",
