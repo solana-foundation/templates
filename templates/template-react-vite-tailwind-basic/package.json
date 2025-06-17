@@ -1,7 +1,8 @@
 {
   "name": "template-react-vite-tailwind",
-  "description": "React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI",
+  "description": "React+Vite, Tailwind, gill (based on @solana/kit), basic Anchor example, Wallet UI",
   "keywords": [
+    "anchor-basic",
     "gill",
     "react",
     "solana-kit",
@@ -10,6 +11,22 @@
     "vite",
     "wallet-ui"
   ],
+  "create-solana-dapp": {
+    "rename": {
+      "basic": {
+        "to": "{{name}}",
+        "paths": [
+          "."
+        ]
+      },
+      "scaffold": {
+        "to": "{{name}}",
+        "paths": [
+          "src"
+        ]
+      }
+    }
+  },
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -70,15 +87,5 @@
     "vite": "^6.3.5",
     "vite-plugin-node-polyfills": "^0.23.0",
     "vite-tsconfig-paths": "^5.1.4"
-  },
-  "create-solana-dapp": {
-    "rename": {
-      "scaffold": {
-        "to": "{{name}}",
-        "paths": [
-          "src"
-        ]
-      }
-    }
   }
 }

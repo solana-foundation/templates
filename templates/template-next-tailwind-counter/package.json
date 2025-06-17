@@ -11,6 +11,22 @@
     "typescript",
     "wallet-ui"
   ],
+  "create-solana-dapp": {
+    "rename": {
+      "counter": {
+        "to": "{{name}}",
+        "paths": [
+          "."
+        ]
+      },
+      "scaffold": {
+        "to": "{{name}}",
+        "paths": [
+          "src"
+        ]
+      }
+    }
+  },
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -71,21 +87,5 @@
     "tailwindcss": "^4.1.10",
     "typescript": "^5.8.3",
     "ws": "^8.18.2"
-  },
-  "create-solana-dapp": {
-    "rename": {
-      "counter": {
-        "to": "{{name}}",
-        "paths": [
-          "."
-        ]
-      },
-      "scaffold": {
-        "to": "{{name}}",
-        "paths": [
-          "src"
-        ]
-      }
-    }
   }
 }

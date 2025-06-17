@@ -10,6 +10,16 @@
     "vite",
     "wallet-ui"
   ],
+  "create-solana-dapp": {
+    "rename": {
+      "scaffold": {
+        "to": "{{name}}",
+        "paths": [
+          "src"
+        ]
+      }
+    }
+  },
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -63,15 +73,5 @@
     "vite": "^6.3.5",
     "vite-plugin-node-polyfills": "^0.23.0",
     "vite-tsconfig-paths": "^5.1.4"
-  },
-  "create-solana-dapp": {
-    "rename": {
-      "scaffold": {
-        "to": "{{name}}",
-        "paths": [
-          "src"
-        ]
-      }
-    }
   }
 }
