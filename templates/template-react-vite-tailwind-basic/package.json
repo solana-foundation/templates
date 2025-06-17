@@ -20,7 +20,7 @@
     "anchor-localnet": "cd anchor && anchor localnet",
     "anchor-test": "cd anchor && anchor test",
     "build": "tsc -b && vite build",
-    "codama:js": "codama run js && prettier --write anchor/src/client/js",
+    "codama:js": "codama run js && prettier --write anchor/src/client/js && npm run codama:js",
     "ci": "npm run build && npm run lint && npm run format:check",
     "dev": "vite",
     "format": "prettier --write .",
@@ -29,6 +29,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@codama/cli": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-dropdown-menu": "^2.1.15",
     "@radix-ui/react-label": "^2.1.7",
