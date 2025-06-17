@@ -1,14 +1,11 @@
 // Here we export some useful types and functions for interacting with the Anchor program.
-import BasicIDL from '../target/idl/basic.json'
-import type { Basic } from '../target/types/basic'
 import { address } from 'gill'
 import { SolanaClusterId } from '@wallet-ui/react'
+import { BASIC_PROGRAM_ADDRESS } from './client/js'
+import BasicIDL from '../target/idl/basic.json'
 
 // Re-export the generated IDL and type
-export { Basic, BasicIDL }
-
-// The programId is imported from the program IDL.
-export const BASIC_PROGRAM_ID = address(BasicIDL.address)
+export { BasicIDL }
 
 // This is a helper function to get the program ID for the Basic program depending on the cluster.
 export function getBasicProgramId(cluster: SolanaClusterId) {
@@ -19,7 +16,7 @@ export function getBasicProgramId(cluster: SolanaClusterId) {
       return address('6z68wfurCMYkZG51s1Et9BJEd9nJGUusjHXNt4dGbNNF')
     case 'solana:mainnet':
     default:
-      return BASIC_PROGRAM_ID
+      return BASIC_PROGRAM_ADDRESS
   }
 }
 
