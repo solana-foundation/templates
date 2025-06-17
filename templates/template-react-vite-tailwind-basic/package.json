@@ -12,6 +12,12 @@
     "wallet-ui"
   ],
   "create-solana-dapp": {
+    "instructions": [
+      "To configure the Anchor deployment keypair, run this:",
+      "+{pm} run setup",
+      "Run Anchor commands:",
+      "+{pm} run anchor build | test | localnet | deploy"
+    ],
     "rename": {
       "basic": {
         "to": "{{name}}",
@@ -43,7 +49,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "setup": "npm run anchor keys sync && npm run codama:js"
   },
   "dependencies": {
     "@codama/cli": "^1.1.1",
