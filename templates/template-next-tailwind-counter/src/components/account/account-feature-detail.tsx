@@ -1,14 +1,16 @@
-'use client'
-
 import { assertIsAddress } from 'gill'
 import { useMemo } from 'react'
 import { useParams } from 'next/navigation'
-import { ExplorerLink } from '../cluster/cluster-ui'
-import { AccountBalance, AccountButtons, AccountTokens, AccountTransactions } from './account-ui'
-import { AppHero } from '../app-hero'
 import { ellipsify } from '@/lib/utils'
+import { ExplorerLink } from '@/components/cluster/cluster-ui'
+import { AppHero } from '@/components/app-hero'
 
-export default function AccountDetailFeature() {
+import { AccountUiTokenAccounts } from './account-ui-token-accounts'
+import { AccountUiTransactions } from './account-ui-transactions'
+import { AccountUiActionButtons } from './account-ui-action-buttons'
+import { AccountUiBalance } from './account-ui-balance'
+
+export default function AccountFeatureDetail() {
   const params = useParams()
   const address = useMemo(() => {
     if (!params.address || typeof params.address !== 'string') {
@@ -24,7 +26,7 @@ export default function AccountDetailFeature() {
   return (
     <div>
       <AppHero
-        title={<AccountBalance address={address} />}
+        title={<AccountUiBalance address={address} />}
         subtitle={
           <div className="my-4">
             <ExplorerLink address={address.toString()} label={ellipsify(address.toString())} />
@@ -32,12 +34,12 @@ export default function AccountDetailFeature() {
         }
       >
         <div className="my-4">
-          <AccountButtons address={address} />
+          <AccountUiActionButtons address={address} />
         </div>
       </AppHero>
       <div className="space-y-8">
-        <AccountTokens address={address} />
-        <AccountTransactions address={address} />
+        <AccountUiTokenAccounts address={address} />
+        <AccountUiTransactions address={address} />
       </div>
     </div>
   )
