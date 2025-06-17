@@ -33,17 +33,19 @@ import {
   type MaybeAccount,
   type MaybeEncodedAccount,
   type ReadonlyUint8Array,
-} from 'gill'
+} from 'gill';
 
-export const COUNTER_DISCRIMINATOR = new Uint8Array([255, 176, 4, 245, 188, 253, 124, 25])
+export const COUNTER_DISCRIMINATOR = new Uint8Array([
+  255, 176, 4, 245, 188, 253, 124, 25,
+]);
 
 export function getCounterDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(COUNTER_DISCRIMINATOR)
+  return fixEncoderSize(getBytesEncoder(), 8).encode(COUNTER_DISCRIMINATOR);
 }
 
-export type Counter = { discriminator: ReadonlyUint8Array; count: number }
+export type Counter = { discriminator: ReadonlyUint8Array; count: number };
 
-export type CounterArgs = { count: number }
+export type CounterArgs = { count: number };
 
 export function getCounterEncoder(): Encoder<CounterArgs> {
   return transformEncoder(
@@ -51,71 +53,74 @@ export function getCounterEncoder(): Encoder<CounterArgs> {
       ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
       ['count', getU8Encoder()],
     ]),
-    (value) => ({ ...value, discriminator: COUNTER_DISCRIMINATOR }),
-  )
+    (value) => ({ ...value, discriminator: COUNTER_DISCRIMINATOR })
+  );
 }
 
 export function getCounterDecoder(): Decoder<Counter> {
   return getStructDecoder([
     ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
     ['count', getU8Decoder()],
-  ])
+  ]);
 }
 
 export function getCounterCodec(): Codec<CounterArgs, Counter> {
-  return combineCodec(getCounterEncoder(), getCounterDecoder())
+  return combineCodec(getCounterEncoder(), getCounterDecoder());
 }
 
 export function decodeCounter<TAddress extends string = string>(
-  encodedAccount: EncodedAccount<TAddress>,
-): Account<Counter, TAddress>
+  encodedAccount: EncodedAccount<TAddress>
+): Account<Counter, TAddress>;
 export function decodeCounter<TAddress extends string = string>(
-  encodedAccount: MaybeEncodedAccount<TAddress>,
-): MaybeAccount<Counter, TAddress>
+  encodedAccount: MaybeEncodedAccount<TAddress>
+): MaybeAccount<Counter, TAddress>;
 export function decodeCounter<TAddress extends string = string>(
-  encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>,
+  encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
 ): Account<Counter, TAddress> | MaybeAccount<Counter, TAddress> {
-  return decodeAccount(encodedAccount as MaybeEncodedAccount<TAddress>, getCounterDecoder())
+  return decodeAccount(
+    encodedAccount as MaybeEncodedAccount<TAddress>,
+    getCounterDecoder()
+  );
 }
 
 export async function fetchCounter<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
-  config?: FetchAccountConfig,
+  config?: FetchAccountConfig
 ): Promise<Account<Counter, TAddress>> {
-  const maybeAccount = await fetchMaybeCounter(rpc, address, config)
-  assertAccountExists(maybeAccount)
-  return maybeAccount
+  const maybeAccount = await fetchMaybeCounter(rpc, address, config);
+  assertAccountExists(maybeAccount);
+  return maybeAccount;
 }
 
 export async function fetchMaybeCounter<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
-  config?: FetchAccountConfig,
+  config?: FetchAccountConfig
 ): Promise<MaybeAccount<Counter, TAddress>> {
-  const maybeAccount = await fetchEncodedAccount(rpc, address, config)
-  return decodeCounter(maybeAccount)
+  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
+  return decodeCounter(maybeAccount);
 }
 
 export async function fetchAllCounter(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
-  config?: FetchAccountsConfig,
+  config?: FetchAccountsConfig
 ): Promise<Account<Counter>[]> {
-  const maybeAccounts = await fetchAllMaybeCounter(rpc, addresses, config)
-  assertAccountsExist(maybeAccounts)
-  return maybeAccounts
+  const maybeAccounts = await fetchAllMaybeCounter(rpc, addresses, config);
+  assertAccountsExist(maybeAccounts);
+  return maybeAccounts;
 }
 
 export async function fetchAllMaybeCounter(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
-  config?: FetchAccountsConfig,
+  config?: FetchAccountsConfig
 ): Promise<MaybeAccount<Counter>[]> {
-  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config)
-  return maybeAccounts.map((maybeAccount) => decodeCounter(maybeAccount))
+  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
+  return maybeAccounts.map((maybeAccount) => decodeCounter(maybeAccount));
 }
 
 export function getCounterSize(): number {
-  return 9
+  return 9;
 }

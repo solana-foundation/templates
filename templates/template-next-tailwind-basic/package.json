@@ -38,7 +38,7 @@
     "anchor-localnet": "cd anchor && anchor localnet",
     "anchor-test": "cd anchor && anchor test",
     "build": "next build",
-    "codama:js": "codama run -c ./anchor/codama.js js && prettier --write anchor/src/client/js/generated",
+    "codama:js": "codama run -c ./anchor/codama.js js",
     "ci": "npm run build && npm run lint && npm run format:check && npm run codama:js",
     "dev": "next dev --turbopack",
     "format": "prettier --write .",

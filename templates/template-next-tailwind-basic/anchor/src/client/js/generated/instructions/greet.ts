@@ -24,65 +24,81 @@ import {
   type IInstructionWithAccounts,
   type IInstructionWithData,
   type ReadonlyUint8Array,
-} from 'gill'
-import { BASIC_PROGRAM_ADDRESS } from '../programs'
+} from 'gill';
+import { BASIC_PROGRAM_ADDRESS } from '../programs';
 
-export const GREET_DISCRIMINATOR = new Uint8Array([203, 194, 3, 150, 228, 58, 181, 62])
+export const GREET_DISCRIMINATOR = new Uint8Array([
+  203, 194, 3, 150, 228, 58, 181, 62,
+]);
 
 export function getGreetDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(GREET_DISCRIMINATOR)
+  return fixEncoderSize(getBytesEncoder(), 8).encode(GREET_DISCRIMINATOR);
 }
 
 export type GreetInstruction<
   TProgram extends string = typeof BASIC_PROGRAM_ADDRESS,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
-> = IInstruction<TProgram> & IInstructionWithData<Uint8Array> & IInstructionWithAccounts<TRemainingAccounts>
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<TRemainingAccounts>;
 
-export type GreetInstructionData = { discriminator: ReadonlyUint8Array }
+export type GreetInstructionData = { discriminator: ReadonlyUint8Array };
 
-export type GreetInstructionDataArgs = {}
+export type GreetInstructionDataArgs = {};
 
 export function getGreetInstructionDataEncoder(): Encoder<GreetInstructionDataArgs> {
-  return transformEncoder(getStructEncoder([['discriminator', fixEncoderSize(getBytesEncoder(), 8)]]), (value) => ({
-    ...value,
-    discriminator: GREET_DISCRIMINATOR,
-  }))
+  return transformEncoder(
+    getStructEncoder([['discriminator', fixEncoderSize(getBytesEncoder(), 8)]]),
+    (value) => ({ ...value, discriminator: GREET_DISCRIMINATOR })
+  );
 }
 
 export function getGreetInstructionDataDecoder(): Decoder<GreetInstructionData> {
-  return getStructDecoder([['discriminator', fixDecoderSize(getBytesDecoder(), 8)]])
+  return getStructDecoder([
+    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
+  ]);
 }
 
-export function getGreetInstructionDataCodec(): Codec<GreetInstructionDataArgs, GreetInstructionData> {
-  return combineCodec(getGreetInstructionDataEncoder(), getGreetInstructionDataDecoder())
+export function getGreetInstructionDataCodec(): Codec<
+  GreetInstructionDataArgs,
+  GreetInstructionData
+> {
+  return combineCodec(
+    getGreetInstructionDataEncoder(),
+    getGreetInstructionDataDecoder()
+  );
 }
 
-export type GreetInput = {}
+export type GreetInput = {};
 
-export function getGreetInstruction<TProgramAddress extends Address = typeof BASIC_PROGRAM_ADDRESS>(config?: {
-  programAddress?: TProgramAddress
+export function getGreetInstruction<
+  TProgramAddress extends Address = typeof BASIC_PROGRAM_ADDRESS,
+>(config?: {
+  programAddress?: TProgramAddress;
 }): GreetInstruction<TProgramAddress> {
   // Program address.
-  const programAddress = config?.programAddress ?? BASIC_PROGRAM_ADDRESS
+  const programAddress = config?.programAddress ?? BASIC_PROGRAM_ADDRESS;
 
   const instruction = {
     programAddress,
     data: getGreetInstructionDataEncoder().encode({}),
-  } as GreetInstruction<TProgramAddress>
+  } as GreetInstruction<TProgramAddress>;
 
-  return instruction
+  return instruction;
 }
 
-export type ParsedGreetInstruction<TProgram extends string = typeof BASIC_PROGRAM_ADDRESS> = {
-  programAddress: Address<TProgram>
-  data: GreetInstructionData
-}
+export type ParsedGreetInstruction<
+  TProgram extends string = typeof BASIC_PROGRAM_ADDRESS,
+> = {
+  programAddress: Address<TProgram>;
+  data: GreetInstructionData;
+};
 
 export function parseGreetInstruction<TProgram extends string>(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>,
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedGreetInstruction<TProgram> {
   return {
     programAddress: instruction.programAddress,
     data: getGreetInstructionDataDecoder().decode(instruction.data),
-  }
+  };
 }

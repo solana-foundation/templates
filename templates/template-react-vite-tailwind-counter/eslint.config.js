@@ -9,6 +9,7 @@ export default tseslint.config(
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
+    ignores: ['anchor/src/client/js/generated/**'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,

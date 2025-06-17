@@ -28,14 +28,16 @@ import {
   type TransactionSigner,
   type WritableAccount,
   type WritableSignerAccount,
-} from 'gill'
-import { COUNTER_PROGRAM_ADDRESS } from '../programs'
-import { getAccountMetaFactory, type ResolvedAccount } from '../shared'
+} from 'gill';
+import { COUNTER_PROGRAM_ADDRESS } from '../programs';
+import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 
-export const CLOSE_DISCRIMINATOR = new Uint8Array([98, 165, 201, 177, 108, 65, 206, 96])
+export const CLOSE_DISCRIMINATOR = new Uint8Array([
+  98, 165, 201, 177, 108, 65, 206, 96,
+]);
 
 export function getCloseDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(CLOSE_DISCRIMINATOR)
+  return fixEncoderSize(getBytesEncoder(), 8).encode(CLOSE_DISCRIMINATOR);
 }
 
 export type CloseInstruction<
@@ -48,36 +50,50 @@ export type CloseInstruction<
   IInstructionWithAccounts<
     [
       TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>
+        ? WritableSignerAccount<TAccountPayer> &
+            IAccountSignerMeta<TAccountPayer>
         : TAccountPayer,
-      TAccountCounter extends string ? WritableAccount<TAccountCounter> : TAccountCounter,
+      TAccountCounter extends string
+        ? WritableAccount<TAccountCounter>
+        : TAccountCounter,
       ...TRemainingAccounts,
     ]
-  >
+  >;
 
-export type CloseInstructionData = { discriminator: ReadonlyUint8Array }
+export type CloseInstructionData = { discriminator: ReadonlyUint8Array };
 
-export type CloseInstructionDataArgs = {}
+export type CloseInstructionDataArgs = {};
 
 export function getCloseInstructionDataEncoder(): Encoder<CloseInstructionDataArgs> {
-  return transformEncoder(getStructEncoder([['discriminator', fixEncoderSize(getBytesEncoder(), 8)]]), (value) => ({
-    ...value,
-    discriminator: CLOSE_DISCRIMINATOR,
-  }))
+  return transformEncoder(
+    getStructEncoder([['discriminator', fixEncoderSize(getBytesEncoder(), 8)]]),
+    (value) => ({ ...value, discriminator: CLOSE_DISCRIMINATOR })
+  );
 }
 
 export function getCloseInstructionDataDecoder(): Decoder<CloseInstructionData> {
-  return getStructDecoder([['discriminator', fixDecoderSize(getBytesDecoder(), 8)]])
+  return getStructDecoder([
+    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
+  ]);
 }
 
-export function getCloseInstructionDataCodec(): Codec<CloseInstructionDataArgs, CloseInstructionData> {
-  return combineCodec(getCloseInstructionDataEncoder(), getCloseInstructionDataDecoder())
+export function getCloseInstructionDataCodec(): Codec<
+  CloseInstructionDataArgs,
+  CloseInstructionData
+> {
+  return combineCodec(
+    getCloseInstructionDataEncoder(),
+    getCloseInstructionDataDecoder()
+  );
 }
 
-export type CloseInput<TAccountPayer extends string = string, TAccountCounter extends string = string> = {
-  payer: TransactionSigner<TAccountPayer>
-  counter: Address<TAccountCounter>
-}
+export type CloseInput<
+  TAccountPayer extends string = string,
+  TAccountCounter extends string = string,
+> = {
+  payer: TransactionSigner<TAccountPayer>;
+  counter: Address<TAccountCounter>;
+};
 
 export function getCloseInstruction<
   TAccountPayer extends string,
@@ -85,53 +101,64 @@ export function getCloseInstruction<
   TProgramAddress extends Address = typeof COUNTER_PROGRAM_ADDRESS,
 >(
   input: CloseInput<TAccountPayer, TAccountCounter>,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress }
 ): CloseInstruction<TProgramAddress, TAccountPayer, TAccountCounter> {
   // Program address.
-  const programAddress = config?.programAddress ?? COUNTER_PROGRAM_ADDRESS
+  const programAddress = config?.programAddress ?? COUNTER_PROGRAM_ADDRESS;
 
   // Original accounts.
   const originalAccounts = {
     payer: { value: input.payer ?? null, isWritable: true },
     counter: { value: input.counter ?? null, isWritable: true },
-  }
-  const accounts = originalAccounts as Record<keyof typeof originalAccounts, ResolvedAccount>
+  };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
-  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId')
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
-    accounts: [getAccountMeta(accounts.payer), getAccountMeta(accounts.counter)],
+    accounts: [
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.counter),
+    ],
     programAddress,
     data: getCloseInstructionDataEncoder().encode({}),
-  } as CloseInstruction<TProgramAddress, TAccountPayer, TAccountCounter>
+  } as CloseInstruction<TProgramAddress, TAccountPayer, TAccountCounter>;
 
-  return instruction
+  return instruction;
 }
 
 export type ParsedCloseInstruction<
   TProgram extends string = typeof COUNTER_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
-  programAddress: Address<TProgram>
+  programAddress: Address<TProgram>;
   accounts: {
-    payer: TAccountMetas[0]
-    counter: TAccountMetas[1]
-  }
-  data: CloseInstructionData
-}
+    payer: TAccountMetas[0];
+    counter: TAccountMetas[1];
+  };
+  data: CloseInstructionData;
+};
 
-export function parseCloseInstruction<TProgram extends string, TAccountMetas extends readonly IAccountMeta[]>(
-  instruction: IInstruction<TProgram> & IInstructionWithAccounts<TAccountMetas> & IInstructionWithData<Uint8Array>,
+export function parseCloseInstruction<
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[],
+>(
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
 ): ParsedCloseInstruction<TProgram, TAccountMetas> {
   if (instruction.accounts.length < 2) {
     // TODO: Coded error.
-    throw new Error('Not enough accounts')
+    throw new Error('Not enough accounts');
   }
-  let accountIndex = 0
+  let accountIndex = 0;
   const getNextAccount = () => {
-    const accountMeta = instruction.accounts![accountIndex]!
-    accountIndex += 1
-    return accountMeta
-  }
+    const accountMeta = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return accountMeta;
+  };
   return {
     programAddress: instruction.programAddress,
     accounts: {
@@ -139,5 +166,5 @@ export function parseCloseInstruction<TProgram extends string, TAccountMetas ext
       counter: getNextAccount(),
     },
     data: getCloseInstructionDataDecoder().decode(instruction.data),
-  }
+  };
 }

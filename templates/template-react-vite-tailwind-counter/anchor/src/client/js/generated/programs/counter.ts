@@ -6,34 +6,46 @@
  * @see https://github.com/codama-idl/codama
  */
 
-import { containsBytes, fixEncoderSize, getBytesEncoder, type Address, type ReadonlyUint8Array } from 'gill'
+import {
+  containsBytes,
+  fixEncoderSize,
+  getBytesEncoder,
+  type Address,
+  type ReadonlyUint8Array,
+} from 'gill';
 import {
   type ParsedCloseInstruction,
   type ParsedDecrementInstruction,
   type ParsedIncrementInstruction,
   type ParsedInitializeInstruction,
   type ParsedSetInstruction,
-} from '../instructions'
+} from '../instructions';
 
 export const COUNTER_PROGRAM_ADDRESS =
-  'JAVuBXeBZqXNtS73azhBDAoYaaAFfo4gWXoZe2e7Jf8H' as Address<'JAVuBXeBZqXNtS73azhBDAoYaaAFfo4gWXoZe2e7Jf8H'>
+  'JAVuBXeBZqXNtS73azhBDAoYaaAFfo4gWXoZe2e7Jf8H' as Address<'JAVuBXeBZqXNtS73azhBDAoYaaAFfo4gWXoZe2e7Jf8H'>;
 
 export enum CounterAccount {
   Counter,
 }
 
-export function identifyCounterAccount(account: { data: ReadonlyUint8Array } | ReadonlyUint8Array): CounterAccount {
-  const data = 'data' in account ? account.data : account
+export function identifyCounterAccount(
+  account: { data: ReadonlyUint8Array } | ReadonlyUint8Array
+): CounterAccount {
+  const data = 'data' in account ? account.data : account;
   if (
     containsBytes(
       data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(new Uint8Array([255, 176, 4, 245, 188, 253, 124, 25])),
-      0,
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([255, 176, 4, 245, 188, 253, 124, 25])
+      ),
+      0
     )
   ) {
-    return CounterAccount.Counter
+    return CounterAccount.Counter;
   }
-  throw new Error('The provided account could not be identified as a counter account.')
+  throw new Error(
+    'The provided account could not be identified as a counter account.'
+  );
 }
 
 export enum CounterInstruction {
@@ -45,70 +57,84 @@ export enum CounterInstruction {
 }
 
 export function identifyCounterInstruction(
-  instruction: { data: ReadonlyUint8Array } | ReadonlyUint8Array,
+  instruction: { data: ReadonlyUint8Array } | ReadonlyUint8Array
 ): CounterInstruction {
-  const data = 'data' in instruction ? instruction.data : instruction
+  const data = 'data' in instruction ? instruction.data : instruction;
   if (
     containsBytes(
       data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(new Uint8Array([98, 165, 201, 177, 108, 65, 206, 96])),
-      0,
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([98, 165, 201, 177, 108, 65, 206, 96])
+      ),
+      0
     )
   ) {
-    return CounterInstruction.Close
+    return CounterInstruction.Close;
   }
   if (
     containsBytes(
       data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(new Uint8Array([106, 227, 168, 59, 248, 27, 150, 101])),
-      0,
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([106, 227, 168, 59, 248, 27, 150, 101])
+      ),
+      0
     )
   ) {
-    return CounterInstruction.Decrement
+    return CounterInstruction.Decrement;
   }
   if (
     containsBytes(
       data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(new Uint8Array([11, 18, 104, 9, 104, 174, 59, 33])),
-      0,
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([11, 18, 104, 9, 104, 174, 59, 33])
+      ),
+      0
     )
   ) {
-    return CounterInstruction.Increment
+    return CounterInstruction.Increment;
   }
   if (
     containsBytes(
       data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(new Uint8Array([175, 175, 109, 31, 13, 152, 155, 237])),
-      0,
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([175, 175, 109, 31, 13, 152, 155, 237])
+      ),
+      0
     )
   ) {
-    return CounterInstruction.Initialize
+    return CounterInstruction.Initialize;
   }
   if (
     containsBytes(
       data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(new Uint8Array([198, 51, 53, 241, 116, 29, 126, 194])),
-      0,
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([198, 51, 53, 241, 116, 29, 126, 194])
+      ),
+      0
     )
   ) {
-    return CounterInstruction.Set
+    return CounterInstruction.Set;
   }
-  throw new Error('The provided instruction could not be identified as a counter instruction.')
+  throw new Error(
+    'The provided instruction could not be identified as a counter instruction.'
+  );
 }
 
-export type ParsedCounterInstruction<TProgram extends string = 'JAVuBXeBZqXNtS73azhBDAoYaaAFfo4gWXoZe2e7Jf8H'> =
+export type ParsedCounterInstruction<
+  TProgram extends string = 'JAVuBXeBZqXNtS73azhBDAoYaaAFfo4gWXoZe2e7Jf8H',
+> =
   | ({
-      instructionType: CounterInstruction.Close
+      instructionType: CounterInstruction.Close;
     } & ParsedCloseInstruction<TProgram>)
   | ({
-      instructionType: CounterInstruction.Decrement
+      instructionType: CounterInstruction.Decrement;
     } & ParsedDecrementInstruction<TProgram>)
   | ({
-      instructionType: CounterInstruction.Increment
+      instructionType: CounterInstruction.Increment;
     } & ParsedIncrementInstruction<TProgram>)
   | ({
-      instructionType: CounterInstruction.Initialize
+      instructionType: CounterInstruction.Initialize;
     } & ParsedInitializeInstruction<TProgram>)
   | ({
-      instructionType: CounterInstruction.Set
-    } & ParsedSetInstruction<TProgram>)
+      instructionType: CounterInstruction.Set;
+    } & ParsedSetInstruction<TProgram>);
