@@ -1,12 +1,13 @@
 import { assertIsAddress } from 'gill'
 import { useMemo } from 'react'
 import { useParams } from 'react-router'
-import { ExplorerLink } from '../cluster/cluster-ui'
-import { AccountBalance, AccountButtons, AccountTokens, AccountTransactions } from './account-ui'
-import { AppHero } from '../app-hero'
+import { ExplorerLink } from '@/components/cluster/cluster-ui'
+import { AppHero } from '@/components/app-hero'
 import { ellipsify } from '@/lib/utils'
 
-export default function AccountDetailFeature() {
+import { AccountBalance, AccountButtons, AccountTokens, AccountTransactions } from './account-ui'
+
+export default function AccountFeatureDetail() {
   const params = useParams() as { address: string }
   const address = useMemo(() => {
     if (!params.address || typeof params.address !== 'string') {

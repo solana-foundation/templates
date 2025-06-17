@@ -1,12 +1,9 @@
-'use client'
-
-import * as React from 'react'
 import { ReactNode } from 'react'
 import { getExplorerLink, GetExplorerLinkArgs } from 'gill'
 import { Button } from '@/components/ui/button'
 import { AppAlert } from '@/components/app-alert'
 import { useWalletUi } from '@wallet-ui/react'
-import { useClusterVersion } from '@/components/cluster/cluster-data-access'
+import { useClusterVersion } from './use-cluster-version'
 
 export function ExplorerLink({
   className,

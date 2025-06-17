@@ -1,5 +1,3 @@
-'use client'
-
 import { TOKEN_2022_PROGRAM_ADDRESS, TOKEN_PROGRAM_ADDRESS } from 'gill/programs/token'
 import { getTransferSolInstruction } from 'gill/programs'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -23,7 +21,7 @@ import {
 } from 'gill'
 import { toast } from 'sonner'
 import { toastTx } from '@/components/toast-tx'
-import { useWalletUiSigner } from '@/components/solana/solana-hooks'
+import { useWalletUiSigner } from '@/components/solana/use-wallet-ui-signer'
 
 function useGetBalanceQueryKey({ address }: { address: Address }) {
   const { cluster } = useWalletUi()

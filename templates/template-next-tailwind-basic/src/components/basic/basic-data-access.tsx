@@ -1,12 +1,11 @@
-'use client'
-
 import { getBasicProgramId, getGreetInstruction } from '@project/anchor'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { toast } from 'sonner'
 import { useWalletUi } from '@wallet-ui/react'
 import { toastTx } from '@/components/toast-tx'
-import { useWalletTransactionSignAndSend, useWalletUiSigner } from '@/components/solana/solana-hooks'
+import { useWalletTransactionSignAndSend } from '@/components/solana/use-wallet-transaction-sign-and-send'
+import { useWalletUiSigner } from '@/components/solana/use-wallet-ui-signer'
 
 export function useBasicProgramId() {
   const { cluster } = useWalletUi()

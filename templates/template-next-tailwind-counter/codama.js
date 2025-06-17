@@ -13,7 +13,7 @@ export const GILL_EXTERNAL_MODULE_MAP = {
   solanaSigners: 'gill',
 }
 
-export function createGillCodama({ clientJs, dependencyMap = GILL_EXTERNAL_MODULE_MAP, idl }) {
+export function createCodamaConfig({ clientJs, dependencyMap = GILL_EXTERNAL_MODULE_MAP, idl }) {
   return {
     idl,
     scripts: {
@@ -25,7 +25,7 @@ export function createGillCodama({ clientJs, dependencyMap = GILL_EXTERNAL_MODUL
   }
 }
 
-export default createGillCodama({
+export default createCodamaConfig({
   clientJs: 'anchor/src/client/js',
   idl: 'anchor/target/idl/counter.json',
 })

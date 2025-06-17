@@ -1,5 +1,3 @@
-'use client'
-
 import {
   CounterAccount,
   getCloseInstruction,
@@ -15,9 +13,10 @@ import { useMemo } from 'react'
 import { toast } from 'sonner'
 import { generateKeyPairSigner } from 'gill'
 import { useWalletUi } from '@wallet-ui/react'
-import { useWalletTransactionSignAndSend, useWalletUiSigner } from '../solana/solana-hooks'
-import { useClusterVersion } from '@/components/cluster/cluster-data-access'
+import { useWalletTransactionSignAndSend } from '../solana/use-wallet-transaction-sign-and-send'
+import { useClusterVersion } from '@/components/cluster/use-cluster-version'
 import { toastTx } from '@/components/toast-tx'
+import { useWalletUiSigner } from '@/components/solana/use-wallet-ui-signer'
 
 export function useCounterProgramId() {
   const { cluster } = useWalletUi()

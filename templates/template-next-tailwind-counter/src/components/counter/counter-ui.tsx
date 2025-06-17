@@ -1,5 +1,3 @@
-'use client'
-
 import { ellipsify } from '@wallet-ui/react'
 import {
   useCounterAccountsQuery,

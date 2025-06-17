@@ -1,11 +1,8 @@
-'use client'
-
-import { WalletButton } from '../solana/solana-provider'
-
-import { redirect } from 'next/navigation'
+import { ReactNode } from 'react'
 import { useWalletUi } from '@wallet-ui/react'
+import { WalletButton } from '@/components/solana/solana-provider'
 
-export default function AccountListFeature() {
+export default function AccountFeatureIndex({ redirect }: { redirect: (path: string) => ReactNode }) {
   const { account } = useWalletUi()
 
   if (account) {

@@ -1,5 +1,3 @@
-'use client'
-
 import { ellipsify } from '@wallet-ui/react'
 import { Button } from '@/components/ui/button'
 import { ExplorerLink } from '@/components/cluster/cluster-ui'

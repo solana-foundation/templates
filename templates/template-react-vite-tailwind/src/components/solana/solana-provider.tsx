@@ -7,7 +7,6 @@ import {
   WalletUiClusterDropdown,
   WalletUiDropdown,
 } from '@wallet-ui/react'
-import '@wallet-ui/tailwind/index.css'
 
 export { WalletUiDropdown as WalletButton, WalletUiClusterDropdown as ClusterButton }
 

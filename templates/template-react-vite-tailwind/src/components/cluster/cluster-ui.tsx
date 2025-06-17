@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query'
-import * as React from 'react'
+import { ReactNode } from 'react'
 import { getExplorerLink, GetExplorerLinkArgs } from 'gill'
 import { Button } from '@/components/ui/button'
 import { AppAlert } from '@/components/app-alert'
 import { useWalletUi } from '@wallet-ui/react'
+import { useClusterVersion } from './use-cluster-version'
 
 export function ExplorerLink({
   className,
@@ -13,9 +13,10 @@ export function ExplorerLink({
   className?: string
   label: string
 }) {
+  const { cluster } = useWalletUi()
   return (
     <a
-      href={getExplorerLink(link)}
+      href={getExplorerLink({ ...link, cluster: cluster.cluster })}
       target="_blank"
       rel="noopener noreferrer"
       className={className ? className : `link font-mono`}
@@ -25,17 +26,14 @@ export function ExplorerLink({
   )
 }
 
-export function ClusterChecker({ children }: { children: React.ReactNode }) {
-  const { client, cluster } = useWalletUi()
+export function ClusterChecker({ children }: { children: ReactNode }) {
+  const { cluster } = useWalletUi()
+  const query = useClusterVersion()
 
-  const query = useQuery({
-    queryKey: ['version', { cluster, endpoint: cluster.urlOrMoniker }],
-    queryFn: () => client.rpc.getVersion(),
-    retry: 1,
-  })
   if (query.isLoading) {
     return null
   }
+
   if (query.isError || !query.data) {
     return (
       <AppAlert
@@ -44,6 +42,7 @@ export function ClusterChecker({ children }: { children: React.ReactNode }) {
             Refresh
           </Button>
         }
+        className="mb-4"
       >
         Error connecting to cluster <span className="font-bold">{cluster.label}</span>.
       </AppAlert>

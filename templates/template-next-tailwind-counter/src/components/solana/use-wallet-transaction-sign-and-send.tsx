@@ -1,4 +1,4 @@
-import { UiWalletAccount, useWalletAccountTransactionSendingSigner, useWalletUi } from '@wallet-ui/react'
+import { useWalletUi } from '@wallet-ui/react'
 import {
   appendTransactionMessageInstruction,
   assertIsTransactionMessageWithSingleSendingSigner,
@@ -11,12 +11,6 @@ import {
   signAndSendTransactionMessageWithSigners,
   TransactionSendingSigner,
 } from 'gill'
-
-export function useWalletUiSigner() {
-  const { account, cluster } = useWalletUi()
-
-  return useWalletAccountTransactionSendingSigner(account as UiWalletAccount, cluster.id)
-}
 
 export function useWalletTransactionSignAndSend() {
   const { client } = useWalletUi()

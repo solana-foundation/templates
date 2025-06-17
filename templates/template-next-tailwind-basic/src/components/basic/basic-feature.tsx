@@ -1,5 +1,3 @@
-'use client'
-
 import { WalletButton } from '../solana/solana-provider'
 import { BasicCreate, BasicProgram, BasicProgramExplorerLink } from './basic-ui'
 import { AppHero } from '../app-hero'

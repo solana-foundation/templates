@@ -1,16 +1,7 @@
-'use client'
-
 import { RefreshCw } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
-import { ExplorerLink } from '../cluster/cluster-ui'
-import {
-  useGetBalanceQuery,
-  useGetSignaturesQuery,
-  useGetTokenAccountsQuery,
-  useRequestAirdropMutation,
-  useTransferSolMutation,
-} from './account-data-access'
+import { ExplorerLink } from '@/components/cluster/cluster-ui'
 import { ellipsify } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { AppAlert } from '@/components/app-alert'
@@ -21,6 +12,13 @@ import { Label } from '@/components/ui/label'
 import { useWalletUi } from '@wallet-ui/react'
 import { address, Address, Lamports, lamportsToSol } from 'gill'
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
+import {
+  useGetBalanceQuery,
+  useGetSignaturesQuery,
+  useGetTokenAccountsQuery,
+  useRequestAirdropMutation,
+  useTransferSolMutation,
+} from './account-data-access'
 
 export function AccountBalance({ address }: { address: Address }) {
   const query = useGetBalanceQuery({ address })

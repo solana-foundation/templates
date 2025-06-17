@@ -1,16 +1,7 @@
-'use client'
-
 import { RefreshCw } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
-import { ExplorerLink } from '../cluster/cluster-ui'
-import {
-  useGetBalance,
-  useGetSignatures,
-  useGetTokenAccounts,
-  useRequestAirdrop,
-  useTransferSol,
-} from './account-data-access'
+import { ExplorerLink } from '@/components/cluster/cluster-ui'
 import { ellipsify } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { AppAlert } from '@/components/app-alert'
@@ -18,16 +9,23 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { AppModal } from '@/components/app-modal'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { UiWalletAccount, useWalletUi } from '@wallet-ui/react'
+import { useWalletUi } from '@wallet-ui/react'
 import { address, Address, Lamports, lamportsToSol } from 'gill'
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
+import {
+  useGetBalanceQuery,
+  useGetSignaturesQuery,
+  useGetTokenAccountsQuery,
+  useRequestAirdropMutation,
+  useTransferSolMutation,
+} from './account-data-access'
 
 export function AccountBalance({ address }: { address: Address }) {
-  const query = useGetBalance({ address })
+  const query = useGetBalanceQuery({ address })
 
   return (
     <h1 className="text-5xl font-bold cursor-pointer" onClick={() => query.refetch()}>
-      {query.data ? <BalanceSol balance={query.data} /> : '...'} SOL
+      {query.data?.value ? <BalanceSol balance={query.data?.value} /> : '...'} SOL
     </h1>
   )
 }
@@ -42,13 +40,13 @@ export function AccountChecker() {
 
 export function AccountBalanceCheck({ address }: { address: Address }) {
   const { cluster } = useWalletUi()
-  const mutation = useRequestAirdrop({ address })
-  const query = useGetBalance({ address })
+  const mutation = useRequestAirdropMutation({ address })
+  const query = useGetBalanceQuery({ address })
 
   if (query.isLoading) {
     return null
   }
-  if (query.isError || !query.data) {
+  if (query.isError || !query.data?.value) {
     return (
       <AppAlert
         action={
@@ -65,13 +63,14 @@ export function AccountBalanceCheck({ address }: { address: Address }) {
 }
 
 export function AccountButtons({ address }: { address: Address }) {
-  const { account, cluster } = useWalletUi()
+  const { cluster } = useWalletUi()
+
   return (
     <div>
       <div className="space-x-2">
         {cluster.id === 'solana:mainnet' ? null : <ModalAirdrop address={address} />}
         <ErrorBoundary errorComponent={() => null}>
-          {account ? <ModalSend address={address} account={account} /> : null}
+          <ModalSend address={address} />
         </ErrorBoundary>
         <ModalReceive address={address} />
       </div>
@@ -81,7 +80,7 @@ export function AccountButtons({ address }: { address: Address }) {
 
 export function AccountTokens({ address }: { address: Address }) {
   const [showAll, setShowAll] = useState(false)
-  const query = useGetTokenAccounts({ address })
+  const query = useGetTokenAccountsQuery({ address })
   const client = useQueryClient()
   const items = useMemo(() => {
     if (showAll) return query.data
@@ -171,7 +170,7 @@ export function AccountTokens({ address }: { address: Address }) {
 }
 
 export function AccountTransactions({ address }: { address: Address }) {
-  const query = useGetSignatures({ address })
+  const query = useGetSignaturesQuery({ address })
   const [showAll, setShowAll] = useState(false)
 
   const items = useMemo(() => {
@@ -220,7 +219,7 @@ export function AccountTransactions({ address }: { address: Address }) {
                     <TableCell>{new Date((Number(item.blockTime) ?? 0) * 1000).toISOString()}</TableCell>
                     <TableCell className="text-right">
                       {item.err ? (
-                        <span className="text-red-500" title={item.err.toString()}>
+                        <span className="text-red-500" title={JSON.stringify(item.err)}>
                           Failed
                         </span>
                       ) : (
@@ -261,7 +260,7 @@ function ModalReceive({ address }: { address: Address }) {
 }
 
 function ModalAirdrop({ address }: { address: Address }) {
-  const mutation = useRequestAirdrop({ address })
+  const mutation = useRequestAirdropMutation({ address })
   const [amount, setAmount] = useState('2')
 
   return (
@@ -286,12 +285,12 @@ function ModalAirdrop({ address }: { address: Address }) {
   )
 }
 
-function ModalSend(props: { address: Address; account: UiWalletAccount }) {
-  const mutation = useTransferSol({ address: props.address, account: props.account })
+function ModalSend(props: { address: Address }) {
+  const mutation = useTransferSolMutation({ address: props.address })
   const [destination, setDestination] = useState('')
   const [amount, setAmount] = useState('1')
 
-  if (!props.address || !props.account) {
+  if (!props.address) {
     return <div>Wallet not connected</div>
   }
 
@@ -300,8 +299,8 @@ function ModalSend(props: { address: Address; account: UiWalletAccount }) {
       title="Send"
       submitDisabled={!destination || !amount || mutation.isPending}
       submitLabel="Send"
-      submit={() => {
-        mutation.mutateAsync({
+      submit={async () => {
+        await mutation.mutateAsync({
           destination: address(destination),
           amount: parseFloat(amount),
         })

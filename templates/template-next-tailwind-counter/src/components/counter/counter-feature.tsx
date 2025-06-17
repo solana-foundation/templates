@@ -1,5 +1,3 @@
-'use client'
-
 import { WalletButton } from '../solana/solana-provider'
 import { CounterButtonInitialize, CounterList, CounterProgramExplorerLink, CounterProgramGuard } from './counter-ui'
 import { AppHero } from '../app-hero'

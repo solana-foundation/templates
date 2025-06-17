@@ -1,5 +1,3 @@
-'use client'
-
 import dynamic from 'next/dynamic'
 import { ReactNode } from 'react'
 import { createSolanaDevnet, createSolanaLocalnet, createWalletUiConfig, WalletUi } from '@wallet-ui/react'
