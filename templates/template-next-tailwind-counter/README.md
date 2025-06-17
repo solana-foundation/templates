@@ -1,39 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [
-`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# template-next-tailwind-counter
+
+This is a Next.js app containing:
+
+- Tailwind CSS setup for styling
+- Useful wallet UI elements setup using [Gill](https://gill.site/)
+- A basic Counter Solana program written in Anchor
+- UI components for interacting with the Counter program
 
 ## Getting Started
 
-First, run the development server:
+### Installation
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+#### Download the template
+
+```shell
+pnpm create solana-dapp@latest -t gh:solana-developers/solana-templates/templates/template-next-tailwind-counter
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### Install Dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```shell
+pnpm install
+```
 
-## Learn More
+## Apps
 
-To learn more about Next.js, take a look at the following resources:
+### anchor
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This is a Solana program written in Rust using the Anchor framework.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions
-are welcome!
+#### Commands
 
-## Deploy on Vercel
+You can use any normal anchor commands. Either move to the `anchor` directory and run the `anchor` command or prefix the command with `pnpm`, eg: `pnpm anchor`.
 
-The easiest way to deploy your Next.js app is to use
-the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
-from the creators of Next.js.
+#### Sync the program id:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for
-more details.
+Running this command will create a new keypair in the `anchor/target/deploy` directory and save the address to the Anchor config file and update the `declare_id!` macro in the `./src/lib.rs` file of the program.
+
+You will manually need to update the constant in `anchor/lib/counter-exports.ts` to match the new program id.
+
+```shell
+pnpm anchor keys sync
+```
+
+#### Build the program:
+
+```shell
+pnpm anchor-build
+```
+
+#### Start the test validator with the program deployed:
+
+```shell
+pnpm anchor-localnet
+```
+
+#### Run the tests
+
+```shell
+pnpm anchor-test
+```
+
+#### Deploy to Devnet
+
+```shell
+pnpm anchor deploy --provider.cluster devnet
+```
+
+### web
+
+This is a React app that uses the Anchor generated client to interact with the Solana program.
+
+#### Commands
+
+Start the web app
+
+```shell
+pnpm dev
+```
+
+Build the web app
+
+```shell
+pnpm build
+```
