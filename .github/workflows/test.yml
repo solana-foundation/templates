@@ -31,6 +31,8 @@ jobs:
             templates/template-node-express,
             templates/template-node-script,
             templates/template-react-vite-tailwind,
+            templates/template-react-vite-tailwind-basic,
+            templates/template-react-vite-tailwind-counter,
           ]
 
     steps:
