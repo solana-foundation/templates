@@ -22,7 +22,7 @@
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.29.0",
-    "@types/node": "^24.0.1",
+    "@types/node": "^24.0.3",
     "@types/prompts": "^2.4.9",
     "cross-env": "^7.0.3",
     "dotenv": "^16.5.0",
@@ -30,7 +30,7 @@
     "globals": "^16.2.0",
     "prettier": "^3.5.3",
     "typescript": "~5.8.3",
-    "typescript-eslint": "^8.34.0"
+    "typescript-eslint": "^8.34.1"
   },
   "dependencies": {
     "esrun": "^3.2.30",
