@@ -19,6 +19,7 @@ legacy/**/node_modules
 legacy/**/tmp
 templates/**/.env
 templates/**/.anchor
+templates/**/anchor/src/client/js/generated
 templates/**/anchor/target/debug
 templates/**/anchor/target/deploy
 templates/**/anchor/target/release
