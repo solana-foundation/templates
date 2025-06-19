@@ -35,9 +35,11 @@ You can use any normal anchor commands. Either move to the `anchor` directory an
 
 #### Sync the program id:
 
-Running this command will create a new keypair in the `anchor/target/deploy` directory and save the address to the Anchor config file and update the `declare_id!` macro in the `./src/lib.rs` file of the program.
+Running this command will create a new keypair in the `anchor/target/deploy` directory and save the address to the Anchor config file and update the `declare_id!` macro in the `./src/lib.rs` file of the program. This will also update the constant in the `anchor/src/counter-exports.ts` file.
 
-You will manually need to update the constant in `anchor/lib/counter-exports.ts` to match the new program id.
+```shell
+pnpm run setup
+```
 
 ```shell
 pnpm anchor keys sync
