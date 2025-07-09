@@ -38,6 +38,18 @@ Templates using gill (based on @solana/kit)
 
 `gill` `react` `solana-kit` `tailwind` `typescript` `vite` `wallet-ui`
 
+### [template-react-vite-tailwind](templates/template-react-vite-tailwind)
+
+> React+Vite, Tailwind, gill (based on @solana/kit), basic Anchor example, Wallet UI
+
+`anchor-basic` `gill` `react` `solana-kit` `tailwind` `typescript` `vite` `wallet-ui`
+
+### [template-react-vite-tailwind](templates/template-react-vite-tailwind)
+
+> React+Vite, Tailwind, gill (based on @solana/kit), Anchor Counter example, Wallet UI
+
+`anchor-counter` `gill` `react` `solana-kit` `tailwind` `typescript` `vite` `wallet-ui`
+
 # Legacy Templates
 
 Legacy templates using @solana/web3.js

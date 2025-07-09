@@ -39,6 +39,18 @@
         "keywords": ["gill", "react", "solana-kit", "tailwind", "typescript", "vite", "wallet-ui"],
         "name": "template-react-vite-tailwind",
         "path": "templates/template-react-vite-tailwind"
+      },
+      {
+        "description": "React+Vite, Tailwind, gill (based on @solana/kit), basic Anchor example, Wallet UI",
+        "keywords": ["anchor-basic", "gill", "react", "solana-kit", "tailwind", "typescript", "vite", "wallet-ui"],
+        "name": "template-react-vite-tailwind",
+        "path": "templates/template-react-vite-tailwind-basic"
+      },
+      {
+        "description": "React+Vite, Tailwind, gill (based on @solana/kit), Anchor Counter example, Wallet UI",
+        "keywords": ["anchor-counter", "gill", "react", "solana-kit", "tailwind", "typescript", "vite", "wallet-ui"],
+        "name": "template-react-vite-tailwind",
+        "path": "templates/template-react-vite-tailwind-counter"
       }
     ]
   },
