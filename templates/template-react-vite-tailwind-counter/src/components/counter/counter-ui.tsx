@@ -39,7 +39,9 @@ export function CounterList() {
 
   return (
     <div className="grid lg:grid-cols-2 gap-4">
-      {counterAccountsQuery.data?.map((counter) => <CounterCard key={counter.address} counter={counter} />)}
+      {counterAccountsQuery.data?.map((counter) => (
+        <CounterCard key={counter.address} counter={counter} />
+      ))}
     </div>
   )
 }
