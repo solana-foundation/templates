@@ -19,6 +19,101 @@ pnpm create solana-dapp@latest [-t <template-name>]
 yarn create-solana-dapp [-t <template-name>]
 ```
 
+## Contributing Templates
+
+We welcome high-quality template contributions! Templates help developers quickly start building on Solana with best practices and modern tooling.
+
+### Template Categories
+
+- **Frontend**: UI-only templates for interacting with existing programs
+- **Full Stack**: Complete dApps with UI + on-chain programs
+- **Programs**: Backend/CLI tools and program examples
+- **API**: Backend services, indexers, webhooks
+- **Mobile**: React Native or mobile-optimized templates
+
+### Creating a New Template
+
+1. **Choose the right directory:**
+   - Modern templates: `templates/` (using @solana/kit)
+   - Legacy templates: `legacy/` (using @solana/web3.js)
+
+2. **Follow naming convention:**
+
+   ```
+   template-[framework]-[description]
+   # Examples:
+   template-next-defi
+   template-react-nft-marketplace
+   template-node-api
+   ```
+
+3. **Required files:**
+
+   ```
+   your-template/
+   ├── package.json     # Complete metadata (see below)
+   ├── README.md        # Setup and usage instructions
+   ├── src/            # Source code
+   └── ...             # Other necessary files
+   ```
+
+4. **Package.json requirements:**
+
+   ```json
+   {
+     "name": "template-next-defi",
+     "description": "Next.js DeFi template with Solana integration",
+     "keywords": ["nextjs", "react", "solana-kit", "defi", "typescript"],
+     "scripts": {
+       "dev": "next dev",
+       "build": "next build",
+       "start": "next start"
+     }
+   }
+   ```
+
+5. **Optional: Enhanced metadata**
+   Add custom showcase metadata:
+   ```json
+   {
+     "solanaTemplate": {
+       "slug": "nextjs-defi-starter",
+       "thumbnail": "./preview.png",
+       "demoUrl": "https://your-demo.vercel.app",
+       "author": "Your Name",
+       "useCases": ["defi", "trading"],
+       "category": "full-stack",
+       "features": {
+         "transactions": ["swap", "stake", "unstake"],
+         "integrations": ["jupiter", "pyth"]
+       }
+     }
+   }
+   ```
+
+### Quality Standards
+
+- **Working code**: Must build and run without errors
+- **Clear documentation**: README with setup instructions
+- **Modern practices**: Use current Solana libraries and patterns
+- **No secrets**: No hardcoded keys or sensitive data
+- **Minimal dependencies**: Only include necessary packages
+- **Consistent style**: Follow existing code patterns
+
+### Submission Process
+
+1. Fork this repository
+2. Create your template in the appropriate directory
+3. Test thoroughly in a fresh environment
+4. Submit a pull request using our template
+5. Respond to review feedback
+
+After your template is merged, run `npm run update-template-readmes` to regenerate the metadata and make it available in the showcase.
+
+### Template Showcase
+
+All templates are automatically included in our metadata system for building template showcase websites. The enhanced metadata helps users discover and filter templates by framework, use case, and features.
+
 <!-- automd:file src="TEMPLATES.md" -->
 
 # Templates

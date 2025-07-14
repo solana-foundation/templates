@@ -7,15 +7,7 @@
       {
         "name": "template-next-tailwind",
         "description": "Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
-        "keywords": [
-          "gill",
-          "nextjs",
-          "react",
-          "solana-kit",
-          "tailwind",
-          "typescript",
-          "wallet-ui"
-        ],
+        "keywords": ["gill", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
         "path": "templates/template-next-tailwind",
         "slug": "next-tailwind",
         "author": "Solana Foundation",
@@ -24,9 +16,7 @@
         "stack": {
           "frontend": {
             "framework": "nextjs",
-            "ui": [
-              "tailwind"
-            ]
+            "ui": ["tailwind"]
           },
           "solana": {
             "library": "@solana/kit",
@@ -42,29 +32,16 @@
       {
         "name": "template-next-tailwind-basic",
         "description": "Next.js, Tailwind, basic Anchor example, gill (based on @solana/kit), Wallet UI",
-        "keywords": [
-          "anchor-basic",
-          "gill",
-          "nextjs",
-          "react",
-          "solana-kit",
-          "tailwind",
-          "typescript",
-          "wallet-ui"
-        ],
+        "keywords": ["anchor-basic", "gill", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
         "path": "templates/template-next-tailwind-basic",
         "slug": "next-tailwind-basic",
         "author": "Solana Foundation",
         "category": "full-stack",
-        "useCases": [
-          "defi"
-        ],
+        "useCases": ["defi"],
         "stack": {
           "frontend": {
             "framework": "nextjs",
-            "ui": [
-              "tailwind"
-            ]
+            "ui": ["tailwind"]
           },
           "solana": {
             "library": "@solana/kit",
@@ -76,10 +53,7 @@
             "type": "anchor",
             "example": "custom"
           },
-          "transactions": [
-            "initialize",
-            "update"
-          ],
+          "transactions": ["initialize", "update"],
           "integrations": []
         },
         "githubUrl": "https://github.com/solana-foundation/solana-templates/tree/main/templates/template-next-tailwind-basic"
@@ -87,29 +61,16 @@
       {
         "name": "template-next-tailwind-counter",
         "description": "Next.js, Tailwind, Anchor Counter example, gill (based on @solana/kit), Wallet UI",
-        "keywords": [
-          "anchor-counter",
-          "gill",
-          "nextjs",
-          "react",
-          "solana-kit",
-          "tailwind",
-          "typescript",
-          "wallet-ui"
-        ],
+        "keywords": ["anchor-counter", "gill", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
         "path": "templates/template-next-tailwind-counter",
         "slug": "next-tailwind-counter",
         "author": "Solana Foundation",
         "category": "full-stack",
-        "useCases": [
-          "defi"
-        ],
+        "useCases": ["defi"],
         "stack": {
           "frontend": {
             "framework": "nextjs",
-            "ui": [
-              "tailwind"
-            ]
+            "ui": ["tailwind"]
           },
           "solana": {
             "library": "@solana/kit",
@@ -121,11 +82,7 @@
             "type": "anchor",
             "example": "counter"
           },
-          "transactions": [
-            "initialize",
-            "increment",
-            "decrement"
-          ],
+          "transactions": ["initialize", "increment", "decrement"],
           "integrations": []
         },
         "githubUrl": "https://github.com/solana-foundation/solana-templates/tree/main/templates/template-next-tailwind-counter"
@@ -133,12 +90,7 @@
       {
         "name": "template-node-express",
         "description": "Node.js Express API with gill (based on @solana/kit)",
-        "keywords": [
-          "express",
-          "gill",
-          "node",
-          "solana-kit"
-        ],
+        "keywords": ["express", "gill", "node", "solana-kit"],
         "path": "templates/template-node-express",
         "slug": "node-express",
         "author": "Solana Foundation",
@@ -162,11 +114,7 @@
       {
         "name": "template-node-script",
         "description": "Node.js script with gill (based on @solana/kit)",
-        "keywords": [
-          "gill",
-          "node",
-          "solana-kit"
-        ],
+        "keywords": ["gill", "node", "solana-kit"],
         "path": "templates/template-node-script",
         "slug": "node-script",
         "author": "Solana Foundation",
@@ -189,15 +137,7 @@
       {
         "name": "template-react-vite-tailwind",
         "description": "React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI",
-        "keywords": [
-          "gill",
-          "react",
-          "solana-kit",
-          "tailwind",
-          "typescript",
-          "vite",
-          "wallet-ui"
-        ],
+        "keywords": ["gill", "react", "solana-kit", "tailwind", "typescript", "vite", "wallet-ui"],
         "path": "templates/template-react-vite-tailwind",
         "slug": "react-vite-tailwind",
         "author": "Solana Foundation",
@@ -206,9 +146,7 @@
         "stack": {
           "frontend": {
             "framework": "react-vite",
-            "ui": [
-              "tailwind"
-            ]
+            "ui": ["tailwind"]
           },
           "solana": {
             "library": "@solana/kit",
@@ -224,29 +162,16 @@
       {
         "name": "template-react-vite-tailwind",
         "description": "React+Vite, Tailwind, gill (based on @solana/kit), basic Anchor example, Wallet UI",
-        "keywords": [
-          "anchor-basic",
-          "gill",
-          "react",
-          "solana-kit",
-          "tailwind",
-          "typescript",
-          "vite",
-          "wallet-ui"
-        ],
+        "keywords": ["anchor-basic", "gill", "react", "solana-kit", "tailwind", "typescript", "vite", "wallet-ui"],
         "path": "templates/template-react-vite-tailwind-basic",
         "slug": "react-vite-tailwind",
         "author": "Solana Foundation",
         "category": "full-stack",
-        "useCases": [
-          "defi"
-        ],
+        "useCases": ["defi"],
         "stack": {
           "frontend": {
             "framework": "react-vite",
-            "ui": [
-              "tailwind"
-            ]
+            "ui": ["tailwind"]
           },
           "solana": {
             "library": "@solana/kit",
@@ -258,10 +183,7 @@
             "type": "anchor",
             "example": "custom"
           },
-          "transactions": [
-            "initialize",
-            "update"
-          ],
+          "transactions": ["initialize", "update"],
           "integrations": []
         },
         "githubUrl": "https://github.com/solana-foundation/solana-templates/tree/main/templates/template-react-vite-tailwind"
@@ -269,29 +191,16 @@
       {
         "name": "template-react-vite-tailwind",
         "description": "React+Vite, Tailwind, gill (based on @solana/kit), Anchor Counter example, Wallet UI",
-        "keywords": [
-          "anchor-counter",
-          "gill",
-          "react",
-          "solana-kit",
-          "tailwind",
-          "typescript",
-          "vite",
-          "wallet-ui"
-        ],
+        "keywords": ["anchor-counter", "gill", "react", "solana-kit", "tailwind", "typescript", "vite", "wallet-ui"],
         "path": "templates/template-react-vite-tailwind-counter",
         "slug": "react-vite-tailwind",
         "author": "Solana Foundation",
         "category": "full-stack",
-        "useCases": [
-          "defi"
-        ],
+        "useCases": ["defi"],
         "stack": {
           "frontend": {
             "framework": "react-vite",
-            "ui": [
-              "tailwind"
-            ]
+            "ui": ["tailwind"]
           },
           "solana": {
             "library": "@solana/kit",
@@ -303,11 +212,7 @@
             "type": "anchor",
             "example": "counter"
           },
-          "transactions": [
-            "initialize",
-            "increment",
-            "decrement"
-          ],
+          "transactions": ["initialize", "increment", "decrement"],
           "integrations": []
         },
         "githubUrl": "https://github.com/solana-foundation/solana-templates/tree/main/templates/template-react-vite-tailwind"
@@ -322,15 +227,7 @@
       {
         "name": "legacy-next-tailwind",
         "description": "Next.js, Tailwind, @solana/web3.js, Wallet Adapter",
-        "keywords": [
-          "legacy",
-          "nextjs",
-          "react",
-          "solana-web3js",
-          "tailwind",
-          "typescript",
-          "wallet-adapter"
-        ],
+        "keywords": ["legacy", "nextjs", "react", "solana-web3js", "tailwind", "typescript", "wallet-adapter"],
         "path": "legacy/legacy-next-tailwind",
         "slug": "legacy-next-tailwind",
         "author": "Solana Foundation",
@@ -339,9 +236,7 @@
         "stack": {
           "frontend": {
             "framework": "nextjs",
-            "ui": [
-              "tailwind"
-            ]
+            "ui": ["tailwind"]
           },
           "solana": {
             "library": "web3.js",
@@ -371,15 +266,11 @@
         "slug": "legacy-next-tailwind-basic",
         "author": "Solana Foundation",
         "category": "full-stack",
-        "useCases": [
-          "defi"
-        ],
+        "useCases": ["defi"],
         "stack": {
           "frontend": {
             "framework": "nextjs",
-            "ui": [
-              "tailwind"
-            ]
+            "ui": ["tailwind"]
           },
           "solana": {
             "library": "web3.js",
@@ -391,10 +282,7 @@
             "type": "anchor",
             "example": "custom"
           },
-          "transactions": [
-            "initialize",
-            "update"
-          ],
+          "transactions": ["initialize", "update"],
           "integrations": []
         },
         "githubUrl": "https://github.com/solana-foundation/solana-templates/tree/main/legacy/legacy-next-tailwind-basic"
@@ -416,15 +304,11 @@
         "slug": "legacy-next-tailwind-counter",
         "author": "Solana Foundation",
         "category": "full-stack",
-        "useCases": [
-          "defi"
-        ],
+        "useCases": ["defi"],
         "stack": {
           "frontend": {
             "framework": "nextjs",
-            "ui": [
-              "tailwind"
-            ]
+            "ui": ["tailwind"]
           },
           "solana": {
             "library": "web3.js",
@@ -436,11 +320,7 @@
             "type": "anchor",
             "example": "counter"
           },
-          "transactions": [
-            "initialize",
-            "increment",
-            "decrement"
-          ],
+          "transactions": ["initialize", "increment", "decrement"],
           "integrations": []
         },
         "githubUrl": "https://github.com/solana-foundation/solana-templates/tree/main/legacy/legacy-next-tailwind-counter"
@@ -448,15 +328,7 @@
       {
         "name": "legacy-react-vite-tailwind",
         "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter",
-        "keywords": [
-          "legacy",
-          "react",
-          "solana-web3js",
-          "tailwind",
-          "typescript",
-          "vite",
-          "wallet-adapter"
-        ],
+        "keywords": ["legacy", "react", "solana-web3js", "tailwind", "typescript", "vite", "wallet-adapter"],
         "path": "legacy/legacy-react-vite-tailwind",
         "slug": "legacy-react-vite-tailwind",
         "author": "Solana Foundation",
@@ -465,9 +337,7 @@
         "stack": {
           "frontend": {
             "framework": "react-vite",
-            "ui": [
-              "tailwind"
-            ]
+            "ui": ["tailwind"]
           },
           "solana": {
             "library": "web3.js",
@@ -497,15 +367,11 @@
         "slug": "legacy-react-vite-tailwind",
         "author": "Solana Foundation",
         "category": "full-stack",
-        "useCases": [
-          "defi"
-        ],
+        "useCases": ["defi"],
         "stack": {
           "frontend": {
             "framework": "react-vite",
-            "ui": [
-              "tailwind"
-            ]
+            "ui": ["tailwind"]
           },
           "solana": {
             "library": "web3.js",
@@ -517,10 +383,7 @@
             "type": "anchor",
             "example": "custom"
           },
-          "transactions": [
-            "initialize",
-            "update"
-          ],
+          "transactions": ["initialize", "update"],
           "integrations": []
         },
         "githubUrl": "https://github.com/solana-foundation/solana-templates/tree/main/legacy/legacy-react-vite-tailwind"
@@ -542,15 +405,11 @@
         "slug": "legacy-react-vite-tailwind",
         "author": "Solana Foundation",
         "category": "full-stack",
-        "useCases": [
-          "defi"
-        ],
+        "useCases": ["defi"],
         "stack": {
           "frontend": {
             "framework": "react-vite",
-            "ui": [
-              "tailwind"
-            ]
+            "ui": ["tailwind"]
           },
           "solana": {
             "library": "web3.js",
@@ -562,11 +421,7 @@
             "type": "anchor",
             "example": "counter"
           },
-          "transactions": [
-            "initialize",
-            "increment",
-            "decrement"
-          ],
+          "transactions": ["initialize", "increment", "decrement"],
           "integrations": []
         },
         "githubUrl": "https://github.com/solana-foundation/solana-templates/tree/main/legacy/legacy-react-vite-tailwind"
