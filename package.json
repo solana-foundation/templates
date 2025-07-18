@@ -1,35 +1,42 @@
 {
   "name": "solana-templates",
   "version": "1.0.0",
-  "description": "",
+  "description": "Solana Templates for create-solana-dapp",
   "main": "index.js",
   "scripts": {
-    "clean": "rm -rf node_modules && pnpm -r exec rm -rf {build,dist,node_modules,.anchor,.next}",
-    "fmt": "prettier --write .",
+    "clean": "repokit clean",
+    "generate": "repokit generate",
+    "format": "prettier --write .",
+    "lint": "repokit lint",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "update-deps": "pnpm -r update --latest",
-    "update-template-readmes": "npx esrun ./scripts/create-template-readme.ts",
-    "update-readme": "pnpm update-template-readmes && automd && prettier --write {README.md,**/README.md,templates.json}"
+    "update-deps": "pnpm -r update --latest"
   },
   "keywords": [],
   "author": "Solana Developers",
   "license": "MIT",
   "devDependencies": {
+    "@beeman/repokit": "0.0.0-canary-20250718084821",
     "@types/node": "^24.0.12",
     "automd": "^0.4.0",
-    "esrun": "^3.2.30",
     "prettier": "^3.6.2"
   },
-  "templateGroups": [
-    {
-      "description": "Templates using gill (based on @solana/kit)",
-      "directory": "templates",
-      "name": "Templates"
-    },
-    {
-      "description": "Legacy templates using @solana/web3.js",
-      "directory": "legacy",
-      "name": "Legacy Templates"
-    }
-  ]
+  "repokit": {
+    "groups": [
+      {
+        "description": "Templates using gill (based on @solana/kit)",
+        "name": "Templates",
+        "path": "templates"
+      },
+      {
+        "description": "Legacy templates using @solana/web3.js",
+        "name": "Legacy Templates",
+        "path": "legacy"
+      }
+    ]
+  },
+  "repository": {
+    "name": "solana-developers/solana-templates",
+    "type": "git",
+    "url": "https://github.com/solana-developers/solana-templates"
+  }
 }
