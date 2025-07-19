@@ -1,5 +1,5 @@
 {
-  "name": "template-react-vite-tailwind",
+  "name": "template-react-vite-tailwind-counter",
   "description": "React+Vite, Tailwind, gill (based on @solana/kit), Anchor Counter example, Wallet UI",
   "keywords": [
     "anchor-counter",

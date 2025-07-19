@@ -50,7 +50,7 @@ Templates using gill (based on @solana/kit)
 
 `gill` `react` `solana-kit` `tailwind` `typescript` `vite` `wallet-ui`
 
-### [template-react-vite-tailwind](templates/template-react-vite-tailwind)
+### [template-react-vite-tailwind-basic](templates/template-react-vite-tailwind-basic)
 
 `gh:solana-developers/solana-templates/templates/template-react-vite-tailwind-basic`
 
@@ -58,7 +58,7 @@ Templates using gill (based on @solana/kit)
 
 `anchor-basic` `gill` `react` `solana-kit` `tailwind` `typescript` `vite` `wallet-ui`
 
-### [template-react-vite-tailwind](templates/template-react-vite-tailwind)
+### [template-react-vite-tailwind-counter](templates/template-react-vite-tailwind-counter)
 
 `gh:solana-developers/solana-templates/templates/template-react-vite-tailwind-counter`
 
@@ -102,7 +102,7 @@ Legacy templates using @solana/web3.js
 
 `legacy` `react` `solana-web3js` `tailwind` `typescript` `vite` `wallet-adapter`
 
-### [legacy-react-vite-tailwind](legacy/legacy-react-vite-tailwind)
+### [legacy-react-vite-tailwind-basic](legacy/legacy-react-vite-tailwind-basic)
 
 `gh:solana-developers/solana-templates/legacy/legacy-react-vite-tailwind-basic`
 
@@ -110,7 +110,7 @@ Legacy templates using @solana/web3.js
 
 `anchor-basic` `legacy` `react` `solana-web3js` `tailwind` `typescript` `vite` `wallet-adapter`
 
-### [legacy-react-vite-tailwind](legacy/legacy-react-vite-tailwind)
+### [legacy-react-vite-tailwind-counter](legacy/legacy-react-vite-tailwind-counter)
 
 `gh:solana-developers/solana-templates/legacy/legacy-react-vite-tailwind-counter`
 

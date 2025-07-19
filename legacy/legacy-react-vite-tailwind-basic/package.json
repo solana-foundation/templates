@@ -1,5 +1,5 @@
 {
-  "name": "legacy-react-vite-tailwind",
+  "name": "legacy-react-vite-tailwind-basic",
   "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter, basic Anchor program",
   "keywords": [
     "anchor-basic",
