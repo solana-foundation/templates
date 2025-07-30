@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmit": false,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "lib": ["es2020", "dom"]
+  },
+  "include": ["anchor/scripts/**/*.ts", "anchor/migrations/**/*.ts"],
+  "exclude": ["node_modules", "anchor/target", "src/**/*", ".next/**/*"]
+}
