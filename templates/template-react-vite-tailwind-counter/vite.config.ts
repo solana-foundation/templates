@@ -16,4 +16,7 @@ export default defineConfig({
       root: resolve(__dirname),
     }),
   ],
+  test: {
+    globals: true,
+  },
 })

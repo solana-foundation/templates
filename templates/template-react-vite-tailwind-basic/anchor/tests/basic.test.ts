@@ -1,7 +1,54 @@
+import {
+  Blockhash,
+  createSolanaClient,
+  createTransaction,
+  IInstruction,
+  KeyPairSigner,
+  signTransactionMessageWithSigners,
+} from 'gill'
+import { getGreetInstruction } from '../src'
+import { loadKeypairSignerFromFile } from 'gill/node'
+
+const { rpc, sendAndConfirmTransaction } = createSolanaClient({ urlOrMoniker: process.env.ANCHOR_PROVIDER_URL! })
 describe('basic', () => {
-  // TODO: Implement tests for the basic program based on the Codama generated client.
-  // Use tests in `legacy/legacy-next-tailwind-basic/anchor/tests/basic.test.ts` as a reference.
+  let payer: KeyPairSigner
+
+  beforeAll(async () => {
+    payer = await loadKeypairSignerFromFile(process.env.ANCHOR_WALLET!)
+  })
+
   it('should run the program and print "GM!" to the transaction log', async () => {
-    expect(true).toBe(true)
+    // ARRANGE
+    expect.assertions(1)
+    const ix = getGreetInstruction()
+
+    // ACT
+    const sx = await sendAndConfirm({ ix, payer })
+
+    // ASSERT
+    expect(sx).toBeDefined()
+    console.log('Transaction signature:', sx)
   })
 })
+
+// Helper function to keep the tests DRY
+let latestBlockhash: Awaited<ReturnType<typeof getLatestBlockhash>> | undefined
+async function getLatestBlockhash(): Promise<Readonly<{ blockhash: Blockhash; lastValidBlockHeight: bigint }>> {
+  if (latestBlockhash) {
+    return latestBlockhash
+  }
+  return await rpc
+    .getLatestBlockhash()
+    .send()
+    .then(({ value }) => value)
+}
+async function sendAndConfirm({ ix, payer }: { ix: IInstruction; payer: KeyPairSigner }) {
+  const tx = createTransaction({
+    feePayer: payer,
+    instructions: [ix],
+    version: 'legacy',
+    latestBlockhash: await getLatestBlockhash(),
+  })
+  const signedTransaction = await signTransactionMessageWithSigners(tx)
+  return await sendAndConfirmTransaction(signedTransaction)
+}
