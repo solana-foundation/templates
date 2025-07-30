@@ -17,14 +17,14 @@ import {
   getU8Decoder,
   getU8Encoder,
   transformEncoder,
+  type AccountMeta,
   type Address,
-  type Codec,
-  type Decoder,
-  type Encoder,
-  type IAccountMeta,
-  type IInstruction,
-  type IInstructionWithAccounts,
-  type IInstructionWithData,
+  type FixedSizeCodec,
+  type FixedSizeDecoder,
+  type FixedSizeEncoder,
+  type Instruction,
+  type InstructionWithAccounts,
+  type InstructionWithData,
   type ReadonlyUint8Array,
   type WritableAccount,
 } from 'gill';
@@ -41,11 +41,11 @@ export function getSetDiscriminatorBytes() {
 
 export type SetInstruction<
   TProgram extends string = typeof COUNTER_PROGRAM_ADDRESS,
-  TAccountCounter extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
+  TAccountCounter extends string | AccountMeta<string> = string,
+  TRemainingAccounts extends readonly AccountMeta<string>[] = [],
+> = Instruction<TProgram> &
+  InstructionWithData<ReadonlyUint8Array> &
+  InstructionWithAccounts<
     [
       TAccountCounter extends string
         ? WritableAccount<TAccountCounter>
@@ -61,7 +61,7 @@ export type SetInstructionData = {
 
 export type SetInstructionDataArgs = { value: number };
 
-export function getSetInstructionDataEncoder(): Encoder<SetInstructionDataArgs> {
+export function getSetInstructionDataEncoder(): FixedSizeEncoder<SetInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
       ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
@@ -71,14 +71,14 @@ export function getSetInstructionDataEncoder(): Encoder<SetInstructionDataArgs> 
   );
 }
 
-export function getSetInstructionDataDecoder(): Decoder<SetInstructionData> {
+export function getSetInstructionDataDecoder(): FixedSizeDecoder<SetInstructionData> {
   return getStructDecoder([
     ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
     ['value', getU8Decoder()],
   ]);
 }
 
-export function getSetInstructionDataCodec(): Codec<
+export function getSetInstructionDataCodec(): FixedSizeCodec<
   SetInstructionDataArgs,
   SetInstructionData
 > {
@@ -127,7 +127,7 @@ export function getSetInstruction<
 
 export type ParsedSetInstruction<
   TProgram extends string = typeof COUNTER_PROGRAM_ADDRESS,
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
+  TAccountMetas extends readonly AccountMeta[] = readonly AccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -138,11 +138,11 @@ export type ParsedSetInstruction<
 
 export function parseSetInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[],
+  TAccountMetas extends readonly AccountMeta[],
 >(
-  instruction: IInstruction<TProgram> &
-    IInstructionWithAccounts<TAccountMetas> &
-    IInstructionWithData<Uint8Array>
+  instruction: Instruction<TProgram> &
+    InstructionWithAccounts<TAccountMetas> &
+    InstructionWithData<ReadonlyUint8Array>
 ): ParsedSetInstruction<TProgram, TAccountMetas> {
   if (instruction.accounts.length < 1) {
     // TODO: Coded error.

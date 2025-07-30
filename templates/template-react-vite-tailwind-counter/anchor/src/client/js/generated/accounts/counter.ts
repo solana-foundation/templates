@@ -24,12 +24,12 @@ import {
   transformEncoder,
   type Account,
   type Address,
-  type Codec,
-  type Decoder,
   type EncodedAccount,
-  type Encoder,
   type FetchAccountConfig,
   type FetchAccountsConfig,
+  type FixedSizeCodec,
+  type FixedSizeDecoder,
+  type FixedSizeEncoder,
   type MaybeAccount,
   type MaybeEncodedAccount,
   type ReadonlyUint8Array,
@@ -47,7 +47,7 @@ export type Counter = { discriminator: ReadonlyUint8Array; count: number };
 
 export type CounterArgs = { count: number };
 
-export function getCounterEncoder(): Encoder<CounterArgs> {
+export function getCounterEncoder(): FixedSizeEncoder<CounterArgs> {
   return transformEncoder(
     getStructEncoder([
       ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
@@ -57,14 +57,14 @@ export function getCounterEncoder(): Encoder<CounterArgs> {
   );
 }
 
-export function getCounterDecoder(): Decoder<Counter> {
+export function getCounterDecoder(): FixedSizeDecoder<Counter> {
   return getStructDecoder([
     ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
     ['count', getU8Decoder()],
   ]);
 }
 
-export function getCounterCodec(): Codec<CounterArgs, Counter> {
+export function getCounterCodec(): FixedSizeCodec<CounterArgs, Counter> {
   return combineCodec(getCounterEncoder(), getCounterDecoder());
 }
 

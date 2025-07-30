@@ -15,14 +15,14 @@ import {
   getStructDecoder,
   getStructEncoder,
   transformEncoder,
+  type AccountMeta,
   type Address,
-  type Codec,
-  type Decoder,
-  type Encoder,
-  type IAccountMeta,
-  type IInstruction,
-  type IInstructionWithAccounts,
-  type IInstructionWithData,
+  type FixedSizeCodec,
+  type FixedSizeDecoder,
+  type FixedSizeEncoder,
+  type Instruction,
+  type InstructionWithAccounts,
+  type InstructionWithData,
   type ReadonlyUint8Array,
   type WritableAccount,
 } from 'gill';
@@ -39,11 +39,11 @@ export function getIncrementDiscriminatorBytes() {
 
 export type IncrementInstruction<
   TProgram extends string = typeof COUNTER_PROGRAM_ADDRESS,
-  TAccountCounter extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
+  TAccountCounter extends string | AccountMeta<string> = string,
+  TRemainingAccounts extends readonly AccountMeta<string>[] = [],
+> = Instruction<TProgram> &
+  InstructionWithData<ReadonlyUint8Array> &
+  InstructionWithAccounts<
     [
       TAccountCounter extends string
         ? WritableAccount<TAccountCounter>
@@ -56,20 +56,20 @@ export type IncrementInstructionData = { discriminator: ReadonlyUint8Array };
 
 export type IncrementInstructionDataArgs = {};
 
-export function getIncrementInstructionDataEncoder(): Encoder<IncrementInstructionDataArgs> {
+export function getIncrementInstructionDataEncoder(): FixedSizeEncoder<IncrementInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([['discriminator', fixEncoderSize(getBytesEncoder(), 8)]]),
     (value) => ({ ...value, discriminator: INCREMENT_DISCRIMINATOR })
   );
 }
 
-export function getIncrementInstructionDataDecoder(): Decoder<IncrementInstructionData> {
+export function getIncrementInstructionDataDecoder(): FixedSizeDecoder<IncrementInstructionData> {
   return getStructDecoder([
     ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
   ]);
 }
 
-export function getIncrementInstructionDataCodec(): Codec<
+export function getIncrementInstructionDataCodec(): FixedSizeCodec<
   IncrementInstructionDataArgs,
   IncrementInstructionData
 > {
@@ -114,7 +114,7 @@ export function getIncrementInstruction<
 
 export type ParsedIncrementInstruction<
   TProgram extends string = typeof COUNTER_PROGRAM_ADDRESS,
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
+  TAccountMetas extends readonly AccountMeta[] = readonly AccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -125,11 +125,11 @@ export type ParsedIncrementInstruction<
 
 export function parseIncrementInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[],
+  TAccountMetas extends readonly AccountMeta[],
 >(
-  instruction: IInstruction<TProgram> &
-    IInstructionWithAccounts<TAccountMetas> &
-    IInstructionWithData<Uint8Array>
+  instruction: Instruction<TProgram> &
+    InstructionWithAccounts<TAccountMetas> &
+    InstructionWithData<ReadonlyUint8Array>
 ): ParsedIncrementInstruction<TProgram, TAccountMetas> {
   if (instruction.accounts.length < 1) {
     // TODO: Coded error.

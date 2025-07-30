@@ -15,14 +15,14 @@ import {
   getStructDecoder,
   getStructEncoder,
   transformEncoder,
+  type AccountMeta,
   type Address,
-  type Codec,
-  type Decoder,
-  type Encoder,
-  type IAccountMeta,
-  type IInstruction,
-  type IInstructionWithAccounts,
-  type IInstructionWithData,
+  type FixedSizeCodec,
+  type FixedSizeDecoder,
+  type FixedSizeEncoder,
+  type Instruction,
+  type InstructionWithAccounts,
+  type InstructionWithData,
   type ReadonlyUint8Array,
 } from 'gill';
 import { BASIC_PROGRAM_ADDRESS } from '../programs';
@@ -37,29 +37,29 @@ export function getGreetDiscriminatorBytes() {
 
 export type GreetInstruction<
   TProgram extends string = typeof BASIC_PROGRAM_ADDRESS,
-  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<TRemainingAccounts>;
+  TRemainingAccounts extends readonly AccountMeta<string>[] = [],
+> = Instruction<TProgram> &
+  InstructionWithData<ReadonlyUint8Array> &
+  InstructionWithAccounts<TRemainingAccounts>;
 
 export type GreetInstructionData = { discriminator: ReadonlyUint8Array };
 
 export type GreetInstructionDataArgs = {};
 
-export function getGreetInstructionDataEncoder(): Encoder<GreetInstructionDataArgs> {
+export function getGreetInstructionDataEncoder(): FixedSizeEncoder<GreetInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([['discriminator', fixEncoderSize(getBytesEncoder(), 8)]]),
     (value) => ({ ...value, discriminator: GREET_DISCRIMINATOR })
   );
 }
 
-export function getGreetInstructionDataDecoder(): Decoder<GreetInstructionData> {
+export function getGreetInstructionDataDecoder(): FixedSizeDecoder<GreetInstructionData> {
   return getStructDecoder([
     ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
   ]);
 }
 
-export function getGreetInstructionDataCodec(): Codec<
+export function getGreetInstructionDataCodec(): FixedSizeCodec<
   GreetInstructionDataArgs,
   GreetInstructionData
 > {
@@ -95,7 +95,7 @@ export type ParsedGreetInstruction<
 };
 
 export function parseGreetInstruction<TProgram extends string>(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+  instruction: Instruction<TProgram> & InstructionWithData<ReadonlyUint8Array>
 ): ParsedGreetInstruction<TProgram> {
   return {
     programAddress: instruction.programAddress,

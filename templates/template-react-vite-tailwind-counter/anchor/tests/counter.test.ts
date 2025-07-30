@@ -3,7 +3,7 @@ import {
   createSolanaClient,
   createTransaction,
   generateKeyPairSigner,
-  IInstruction,
+  Instruction,
   isSolanaError,
   KeyPairSigner,
   signTransactionMessageWithSigners,
@@ -132,7 +132,7 @@ async function getLatestBlockhash(): Promise<Readonly<{ blockhash: Blockhash; la
     .send()
     .then(({ value }) => value)
 }
-async function sendAndConfirm({ ix, payer }: { ix: IInstruction; payer: KeyPairSigner }) {
+async function sendAndConfirm({ ix, payer }: { ix: Instruction; payer: KeyPairSigner }) {
   const tx = createTransaction({
     feePayer: payer,
     instructions: [ix],
