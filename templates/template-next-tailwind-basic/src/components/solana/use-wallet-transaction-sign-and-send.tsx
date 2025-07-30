@@ -5,14 +5,14 @@ import { createTransaction, getBase58Decoder, signAndSendTransactionMessageWithS
 export function useWalletTransactionSignAndSend() {
   const { client } = useWalletUi()
 
-  return async (ix: Instruction, signer: TransactionSendingSigner) => {
+  return async (ix: Instruction | Instruction[], signer: TransactionSendingSigner) => {
     const { value: latestBlockhash } = await client.rpc.getLatestBlockhash().send()
 
     const transaction = createTransaction({
       feePayer: signer,
       version: 0,
       latestBlockhash,
-      instructions: [ix],
+      instructions: Array.isArray(ix) ? ix : [ix],
     })
 
     const signature = await signAndSendTransactionMessageWithSigners(transaction)
