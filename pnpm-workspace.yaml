@@ -1,4 +1,5 @@
 packages:
+  - community/*
   - legacy/*
   - mobile/*
   - templates/*
