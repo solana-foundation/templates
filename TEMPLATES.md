@@ -66,6 +66,26 @@ Templates using gill (based on @solana/kit)
 
 `anchor-counter` `gill` `react` `solana-kit` `tailwind` `typescript` `vite` `wallet-ui`
 
+# Solana Mobile
+
+Solana Mobile Templates
+
+### [web3js-expo](mobile/web3js-expo)
+
+`gh:solana-foundation/templates/mobile/web3js-expo`
+
+> A template for building a Solana mobile app with Expo and React Native.
+
+`expo` `mobile-wallet-adapter` `react-native` `solana-web3js`
+
+### [web3js-expo-paper](mobile/web3js-expo-paper)
+
+`gh:solana-foundation/templates/mobile/web3js-expo-paper`
+
+> A template for building a Solana mobile app with Expo and React Native Paper.
+
+`expo` `mobile-wallet-adapter` `react-native` `react-native-paper` `solana-web3js`
+
 # Legacy Templates
 
 Legacy templates using @solana/web3.js

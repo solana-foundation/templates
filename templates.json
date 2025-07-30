@@ -63,6 +63,27 @@
     ]
   },
   {
+    "description": "Solana Mobile Templates",
+    "name": "Solana Mobile",
+    "path": "mobile",
+    "templates": [
+      {
+        "description": "A template for building a Solana mobile app with Expo and React Native.",
+        "id": "gh:solana-foundation/templates/mobile/web3js-expo",
+        "keywords": ["expo", "mobile-wallet-adapter", "react-native", "solana-web3js"],
+        "name": "web3js-expo",
+        "path": "mobile/web3js-expo"
+      },
+      {
+        "description": "A template for building a Solana mobile app with Expo and React Native Paper.",
+        "id": "gh:solana-foundation/templates/mobile/web3js-expo-paper",
+        "keywords": ["expo", "mobile-wallet-adapter", "react-native", "react-native-paper", "solana-web3js"],
+        "name": "web3js-expo-paper",
+        "path": "mobile/web3js-expo-paper"
+      }
+    ]
+  },
+  {
     "description": "Legacy templates using @solana/web3.js",
     "name": "Legacy Templates",
     "path": "legacy",

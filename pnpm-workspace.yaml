@@ -1,5 +1,6 @@
 packages:
   - legacy/*
+  - mobile/*
   - templates/*
 onlyBuiltDependencies:
   - '@parcel/watcher'

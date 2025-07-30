@@ -1,0 +1,3 @@
+nodeLinker: hoisted
+onlyBuiltDependencies:
+  - bigint-buffer

@@ -25,6 +25,8 @@ jobs:
             legacy/legacy-react-vite-tailwind,
             legacy/legacy-react-vite-tailwind-basic,
             legacy/legacy-react-vite-tailwind-counter,
+            mobile/web3js-expo,
+            mobile/web3js-expo-paper,
             templates/template-next-tailwind,
             templates/template-next-tailwind-basic,
             templates/template-next-tailwind-counter,
