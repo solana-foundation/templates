@@ -1,0 +1,83 @@
+name: Test Templates
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  setup-templates:
+    runs-on: ubuntu-latest
+    outputs:
+      templates: ${{ steps.set-matrix.outputs.templates }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: set-matrix
+        shell: bash
+        run: |
+          echo templates=$(echo $(cat .github/workflows/templates.json) | sed 's/ //g' ) | tee --append $GITHUB_OUTPUT
+
+  test-npm:
+    name: Test (npm)
+    runs-on: ubuntu-latest
+    needs: [setup-templates]
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
+        template: ${{ fromJson(needs.setup-templates.outputs.templates) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Create and Build using create-solana-dapp
+        uses: ./.github/workflows/actions/create-solana-dapp
+        with:
+          cmd: 'npx -y create-solana-dapp@latest'
+          node-version: ${{ matrix.node }}
+          package-manager: 'npm'
+          template: ${{ matrix.template }}
+
+  test-pnpm:
+    name: Test (pnpm)
+    runs-on: ubuntu-latest
+    needs: [setup-templates]
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
+        template: ${{ fromJson(needs.setup-templates.outputs.templates) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Create and Build using create-solana-dapp
+        uses: ./.github/workflows/actions/create-solana-dapp
+        with:
+          cmd: 'pnpm create solana-dapp@latest'
+          node-version: ${{ matrix.node }}
+          package-manager: 'pnpm'
+          template: ${{ matrix.template }}
+
+  test-yarn:
+    name: Test (yarn)
+    runs-on: ubuntu-latest
+    needs: [setup-templates]
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
+        template: ${{ fromJson(needs.setup-templates.outputs.templates) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Create and Build using create-solana-dapp
+        uses: ./.github/workflows/actions/create-solana-dapp
+        with:
+          cmd: 'yarn create solana-dapp'
+          node-version: ${{ matrix.node }}
+          package-manager: 'yarn'
+          template: ${{ matrix.template }}
