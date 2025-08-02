@@ -16,12 +16,21 @@
       "adb": "33.0.0"
     }
   },
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": ["react-native-snackbar"],
+        "listUnknownPackages": false
+      }
+    }
+  },
   "scripts": {
     "android": "expo run:android",
     "android:build": "expo prebuild -p android",
     "build": "tsc --noEmit && npm run android:build",
     "ci": "tsc --noEmit && npm run lint:check && npm run fmt:check && npm run android:build",
     "dev": "expo start",
+    "doctor": "npx -y expo-doctor@latest",
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
     "ios": "expo run:ios",
@@ -35,7 +44,7 @@
   "version": "1.0.0",
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
-    "@react-native-async-storage/async-storage": "^2.1.2",
+    "@react-native-async-storage/async-storage": "2.1.2",
     "@react-native-clipboard/clipboard": "^1.16.2",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
@@ -73,7 +82,7 @@
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
     "react-native-snackbar": "^2.9.0",
-    "react-native-svg": "^15.11.2",
+    "react-native-svg": "15.11.2",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
     "react-qr-code": "^2.0.16"
