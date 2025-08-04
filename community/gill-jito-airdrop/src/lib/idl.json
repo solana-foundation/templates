@@ -1,0 +1,220 @@
+{
+  "address": "ErbDoJTnJyG6EBXHeFochTsHJhB3Jfjc3MF1L9aNip3y",
+  "metadata": {
+    "name": "solana_distributor",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "claim_airdrop",
+      "discriminator": [137, 50, 122, 111, 89, 254, 8, 20],
+      "accounts": [
+        {
+          "name": "airdrop_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [109, 101, 114, 107, 108, 101, 95, 116, 114, 101, 101]
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_claim",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [99, 108, 97, 105, 109]
+              },
+              {
+                "kind": "account",
+                "path": "airdrop_state"
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "proof",
+          "type": {
+            "vec": {
+              "array": ["u8", 32]
+            }
+          }
+        },
+        {
+          "name": "leaf_index",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize_airdrop",
+      "discriminator": [96, 196, 74, 102, 61, 195, 48, 184],
+      "accounts": [
+        {
+          "name": "airdrop_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [109, 101, 114, 107, 108, 101, 95, 116, 114, 101, 101]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "merkle_root",
+          "type": {
+            "array": ["u8", 32]
+          }
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "update_merkle_root",
+      "discriminator": [195, 173, 38, 60, 242, 203, 158, 93],
+      "accounts": [
+        {
+          "name": "airdrop_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [109, 101, 114, 107, 108, 101, 95, 116, 114, 101, 101]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "new_merkle_root",
+          "type": {
+            "array": ["u8", 32]
+          }
+        },
+        {
+          "name": "additional_amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AirdropState",
+      "discriminator": [1, 49, 110, 205, 185, 136, 198, 165]
+    },
+    {
+      "name": "ClaimStatus",
+      "discriminator": [22, 183, 249, 157, 247, 95, 150, 96]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidProof",
+      "msg": "Invalid Merkle proof"
+    },
+    {
+      "code": 6001,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    }
+  ],
+  "types": [
+    {
+      "name": "AirdropState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "merkle_root",
+            "docs": ["The Merkle root of the airdrop (32 bytes)"],
+            "type": {
+              "array": ["u8", 32]
+            }
+          },
+          {
+            "name": "authority",
+            "docs": ["The authority allowed to update the merkle root"],
+            "type": "pubkey"
+          },
+          {
+            "name": "airdrop_amount",
+            "docs": ["Total SOL allocated for this airdrop (in lamports)"],
+            "type": "u64"
+          },
+          {
+            "name": "amount_claimed",
+            "docs": ["Total SOL claimed so far (in lamports)"],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "docs": ["Bump seed for the PDA"],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ClaimStatus",
+      "type": {
+        "kind": "struct",
+        "fields": []
+      }
+    }
+  ]
+}
