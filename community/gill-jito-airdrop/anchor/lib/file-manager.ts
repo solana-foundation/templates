@@ -1,0 +1,328 @@
+import * as fs from "fs";
+import * as path from "path";
+import type { WalletInfo, RecipientsFile } from "./types";
+
+/**
+ * Manages file operations: config updates, recipients generation, environment files
+ */
+export class FileManager {
+  constructor(private workingDir: string = "anchor") {}
+
+  /**
+   * Update Anchor.toml configuration
+   */
+  updateAnchorConfig(deployWallet: WalletInfo, programId: string): void {
+    const anchorToml = `[toolchain]
+anchor_version = "0.31.1"
+package_manager = "pnpm"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.devnet]
+solana_distributor = "${programId}"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "devnet"
+wallet = "${deployWallet.keypairFile}"
+
+[scripts]
+test = "pnpm run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+`;
+
+    const anchorTomlPath = `${this.workingDir}/Anchor.toml`;
+    fs.writeFileSync(anchorTomlPath, anchorToml);
+    console.log(`✅ Updated ${anchorTomlPath} to use ${deployWallet.keypairFile}`);
+  }
+
+  /**
+   * Generate recipients.json from test wallets
+   */
+  generateRecipientsJson(testWallets: WalletInfo[], programId: string): void {
+    const recipients = testWallets.map((wallet, index) => ({
+      publicKey: wallet.publicKey,
+      amount: "75000000", // 0.075 SOL
+      index,
+      description: `${wallet.name} - ${wallet.funded ? 'Funded' : 'Unfunded'}`,
+    }));
+
+    const totalAmount = (recipients.length * 75000000).toString();
+    const recipientsPath = `${this.workingDir}/recipients.json`;
+    
+    // Check if recipients.json already exists with the same wallets
+    let shouldUpdate = true;
+    if (fs.existsSync(recipientsPath)) {
+      try {
+        const existingData = JSON.parse(fs.readFileSync(recipientsPath, "utf8"));
+        const existingPublicKeys = existingData.recipients?.map((r: { publicKey: string }) => r.publicKey) || [];
+        const newPublicKeys = recipients.map(r => r.publicKey);
+        
+        // If the wallets are the same, just update descriptions and keep existing merkle root
+        if (JSON.stringify(existingPublicKeys.sort()) === JSON.stringify(newPublicKeys.sort())) {
+          console.log("📋 Recipients unchanged, updating descriptions only");
+          existingData.recipients = recipients;
+          existingData.description = "Deployment setup airdrop for testing purposes";
+          fs.writeFileSync(recipientsPath, JSON.stringify(existingData, null, 2));
+          shouldUpdate = false;
+        }
+      } catch {
+        // If there's an error reading existing file, proceed with generating new one
+      }
+    }
+
+    if (shouldUpdate) {
+      const recipientsData: RecipientsFile = {
+        airdropId: "solana-distributor-airdrop-" + new Date().getFullYear(),
+        description: "Deployment setup airdrop for testing purposes",
+        merkleRoot: "0x0000000000000000000000000000000000000000000000000000000000000000", // Will be updated after tree generation
+        totalAmount,
+        network: "devnet",
+        programId,
+        recipients,
+        metadata: {
+          createdAt: new Date().toISOString(),
+          version: "1.0.0",
+          algorithm: "keccak256",
+          leafFormat: "recipient_pubkey(32) + amount(8) + is_claimed(1)",
+        },
+      };
+
+      fs.writeFileSync(recipientsPath, JSON.stringify(recipientsData, null, 2));
+      console.log(`📋 Generated ${recipientsPath}`);
+    }
+  }
+
+  /**
+   * Update recipients.json with computed merkle root
+   */
+  updateRecipientsWithMerkleRoot(merkleRoot: string): void {
+    try {
+      const recipientsPath = `${this.workingDir}/recipients.json`;
+      const recipientsData = JSON.parse(fs.readFileSync(recipientsPath, "utf8"));
+      
+      recipientsData.merkleRoot = merkleRoot;
+      recipientsData.metadata.algorithm = "keccak256";
+      recipientsData.metadata.leafFormat = "recipient_pubkey(32) + amount(8) + is_claimed(1)";
+      
+      fs.writeFileSync(recipientsPath, JSON.stringify(recipientsData, null, 2));
+      console.log(`✅ Updated ${recipientsPath} with merkle root`);
+    } catch (error) {
+      console.error("❌ Error updating recipients with merkle root:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update TypeScript recipients file for frontend
+   */
+  updateRecipientsTypeScript(): void {
+    try {
+      console.log("📝 Updating ../src/lib/recipients.ts...");
+      
+      // Read the generated recipients.json
+      const recipientsPath = `${this.workingDir}/recipients.json`;
+      if (!fs.existsSync(recipientsPath)) {
+        console.log(`⚠️  ${recipientsPath} not found, skipping TypeScript update`);
+        return;
+      }
+      
+      const recipientsData = JSON.parse(fs.readFileSync(recipientsPath, "utf8"));
+      
+      // Generate the TypeScript file content
+      const tsContent = `/**
+ * Recipients Data
+ * 
+ * ✅ GENERATED: This file was automatically generated by the deploy-setup script.
+ * 
+ * This file contains REAL data from your deployment:
+ * - Real program ID: ${recipientsData.programId}
+ * - Actual test wallet addresses (${recipientsData.recipients.length} recipients)
+ * - Computed merkle root: ${recipientsData.merkleRoot}
+ * - Generated at: ${recipientsData.metadata.createdAt}
+ * 
+ * Do not edit this file manually - it will be overwritten when you run deploy-setup again.
+ */
+
+interface RecipientFromJson {
+  publicKey: string
+  amount: string
+  index: number
+  description: string
+}
+
+interface RecipientsFile {
+  airdropId: string
+  description: string
+  merkleRoot: string
+  totalAmount: string
+  network: string
+  programId: string
+  recipients: RecipientFromJson[]
+  metadata: {
+    createdAt: string
+    version: string
+    algorithm: string
+    leafFormat: string
+  }
+}
+
+export const RECIPIENTS_DATA: RecipientsFile = ${JSON.stringify(recipientsData, null, 2)}
+
+export type { RecipientFromJson, RecipientsFile } `;
+      
+      // Write to the TypeScript file
+      const recipientsTsPath = "../src/lib/recipients.ts";
+      if (!fs.existsSync(path.dirname(recipientsTsPath))) {
+        fs.mkdirSync(path.dirname(recipientsTsPath), { recursive: true });
+      }
+      
+      fs.writeFileSync(recipientsTsPath, tsContent);
+      console.log("   ✅ Updated ../src/lib/recipients.ts with generated data");
+      
+    } catch (error) {
+      console.error("❌ Error updating recipients TypeScript file:", error);
+      console.log("⚠️  You may need to manually update ../src/lib/recipients.ts");
+    }
+  }
+
+  /**
+   * Update environment file with program ID
+   */
+  updateEnvironmentFile(programId: string): void {
+    try {
+      console.log("📝 Updating environment file with program ID...");
+      
+      // Check for .env.local first (takes precedence in Next.js)
+      let envFile = ".env.local";
+      if (!fs.existsSync(envFile)) {
+        // Check for .env
+        envFile = ".env";
+        if (!fs.existsSync(envFile)) {
+          // Create .env.local if neither exists
+          envFile = ".env.local";
+        }
+      }
+      
+      let envContent = "";
+      const envVar = `NEXT_PUBLIC_PROGRAM_ID=${programId}`;
+      
+      if (fs.existsSync(envFile)) {
+        envContent = fs.readFileSync(envFile, "utf8");
+        
+        // Check if NEXT_PUBLIC_PROGRAM_ID already exists
+        if (envContent.includes("NEXT_PUBLIC_PROGRAM_ID=")) {
+          // Update existing
+          envContent = envContent.replace(
+            /NEXT_PUBLIC_PROGRAM_ID=.*/,
+            envVar
+          );
+          console.log(`   ✅ Updated existing ${path.basename(envFile)}`);
+        } else {
+          // Add new line
+          envContent = envContent.trim() + `\n${envVar}\n`;
+          console.log(`   ✅ Added NEXT_PUBLIC_PROGRAM_ID to ${path.basename(envFile)}`);
+        }
+      } else {
+        // Create new file
+        envContent = `# Solana Airdrop Configuration\n# Generated by deploy-setup script\n${envVar}\n`;
+        console.log(`   ✅ Created new ${path.basename(envFile)} with program ID`);
+      }
+      
+      fs.writeFileSync(envFile, envContent);
+      console.log(`   📍 Program ID: ${programId}`);
+      
+    } catch (error) {
+      console.error("❌ Error updating environment file:", error);
+      console.log("⚠️  You may need to manually add NEXT_PUBLIC_PROGRAM_ID to your .env.local file");
+    }
+  }
+
+  /**
+   * Update program references across all files
+   */
+  updateProgramReferences(newProgramId: string): void {
+    try {
+      console.log("📝 Updating program references...");
+      
+      // Update lib.rs
+      const libPath = `${this.workingDir}/programs/solana-distributor/src/lib.rs`;
+      let libContent = fs.readFileSync(libPath, "utf8");
+      libContent = libContent.replace(/declare_id!\(".*"\);/, `declare_id!("${newProgramId}");`);
+      fs.writeFileSync(libPath, libContent);
+      console.log("   ✅ Updated lib.rs");
+      
+      // Update Anchor.toml
+      const anchorTomlPath = `${this.workingDir}/Anchor.toml`;
+      let anchorContent = fs.readFileSync(anchorTomlPath, "utf8");
+      anchorContent = anchorContent.replace(/solana_distributor = ".*"/, `solana_distributor = "${newProgramId}"`);
+      fs.writeFileSync(anchorTomlPath, anchorContent);
+      console.log("   ✅ Updated Anchor.toml");
+      
+      // Update recipients.json if it exists
+      const recipientsPath = `${this.workingDir}/recipients.json`;
+      if (fs.existsSync(recipientsPath)) {
+        const recipientsData = JSON.parse(fs.readFileSync(recipientsPath, "utf8"));
+        recipientsData.programId = newProgramId;
+        fs.writeFileSync(recipientsPath, JSON.stringify(recipientsData, null, 2));
+        console.log("   ✅ Updated recipients.json");
+        
+        // Also update the frontend TypeScript file
+        console.log("   📝 Updating frontend recipients.ts...");
+        this.updateRecipientsTypeScript();
+      }
+      
+      console.log("✅ All program references updated!");
+    } catch (error) {
+      console.error("❌ Error updating program references:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Read recipients file
+   */
+  loadRecipientsFile(filePath?: string): RecipientsFile {
+    const recipientsPath = filePath || `${this.workingDir}/recipients.json`;
+    
+    if (!fs.existsSync(recipientsPath)) {
+      throw new Error(`Recipients file not found: ${recipientsPath}`);
+    }
+    
+    try {
+      const data = fs.readFileSync(recipientsPath, "utf8");
+      return JSON.parse(data);
+    } catch (error) {
+      throw new Error(`Failed to parse recipients file: ${error}`);
+    }
+  }
+
+  /**
+   * Get current program ID from configuration files
+   */
+  getCurrentProgramId(): string {
+    try {
+      // Try to read from Anchor.toml first
+      const anchorContent = fs.readFileSync(`${this.workingDir}/Anchor.toml`, "utf8");
+      const match = anchorContent.match(/solana_distributor = "([^"]+)"/);
+      if (match) {
+        return match[1];
+      }
+      
+      // Fallback to reading from lib.rs
+      const libContent = fs.readFileSync(`${this.workingDir}/programs/solana-distributor/src/lib.rs`, "utf8");
+      const libMatch = libContent.match(/declare_id!\("([^"]+)"\);/);
+      if (libMatch) {
+        return libMatch[1];
+      }
+      
+      throw new Error("Could not find program ID in configuration files");
+    } catch (error) {
+      console.error("❌ Error getting current program ID:", error);
+      return "2SJSD8SwrGJRqkDUfcbmkuibEMygjiVm68fLyonUvXma"; // fallback
+    }
+  }
+}
