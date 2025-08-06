@@ -1,6 +1,11 @@
 #!/usr/bin/env ts-node
 
-import { WalletManager } from "../lib/wallet-manager";
+import { 
+  createGillWalletClient,
+} from "../lib/wallet-manager";
+import { address } from '@solana/kit';
+import * as fs from 'fs';
+import type { TestWalletsData } from '../lib/types';
 
 /**
  * Extract a specific wallet file from test-wallets.json
@@ -8,8 +13,48 @@ import { WalletManager } from "../lib/wallet-manager";
  * @param outputPath Optional output path, defaults to the wallet's keypairFile
  */
 export function extractWallet(walletName: string, outputPath?: string): boolean {
-  const walletManager = new WalletManager();
-  return walletManager.extractWallet(walletName, outputPath, "test-wallets.json");
+  try {
+    const { deployWallet, testWallets } = loadWallets();
+    const allWallets = deployWallet ? [deployWallet, ...testWallets] : testWallets;
+    
+    const wallet = allWallets.find(w => w.name === walletName);
+    if (!wallet) {
+      console.error(`❌ Wallet '${walletName}' not found`);
+      return false;
+    }
+    
+    const output = outputPath || wallet.keypairFile;
+    const keypairArray = wallet.secretKey.array;
+    fs.writeFileSync(output, JSON.stringify(keypairArray, null, 2));
+    
+    console.log(`✅ Extracted ${walletName} to ${output}`);
+    return true;
+  } catch (error) {
+    console.error(`❌ Error extracting wallet '${walletName}':`, error);
+    return false;
+  }
+}
+
+/**
+ * Load wallets from test-wallets.json
+ */
+function loadWallets(): { deployWallet: any | null, testWallets: any[] } {
+  try {
+    if (!fs.existsSync("test-wallets.json")) {
+      return { deployWallet: null, testWallets: [] };
+    }
+    
+    const data = fs.readFileSync("test-wallets.json", 'utf8');
+    const walletsData: TestWalletsData = JSON.parse(data);
+    
+    const deployWallet = walletsData.wallets.find(w => w.isDeployWallet || w.name === "deploy-wallet");
+    const testWallets = walletsData.wallets.filter(w => !w.isDeployWallet && w.name !== "deploy-wallet");
+    
+    return { deployWallet: deployWallet || null, testWallets };
+  } catch (error) {
+    console.error("❌ Error loading wallets:", error);
+    return { deployWallet: null, testWallets: [] };
+  }
 }
 
 /**
@@ -17,9 +62,7 @@ export function extractWallet(walletName: string, outputPath?: string): boolean 
  */
 export function extractAllWallets(): boolean {
   try {
-    const walletManager = new WalletManager();
-    const { deployWallet, testWallets } = walletManager.loadExistingWallets("test-wallets.json");
-    
+    const { deployWallet, testWallets } = loadWallets();
     const allWallets = deployWallet ? [deployWallet, ...testWallets] : testWallets;
     
     if (allWallets.length === 0) {
@@ -31,10 +74,12 @@ export function extractAllWallets(): boolean {
     
     let success = true;
     for (const wallet of allWallets) {
-      if (walletManager.extractWallet(wallet.name, undefined, "test-wallets.json")) {
+      try {
+        const keypairArray = wallet.secretKey.array;
+        fs.writeFileSync(wallet.keypairFile, JSON.stringify(keypairArray, null, 2));
         console.log(`✅ ${wallet.name} → ${wallet.keypairFile}`);
-      } else {
-        console.error(`❌ Failed to extract ${wallet.name}`);
+      } catch (error) {
+        console.error(`❌ Failed to extract ${wallet.name}:`, error);
         success = false;
       }
     }
@@ -51,9 +96,7 @@ export function extractAllWallets(): boolean {
  */
 export function listWallets(): void {
   try {
-    const walletManager = new WalletManager();
-    const { deployWallet, testWallets } = walletManager.loadExistingWallets("test-wallets.json");
-    
+    const { deployWallet, testWallets } = loadWallets();
     const allWallets = deployWallet ? [deployWallet, ...testWallets] : testWallets;
     
     if (allWallets.length === 0) {
@@ -113,7 +156,54 @@ async function main() {
   }
 }
 
+/**
+ * List all available wallets using Gill (modern approach)
+ */
+export async function listGillWallets(): Promise<void> {
+  try {
+    const { deployWallet, testWallets } = loadWallets();
+    
+    const allWallets = deployWallet ? [deployWallet, ...testWallets] : testWallets;
+    
+    if (allWallets.length === 0) {
+      console.error("❌ No wallets found in test-wallets.json");
+      return;
+    }
+    
+    console.log(`📋 Available wallets (${allWallets.length}) - Gill version:`);
+    
+    // Create Gill RPC client for balance checking
+    const client = createGillWalletClient({ network: 'devnet' });
+    
+    for (let i = 0; i < allWallets.length; i++) {
+      const wallet = allWallets[i];
+      const status = wallet.isDeployWallet || wallet.name === "deploy-wallet" ? "🔑 Deploy" : "🧪 Test";
+      console.log(`  ${i + 1}. ${status} - ${wallet.name}`);
+      console.log(`     Public Key: ${wallet.publicKey}`);
+      console.log(`     Keypair File: ${wallet.keypairFile}`);
+      
+      try {
+        // Check balance using Gill
+        const balance = await client.rpc.getBalance(address(wallet.publicKey)).send();
+        const balanceSol = Number(balance.value) / 1e9;
+        console.log(`     Balance: ${balanceSol.toFixed(4)} SOL (via Gill)`);
+      } catch {
+        console.log(`     Balance: Unable to fetch (via Gill)`);
+      }
+      
+      console.log("");
+    }
+  } catch (error) {
+    console.error("❌ Error listing wallets with Gill:", error);
+  }
+}
+
 // Run if this file is executed directly
 if (require.main === module) {
-  main();
+  if (process.argv.includes('--list')) {
+    // Use Gill version for listing
+    listGillWallets();
+  } else {
+    main();
+  }
 } 

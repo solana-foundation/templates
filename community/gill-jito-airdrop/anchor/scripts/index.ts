@@ -1,7 +1,7 @@
 #!/usr/bin/env ts-node
 
-import { SolanaDeploymentSetup } from "./deploy-setup";
-import { initializeAirdrop } from "../lib/airdrop-initializer";
+import { runGillDeploymentSetup } from "./deploy-setup";
+import { initializeGillAirdropDefault } from "../lib/airdrop-initializer";
 
 /**
  * Command-line interface for airdrop scripts
@@ -12,23 +12,19 @@ async function main() {
 
   switch (command) {
     case "setup":
-      console.log("🚀 Running deployment setup...\n");
-      const setup = new SolanaDeploymentSetup();
-      await setup.run();
-      break;
-
-    case "fix-program-id":
-    case "fix":
-      console.log("🔧 Fixing program ID issues...\n");
-      const fixSetup = new SolanaDeploymentSetup();
-      await fixSetup.fixProgramIdMismatch();
+      console.log("🚀 Running deployment setup with Gill...\n");
+      await runGillDeploymentSetup({
+        network: 'devnet',
+        workingDir: '.',
+        verbose: false
+      });
       break;
 
     case "initialize":
     case "init":
-      console.log("🎯 Initializing airdrop...\n");
+      console.log("🎯 Initializing airdrop with Gill...\n");
       const recipientsFile = args[1] || "recipients.json";
-      const result = await initializeAirdrop(recipientsFile);
+      const result = await initializeGillAirdropDefault(recipientsFile);
       
       if (!result.success) {
         console.error(`💥 Initialization failed: ${result.error}`);
@@ -46,24 +42,22 @@ async function main() {
       
       console.log("\n📋 Next steps:");
       console.log("1. Test claiming with the frontend at http://localhost:3000");
-      console.log("2. Or use the claim script: npx ts-node scripts/claim-airdrop.ts");
+      console.log("2. Or use the claim script with Gill");
       break;
 
     case "help":
     case "--help":
     case "-h":
     default:
-      console.log("🎯 Airdrop Scripts CLI\n");
+      console.log("🎯 Airdrop Scripts CLI (Gill + Codama)\n");
       console.log("Available commands:");
-      console.log("  setup                   - Interactive deployment setup");
-      console.log("  initialize [file]       - Initialize airdrop (default: recipients.json)");
-      console.log("  fix-program-id          - Fix program ID consistency issues");
+      console.log("  setup                   - Interactive deployment setup with Gill");
+      console.log("  initialize [file]       - Initialize airdrop with Gill (default: recipients.json)");
       console.log("  help                    - Show this help message");
       console.log("\nExamples:");
       console.log("  npx ts-node scripts/index.ts setup");
       console.log("  npx ts-node scripts/index.ts initialize");
       console.log("  npx ts-node scripts/index.ts initialize custom-recipients.json");
-      console.log("  npx ts-node scripts/index.ts fix-program-id");
       
       if (command && command !== "help" && command !== "--help" && command !== "-h") {
         console.log(`\n❌ Unknown command: ${command}`);

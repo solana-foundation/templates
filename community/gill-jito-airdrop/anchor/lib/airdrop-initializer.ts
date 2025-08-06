@@ -1,376 +1,336 @@
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
-import { PublicKey, Connection, Keypair } from "@solana/web3.js";
-import * as fs from "fs";
-import { BuildCoordinator } from "./build-coordinator";
-import { FileManager } from "./file-manager";
-import type { InitializationResult, RecipientsFile } from "./types";
-// Note: SolanaDistributor type will be loaded dynamically if needed
+// Codama-generated client imports
+import { getInitializeAirdropInstruction } from '../generated/clients/ts/instructions/initializeAirdrop'
+import * as fs from 'fs'
+import type { RecipientsFile, GillInitializationResult } from './types'
+import {
+  createSolanaClient,
+  createKeyPairSignerFromBytes,
+  address,
+  getProgramDerivedAddress,
+  createTransaction,
+} from 'gill'
+import {
+  buildGillProgramIfNeeded,
+  deployGillProgram,
+  getGillProgramStatus,
+  ensureGillProgramIdConsistency,
+  type GillBuildConfig,
+} from './build-coordinator'
+import { loadGillRecipientsFile, ensureGillCodamaSync, type GillFileConfig } from './file-manager'
 
-/**
- * Handles airdrop initialization with minimal redundant operations
- */
-export class AirdropInitializer {
-  private buildCoordinator: BuildCoordinator;
-  private fileManager: FileManager;
+export interface GillInitializerConfig {
+  rpcUrl?: string
+  network?: 'devnet' | 'mainnet' | 'testnet'
+  walletPath?: string
+  workingDir?: string
+  verbose?: boolean
+}
 
-  constructor(
-    private providerUrl: string = "https://api.devnet.solana.com",
-    private walletPath: string = "./deploy-wallet.json",
-    workingDir: string = "anchor"
-  ) {
-    this.buildCoordinator = new BuildCoordinator(workingDir);
-    this.fileManager = new FileManager(workingDir);
+export async function checkGillPreRequisites(
+  config: GillInitializerConfig = {},
+): Promise<{ needsBuild: boolean; issues: string[] }> {
+  const { workingDir = '.' } = config
+  const issues: string[] = []
+  let needsBuild = false
+
+  const buildConfig: GillBuildConfig = { workingDir }
+
+  const status = getGillProgramStatus(buildConfig)
+  if (!status.built) {
+    issues.push('Program not built')
+    needsBuild = true
   }
 
-  /**
-   * Check if there are any issues that need fixing before initialization
-   */
-  private async checkPreRequisites(): Promise<{ needsBuild: boolean; issues: string[] }> {
-    const issues: string[] = [];
-    let needsBuild = false;
-
-    // Check if program is built
-    const status = this.buildCoordinator.getProgramStatus();
-    if (!status.built) {
-      issues.push("Program not built");
-      needsBuild = true;
-    }
-
-    // Check if types exist
-    const typesPath = "target/types/solana_distributor.ts";
-    if (!fs.existsSync(typesPath)) {
-      issues.push("TypeScript types missing");
-      needsBuild = true;
-    }
-
-    // Check if IDL exists
-    const idlPath = "target/idl/solana_distributor.json";
-    if (!fs.existsSync(idlPath)) {
-      issues.push("IDL file missing");
-      needsBuild = true;
-    }
-
-    // Check program ID consistency
-    if (!status.consistent) {
-      issues.push("Program ID inconsistency detected");
-      needsBuild = true;
-    }
-
-    return { needsBuild, issues };
+  const idlPath = `${workingDir}/target/idl/solana_distributor.json`
+  if (!fs.existsSync(idlPath)) {
+    issues.push('IDL file missing')
+    needsBuild = true
   }
 
-  /**
-   * Fix common issues with minimal rebuilds
-   */
-  private async fixIssues(): Promise<boolean> {
+  if (!status.consistent) {
+    issues.push('Program ID inconsistency detected')
+    needsBuild = true
+  }
+
+  return { needsBuild, issues }
+}
+
+export async function fixGillInitializationIssues(config: GillInitializerConfig = {}): Promise<boolean> {
+  const { workingDir = '.', verbose = false } = config
+
+  try {
+    console.log('🔧 Checking and fixing common issues... (Gill)')
+
+    const { needsBuild, issues } = await checkGillPreRequisites(config)
+
+    if (issues.length === 0) {
+      console.log('✅ No issues detected (Gill)')
+      return true
+    }
+
+    console.log(`⚠️  Found issues: ${issues.join(', ')} (Gill)`)
+
+    if (needsBuild) {
+      const buildConfig: GillBuildConfig = { workingDir, verbose }
+
+      const consistencyFixed = await ensureGillProgramIdConsistency(undefined, buildConfig)
+      if (!consistencyFixed) {
+        console.error('❌ Failed to fix program ID consistency (Gill)')
+        return false
+      }
+
+      const buildResult = await buildGillProgramIfNeeded(true, buildConfig)
+      if (!buildResult.success) {
+        console.error('❌ Build failed during issue fixing (Gill)')
+        return false
+      }
+    }
+
+    console.log('✅ Issues fixed successfully! (Gill)')
+    return true
+  } catch (error) {
+    console.error('❌ Error fixing issues:', error)
+    return false
+  }
+}
+
+export async function initializeGillAirdrop(
+  recipientsFile: string = 'recipients.json',
+  config: GillInitializerConfig = {},
+): Promise<GillInitializationResult> {
+  const { network = 'devnet', walletPath = './deploy-wallet.json', workingDir = '.', verbose = false } = config
+
+  try {
+    console.log('🚀 Initializing airdrop with Gill...\n')
+
+    const issuesFixed = await fixGillInitializationIssues(config)
+    if (!issuesFixed) {
+      return {
+        success: false,
+        error: 'Failed to fix pre-requisite issues',
+      }
+    }
+
+    const fileConfig: GillFileConfig = { workingDir }
+    let recipientsData: RecipientsFile
+
     try {
-      console.log("🔧 Checking and fixing common issues...");
-      
-      const { needsBuild, issues } = await this.checkPreRequisites();
-      
-      if (issues.length === 0) {
-        console.log("✅ No issues detected");
-        return true;
-      }
-
-      console.log(`⚠️  Found issues: ${issues.join(", ")}`);
-
-      if (needsBuild) {
-        // Ensure program ID consistency first
-        const consistencyFixed = await this.buildCoordinator.ensureProgramIdConsistency();
-        if (!consistencyFixed) {
-          console.error("❌ Failed to fix program ID consistency");
-          return false;
-        }
-
-        // Single build to fix all issues
-        const buildResult = await this.buildCoordinator.buildIfNeeded(true);
-        if (!buildResult.success) {
-          console.error("❌ Build failed during issue fixing");
-          return false;
-        }
-
-        // Generate TypeScript types if still missing
-        const typesPath = "target/types/solana_distributor.ts";
-        if (!fs.existsSync(typesPath)) {
-          console.log("📝 Generating TypeScript types...");
-          try {
-            const { execSync } = await import("child_process");
-            execSync("anchor idl type target/idl/solana_distributor.json -o target/types/solana_distributor.ts", { 
-              stdio: "inherit",
-              cwd: this.buildCoordinator['workingDir']
-            });
-            console.log("✅ TypeScript types generated");
-          } catch (error) {
-            console.error("⚠️  Failed to generate TypeScript types:", error);
-            // Continue anyway, this is not critical for initialization
-          }
-        }
-      }
-
-      console.log("✅ Issues fixed successfully!");
-      return true;
+      recipientsData = loadGillRecipientsFile(recipientsFile, fileConfig)
     } catch (error) {
-      console.error("❌ Error fixing issues:", error);
-      return false;
+      return {
+        success: false,
+        error: `Failed to load recipients file: ${error}`,
+      }
     }
-  }
 
-  /**
-   * Initialize the airdrop with proper error handling and minimal rebuilds
-   */
-  async initializeAirdrop(recipientsFile?: string): Promise<InitializationResult> {
+    console.log(`📋 Loaded ${recipientsData.recipients.length} recipients (Gill)`)
+    console.log(`💰 Total amount: ${parseInt(recipientsData.totalAmount) / 1e9} SOL (Gill)`)
+    console.log(`🌳 Merkle root: ${recipientsData.merkleRoot} (Gill)`)
+
+    console.log('📡 Setting up Gill client...')
+    const client = createSolanaClient({
+      urlOrMoniker: network === 'devnet' ? 'devnet' : `https://api.${network}.solana.com`,
+    })
+    const { rpc, sendAndConfirmTransaction } = client
+
+    const walletData = fs.readFileSync(walletPath, 'utf8')
+    const walletArray = JSON.parse(walletData)
+    const walletBytes = new Uint8Array(walletArray)
+    const authoritySigner = await createKeyPairSignerFromBytes(walletBytes)
+
+    console.log(`👤 Authority: ${authoritySigner.address} (Gill)`)
+
+    const buildConfig: GillBuildConfig = { workingDir }
+    const status = getGillProgramStatus(buildConfig)
+
+    if (!status.programId) {
+      return {
+        success: false,
+        error: 'Program ID not found. Please build and deploy the program first using: npm run airdrop:setup',
+      }
+    }
+
+    const programAddress = address(status.programId)
+    console.log(`📍 Program ID: ${programAddress} (Gill)`)
+
+    // Ensure Codama client is in sync with current program ID
+    console.log('🔄 Checking Codama client sync... (Gill)')
+    const codamaSynced = await ensureGillCodamaSync({ workingDir })
+    if (!codamaSynced) {
+      console.log('⚠️  Warning: Could not sync Codama client. Proceeding anyway... (Gill)')
+    }
+
+    console.log('🔍 Verifying program exists on-chain... (Gill)')
     try {
-      console.log("🚀 Initializing airdrop...\n");
-
-      // Step 1: Check and fix any issues
-      const issuesFixed = await this.fixIssues();
-      if (!issuesFixed) {
+      const programInfo = await rpc.getAccountInfo(programAddress).send()
+      if (!programInfo.value) {
         return {
           success: false,
-          error: "Failed to fix pre-requisite issues"
-        };
-      }
-
-
-
-      // Step 2: Load recipients data
-      const recipientsPath = recipientsFile || "recipients.json";
-      let recipientsData: RecipientsFile;
-      
-      try {
-        recipientsData = this.fileManager.loadRecipientsFile(recipientsPath);
-      } catch (error) {
-        return {
-          success: false,
-          error: `Failed to load recipients file: ${error}`
-        };
-      }
-
-      console.log(`📋 Loaded ${recipientsData.recipients.length} recipients`);
-      console.log(`💰 Total amount: ${parseInt(recipientsData.totalAmount) / 1e9} SOL`);
-      console.log(`🌳 Merkle root: ${recipientsData.merkleRoot}`);
-
-      // Step 3: Set up Anchor provider
-      console.log("📡 Setting up provider...");
-      const connection = new Connection(this.providerUrl);
-      
-      // Load wallet keypair
-      const walletKeypair = Keypair.fromSecretKey(
-        new Uint8Array(JSON.parse(fs.readFileSync(this.walletPath, 'utf8')))
-      );
-      const wallet = new anchor.Wallet(walletKeypair);
-      
-      const provider = new anchor.AnchorProvider(connection, wallet, {
-        commitment: 'confirmed',
-        skipPreflight: false,
-        preflightCommitment: 'confirmed'
-      });
-      
-      anchor.setProvider(provider);
-
-      // Load the program with proper typing
-      let program: Program;
-      try {
-        program = anchor.workspace.SolanaDistributor as Program;
-        
-        if (!program) {
-          throw new Error("Program not found in workspace");
+          error: 'Program account not found on-chain. Please deploy the program first using: npm run airdrop:setup',
         }
-      } catch (error) {
-        return {
-          success: false,
-          error: `Failed to load program: ${error}`
-        };
       }
-
-      console.log(`📍 Program ID: ${program.programId.toString()}`);
-      console.log(`👤 Authority: ${provider.wallet.publicKey.toString()}`);
-
-      // Step 4: Verify program exists on-chain
-      console.log("🔍 Verifying program exists on-chain...");
-      try {
-        const programInfo = await provider.connection.getAccountInfo(program.programId);
-        if (!programInfo) {
-          return {
-            success: false,
-            error: "Program account not found on-chain. Please deploy the program first."
-          };
-        }
-        console.log("✅ Program verified on-chain");
-      } catch (error) {
-        return {
-          success: false,
-          error: `Program verification failed: ${error}`
-        };
+      console.log('✅ Program verified on-chain (Gill)')
+    } catch (error) {
+      return {
+        success: false,
+        error: `Program verification failed: ${error}`,
       }
+    }
 
-      // Step 5: Calculate airdrop state PDA
-      const [airdropStatePda] = PublicKey.findProgramAddressSync(
-        [Buffer.from("merkle_tree")],
-        program.programId
-      );
-      console.log(`🏛️  Airdrop state PDA: ${airdropStatePda.toString()}`);
+    const [airdropStatePda] = await getProgramDerivedAddress({
+      programAddress,
+      seeds: ['merkle_tree'],
+    })
+    console.log(`🏛️  Airdrop state PDA: ${airdropStatePda} (Gill)`)
 
-      // Step 6: Check if already initialized
-      try {
-        const existingState = await program.account['airdropState'].fetch(airdropStatePda);
-        console.log("⚠️  Airdrop already initialized:");
-        console.log(`   Root: 0x${Buffer.from(existingState.merkleRoot).toString("hex")}`);
-        console.log(`   Amount: ${existingState.airdropAmount.toNumber() / 1e9} SOL`);
-        console.log(`   Claimed: ${existingState.amountClaimed.toNumber() / 1e9} SOL`);
-        
+    // Step 7: Check if already initialized
+    try {
+      const existingStateInfo = await rpc.getAccountInfo(address(airdropStatePda)).send()
+      if (existingStateInfo.value) {
+        console.log('⚠️  Airdrop already initialized (detected via Gill)')
+        console.log(`   PDA: ${airdropStatePda}`)
+
         return {
           success: true,
-          airdropStatePda: airdropStatePda.toString(),
-          alreadyInitialized: true
-        };
-      } catch {
-        // Not initialized yet, continue
-        console.log("✅ Airdrop not yet initialized, proceeding...");
+          airdropStatePda: address(airdropStatePda),
+          alreadyInitialized: true,
+        }
       }
+    } catch {
+      console.log('✅ Airdrop not yet initialized, proceeding... (Gill)')
+    }
 
-      // Step 7: Initialize the airdrop
-      const merkleRootHex = recipientsData.merkleRoot.replace("0x", "");
-      const merkleRootBytes = Buffer.from(merkleRootHex, "hex");
-      const totalAmount = new anchor.BN(recipientsData.totalAmount);
+    console.log('📤 Preparing initialize transaction... (Codama + Gill)')
 
-      console.log("📤 Sending initialize transaction...");
-      
-      let signature: string;
-      try {
-        signature = await program.methods
-          .initializeAirdrop(Array.from(merkleRootBytes), totalAmount)
-          .accounts({
-            authority: provider.wallet.publicKey,
-          })
-          .rpc();
+    const merkleRootHex = recipientsData.merkleRoot.replace('0x', '')
+    const merkleRootBytes = new Uint8Array(Buffer.from(merkleRootHex, 'hex'))
 
-        console.log("✅ Transaction sent successfully!");
-        console.log(`📋 Transaction signature: ${signature}`);
-        console.log(`🔍 View on explorer: https://explorer.solana.com/tx/${signature}?cluster=devnet`);
-      } catch (error) {
-        // Check if this is a DeclaredProgramIdMismatch error
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        if (errorMessage.includes("DeclaredProgramIdMismatch")) {
-          console.log("⚠️  Program ID mismatch detected, attempting fresh deployment...");
-          
-          try {
-            // Deploy fresh program
-            const deployResult = await this.buildCoordinator.deployProgram();
-            if (!deployResult.success) {
-              return {
-                success: false,
-                error: `Fresh deployment failed: ${deployResult.error}`
-              };
-            }
-            
-            console.log("✅ Fresh deployment completed, retrying initialization...");
-            
-            // Retry the transaction
-            signature = await program.methods
-              .initializeAirdrop(Array.from(merkleRootBytes), totalAmount)
-              .accounts({
-                authority: provider.wallet.publicKey,
-              })
-              .rpc();
+    const signer = await createKeyPairSignerFromBytes(walletBytes)
 
-            console.log("✅ Transaction sent successfully after retry!");
-            console.log(`📋 Transaction signature: ${signature}`);
-            console.log(`🔍 View on explorer: https://explorer.solana.com/tx/${signature}?cluster=devnet`);
-          } catch (retryError) {
+    const initializeInstruction = getInitializeAirdropInstruction({
+      airdropState: address(airdropStatePda),
+      authority: signer,
+      merkleRoot: merkleRootBytes,
+      amount: BigInt(recipientsData.totalAmount),
+    })
+
+    const { value: latestBlockhash } = await rpc.getLatestBlockhash().send()
+
+    // Create transaction using Gill
+    const transaction = createTransaction({
+      version: 'legacy',
+      feePayer: signer,
+      instructions: [initializeInstruction],
+      latestBlockhash,
+    })
+
+    let signature: string
+    try {
+      signature = await sendAndConfirmTransaction(transaction)
+
+      console.log('✅ Transaction sent successfully! (Codama + Gill)')
+      console.log(`📋 Transaction signature: ${signature}`)
+      console.log(`🔍 View on explorer: https://explorer.solana.com/tx/${signature}?cluster=${network}`)
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      if (errorMessage.includes('DeclaredProgramIdMismatch')) {
+        console.log('⚠️  Program ID mismatch detected, attempting fresh deployment... (Gill)')
+
+        try {
+          const deployResult = await deployGillProgram(undefined, { workingDir, verbose })
+          if (!deployResult.success) {
             return {
               success: false,
-              error: `Failed to initialize after fresh deployment: ${retryError}`
-            };
+              error: `Fresh deployment failed: ${deployResult.error}`,
+            }
           }
-        } else {
-          return {
-            success: false,
-            error: `Failed to send initialization transaction: ${error}`
-          };
-        }
-      }
 
-      // Step 8: Wait for confirmation
-      console.log("⏳ Waiting for transaction confirmation...");
-      try {
-        const confirmation = await provider.connection.confirmTransaction(signature, 'confirmed');
-        if (confirmation.value.err) {
+          console.log('✅ Fresh deployment completed, retrying initialization... (Gill)')
+
+          const retryTransaction = createTransaction({
+            version: 'legacy',
+            feePayer: signer,
+            instructions: [initializeInstruction],
+            latestBlockhash: (await rpc.getLatestBlockhash().send()).value,
+          })
+
+          signature = await sendAndConfirmTransaction(retryTransaction)
+
+          console.log('✅ Transaction sent successfully after retry! (Codama + Gill)')
+          console.log(`📋 Transaction signature: ${signature}`)
+        } catch (retryError) {
           return {
             success: false,
-            error: `Transaction failed: ${JSON.stringify(confirmation.value.err)}`
-          };
+            error: `Failed to initialize after fresh deployment: ${retryError}`,
+          }
         }
-        console.log("✅ Transaction confirmed!");
-      } catch (error) {
+      } else {
         return {
           success: false,
-          error: `Failed to confirm transaction: ${error}`
-        };
-      }
-
-      // Step 9: Verify initialization (with retry)
-      console.log("🔍 Verifying airdrop state...");
-      await new Promise(resolve => setTimeout(resolve, 3000));
-
-      let verificationAttempts = 0;
-      const maxAttempts = 3;
-      
-      while (verificationAttempts < maxAttempts) {
-        try {
-          const airdropState = await program.account['airdropState'].fetch(airdropStatePda);
-          console.log("✅ Airdrop initialized and verified successfully!");
-          console.log(`   Merkle root: 0x${Buffer.from(airdropState.merkleRoot).toString("hex")}`);
-          console.log(`   Total amount: ${airdropState.airdropAmount.toNumber() / 1e9} SOL`);
-          
-          return {
-            success: true,
-            airdropStatePda: airdropStatePda.toString(),
-            signature,
-            alreadyInitialized: false
-          };
-        } catch {
-          verificationAttempts++;
-          if (verificationAttempts >= maxAttempts) {
-            console.log("⚠️  Verification failed, but initialization likely succeeded");
-            console.log("   Check the transaction on the explorer to confirm");
-            
-            return {
-              success: true,
-              airdropStatePda: airdropStatePda.toString(),
-              signature,
-              alreadyInitialized: false,
-              verificationFailed: true
-            };
-          }
-          
-          console.log(`🔄 Verification attempt ${verificationAttempts} failed, retrying...`);
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          error: `Failed to send initialization transaction: ${error}`,
         }
       }
+    }
 
-      // This should not be reached, but just in case
-      return {
-        success: false,
-        error: "Unexpected error in verification loop"
-      };
+    console.log('🔍 Verifying airdrop state... (Gill)')
+    await new Promise((resolve) => setTimeout(resolve, 3000))
 
-    } catch (error) {
-      console.error("❌ Airdrop initialization failed:", error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : String(error)
-      };
+    let verificationAttempts = 0
+    const maxAttempts = 3
+
+    while (verificationAttempts < maxAttempts) {
+      try {
+        const airdropStateInfo = await rpc.getAccountInfo(address(airdropStatePda)).send()
+        if (airdropStateInfo.value) {
+          console.log('✅ Airdrop initialized and verified successfully! (Gill)')
+          console.log(`   PDA: ${airdropStatePda}`)
+
+          return {
+            success: true,
+            airdropStatePda: address(airdropStatePda),
+            signature,
+            alreadyInitialized: false,
+          }
+        }
+        throw new Error('Account not found')
+      } catch {
+        verificationAttempts++
+        if (verificationAttempts >= maxAttempts) {
+          console.log('⚠️  Verification failed, but initialization likely succeeded (Gill)')
+          console.log('   Check the transaction on the explorer to confirm')
+
+          return {
+            success: true,
+            airdropStatePda: address(airdropStatePda),
+            signature,
+            alreadyInitialized: false,
+            verificationFailed: true,
+          }
+        }
+
+        console.log(`🔄 Verification attempt ${verificationAttempts} failed, retrying... (Gill)`)
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+      }
+    }
+
+    return {
+      success: false,
+      error: 'Unexpected error in verification loop',
+    }
+  } catch (error) {
+    console.error('❌ Airdrop initialization failed:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
     }
   }
 }
 
-/**
- * Initialize the airdrop using the new simplified architecture
- */
-export async function initializeAirdrop(recipientsFile: string = "recipients.json") {
-  const initializer = new AirdropInitializer("https://api.devnet.solana.com", "./deploy-wallet.json", ".");
-  return await initializer.initializeAirdrop(recipientsFile);
+export async function initializeGillAirdropDefault(recipientsFile: string = 'recipients.json') {
+  return await initializeGillAirdrop(recipientsFile, {
+    network: 'devnet',
+    walletPath: './deploy-wallet.json',
+    workingDir: '.',
+    verbose: false,
+  })
 }

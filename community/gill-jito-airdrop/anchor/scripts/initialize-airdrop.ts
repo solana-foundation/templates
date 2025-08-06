@@ -1,9 +1,10 @@
-import { initializeAirdrop } from "../lib/airdrop-initializer";
+import { initializeGillAirdropDefault } from "../lib/airdrop-initializer";
 
-// Script execution
+// Pure Gill initialization (modern approach)
 async function main() {
   try {
-    const result = await initializeAirdrop();
+    console.log("🚀 Using modern Gill-based initialization...");
+    const result = await initializeGillAirdropDefault();
     
     if (!result.success) {
       console.error(`💥 Initialization failed: ${result.error}`);
@@ -21,7 +22,7 @@ async function main() {
     
     console.log("\n📋 Next steps:");
     console.log("1. Test claiming with the frontend at http://localhost:3000");
-    console.log("2. Or use the claim script: npx ts-node scripts/claim-airdrop.ts");
+    console.log("2. Or use the claim script with Gill support");
     
     process.exit(0);
   } catch (error) {
@@ -30,4 +31,5 @@ async function main() {
   }
 }
 
+// Execute main function
 main();
