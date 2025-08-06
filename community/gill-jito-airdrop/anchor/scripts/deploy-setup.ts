@@ -2,8 +2,6 @@
 
 import * as readline from "readline";
 import type { GillWalletInfo } from "../lib/types";
-
-// Gill imports for modern implementation
 import {
   createGillWalletClient,
   generateGillWallet,
@@ -15,22 +13,12 @@ import {
   completeGillSetup,
 } from "../lib/program-manager";
 
-// =============================================================================
-// MODERN GILL-BASED DEPLOYMENT SETUP (Functional Approach)
-// =============================================================================
-
-/**
- * Configuration for Gill-based deployment setup
- */
 export interface GillDeploymentSetupConfig {
   network?: 'devnet' | 'mainnet' | 'testnet';
   workingDir?: string;
   verbose?: boolean;
 }
 
-/**
- * Interactive setup for deploy wallet using Gill (functional approach)
- */
 export async function setupGillDeployWallet(
   rl: readline.Interface,
   config: GillDeploymentSetupConfig = {}
@@ -63,16 +51,12 @@ export async function setupGillDeployWallet(
     console.log(`✅ Generated new deployment wallet: ${deployWallet.address} (Gill)`);
   }
 
-  // Fund the wallet using Gill
   const client = createGillWalletClient({ network });
   const fundedWallet = await ensureGillWalletFunded(client.rpc, deployWallet, 1, 2);
   
   return fundedWallet;
 }
 
-/**
- * Interactive setup for test wallets using Gill (functional approach)
- */
 export async function setupGillTestWallets(
   rl: readline.Interface,
   config: GillDeploymentSetupConfig = {}
@@ -89,18 +73,12 @@ export async function setupGillTestWallets(
   return await generateGillTestWallets(client.rpc, walletCount);
 }
 
-/**
- * Helper function to promisify readline question
- */
 function question(rl: readline.Interface, prompt: string): Promise<string> {
   return new Promise((resolve) => {
     rl.question(prompt, resolve);
   });
 }
 
-/**
- * Main Gill deployment workflow (functional approach)
- */
 export async function runGillDeploymentSetup(config: GillDeploymentSetupConfig = {}): Promise<void> {
   const { network = 'devnet', workingDir = '.', verbose = false } = config;
   
@@ -118,11 +96,9 @@ export async function runGillDeploymentSetup(config: GillDeploymentSetupConfig =
     console.log("4. Generate configuration files");
     console.log("\n" + "=".repeat(50) + "\n");
 
-    // Step 1: Interactive wallet setup
     const deployWallet = await setupGillDeployWallet(rl, config);
     const testWallets = await setupGillTestWallets(rl, config);
 
-    // Step 2: Ask about deployment
     const deployChoice = await question(rl, "\nDo you want to deploy the program now? (y/n): ");
     const shouldDeploy = deployChoice.toLowerCase() === 'y' || deployChoice.toLowerCase() === 'yes';
     
@@ -130,7 +106,6 @@ export async function runGillDeploymentSetup(config: GillDeploymentSetupConfig =
       (await question(rl, "Do you want to generate a new program ID? (y/n): ")).toLowerCase() === 'y' : 
       false;
 
-    // Step 3: Use Gill setup for the complete workflow
     console.log("\n🚀 Running complete setup workflow with Gill...");
     const result = await completeGillSetup({
       config: {
@@ -170,7 +145,6 @@ export async function runGillDeploymentSetup(config: GillDeploymentSetupConfig =
       process.exit(1);
     }
 
-    // Step 4: Show final summary
     showGillFinalSummary(result, shouldDeploy);
 
   } catch (error) {
@@ -181,9 +155,6 @@ export async function runGillDeploymentSetup(config: GillDeploymentSetupConfig =
   }
 }
 
-/**
- * Show final summary of what was accomplished (Gill version)
- */
 function showGillFinalSummary(result: any, deploymentAttempted: boolean): void {
   console.log("\n" + "=".repeat(50));
   console.log("✅ Setup completed successfully with Gill + Codama!\n");

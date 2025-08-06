@@ -1,6 +1,5 @@
 import { initializeGillAirdropDefault } from "../lib/airdrop-initializer";
 
-// Pure Gill initialization (modern approach)
 async function main() {
   try {
     console.log("🚀 Using modern Gill-based initialization...");
