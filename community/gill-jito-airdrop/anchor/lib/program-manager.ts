@@ -1,287 +1,298 @@
-import { execSync } from "child_process";
-import * as fs from "fs";
-import { BuildCoordinator } from "./build-coordinator";
-import { WalletManager } from "./wallet-manager";
-import { FileManager } from "./file-manager";
-import { MerkleTreeManager } from "./merkle-tree-manager";
-import type { WalletInfo, DeploymentResult } from "./types";
+import { execSync } from 'child_process'
+import * as fs from 'fs'
+import type { GillWalletInfo, GillNetworkConfig, GillDeploymentResult } from './types'
 
-/**
- * High-level program management that coordinates all deployment operations
- */
-export class ProgramManager {
-  private buildCoordinator: BuildCoordinator;
-  private walletManager: WalletManager;
-  private fileManager: FileManager;
+import { address } from 'gill'
+import {
+  createGillWalletClient,
+  generateGillWallet,
+  ensureGillWalletFunded,
+  generateGillTestWallets,
+} from './wallet-manager'
 
-  constructor(workingDir: string = "anchor", rpcUrl: string = "https://api.devnet.solana.com") {
-    this.buildCoordinator = new BuildCoordinator(workingDir);
-    this.walletManager = new WalletManager(rpcUrl);
-    this.fileManager = new FileManager(workingDir);
+import {
+  deployGillProgram as deployGillProgramBuild,
+  getGillProgramStatus as getGillProgramStatusBuild,
+  ensureGillProgramIdConsistency,
+} from './build-coordinator'
+
+import {
+  updateGillAnchorConfig,
+  generateGillRecipientsJson,
+  updateGillRecipientsWithMerkleRoot,
+  updateGillEnvironmentFile,
+  updateGillFrontendRecipientsFile,
+  loadGillRecipientsFile,
+  getGillCurrentProgramId,
+  writeGillWalletFile,
+  writeGillTestWalletsFile,
+  ensureGillCodamaSync,
+} from './file-manager'
+
+import { generateGillMerkleTree } from './merkle-tree-manager'
+
+export interface GillProgramConfig {
+  network: 'devnet' | 'mainnet' | 'testnet'
+  rpcUrl?: string
+  workingDir?: string
+  minFunding?: number
+}
+
+export interface GillDeploymentOptions {
+  deployWallet: GillWalletInfo
+  generateNewProgramId?: boolean
+  minFunding?: number
+  config: GillProgramConfig
+}
+
+export interface GillSetupOptions {
+  config: GillProgramConfig
+  useExistingWallets?: boolean
+  numTestWallets?: number
+  deployProgram?: boolean
+  generateNewProgramId?: boolean
+  deployWallet?: GillWalletInfo
+  testWallets?: GillWalletInfo[]
+  airdropAmountLamports?: number // Amount per recipient in lamports (default: 75000000 = 0.075 SOL)
+}
+
+export async function generateGillProgramId(): Promise<{ programId: string; keypairPath: string }> {
+  try {
+    console.log('🆔 Generating new program ID...')
+
+    const keypairPath = 'new-program-keypair.json'
+
+    if (fs.existsSync(keypairPath)) {
+      fs.unlinkSync(keypairPath)
+    }
+
+    execSync(`solana-keygen new --outfile ${keypairPath} --no-bip39-passphrase --force`, { stdio: 'pipe' })
+
+    const programId = execSync(`solana address -k ${keypairPath}`, { encoding: 'utf8' }).trim()
+
+    console.log(`✅ Generated new program ID: ${programId}`)
+    return { programId, keypairPath }
+  } catch (error) {
+    console.error('❌ Error generating program ID:', error)
+    throw error
   }
+}
 
-  /**
-   * Generate a new program ID and keypair
-   */
-  generateNewProgramId(): { programId: string; keypairPath: string } {
-    try {
-      console.log("🆔 Generating new program ID...");
-      
-      // Generate new program keypair
-      const keypairPath = "new-program-keypair.json";
-      
-      // Remove existing keypair if it exists
-      if (fs.existsSync(keypairPath)) {
-        fs.unlinkSync(keypairPath);
+export async function deployGillProgram(options: GillDeploymentOptions): Promise<GillDeploymentResult> {
+  const { deployWallet, generateNewProgramId = false, minFunding = 2, config } = options
+
+  try {
+    console.log('\n🚀 Starting program deployment with Gill...\n')
+
+    console.log('💰 Ensuring deploy wallet has sufficient funds...')
+    const networkConfig: GillNetworkConfig = {
+      network: config.network,
+      rpcUrl: config.rpcUrl,
+    }
+
+    const client = createGillWalletClient(networkConfig)
+    const fundedWallet = await ensureGillWalletFunded(client.rpc, deployWallet, minFunding, minFunding)
+
+    let newKeypairPath: string | null = null
+    let targetProgramId: string | null = null
+
+    if (generateNewProgramId) {
+      const { programId, keypairPath } = await generateGillProgramId()
+      targetProgramId = programId
+      newKeypairPath = keypairPath
+    }
+
+    const currentProgramId = getGillCurrentProgramId({ workingDir: config.workingDir })
+    const consistencyFixed = await ensureGillProgramIdConsistency(targetProgramId || currentProgramId, {
+      workingDir: config.workingDir,
+    })
+
+    if (!consistencyFixed) {
+      return { success: false, error: 'Failed to ensure program ID consistency' }
+    }
+
+    const deployResult = await deployGillProgramBuild(newKeypairPath, { workingDir: config.workingDir })
+
+    if (!deployResult.success) {
+      return {
+        success: false,
+        error: deployResult.error,
+        programId: deployResult.programId ? address(deployResult.programId) : undefined,
+        signature: deployResult.signature,
       }
-      
-      execSync(`solana-keygen new --outfile ${keypairPath} --no-bip39-passphrase --force`, { stdio: "pipe" });
-      
-      // Get the program ID
-      const programId = execSync(`solana address -k ${keypairPath}`, { encoding: "utf8" }).trim();
-      
-      console.log(`✅ Generated new program ID: ${programId}`);
-      return { programId, keypairPath };
-    } catch (error) {
-      console.error("❌ Error generating program ID:", error);
-      throw error;
+    }
+
+    if (newKeypairPath && fs.existsSync(newKeypairPath)) {
+      fs.unlinkSync(newKeypairPath)
+    }
+
+    console.log('✅ Program deployment completed successfully with Gill!')
+    return {
+      success: true,
+      programId: deployResult.programId ? address(deployResult.programId) : undefined,
+      signature: deployResult.signature,
+    }
+  } catch (error) {
+    console.error('❌ Deployment failed:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
     }
   }
+}
 
-  /**
-   * Complete deployment workflow with proper build coordination
-   */
-  async deployProgram(options: {
-    deployWallet: WalletInfo;
-    generateNewProgramId?: boolean;
-    minFunding?: number;
-  }): Promise<DeploymentResult> {
-    const { deployWallet, generateNewProgramId = false, minFunding = 2 } = options;
+export async function completeGillSetup(options: GillSetupOptions): Promise<{
+  success: boolean
+  deployWallet?: GillWalletInfo
+  testWallets?: GillWalletInfo[]
+  programId?: string
+  error?: string
+}> {
+  const {
+    config,
+    useExistingWallets = false,
+    numTestWallets = 3,
+    deployProgram = false,
+    generateNewProgramId = false,
+    deployWallet: providedDeployWallet,
+    testWallets: providedTestWallets,
+    airdropAmountLamports = 75000000, // Default: 0.075 SOL
+  } = options
 
-    try {
-      console.log("\n🚀 Starting program deployment...\n");
+  try {
+    console.log('🎉 Starting complete setup workflow with Gill...\n')
 
-      // Step 1: Ensure deploy wallet is funded
-      console.log("💰 Ensuring deploy wallet has sufficient funds...");
-      const fundedWallet = await this.walletManager.ensureWalletFunded(
-        deployWallet, 
-        minFunding, 
-        minFunding
-      );
-      
-      // Save the deploy wallet file (needed by Anchor)
-      this.walletManager.saveWalletFile(fundedWallet);
+    const networkConfig: GillNetworkConfig = {
+      network: config.network,
+      rpcUrl: config.rpcUrl,
+    }
 
-      // Step 2: Handle program ID generation if requested
-      let newKeypairPath: string | null = null;
-      let targetProgramId: string | null = null;
+    let deployWallet: GillWalletInfo
 
-      if (generateNewProgramId) {
-        const { programId, keypairPath } = this.generateNewProgramId();
-        targetProgramId = programId;
-        newKeypairPath = keypairPath;
-        
-        // Update all program references before building
-        this.fileManager.updateProgramReferences(programId);
-      }
+    if (providedDeployWallet) {
+      console.log('✅ Using provided deploy wallet')
+      deployWallet = providedDeployWallet
+    } else {
+      console.log('🔑 Creating new deploy wallet with Gill')
+      deployWallet = await generateGillWallet('deploy-wallet')
+      const client = createGillWalletClient(networkConfig)
+      deployWallet = await ensureGillWalletFunded(
+        client.rpc,
+        deployWallet,
+        config.minFunding || 2,
+        config.minFunding || 2,
+      )
+    }
 
-      // Step 3: Ensure program ID consistency and build if needed
-      const currentProgramId = this.fileManager.getCurrentProgramId();
-      const consistencyFixed = await this.buildCoordinator.ensureProgramIdConsistency(targetProgramId || currentProgramId);
-      
-      if (!consistencyFixed) {
-        return { success: false, error: "Failed to ensure program ID consistency" };
-      }
+    let testWallets: GillWalletInfo[]
 
-      // Step 4: Deploy the program
-      const deployResult = await this.buildCoordinator.deployProgram(newKeypairPath);
-      
+    if (providedTestWallets && providedTestWallets.length > 0) {
+      console.log(`✅ Using ${providedTestWallets.length} provided test wallets`)
+      testWallets = providedTestWallets
+    } else {
+      console.log(`🧪 Creating ${numTestWallets} test wallets with Gill`)
+      const client = createGillWalletClient(networkConfig)
+      testWallets = await generateGillTestWallets(client.rpc, numTestWallets)
+    }
+
+    let programId = getGillCurrentProgramId({ workingDir: config.workingDir })
+
+    console.log('\n📝 Updating configuration files...')
+
+    updateGillAnchorConfig(deployWallet, programId, { workingDir: config.workingDir })
+    generateGillRecipientsJson(testWallets, programId, airdropAmountLamports, { workingDir: config.workingDir })
+    
+    // Write wallet files to disk
+    console.log('\n💾 Writing wallet files...')
+    writeGillWalletFile(deployWallet, { workingDir: config.workingDir })
+    writeGillTestWalletsFile(testWallets, { workingDir: config.workingDir })
+
+    console.log('\n🌳 Generating merkle tree...')
+    const recipientsData = loadGillRecipientsFile(undefined, { workingDir: config.workingDir })
+    const { merkleRoot } = generateGillMerkleTree(recipientsData)
+    updateGillRecipientsWithMerkleRoot(merkleRoot, { workingDir: config.workingDir })
+    
+    updateGillFrontendRecipientsFile({ workingDir: config.workingDir })
+    
+    updateGillEnvironmentFile(programId, testWallets, { workingDir: config.workingDir })
+
+    if (deployProgram) {
+      console.log('\n🚀 Deploying program with Gill...')
+      const deployResult = await deployGillProgram({
+        deployWallet,
+        generateNewProgramId,
+        config,
+      })
+
       if (!deployResult.success) {
-        return deployResult;
+        return {
+          success: false,
+          error: `Deployment failed: ${deployResult.error}`,
+        }
       }
 
-      // Step 5: Clean up temporary files
-      if (newKeypairPath && fs.existsSync(newKeypairPath)) {
-        fs.unlinkSync(newKeypairPath);
+      programId = deployResult.programId || programId
+
+      updateGillEnvironmentFile(programId, testWallets, { workingDir: config.workingDir })
+      
+      // Ensure Codama client is updated with new program ID
+      console.log('🔄 Syncing Codama client with deployed program ID... (Gill)')
+      const codamaSynced = await ensureGillCodamaSync({ workingDir: config.workingDir })
+      if (!codamaSynced) {
+        console.log('⚠️  Warning: Could not sync Codama client after deployment (Gill)')
       }
+    }
 
-      console.log("✅ Program deployment completed successfully!");
-      return {
-        success: true,
-        programId: deployResult.programId
-      };
-
-    } catch (error) {
-      console.error("❌ Deployment failed:", error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : String(error)
-      };
+    console.log('\n✅ Complete setup finished successfully with Gill!')
+    return {
+      success: true,
+      deployWallet,
+      testWallets,
+      programId,
+    }
+  } catch (error) {
+    console.error('❌ Setup failed:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
     }
   }
+}
 
-  /**
-   * Complete setup workflow including wallets, configuration, and merkle tree
-   */
-  async completeSetup(options: {
-    useExistingWallets?: boolean;
-    numTestWallets?: number;
-    deployProgram?: boolean;
-    generateNewProgramId?: boolean;
-    deployWallet?: WalletInfo;
-    testWallets?: WalletInfo[];
-  }): Promise<{
-    success: boolean;
-    deployWallet?: WalletInfo;
-    testWallets?: WalletInfo[];
-    programId?: string;
-    error?: string;
-  }> {
-    const { 
-      useExistingWallets = false, 
-      numTestWallets = 3, 
-      deployProgram = false,
-      generateNewProgramId = false,
-      deployWallet: providedDeployWallet,
-      testWallets: providedTestWallets
-    } = options;
+export async function getGillProgramStatus(config: GillProgramConfig): Promise<{
+  built: boolean
+  deployed: boolean
+  consistent: boolean
+  programId: string | null
+  onChainProgramId?: string
+}> {
+  try {
+    const localStatus = getGillProgramStatusBuild({ workingDir: config.workingDir })
 
-    try {
-      console.log("🎉 Starting complete setup workflow...\n");
+    if (localStatus.programId) {
+      try {
+        const client = createGillWalletClient({ network: config.network, rpcUrl: config.rpcUrl })
+        const accountInfo = await client.rpc.getAccountInfo(address(localStatus.programId)).send()
 
-      // Step 1: Use provided deploy wallet or load/create one
-      let deployWallet: WalletInfo;
-      
-      if (providedDeployWallet) {
-        console.log("✅ Using provided deploy wallet");
-        deployWallet = providedDeployWallet;
-      } else {
-        const { deployWallet: existingDeployWallet } = this.walletManager.loadExistingWallets();
-
-        if (useExistingWallets && existingDeployWallet) {
-          console.log("✅ Using existing deploy wallet");
-          deployWallet = await this.walletManager.updateWalletStatus(existingDeployWallet);
-        } else {
-          console.log("🔑 Creating new deploy wallet");
-          deployWallet = this.walletManager.generateWallet("deploy-wallet");
-          deployWallet.isDeployWallet = true;
-          deployWallet = await this.walletManager.ensureWalletFunded(deployWallet);
+        return {
+          ...localStatus,
+          deployed: accountInfo.value !== null,
+          onChainProgramId: localStatus.programId,
         }
+      } catch (error) {
+        console.warn('Could not check on-chain program status:', error)
+        return localStatus
       }
-
-      // Step 2: Use provided test wallets or load/create ones
-      let testWallets: WalletInfo[];
-      
-      if (providedTestWallets && providedTestWallets.length > 0) {
-        console.log(`✅ Using ${providedTestWallets.length} provided test wallets`);
-        testWallets = providedTestWallets;
-      } else {
-        const { testWallets: existingTestWallets } = this.walletManager.loadExistingWallets();
-
-        if (useExistingWallets && existingTestWallets.length > 0) {
-          console.log(`✅ Using ${existingTestWallets.length} existing test wallets`);
-          testWallets = existingTestWallets;
-          
-          // Update their statuses
-          for (let i = 0; i < testWallets.length; i++) {
-            testWallets[i] = await this.walletManager.updateWalletStatus(testWallets[i]);
-          }
-        } else {
-          console.log(`🧪 Creating ${numTestWallets} test wallets`);
-          testWallets = await this.walletManager.generateTestWallets(numTestWallets);
-        }
-      }
-
-      // Step 3: Get current program ID
-      let programId = this.fileManager.getCurrentProgramId();
-
-      // Step 4: Update configuration files
-      console.log("\n📝 Updating configuration files...");
-      this.fileManager.updateAnchorConfig(deployWallet, programId);
-      
-      const allWallets = [deployWallet, ...testWallets];
-      this.walletManager.saveTestWalletsJson(allWallets);
-      this.fileManager.generateRecipientsJson(testWallets, programId);
-
-      // Step 5: Generate merkle tree
-      console.log("\n🌳 Generating merkle tree...");
-      const recipientsData = this.fileManager.loadRecipientsFile();
-      const { merkleRoot } = MerkleTreeManager.generateMerkleTree(recipientsData);
-      this.fileManager.updateRecipientsWithMerkleRoot(merkleRoot);
-
-      // Step 6: Update TypeScript files
-      console.log("\n📝 Updating TypeScript files...");
-      this.fileManager.updateRecipientsTypeScript();
-
-      // Step 7: Deploy program if requested
-      if (deployProgram) {
-        console.log("\n🚀 Deploying program...");
-        const deployResult = await this.deployProgram({
-          deployWallet,
-          generateNewProgramId
-        });
-
-        if (!deployResult.success) {
-          return {
-            success: false,
-            error: `Deployment failed: ${deployResult.error}`
-          };
-        }
-
-        programId = deployResult.programId || programId;
-        
-        // Update environment file with final program ID
-        this.fileManager.updateEnvironmentFile(programId);
-      }
-
-      console.log("\n✅ Complete setup finished successfully!");
-      return {
-        success: true,
-        deployWallet,
-        testWallets,
-        programId
-      };
-
-    } catch (error) {
-      console.error("❌ Setup failed:", error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : String(error)
-      };
     }
-  }
 
-  /**
-   * Get status of the current program
-   */
-  getProgramStatus(): {
-    built: boolean;
-    deployed: boolean;
-    consistent: boolean;
-    programId: string | null;
-  } {
-    return this.buildCoordinator.getProgramStatus();
-  }
-
-  /**
-   * Force rebuild and redeploy
-   */
-  async forceRebuildAndDeploy(deployWallet: WalletInfo): Promise<DeploymentResult> {
-    try {
-      console.log("🔄 Forcing clean rebuild and deployment...");
-      
-      await this.buildCoordinator.clean();
-      
-      return await this.deployProgram({
-        deployWallet,
-        generateNewProgramId: false
-      });
-    } catch (error) {
-      console.error("❌ Force rebuild failed:", error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : String(error)
-      };
+    return localStatus
+  } catch (error) {
+    console.error('Error getting program status:', error)
+    return {
+      built: false,
+      deployed: false,
+      consistent: false,
+      programId: null,
     }
   }
 }

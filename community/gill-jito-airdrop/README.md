@@ -36,6 +36,15 @@ anchor --version
 
 ## 🛠️ Quick Setup Guide
 
+The complete setup process requires these four commands in order:
+
+```bash
+pnpm install
+pnpm codama:generate
+pnpm airdrop:setup
+pnpm airdrop:init
+```
+
 ### Step 1: Clone and Install
 
 ```bash
@@ -44,7 +53,15 @@ cd airdrop-claim-template
 pnpm install
 ```
 
-### Step 2: Deploy and Setup
+### Step 2: Generate Code
+
+```bash
+pnpm codama:generate
+```
+
+This generates the necessary TypeScript types and client code from the Solana program.
+
+### Step 3: Deploy and Setup
 
 ```bash
 pnpm airdrop:setup
@@ -57,7 +74,7 @@ This single command will:
 - ✅ Update all configuration files
 - ✅ Generate Merkle tree for airdrop distribution
 
-### Step 3: Initialize the Airdrop
+### Step 4: Initialize the Airdrop
 
 ```bash
 pnpm airdrop:init
@@ -65,7 +82,7 @@ pnpm airdrop:init
 
 This command sets up the on-chain airdrop state and makes it ready for claiming.
 
-### Step 4: Update Your Environment File
+### Step 5: Update Your Environment File
 
 After running the setup commands, you need to update your `.env.local` file with:
 
@@ -95,7 +112,7 @@ cat anchor/test-wallets.json
 # Copy the "base58" private key from any wallet and add it to .env.local
 ```
 
-### Step 5: Start the Frontend
+### Step 6: Start the Frontend
 
 ```bash
 pnpm dev
@@ -103,7 +120,7 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) and you should see the airdrop claiming interface.
 
-### Step 6: Claim Your Airdrop
+### Step 7: Claim Your Airdrop
 
 1. **Open the app** - Go to http://localhost:3000
 2. **Click "Claim Airdrop"** - The button should be enabled for your wallet
