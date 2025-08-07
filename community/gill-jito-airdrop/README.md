@@ -14,7 +14,7 @@ A complete Next.js template for creating and claiming Solana airdrops using Merk
 
 ## 📋 Prerequisites
 
-- **Node.js 18+** and **pnpm** (or npm/yarn)
+- **Node.js 22+** and **pnpm** (or npm/yarn)
 - **Solana CLI tools** installed and configured
 - **Anchor Framework** (version 0.31.1+)
 - **Rust** (for compiling Solana programs)
@@ -95,8 +95,8 @@ Create or update `.env.local`:
 # Program ID (automatically set by setup script)
 NEXT_PUBLIC_PROGRAM_ID=your_deployed_program_id_here
 
-# Your private key (get this from anchor/test-wallets.json)
-NEXT_PUBLIC_USER_PRIVATE_KEY=your_base58_private_key_here
+# Your private key (get this from anchor/test-wallets.json) - server-side only
+USER_PRIVATE_KEY=your_base58_private_key_here
 
 # Network (optional, defaults to devnet)
 NEXT_PUBLIC_SOLANA_NETWORK=devnet

@@ -27,6 +27,10 @@
   ],
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=8.0.0"
+  },
   "dependencies": {
     "@coral-xyz/anchor": "^0.31.1",
     "@solana/kit": "^2.3.0",
