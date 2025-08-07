@@ -51,14 +51,14 @@ Before starting, install:
 - **Rust 1.88.0+** - `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
 - **Solana CLI 2.2.20+** - `sh -c "$(curl -sSfL https://release.solana.com/stable/install)"`
 - **Anchor CLI 0.31.1** - `cargo install --git https://github.com/coral-xyz/anchor anchor-cli --tag v0.31.1`
-- **Node.js 18+** with pnpm
+- **Node.js 22+** with pnpm
 
 Verify installations:
 ```bash
 rustc --version    # Should be 1.88.0+
 solana --version   # Should be 2.2.20+
 anchor --version   # Should be 0.31.1
-node --version     # Should be 18+
+node --version     # Should be 22+
 ```
 
 ## 🚀 Quick Start
