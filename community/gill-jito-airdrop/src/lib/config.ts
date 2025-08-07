@@ -20,8 +20,8 @@ export const AIRDROP_CONFIG = {
   // UI settings
   ENABLE_DEBUG_LOGS: process.env.NODE_ENV === 'development',
   
-  // Private key (for development only)
-  PRIVATE_KEY: process.env.NEXT_PUBLIC_USER_PRIVATE_KEY,
+  // Private key (for development only - server-side only)
+  PRIVATE_KEY: process.env.USER_PRIVATE_KEY,
 } as const
 
 /**
@@ -29,7 +29,7 @@ export const AIRDROP_CONFIG = {
  */
 export function validateConfig(): void {
   if (!AIRDROP_CONFIG.PRIVATE_KEY) {
-    throw new Error('NEXT_PUBLIC_USER_PRIVATE_KEY environment variable is required')
+    throw new Error('USER_PRIVATE_KEY environment variable is required')
   }
   
   if (!AIRDROP_CONFIG.AIRDROP_PROGRAM_ID) {

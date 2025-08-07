@@ -158,7 +158,7 @@ export function updateGillEnvironmentFile(
     let privateKeyVar = ''
     if (testWallets && testWallets.length > 0) {
       const firstWallet = testWallets[0]
-      privateKeyVar = `NEXT_PUBLIC_USER_PRIVATE_KEY=${firstWallet.secretKey.base58}`
+      privateKeyVar = `USER_PRIVATE_KEY=${firstWallet.secretKey.base58}`
     }
 
     if (fs.existsSync(envFile)) {
@@ -178,8 +178,8 @@ export function updateGillEnvironmentFile(
       }
 
       if (privateKeyVar) {
-        if (envContent.includes('NEXT_PUBLIC_USER_PRIVATE_KEY=')) {
-          envContent = envContent.replace(/NEXT_PUBLIC_USER_PRIVATE_KEY=.*/, privateKeyVar)
+        if (envContent.includes('USER_PRIVATE_KEY=')) {
+          envContent = envContent.replace(/USER_PRIVATE_KEY=.*/, privateKeyVar)
         } else {
           envContent = envContent.trim() + `\n${privateKeyVar}\n`
         }
