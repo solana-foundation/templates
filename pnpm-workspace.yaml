@@ -2,6 +2,7 @@ packages:
   - legacy/*
   - mobile/*
   - templates/*
+  - community/*
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@tailwindcss/oxide'
