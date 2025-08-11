@@ -15,9 +15,9 @@ const generateKeyPairAsync = promisify(generateKeyPair)
 
 export function createGillWalletClient(config: GillNetworkConfig) {
   const networkUrls = {
-    devnet: 'https://api.devnet.solana.com',
-    mainnet: 'https://api.mainnet-beta.solana.com',
-    testnet: 'https://api.testnet.solana.com',
+    devnet: process.env.DEVNET_RPC_URL || 'https://api.devnet.solana.com',
+    mainnet: process.env.MAINNET_RPC_URL || 'https://api.mainnet-beta.solana.com',
+    testnet: process.env.TESTNET_RPC_URL || 'https://api.testnet.solana.com',
   }
 
   const rpcUrl = config.rpcUrl || networkUrls[config.network]
