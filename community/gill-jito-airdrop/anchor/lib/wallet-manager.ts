@@ -5,7 +5,6 @@ import type { GillWalletInfo, GillNetworkConfig } from './types'
 import {
   createSolanaRpc,
   createKeyPairSignerFromBytes,
-  generateKeyPairSigner,
   lamports,
   type Address,
   type Rpc,
@@ -189,23 +188,137 @@ export async function ensureGillWalletFunded(
   return updatedWallet
 }
 
+export async function fundPrimaryWallet(
+  rpc: Rpc<SolanaRpcApi>,
+  wallet: GillWalletInfo,
+  requiredAmount: number = 5
+): Promise<GillWalletInfo> {
+  const balance = await checkGillWalletBalance(rpc, wallet.address)
+  
+  if (balance < requiredAmount) {
+    console.log(`💧 Funding primary wallet with ${requiredAmount} SOL...`)
+    const airdropSuccess = await requestGillAirdrop(rpc, wallet.address, requiredAmount)
+    
+    if (!airdropSuccess) {
+      throw new Error(`Failed to fund primary wallet ${wallet.address}`)
+    }
+    
+    return await updateGillWalletStatus(rpc, wallet)
+  }
+  
+  console.log(`✅ Primary wallet already has ${balance} SOL (required: ${requiredAmount} SOL)`)
+  return wallet
+}
+
+export async function distributeSolToWallets(
+  rpc: Rpc<SolanaRpcApi>,
+  fromWallet: GillWalletInfo,
+  toWallets: GillWalletInfo[],
+  amountPerWallet: number = 0.1
+): Promise<GillWalletInfo[]> {
+  if (!fromWallet.signer) {
+    throw new Error('Primary wallet must have signer to distribute SOL')
+  }
+
+  console.log(`📤 Distributing ${amountPerWallet} SOL to ${toWallets.length} wallets...`)
+  console.log(`💰 From wallet: ${fromWallet.address} (${fromWallet.keypairFile})`)
+  
+  const updatedWallets: GillWalletInfo[] = []
+  
+  for (const wallet of toWallets) {
+    try {
+      console.log(`💸 Sending ${amountPerWallet} SOL to ${wallet.address}...`)
+      
+      // Use simple transfer via solana CLI for now (more reliable)
+      const { execSync } = require('child_process')
+      const keypairFile = fromWallet.keypairFile || 'deploy-wallet.json'
+      const result = execSync(
+        `solana transfer ${wallet.address} ${amountPerWallet} --allow-unfunded-recipient --keypair ${keypairFile} --url devnet`,
+        { encoding: 'utf8', cwd: process.cwd() }
+      )
+      
+      // Extract signature from output
+      const signatureMatch = result.match(/Signature: ([A-Za-z0-9]+)/)
+      const signature = signatureMatch ? signatureMatch[1] : 'unknown'
+      
+      const updatedWallet = {
+        ...wallet,
+        balance: `${amountPerWallet} SOL`,
+        funded: true,
+      }
+      
+      updatedWallets.push(updatedWallet)
+      console.log(`✅ Transferred to ${wallet.address} (${signature})`)
+      
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+    } catch (error) {
+      console.error(`❌ Failed to transfer to ${wallet.address}:`, error)
+      updatedWallets.push({
+        ...wallet,
+        balance: '0 SOL',
+        funded: false,
+      })
+    }
+  }
+  
+  return updatedWallets
+}
+
 export async function generateGillTestWallets(rpc: Rpc<SolanaRpcApi>, count: number): Promise<GillWalletInfo[]> {
   const testWallets: GillWalletInfo[] = []
 
   for (let i = 1; i <= count; i++) {
-    console.log(`\n📱 Creating test wallet ${i}...`)
-
+    console.log(`📱 Creating test wallet ${i}...`)
     const wallet = await generateGillWallet(`test-wallet-${i}`)
     console.log(`✅ Created: ${wallet.address}`)
-
-    const fundedWallet = await ensureGillWalletFunded(rpc, wallet, 0.5, 1)
-    testWallets.push(fundedWallet)
-
-    if (i < count) {
-      console.log('⏳ Waiting 3 seconds before next wallet...')
-      await new Promise((resolve) => setTimeout(resolve, 3000))
-    }
+    testWallets.push(wallet)
   }
 
   return testWallets
+}
+
+export async function createPrimaryWalletFromInput(
+  walletInput: string | null,
+  walletName: string = 'deploy-wallet'
+): Promise<GillWalletInfo> {
+  if (!walletInput) {
+    console.log(`🔑 Creating new ${walletName}...`)
+    return await generateGillWallet(walletName)
+  } else {
+    console.log(`🔐 Using provided private key for ${walletName}...`)
+    return await createGillWalletFromKey(walletName, walletInput)
+  }
+}
+
+export async function setupEfficientWalletFunding(
+  rpc: Rpc<SolanaRpcApi>,
+  primaryWallet: GillWalletInfo,
+  testWallets: GillWalletInfo[],
+  distributionAmount: number = 0.1
+): Promise<{
+  primaryWallet: GillWalletInfo
+  testWallets: GillWalletInfo[]
+}> {
+  const primaryWalletAmount = 5
+  const totalDistribution = testWallets.length * distributionAmount
+  
+  console.log(`🎯 Setting up efficient funding:`)
+  console.log(`   • Primary wallet: ${primaryWalletAmount} SOL airdrop`)
+  console.log(`   • Distribution: ${distributionAmount} SOL × ${testWallets.length} wallets = ${totalDistribution} SOL`)
+  console.log(`   • Remaining: ~${(primaryWalletAmount - totalDistribution).toFixed(2)} SOL for fees and buffer`)
+  
+  const fundedPrimary = await fundPrimaryWallet(rpc, primaryWallet, primaryWalletAmount)
+  
+  const fundedTestWallets = await distributeSolToWallets(
+    rpc,
+    fundedPrimary,
+    testWallets,
+    distributionAmount
+  )
+  
+  return {
+    primaryWallet: fundedPrimary,
+    testWallets: fundedTestWallets,
+  }
 }

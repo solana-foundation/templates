@@ -52,7 +52,7 @@ export async function setupGillDeployWallet(
   }
 
   const client = createGillWalletClient({ network });
-  const fundedWallet = await ensureGillWalletFunded(client.rpc, deployWallet, 1, 2);
+  const fundedWallet = await ensureGillWalletFunded(client.rpc, deployWallet, 5, 5);
   
   return fundedWallet;
 }
@@ -68,7 +68,6 @@ export async function setupGillTestWallets(
   const numWallets = await question(rl, "How many test wallets do you want to create? (default: 3): ");
   const walletCount = parseInt(numWallets) || 3;
 
-  // Generate test wallets using Gill
   const client = createGillWalletClient({ network });
   return await generateGillTestWallets(client.rpc, walletCount);
 }

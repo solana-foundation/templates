@@ -99,7 +99,7 @@ export function listWallets(): void {
     allWallets.forEach((wallet, i) => {
       const status = wallet.isDeployWallet || wallet.name === "deploy-wallet" ? "🔑 Deploy" : "🧪 Test";
       console.log(`  ${i + 1}. ${status} - ${wallet.name}`);
-      console.log(`     Public Key: ${wallet.publicKey}`);
+      console.log(`     Public Key: ${wallet.address}`);
       console.log(`     Keypair File: ${wallet.keypairFile}`);
       console.log(`     Balance: ${wallet.balance || 'Unknown'}`);
       console.log("");
@@ -165,11 +165,12 @@ export async function listGillWallets(): Promise<void> {
       const wallet = allWallets[i];
       const status = wallet.isDeployWallet || wallet.name === "deploy-wallet" ? "🔑 Deploy" : "🧪 Test";
       console.log(`  ${i + 1}. ${status} - ${wallet.name}`);
-      console.log(`     Public Key: ${wallet.publicKey}`);
+      console.log(`     Public Key: ${wallet.address}`);
       console.log(`     Keypair File: ${wallet.keypairFile}`);
       
       try {
-        const balance = await client.rpc.getBalance(address(wallet.publicKey)).send();
+        // Check balance using Gill
+        const balance = await client.rpc.getBalance(address(wallet.address)).send();
         const balanceSol = Number(balance.value) / 1e9;
         console.log(`     Balance: ${balanceSol.toFixed(4)} SOL (via Gill)`);
       } catch {
