@@ -8,6 +8,7 @@ import {
   generateGillWallet,
   ensureGillWalletFunded,
   generateGillTestWallets,
+  setupEfficientWalletFunding,
 } from './wallet-manager'
 
 import {
@@ -175,13 +176,6 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
     } else {
       console.log('🔑 Creating new deploy wallet with Gill')
       deployWallet = await generateGillWallet('deploy-wallet')
-      const client = createGillWalletClient(networkConfig)
-      deployWallet = await ensureGillWalletFunded(
-        client.rpc,
-        deployWallet,
-        config.minFunding || 2,
-        config.minFunding || 2,
-      )
     }
 
     let testWallets: GillWalletInfo[]
@@ -194,6 +188,18 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
       const client = createGillWalletClient(networkConfig)
       testWallets = await generateGillTestWallets(client.rpc, numTestWallets)
     }
+
+    console.log('\n💰 Setting up efficient wallet funding...')
+    const client = createGillWalletClient(networkConfig)
+    const fundingResult = await setupEfficientWalletFunding(
+      client.rpc,
+      deployWallet,
+      testWallets,
+      0.1
+    )
+
+    deployWallet = fundingResult.primaryWallet
+    testWallets = fundingResult.testWallets
 
     let programId = getGillCurrentProgramId({ workingDir: config.workingDir })
 
