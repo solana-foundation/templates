@@ -48,7 +48,7 @@ pnpm airdrop:init
 ### Step 1: Clone and Install
 
 ```bash
-git clone https://github.com/cxalem/airdrop-claim-template.git
+pnpm create solana-dapp@latest -t gh:solana-foundation/templates/community/gill-jito-airdrop
 cd airdrop-claim-template
 pnpm install
 ```
