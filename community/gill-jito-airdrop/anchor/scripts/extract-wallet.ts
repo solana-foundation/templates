@@ -3,7 +3,7 @@
 import { 
   createGillWalletClient,
 } from "../lib/wallet-manager";
-import { address } from '@solana/kit';
+import { address } from 'gill';
 import * as fs from 'fs';
 import type { TestWalletsData } from '../lib/types';
 
