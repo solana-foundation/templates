@@ -20,7 +20,7 @@ export function createGillWalletClient(config: GillNetworkConfig) {
     testnet: process.env.TESTNET_RPC_URL || 'https://api.testnet.solana.com',
   }
 
-  const rpcUrl = config.rpcUrl || networkUrls[config.network]
+  const rpcUrl = config.rpcUrl || networkUrls[config.network as keyof typeof networkUrls]
   const rpc = createSolanaRpc(rpcUrl)
 
   return { rpc }

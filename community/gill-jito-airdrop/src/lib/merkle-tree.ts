@@ -1,5 +1,6 @@
-import { PublicKey } from '@solana/web3.js'
 import { keccak_256 } from 'js-sha3'
+import { Address } from 'gill'
+import bs58 from 'bs58'
 import { Recipient } from '../../types'
 import { RECIPIENTS_DATA, RecipientsFile } from './recipients'
 
@@ -9,9 +10,12 @@ export interface MerkleTreeData {
   tree: Uint8Array[][]
 }
 
-function createLeaf(recipient: PublicKey, amount: number): Uint8Array {
+function createLeaf(recipient: Address, amount: number): Uint8Array {
+  // Convert Address (string) to bytes - Address is base58 encoded
+  const recipientBytes = Buffer.from(bs58.decode(recipient))
+  
   const data = Buffer.concat([
-    recipient.toBuffer(),
+    recipientBytes,
     Buffer.from(new Uint8Array(new BigUint64Array([BigInt(amount)]).buffer)),
     Buffer.from([0]),
   ])
@@ -82,7 +86,7 @@ export async function generateMerkleTree() {
     const recipientsData = loadRecipients()
 
     const recipients: Recipient[] = recipientsData.recipients.map((r) => ({
-      recipient: new PublicKey(r.publicKey),
+      recipient: r.publicKey as Address,
       amount: parseInt(r.amount),
     }))
 
@@ -116,7 +120,7 @@ export function generateProofForRecipient(recipientPublicKey: string): {
     }
 
     const recipients: Recipient[] = recipientsData.recipients.map((r) => ({
-      recipient: new PublicKey(r.publicKey),
+      recipient: r.publicKey as Address,
       amount: parseInt(r.amount),
     }))
 

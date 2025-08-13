@@ -1,6 +1,6 @@
 import { keccak_256 } from 'js-sha3'
 import type { GillRecipient } from './types'
-import { address, type Address } from '@solana/kit'
+import { address, type Address } from 'gill'
 import bs58 from 'bs58'
 
 export class GillMerkleTree {
