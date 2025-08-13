@@ -5,6 +5,18 @@ A modern, script-driven Solana airdrop template that distributes SOL to many rec
 ### Table of Contents
 - [Solana Merkle Airdrop Distributor (Gill + Codama + Anchor)](#solana-merkle-airdrop-distributor-gill--codama--anchor)
   - [Table of Contents](#table-of-contents)
+- [Prerequisites](#prerequisites)
+  - [Quick Installation (Recommended)](#quick-installation-recommended)
+  - [Manual Installation](#manual-installation)
+    - [1. Install Rust](#1-install-rust)
+    - [2. Install Solana CLI](#2-install-solana-cli)
+    - [3. Install Anchor CLI](#3-install-anchor-cli)
+    - [4. Install Node.js and Yarn](#4-install-nodejs-and-yarn)
+  - [Verify Installation](#verify-installation)
+  - [Solana CLI Basics](#solana-cli-basics)
+    - [Configure Solana CLI](#configure-solana-cli)
+    - [Create a Wallet](#create-a-wallet)
+    - [Fund Your Wallet](#fund-your-wallet)
   - [Quick Setup](#quick-setup)
     - [Initialize the on-chain airdrop state and makes it ready for claiming:](#initialize-the-on-chain-airdrop-state-and-makes-it-ready-for-claiming)
   - [Architecture Overview](#architecture-overview)
@@ -24,6 +36,167 @@ A modern, script-driven Solana airdrop template that distributes SOL to many rec
   - [Glossary](#glossary)
   - [Gaps and Suggestions](#gaps-and-suggestions)
 - [🎓 Key Technologies](#-key-technologies)
+
+---
+
+## Prerequisites
+
+Before you can build and deploy Solana programs with this template, you need to install Rust, Solana CLI, and Anchor CLI on your system.
+
+### Quick Installation (Recommended)
+
+On Mac and Linux, run this single command to install all dependencies:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSfL https://solana-install.solana.workers.dev | bash
+```
+
+**Windows Users:** You must first install WSL (Windows Subsystem for Linux). Then run the command above in the Ubuntu (Linux) terminal.
+
+After installation, you should see output similar to:
+
+```
+Installed Versions:
+Rust: rustc 1.85.0 (4d91de4e4 2025-02-17)
+Solana CLI: solana-cli 2.1.15 (src:53545685; feat:3271415109, client:Agave)
+Anchor CLI: anchor-cli 0.31.1
+Node.js: v23.9.0
+Yarn: 1.22.1
+
+Installation complete. Please restart your terminal to apply all changes.
+```
+
+If the quick installation works, skip to [Verify Installation](#verify-installation). If it doesn't work, follow the manual installation steps below.
+
+### Manual Installation
+
+#### 1. Install Rust
+
+Solana programs are written in Rust. Install it using rustup:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+```
+
+Reload your PATH environment variable:
+
+```bash
+. "$HOME/.cargo/env"
+```
+
+#### 2. Install Solana CLI
+
+Install the Solana CLI tool suite:
+
+```bash
+sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
+```
+
+Add Solana to your PATH (if prompted):
+
+```bash
+export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+```
+
+#### 3. Install Anchor CLI
+
+Install Anchor Version Manager (AVM) for managing Anchor versions:
+
+```bash
+cargo install --git https://github.com/coral-xyz/anchor avm --force
+```
+
+Install the latest Anchor CLI:
+
+```bash
+avm install latest
+avm use latest
+```
+
+#### 4. Install Node.js and Yarn
+
+Node.js and Yarn are required for running TypeScript tests and the frontend:
+
+**Node.js:**
+- Visit [nodejs.org](https://nodejs.org/) and install the LTS version
+- Or use a version manager like `nvm`: `nvm install --lts && nvm use --lts`
+
+**Yarn:**
+```bash
+npm install -g yarn
+```
+
+### Verify Installation
+
+Check that all tools are installed correctly:
+
+```bash
+# Check Rust
+rustc --version
+# Expected: rustc 1.84.1+ 
+
+# Check Solana CLI
+solana --version  
+# Expected: solana-cli 2.0.26+
+
+# Check Anchor CLI
+anchor --version
+# Expected: anchor-cli 0.31.1
+
+# Check Node.js
+node --version
+# Expected: v22.0.0+
+
+# Check Yarn
+yarn --version
+# Expected: 1.22.1+
+```
+
+### Solana CLI Basics
+
+#### Configure Solana CLI
+
+Set your cluster to devnet for development:
+
+```bash
+solana config set --url devnet
+```
+
+Check your current configuration:
+
+```bash
+solana config get
+```
+
+#### Create a Wallet
+
+Generate a new keypair for development:
+
+```bash
+solana-keygen new
+```
+
+Get your wallet address:
+
+```bash
+solana address
+```
+
+#### Fund Your Wallet
+
+Request devnet SOL for testing:
+
+```bash
+solana airdrop 2
+```
+
+Check your balance:
+
+```bash
+solana balance
+```
+
+**Note:** The airdrop command is limited to 5 SOL per request and may have rate limits. Alternatively, use the [Solana Web Faucet](https://faucet.solana.com/).
 
 ---
 
@@ -325,4 +498,3 @@ The template and generated client target these versions for consistent behavior 
 - **[Vitest](https://vitest.dev/)**: Fast unit testing framework
 
 ---
-
