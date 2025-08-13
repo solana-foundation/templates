@@ -61,7 +61,7 @@ export async function generateGillProgramId(): Promise<{ programId: string; keyp
   try {
     console.log('🆔 Generating new program ID...')
 
-    const keypairPath = 'new-program-keypair.json'
+    const keypairPath = 'program-keypair.json'
 
     if (fs.existsSync(keypairPath)) {
       fs.unlinkSync(keypairPath)
