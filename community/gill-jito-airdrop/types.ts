@@ -1,4 +1,4 @@
-import { PublicKey } from "@solana/web3.js"
+import { Address } from "gill"
 
 interface MerkleTreeNode {
   claimant: number[] // PublicKey as byte array
@@ -19,6 +19,6 @@ export interface MerkleTree {
 }
 
 export interface Recipient {
-  recipient: PublicKey;
+  recipient: Address;
   amount: number;
 }

@@ -112,7 +112,7 @@ export async function deployGillProgram(options: GillDeploymentOptions): Promise
       return { success: false, error: 'Failed to ensure program ID consistency' }
     }
 
-    const deployResult = await deployGillProgramBuild(newKeypairPath, { workingDir: config.workingDir })
+    const deployResult = await deployGillProgramBuild(newKeypairPath || undefined, { workingDir: config.workingDir })
 
     if (!deployResult.success) {
       return {
