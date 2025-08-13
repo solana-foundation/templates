@@ -5,7 +5,7 @@
     "airdrop:setup": "cd anchor && npx ts-node scripts/index.ts setup",
     "airdrop:init": "cd anchor && npx ts-node scripts/index.ts initialize",
     "airdrop:extract": "cd anchor && npx ts-node scripts/extract-wallet.ts --list",
-    "codama:generate": "cd anchor && anchor build && npx ts-node codama.config.ts",
+    "codama:generate": "cd anchor && npx ts-node codama.config.ts",
     "test": "cd anchor && vitest run tests/solana-distributor-comprehensive.test.ts",
     "test:watch": "cd anchor && vitest tests/solana-distributor-comprehensive.test.ts",
     "ci": "npm run build && npm run lint && npm run format:check",
