@@ -86,17 +86,21 @@ Solana Mobile Templates
 
 `expo` `mobile-wallet-adapter` `react-native` `react-native-paper` `solana-web3js`
 
-# Legacy Templates
+# Web3.js Templates
 
-Legacy templates using @solana/web3.js
+Templates using @solana/web3.js (legacy)
 
-### [legacy-next-tailwind](legacy/legacy-next-tailwind)
+### [web3js-next-tailwind](web3js/web3js-next-tailwind)
 
-`gh:solana-foundation/templates/legacy/legacy-next-tailwind`
+`gh:solana-foundation/templates/web3js/web3js-next-tailwind`
 
 > Next.js, Tailwind, @solana/web3.js, Wallet Adapter
 
-`legacy` `nextjs` `react` `solana-web3js` `tailwind` `typescript` `wallet-adapter`
+`nextjs` `react` `solana-web3js` `tailwind` `typescript` `wallet-adapter`
+
+# Legacy Templates
+
+Legacy templates using @solana/web3.js
 
 ### [legacy-next-tailwind-basic](legacy/legacy-next-tailwind-basic)
 
@@ -137,3 +141,7 @@ Legacy templates using @solana/web3.js
 > React + Vite, Tailwind, @solana/web3.js, Wallet Adapter, Anchor Counter program
 
 `anchor-counter` `legacy` `react` `solana-web3js` `tailwind` `typescript` `vite` `wallet-adapter`
+
+# Community Templates
+
+Templates maintained by the Solana community

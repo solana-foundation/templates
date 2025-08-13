@@ -1,5 +1,4 @@
 [
-  "legacy/legacy-next-tailwind",
   "legacy/legacy-next-tailwind-basic",
   "legacy/legacy-next-tailwind-counter",
   "legacy/legacy-react-vite-tailwind",
@@ -14,5 +13,6 @@
   "templates/template-node-script",
   "templates/template-react-vite-tailwind",
   "templates/template-react-vite-tailwind-basic",
-  "templates/template-react-vite-tailwind-counter"
+  "templates/template-react-vite-tailwind-counter",
+  "web3js/web3js-next-tailwind"
 ]
