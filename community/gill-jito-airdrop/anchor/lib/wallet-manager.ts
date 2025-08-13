@@ -229,9 +229,13 @@ export async function distributeSolToWallets(
     try {
       console.log(`💸 Sending ${amountPerWallet} SOL to ${wallet.address}...`)
       
-      // Use simple transfer via solana CLI for now (more reliable)
       const { execSync } = require('child_process')
-      const keypairFile = fromWallet.keypairFile || 'anchor/deploy-wallet.json'
+      
+      let keypairFile = fromWallet.keypairFile || 'anchor/deploy-wallet.json'
+      
+      if (keypairFile === 'deploy-wallet.json' && !process.cwd().endsWith('/anchor')) {
+        keypairFile = 'anchor/deploy-wallet.json'
+      }
       const result = execSync(
         `solana transfer ${wallet.address} ${amountPerWallet} --allow-unfunded-recipient --keypair ${keypairFile} --url devnet`,
         { encoding: 'utf8', cwd: process.cwd() }
