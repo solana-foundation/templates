@@ -1,6 +1,5 @@
 packages:
   - community/*
-  - legacy/*
   - mobile/*
   - templates/*
   - web3js/*

@@ -38,11 +38,6 @@
         "path": "web3js"
       },
       {
-        "description": "Legacy templates using @solana/web3.js",
-        "name": "Legacy Templates",
-        "path": "legacy"
-      },
-      {
         "description": "Templates maintained by the Solana community",
         "name": "Community Templates",
         "path": "community"

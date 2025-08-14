@@ -20,12 +20,12 @@ The repository is divided in groups:
 ```shell
 # Community templates
 community
-# Legacy templates (eg web3js)
-legacy
 # Modern templates (eg gill/@solana/kit)
 templates
 # Mobile templates
 mobile
+# Solana Web3.js templates (legacy)
+web3js
 ```
 
 These groups are configured in the `repokit.groups` array in `package.json`.
@@ -43,7 +43,7 @@ We aim to keep the following structure:
 ```
 
 - Group
-  - One of `community`/`legacy`/`templates`/`mobile` as per `repokit.groups` in `package.json`.
+  - One of `community`/`templates`/`mobile`/`web3js` as per `repokit.groups` in `package.json`.
 - SDK
   - This specifies which primary SDK is used. One of `gill` or `web3js`.
 - Name
@@ -52,7 +52,7 @@ We aim to keep the following structure:
 - Variant
   - The variant of your template. Something that makes it clear what this is about.
 
-Take a look at the `legacy`, `templates` or `mobile` templates for inspiration.
+Take a look at the `templates`, `web3js`, or `mobile` templates for inspiration.
 
 Examples are:
 

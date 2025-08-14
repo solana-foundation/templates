@@ -2,25 +2,14 @@
 node_modules
 
 # We only want a top-level `pnpm-lock.yaml` file.
-legacy/**/package-lock.json
-legacy/**/pnpm-lock.yaml
-legacy/**/yarn.lock
 templates/**/package-lock.json
 templates/**/pnpm-lock.yaml
 templates/**/yarn.lock
+web3js/**/package-lock.json
+web3js/**/pnpm-lock.yaml
+web3js/**/yarn.lock
 
 # Ignore any dist, tmp, or node_modules directories
-legacy/**/.next
-legacy/**/.env
-legacy/**/anchor/target/debug
-legacy/**/anchor/target/deploy
-legacy/**/anchor/target/release
-legacy/**/anchor/target/sbf-solana-solana
-legacy/**/anchor/target/test-ledger
-legacy/**/anchor/target/.rustc_info.json
-legacy/**/dist
-legacy/**/node_modules
-legacy/**/tmp
 templates/**/.next
 templates/**/.env
 templates/**/anchor/target/debug
@@ -32,3 +21,14 @@ templates/**/anchor/target/.rustc_info.json
 templates/**/dist
 templates/**/node_modules
 templates/**/tmp
+web3js/**/.next
+web3js/**/.env
+web3js/**/anchor/target/debug
+web3js/**/anchor/target/deploy
+web3js/**/anchor/target/release
+web3js/**/anchor/target/sbf-solana-solana
+web3js/**/anchor/target/test-ledger
+web3js/**/anchor/target/.rustc_info.json
+web3js/**/dist
+web3js/**/node_modules
+web3js/**/tmp

@@ -1,9 +1,9 @@
 {
-  "name": "legacy-react-vite-tailwind-counter",
+  "name": "web3js-react-vite-tailwind-counter",
   "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter, Anchor Counter program",
   "keywords": [
     "anchor-counter",
-    "legacy",
+    "web3js",
     "react",
     "solana-web3js",
     "tailwind",
