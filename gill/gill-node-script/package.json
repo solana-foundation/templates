@@ -1,5 +1,5 @@
 {
-  "name": "template-node-script",
+  "name": "gill-node-script",
   "description": "Node.js script with gill (based on @solana/kit)",
   "keywords": [
     "gill",

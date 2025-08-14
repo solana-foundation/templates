@@ -33,6 +33,14 @@ Gill Templates (based on @solana/kit)
 
 `express` `gill` `node` `solana-kit`
 
+### [gill-node-script](gill/gill-node-script)
+
+`gh:solana-foundation/templates/gill/gill-node-script`
+
+> Node.js script with gill (based on @solana/kit)
+
+`gill` `node` `solana-kit`
+
 # Templates
 
 Templates using gill (based on @solana/kit)
@@ -60,14 +68,6 @@ Templates using gill (based on @solana/kit)
 > Next.js, Tailwind, Anchor Counter example, gill (based on @solana/kit), Wallet UI
 
 `anchor-counter` `gill` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui`
-
-### [template-node-script](templates/template-node-script)
-
-`gh:solana-foundation/templates/templates/template-node-script`
-
-> Node.js script with gill (based on @solana/kit)
-
-`gill` `node` `solana-kit`
 
 ### [template-react-vite-tailwind](templates/template-react-vite-tailwind)
 

@@ -10,6 +10,13 @@
         "keywords": ["express", "gill", "node", "solana-kit"],
         "name": "gill-node-express",
         "path": "gill/gill-node-express"
+      },
+      {
+        "description": "Node.js script with gill (based on @solana/kit)",
+        "id": "gh:solana-foundation/templates/gill/gill-node-script",
+        "keywords": ["gill", "node", "solana-kit"],
+        "name": "gill-node-script",
+        "path": "gill/gill-node-script"
       }
     ]
   },
@@ -38,13 +45,6 @@
         "keywords": ["anchor-counter", "gill", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
         "name": "template-next-tailwind-counter",
         "path": "templates/template-next-tailwind-counter"
-      },
-      {
-        "description": "Node.js script with gill (based on @solana/kit)",
-        "id": "gh:solana-foundation/templates/templates/template-node-script",
-        "keywords": ["gill", "node", "solana-kit"],
-        "name": "template-node-script",
-        "path": "templates/template-node-script"
       },
       {
         "description": "React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI",
