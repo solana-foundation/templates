@@ -124,9 +124,9 @@ export function updateGillRecipientsWithMerkleRoot(merkleRoot: string, config: G
 }
 
 export function updateGillEnvironmentFile(
-  programId: string | Address, 
+  programId: string | Address,
   testWallets?: GillWalletInfo[],
-  config: GillFileConfig = {}
+  config: GillFileConfig = {},
 ): void {
   try {
     console.log('📝 Updating environment file with program ID and test wallet... (Gill)')
@@ -142,9 +142,9 @@ export function updateGillEnvironmentFile(
     } else {
       envFile = envFileName
     }
-    
+
     if (!fs.existsSync(envFile)) {
-      const altEnvFile = (workingDir === 'anchor' || workingDir === '.') ? '../.env' : '.env'
+      const altEnvFile = workingDir === 'anchor' || workingDir === '.' ? '../.env' : '.env'
       if (fs.existsSync(altEnvFile)) {
         envFile = altEnvFile
       }
@@ -153,7 +153,7 @@ export function updateGillEnvironmentFile(
     let envContent = ''
     const programIdVar = `NEXT_PUBLIC_PROGRAM_ID=${programIdStr}`
     const networkVar = `NEXT_PUBLIC_SOLANA_NETWORK=devnet`
-    
+
     // Get the first test wallet's private key for the environment
     let privateKeyVar = ''
     if (testWallets && testWallets.length > 0) {
@@ -190,14 +190,14 @@ export function updateGillEnvironmentFile(
       const comments = [
         '# Solana Airdrop Configuration',
         '# Generated automatically by deploy-setup script using Gill',
-        ''
+        '',
       ]
-      
+
       const vars = [networkVar, programIdVar]
       if (privateKeyVar) {
         vars.push(privateKeyVar)
       }
-      
+
       envContent = comments.concat(vars).join('\n') + '\n'
       console.log(`   ✅ Created new ${path.basename(envFile)} with configuration (Gill)`)
     }
@@ -216,7 +216,7 @@ export function updateGillEnvironmentFile(
 export function updateGillFrontendRecipientsFile(config: GillFileConfig = {}): void {
   try {
     console.log('🎨 Updating frontend recipients file... (Gill)')
-    
+
     const { workingDir = 'anchor' } = config
     const anchorRecipientsPath = `${workingDir}/recipients.json`
     // Determine the correct path to the frontend file
@@ -226,15 +226,15 @@ export function updateGillFrontendRecipientsFile(config: GillFileConfig = {}): v
     } else {
       frontendRecipientsPath = 'src/lib/recipients.ts'
     }
-    
+
     // Load the anchor recipients data
     if (!fs.existsSync(anchorRecipientsPath)) {
       console.log(`⚠️  Anchor recipients file not found: ${anchorRecipientsPath}`)
       return
     }
-    
+
     const recipientsData: RecipientsFile = JSON.parse(fs.readFileSync(anchorRecipientsPath, 'utf8'))
-    
+
     // Generate the TypeScript content for the frontend
     const frontendContent = `/**
  * Recipients Data
@@ -284,7 +284,6 @@ export type { RecipientFromJson, RecipientsFile }
     console.log(`   📊 Recipients: ${recipientsData.recipients.length}`)
     console.log(`   🌳 Merkle Root: ${recipientsData.merkleRoot}`)
     console.log(`   📍 Program ID: ${recipientsData.programId}`)
-    
   } catch (error) {
     console.error('❌ Error updating frontend recipients file:', error)
     console.log('⚠️  You may need to manually sync the frontend recipients data')
@@ -309,11 +308,11 @@ export function loadGillRecipientsFile(filePath?: string, config: GillFileConfig
 
 export function writeGillWalletFile(wallet: GillWalletInfo, config: GillFileConfig = {}): void {
   const { workingDir = 'anchor' } = config
-  
+
   try {
     const walletPath = path.join(workingDir, wallet.keypairFile)
     const walletData = JSON.stringify(wallet.secretKey.array, null, 2)
-    
+
     fs.writeFileSync(walletPath, walletData)
     console.log(`✅ Created wallet file: ${walletPath} (Gill)`)
   } catch (error) {
@@ -324,31 +323,31 @@ export function writeGillWalletFile(wallet: GillWalletInfo, config: GillFileConf
 
 export function writeGillTestWalletsFile(testWallets: GillWalletInfo[], config: GillFileConfig = {}): void {
   const { workingDir = 'anchor' } = config
-  
+
   try {
     const testWalletsPath = path.join(workingDir, 'test-wallets.json')
     const testWalletsData = {
-      wallets: testWallets.map(wallet => ({
+      wallets: testWallets.map((wallet) => ({
         name: wallet.name,
         address: wallet.address,
         keypairFile: wallet.keypairFile,
         balance: wallet.balance,
         funded: wallet.funded,
         privateKey: wallet.privateKey,
-        secretKey: wallet.secretKey
+        secretKey: wallet.secretKey,
       })),
       metadata: {
         createdAt: new Date().toISOString(),
         network: config.network || 'devnet',
-        count: testWallets.length
-      }
+        count: testWallets.length,
+      },
     }
-    
+
     fs.writeFileSync(testWalletsPath, JSON.stringify(testWalletsData, null, 2))
     console.log(`✅ Created test wallets file: ${testWalletsPath} (Gill)`)
-    
+
     // Also write individual wallet files
-    testWallets.forEach(wallet => {
+    testWallets.forEach((wallet) => {
       writeGillWalletFile(wallet, config)
     })
   } catch (error) {
@@ -385,14 +384,14 @@ export function getGillCodamaProgramId(config: GillFileConfig = {}): string | nu
 
   try {
     const codamaClientPath = path.join(workingDir, 'generated', 'clients', 'ts', 'programs', 'solanaDistributor.ts')
-    
+
     if (!fs.existsSync(codamaClientPath)) {
       return null
     }
 
     const codamaContent = fs.readFileSync(codamaClientPath, 'utf8')
     const match = codamaContent.match(/SOLANA_DISTRIBUTOR_PROGRAM_ADDRESS\s*=\s*'([^']+)'/)
-    
+
     if (match) {
       return match[1]
     }
@@ -423,7 +422,7 @@ export async function ensureGillCodamaSync(config: GillFileConfig = {}): Promise
     // Import and run the codama generation
     const { execSync } = require('child_process')
     const codamaConfigPath = path.join(workingDir, 'codama.config.ts')
-    
+
     if (!fs.existsSync(codamaConfigPath)) {
       console.error('❌ Codama config not found at:', codamaConfigPath)
       return false
@@ -432,7 +431,7 @@ export async function ensureGillCodamaSync(config: GillFileConfig = {}): Promise
     console.log('⚡ Regenerating Codama client...')
     execSync(`npx ts-node codama.config.ts`, {
       cwd: workingDir,
-      stdio: 'pipe'
+      stdio: 'pipe',
     })
 
     // Verify the update was successful
@@ -444,7 +443,6 @@ export async function ensureGillCodamaSync(config: GillFileConfig = {}): Promise
       console.error('❌ Failed to update Codama client program ID')
       return false
     }
-
   } catch (error) {
     console.error('❌ Error syncing Codama client:', error)
     return false

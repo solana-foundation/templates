@@ -191,21 +191,21 @@ export async function ensureGillWalletFunded(
 export async function fundPrimaryWallet(
   rpc: Rpc<SolanaRpcApi>,
   wallet: GillWalletInfo,
-  requiredAmount: number = 5
+  requiredAmount: number = 5,
 ): Promise<GillWalletInfo> {
   const balance = await checkGillWalletBalance(rpc, wallet.address)
-  
+
   if (balance < requiredAmount) {
     console.log(`💧 Funding primary wallet with ${requiredAmount} SOL...`)
     const airdropSuccess = await requestGillAirdrop(rpc, wallet.address, requiredAmount)
-    
+
     if (!airdropSuccess) {
       throw new Error(`Failed to fund primary wallet ${wallet.address}`)
     }
-    
+
     return await updateGillWalletStatus(rpc, wallet)
   }
-  
+
   console.log(`✅ Primary wallet already has ${balance} SOL (required: ${requiredAmount} SOL)`)
   return wallet
 }
@@ -214,7 +214,7 @@ export async function distributeSolToWallets(
   rpc: Rpc<SolanaRpcApi>,
   fromWallet: GillWalletInfo,
   toWallets: GillWalletInfo[],
-  amountPerWallet: number = 0.1
+  amountPerWallet: number = 0.1,
 ): Promise<GillWalletInfo[]> {
   if (!fromWallet.signer) {
     throw new Error('Primary wallet must have signer to distribute SOL')
@@ -222,40 +222,39 @@ export async function distributeSolToWallets(
 
   console.log(`📤 Distributing ${amountPerWallet} SOL to ${toWallets.length} wallets...`)
   console.log(`💰 From wallet: ${fromWallet.address} (${fromWallet.keypairFile})`)
-  
+
   const updatedWallets: GillWalletInfo[] = []
-  
+
   for (const wallet of toWallets) {
     try {
       console.log(`💸 Sending ${amountPerWallet} SOL to ${wallet.address}...`)
-      
+
       const { execSync } = require('child_process')
-      
+
       let keypairFile = fromWallet.keypairFile || 'anchor/deploy-wallet.json'
-      
+
       if (keypairFile === 'deploy-wallet.json' && !process.cwd().endsWith('/anchor')) {
         keypairFile = 'anchor/deploy-wallet.json'
       }
       const result = execSync(
         `solana transfer ${wallet.address} ${amountPerWallet} --allow-unfunded-recipient --keypair ${keypairFile} --url devnet`,
-        { encoding: 'utf8', cwd: process.cwd() }
+        { encoding: 'utf8', cwd: process.cwd() },
       )
-      
+
       // Extract signature from output
       const signatureMatch = result.match(/Signature: ([A-Za-z0-9]+)/)
       const signature = signatureMatch ? signatureMatch[1] : 'unknown'
-      
+
       const updatedWallet = {
         ...wallet,
         balance: `${amountPerWallet} SOL`,
         funded: true,
       }
-      
+
       updatedWallets.push(updatedWallet)
       console.log(`✅ Transferred to ${wallet.address} (${signature})`)
-      
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
+
+      await new Promise((resolve) => setTimeout(resolve, 1000))
     } catch (error) {
       console.error(`❌ Failed to transfer to ${wallet.address}:`, error)
       updatedWallets.push({
@@ -265,7 +264,7 @@ export async function distributeSolToWallets(
       })
     }
   }
-  
+
   return updatedWallets
 }
 
@@ -284,7 +283,7 @@ export async function generateGillTestWallets(rpc: Rpc<SolanaRpcApi>, count: num
 
 export async function createPrimaryWalletFromInput(
   walletInput: string | null,
-  walletName: string = 'deploy-wallet'
+  walletName: string = 'deploy-wallet',
 ): Promise<GillWalletInfo> {
   if (!walletInput) {
     console.log(`🔑 Creating new ${walletName}...`)
@@ -299,28 +298,23 @@ export async function setupEfficientWalletFunding(
   rpc: Rpc<SolanaRpcApi>,
   primaryWallet: GillWalletInfo,
   testWallets: GillWalletInfo[],
-  distributionAmount: number = 0.1
+  distributionAmount: number = 0.1,
 ): Promise<{
   primaryWallet: GillWalletInfo
   testWallets: GillWalletInfo[]
 }> {
   const primaryWalletAmount = 5
   const totalDistribution = testWallets.length * distributionAmount
-  
+
   console.log(`🎯 Setting up efficient funding:`)
   console.log(`   • Primary wallet: ${primaryWalletAmount} SOL airdrop`)
   console.log(`   • Distribution: ${distributionAmount} SOL × ${testWallets.length} wallets = ${totalDistribution} SOL`)
   console.log(`   • Remaining: ~${(primaryWalletAmount - totalDistribution).toFixed(2)} SOL for fees and buffer`)
-  
+
   const fundedPrimary = await fundPrimaryWallet(rpc, primaryWallet, primaryWalletAmount)
-  
-  const fundedTestWallets = await distributeSolToWallets(
-    rpc,
-    fundedPrimary,
-    testWallets,
-    distributionAmount
-  )
-  
+
+  const fundedTestWallets = await distributeSolToWallets(rpc, fundedPrimary, testWallets, distributionAmount)
+
   return {
     primaryWallet: fundedPrimary,
     testWallets: fundedTestWallets,

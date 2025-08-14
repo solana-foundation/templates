@@ -3,6 +3,7 @@
 A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree. Only the 32‑byte Merkle root is stored on-chain. The project uses Anchor for the on-chain program, Codama for a generated TypeScript client, and the modern Solana Kit ("Gill") for transactions. This README focuses on how the program works and how to use it through the provided scripts.
 
 ### Table of Contents
+
 - [Solana Merkle Airdrop Distributor (Gill + Codama + Anchor)](#solana-merkle-airdrop-distributor-gill--codama--anchor)
   - [Table of Contents](#table-of-contents)
 - [Prerequisites](#prerequisites)
@@ -118,10 +119,12 @@ avm use latest
 Node.js and Yarn are required for running TypeScript tests and the frontend:
 
 **Node.js:**
+
 - Visit [nodejs.org](https://nodejs.org/) and install the LTS version
 - Or use a version manager like `nvm`: `nvm install --lts && nvm use --lts`
 
 **Yarn:**
+
 ```bash
 npm install -g yarn
 ```
@@ -133,10 +136,10 @@ Check that all tools are installed correctly:
 ```bash
 # Check Rust
 rustc --version
-# Expected: rustc 1.84.1+ 
+# Expected: rustc 1.84.1+
 
 # Check Solana CLI
-solana --version  
+solana --version
 # Expected: solana-cli 2.0.26+
 
 # Check Anchor CLI
@@ -201,6 +204,7 @@ solana balance
 ---
 
 ### Quick Setup
+
 ```bash
 pnpm create solana-dapp@latest -t gh:solana-foundation/templates/community/gill-jito-airdrop
 ```
@@ -271,11 +275,13 @@ Airdrop distribution is reduced to a single on-chain commitment (the Merkle root
 ### Merkle Airdrop Model
 
 #### Why Merkle (root-only on-chain)
+
 - Storing each recipient on-chain is expensive. A Merkle tree commits to the entire set with a single 32‑byte root.
 - Each recipient proves inclusion with a logarithmic-size proof. On-chain verifies the proof against the stored root.
 - Benefits: smaller state, predictable compute cost, scalable to large recipient sets.
 
 #### Proof format and verification flow
+
 - Leaf: hash of recipient data, typically `H(pubkey || amount)`. The exact encoding must match what the generator uses.
 - Proof: ordered array of sibling hashes along the path to the root.
 - Verification (simplified):
@@ -290,6 +296,7 @@ Gotcha: Proof order and the leaf encoding must match exactly. Any mismatch yield
 ### On-Chain Design
 
 #### Accounts
+
 - Airdrop State PDA
   - Purpose: Stores immutable Merkle root and global airdrop parameters.
   - Example seeds: ["airdrop", authority, airdropId]
@@ -319,6 +326,7 @@ Gotcha: Proof order and the leaf encoding must match exactly. Any mismatch yield
 Gotcha: Seeds shown are representative. Use the seeds compiled into your program and generated client.
 
 #### Instructions
+
 - initializeAirdrop
   - Inputs: `merkleRoot: [u8; 32]`, `totalAmount: u64`
   - Accounts: `authority (signer)`, `airdropState (PDA)`, `vault (PDA)`, `systemProgram`
@@ -338,11 +346,13 @@ Gotcha: Seeds shown are representative. Use the seeds compiled into your program
     - Updates `claimedAmount`
 
 Safeguards:
+
 - Double-claim protection via `Claim Status` PDA.
 - Root immutability: once set, the airdrop membership is fixed.
 - Program-owned vault: only program logic moves funds.
 
 #### State transitions and funds flow
+
 - Initialize: `airdropState` is created with root and totals; `vault` is established and funded for the airdrop.
 - Claim: Upon proof verification, lamports flow from `vault` to the claimant; `claimStatus` is created and marked to prevent reuse.
 - Completion: When `claimedAmount == totalAmount`, distribution is complete. Any remainder handling (e.g., sweep/close) depends on program design.
@@ -354,37 +364,39 @@ Safeguards:
 Below are concise TypeScript examples using the generated Codama client. These snippets assume the scripts have already generated and wired the client paths. Use Solana Kit ("Gill") to create and send transactions.
 
 Initialize airdrop:
+
 ```ts
-import { getInitializeAirdropInstruction } from './anchor/generated/clients/ts/instructions/initializeAirdrop';
-import { address } from 'gill'; // Gill/Solana Kit address helpers
+import { getInitializeAirdropInstruction } from './anchor/generated/clients/ts/instructions/initializeAirdrop'
+import { address } from 'gill' // Gill/Solana Kit address helpers
 // import your client, RPC, and wallet abstractions from your app’s runtime
 
 const initIx = getInitializeAirdropInstruction({
-  airdropState: airdropStatePda,      // PDA derived by client/helpers
-  authority: authorityPubkey,         // wallet pubkey
+  airdropState: airdropStatePda, // PDA derived by client/helpers
+  authority: authorityPubkey, // wallet pubkey
   merkleRoot: new Uint8Array(root32), // 32-byte root
-  amount: BigInt(totalLamports),      // u64
-});
+  amount: BigInt(totalLamports), // u64
+})
 
 // Use your Solana Kit transaction helpers to send:
 // await sendInstructions([initIx], { payer: authority, rpc });
 ```
 
 Claim airdrop:
-```ts
-import { getClaimAirdropInstruction } from './anchor/generated/clients/ts/instructions/claimAirdrop';
-import { address } from 'gill';
 
-const proofBytes = proofHexArray.map(h => new Uint8Array(Buffer.from(h.slice(2), 'hex')));
+```ts
+import { getClaimAirdropInstruction } from './anchor/generated/clients/ts/instructions/claimAirdrop'
+import { address } from 'gill'
+
+const proofBytes = proofHexArray.map((h) => new Uint8Array(Buffer.from(h.slice(2), 'hex')))
 
 const claimIx = getClaimAirdropInstruction({
   airdropState: airdropStatePda,
-  userClaim: claimStatusPda,      // PDA for this recipient
-  signer: recipientPubkey,        // claimant wallet
-  proof: proofBytes,              // [[u8; 32]]
+  userClaim: claimStatusPda, // PDA for this recipient
+  signer: recipientPubkey, // claimant wallet
+  proof: proofBytes, // [[u8; 32]]
   amount: BigInt(recipientLamports),
   leafIndex: recipientIndex,
-});
+})
 
 // await sendInstructions([claimIx], { payer: recipient, rpc });
 ```
@@ -416,6 +428,7 @@ Gotcha: Root immutability means membership is fixed. Changing recipients require
 ### Testing and Validation
 
 The test suite validates:
+
 - Initialization creates PDAs and records the Merkle root
 - Happy-path claim transfers lamports and marks the claim
 - Double-claim is rejected via `Claim Status` PDA

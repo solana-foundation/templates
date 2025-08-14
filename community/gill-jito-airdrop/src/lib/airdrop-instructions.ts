@@ -15,20 +15,27 @@ export interface ClaimAirdropArgs {
  */
 export function serializeClaimInstructionData(args: ClaimAirdropArgs): Uint8Array {
   const { amount, proof, leafIndex } = args
-  
+
   return new Uint8Array([
     // Discriminator (8 bytes) - identifies the claim_airdrop instruction
-    137, 50, 122, 111, 89, 254, 8, 20,
-    
+    137,
+    50,
+    122,
+    111,
+    89,
+    254,
+    8,
+    20,
+
     // Amount (8 bytes as u64)
     ...new Uint8Array(new BigUint64Array([BigInt(amount)]).buffer),
-    
-    // Proof length (4 bytes as u32) 
+
+    // Proof length (4 bytes as u32)
     ...new Uint8Array(new Uint32Array([proof.length]).buffer),
-    
+
     // Proof data (variable length) - flattened array of 32-byte hashes
     ...proof.flat(),
-    
+
     // Leaf index (8 bytes as u64)
     ...new Uint8Array(new BigUint64Array([BigInt(leafIndex)]).buffer),
   ])
@@ -50,4 +57,4 @@ export const ACCOUNT_ROLES = {
 export const PROGRAM_ADDRESSES = {
   AIRDROP_PROGRAM: 'ErbDoJTnJyG6EBXHeFochTsHJhB3Jfjc3MF1L9aNip3y',
   SYSTEM_PROGRAM: '11111111111111111111111111111111',
-} as const 
+} as const

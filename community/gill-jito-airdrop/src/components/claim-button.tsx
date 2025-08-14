@@ -22,8 +22,8 @@ export const ClaimButton = () => {
       </button>
 
       <p className="text-xs text-gray-500 max-w-md text-center">
-        This will automatically claim your airdrop using the configured private key. Make sure
-        USER_PRIVATE_KEY is set in your environment.
+        This will automatically claim your airdrop using the configured private key. Make sure USER_PRIVATE_KEY is set
+        in your environment.
       </p>
     </div>
   )
