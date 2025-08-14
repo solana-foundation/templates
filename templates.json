@@ -122,17 +122,10 @@
         "keywords": ["anchor-basic", "react", "solana-web3js", "tailwind", "typescript", "vite", "wallet-adapter"],
         "name": "web3js-react-vite-tailwind-basic",
         "path": "web3js/web3js-react-vite-tailwind-basic"
-      }
-    ]
-  },
-  {
-    "description": "Legacy templates using @solana/web3.js",
-    "name": "Legacy Templates",
-    "path": "legacy",
-    "templates": [
+      },
       {
         "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter, Anchor Counter program",
-        "id": "gh:solana-foundation/templates/legacy/legacy-react-vite-tailwind-counter",
+        "id": "gh:solana-foundation/templates/web3js/web3js-react-vite-tailwind-counter",
         "keywords": [
           "anchor-counter",
           "legacy",
@@ -144,9 +137,15 @@
           "wallet-adapter"
         ],
         "name": "legacy-react-vite-tailwind-counter",
-        "path": "legacy/legacy-react-vite-tailwind-counter"
+        "path": "web3js/web3js-react-vite-tailwind-counter"
       }
     ]
+  },
+  {
+    "description": "Legacy templates using @solana/web3.js",
+    "name": "Legacy Templates",
+    "path": "legacy",
+    "templates": []
   },
   {
     "description": "Templates maintained by the Solana community",
