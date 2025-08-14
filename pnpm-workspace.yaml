@@ -2,7 +2,6 @@ packages:
   - community/*
   - gill/*
   - mobile/*
-  - templates/*
   - web3js/*
 onlyBuiltDependencies:
   - '@parcel/watcher'

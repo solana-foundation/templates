@@ -66,10 +66,6 @@ Gill Templates (based on @solana/kit)
 
 `anchor-counter` `gill` `react` `solana-kit` `tailwind` `typescript` `vite` `wallet-ui`
 
-# Templates
-
-Templates using gill (based on @solana/kit)
-
 # Solana Mobile
 
 Solana Mobile Templates

@@ -6,18 +6,18 @@ pnpm-lock.yaml
 .next
 
 # Ignore any dist, tmp, or node_modules directories
-templates/**/.env
-templates/**/.anchor
-templates/**/anchor/src/client/js/generated
-templates/**/anchor/target/debug
-templates/**/anchor/target/deploy
-templates/**/anchor/target/release
-templates/**/anchor/target/sbf-solana-solana
-templates/**/anchor/target/test-ledger
-templates/**/anchor/target/.rustc_info.json
-templates/**/dist
-templates/**/node_modules
-templates/**/tmp
+gill/**/.env
+gill/**/.anchor
+gill/**/anchor/src/client/js/generated
+gill/**/anchor/target/debug
+gill/**/anchor/target/deploy
+gill/**/anchor/target/release
+gill/**/anchor/target/sbf-solana-solana
+gill/**/anchor/target/test-ledger
+gill/**/anchor/target/.rustc_info.json
+gill/**/dist
+gill/**/node_modules
+gill/**/tmp
 web3js/**/.env
 web3js/**/.anchor
 web3js/**/anchor/target/debug

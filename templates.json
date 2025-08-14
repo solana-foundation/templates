@@ -63,12 +63,6 @@
     ]
   },
   {
-    "description": "Templates using gill (based on @solana/kit)",
-    "name": "Templates",
-    "path": "templates",
-    "templates": []
-  },
-  {
     "description": "Solana Mobile Templates",
     "name": "Solana Mobile",
     "path": "mobile",
