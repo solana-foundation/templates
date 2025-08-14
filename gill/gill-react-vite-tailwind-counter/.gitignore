@@ -26,3 +26,14 @@ dist-ssr
 # TypeScript cache
 *.tsbuildinfo
 /tmp
+
+# Anchor
+/anchor/.anchor
+/anchor/target/debug
+/anchor/target/deploy
+/anchor/target/release
+/anchor/target/sbf-solana-solana
+/anchor/target/test-ledger
+/anchor/target/.rustc_info.json
+test-ledger
+**/*.rs.bk
