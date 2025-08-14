@@ -5,6 +5,13 @@
     "path": "gill",
     "templates": [
       {
+        "description": "Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
+        "id": "gh:solana-foundation/templates/gill/gill-next-tailwind",
+        "keywords": ["gill", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
+        "name": "gill-next-tailwind",
+        "path": "gill/gill-next-tailwind"
+      },
+      {
         "description": "Next.js, Tailwind, basic Anchor example, gill (based on @solana/kit), Wallet UI",
         "id": "gh:solana-foundation/templates/gill/gill-next-tailwind-basic",
         "keywords": ["anchor-basic", "gill", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
@@ -59,15 +66,7 @@
     "description": "Templates using gill (based on @solana/kit)",
     "name": "Templates",
     "path": "templates",
-    "templates": [
-      {
-        "description": "Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
-        "id": "gh:solana-foundation/templates/templates/template-next-tailwind",
-        "keywords": ["gill", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
-        "name": "template-next-tailwind",
-        "path": "templates/template-next-tailwind"
-      }
-    ]
+    "templates": []
   },
   {
     "description": "Solana Mobile Templates",
