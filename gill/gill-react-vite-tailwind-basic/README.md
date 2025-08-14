@@ -1,4 +1,4 @@
-# template-react-vite-tailwind-basic
+# gill-react-vite-tailwind-basic
 
 This is a Vite app containing:
 
@@ -14,7 +14,7 @@ This is a Vite app containing:
 #### Download the template
 
 ```shell
-pnpm create solana-dapp@latest -t gh:solana-foundation/templates/templates/template-react-vite-tailwind-basic
+pnpm create solana-dapp@latest -t gh:solana-foundation/templates/gill/gill-react-vite-tailwind-basic
 ```
 
 #### Install Dependencies

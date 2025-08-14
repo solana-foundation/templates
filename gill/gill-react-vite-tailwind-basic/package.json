@@ -1,5 +1,5 @@
 {
-  "name": "template-react-vite-tailwind-basic",
+  "name": "gill-react-vite-tailwind-basic",
   "description": "React+Vite, Tailwind, gill (based on @solana/kit), basic Anchor example, Wallet UI",
   "keywords": [
     "anchor-basic",
