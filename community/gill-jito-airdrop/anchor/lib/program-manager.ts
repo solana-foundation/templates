@@ -189,13 +189,6 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
       testWallets = await generateGillTestWallets(client.rpc, numTestWallets)
     }
 
-    console.log('\n💰 Setting up efficient wallet funding...')
-    const client = createGillWalletClient(networkConfig)
-    const fundingResult = await setupEfficientWalletFunding(client.rpc, deployWallet, testWallets, 0.1)
-
-    deployWallet = fundingResult.primaryWallet
-    testWallets = fundingResult.testWallets
-
     let programId = getGillCurrentProgramId({ workingDir: config.workingDir })
 
     console.log('\n📝 Updating configuration files...')
@@ -203,10 +196,16 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
     updateGillAnchorConfig(deployWallet, programId, { workingDir: config.workingDir })
     generateGillRecipientsJson(testWallets, programId, airdropAmountLamports, { workingDir: config.workingDir })
 
-    // Write wallet files to disk
     console.log('\n💾 Writing wallet files...')
     writeGillWalletFile(deployWallet, { workingDir: config.workingDir })
     writeGillTestWalletsFile(testWallets, { workingDir: config.workingDir })
+
+    console.log('\n💰 Setting up efficient wallet funding...')
+    const client = createGillWalletClient(networkConfig)
+    const fundingResult = await setupEfficientWalletFunding(client.rpc, deployWallet, testWallets, 0.1)
+
+    deployWallet = fundingResult.primaryWallet
+    testWallets = fundingResult.testWallets
 
     console.log('\n🌳 Generating merkle tree...')
     const recipientsData = loadGillRecipientsFile(undefined, { workingDir: config.workingDir })
