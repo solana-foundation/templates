@@ -122,17 +122,17 @@ Templates using @solana/web3.js (legacy)
 
 `react` `solana-web3js` `tailwind` `typescript` `vite` `wallet-adapter`
 
-# Legacy Templates
+### [web3js-react-vite-tailwind-basic](web3js/web3js-react-vite-tailwind-basic)
 
-Legacy templates using @solana/web3.js
-
-### [legacy-react-vite-tailwind-basic](legacy/legacy-react-vite-tailwind-basic)
-
-`gh:solana-foundation/templates/legacy/legacy-react-vite-tailwind-basic`
+`gh:solana-foundation/templates/web3js/web3js-react-vite-tailwind-basic`
 
 > React + Vite, Tailwind, @solana/web3.js, Wallet Adapter, basic Anchor program
 
-`anchor-basic` `legacy` `react` `solana-web3js` `tailwind` `typescript` `vite` `wallet-adapter`
+`anchor-basic` `react` `solana-web3js` `tailwind` `typescript` `vite` `wallet-adapter`
+
+# Legacy Templates
+
+Legacy templates using @solana/web3.js
 
 ### [legacy-react-vite-tailwind-counter](legacy/legacy-react-vite-tailwind-counter)
 
