@@ -1,8 +1,7 @@
 {
-  "name": "legacy-react-vite-tailwind",
+  "name": "web3js-react-vite-tailwind",
   "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter",
   "keywords": [
-    "legacy",
     "react",
     "solana-web3js",
     "tailwind",
