@@ -98,17 +98,17 @@ Templates using @solana/web3.js (legacy)
 
 `nextjs` `react` `solana-web3js` `tailwind` `typescript` `wallet-adapter`
 
-# Legacy Templates
+### [web3js-next-tailwind-basic](web3js/web3js-next-tailwind-basic)
 
-Legacy templates using @solana/web3.js
-
-### [legacy-next-tailwind-basic](legacy/legacy-next-tailwind-basic)
-
-`gh:solana-foundation/templates/legacy/legacy-next-tailwind-basic`
+`gh:solana-foundation/templates/web3js/web3js-next-tailwind-basic`
 
 > Next.js, Tailwind, @solana/web3.js, Wallet Adapter, basic Anchor program
 
-`anchor-basic` `legacy` `nextjs` `react` `solana-web3js` `tailwind` `typescript` `wallet-adapter`
+`anchor-basic` `nextjs` `react` `solana-web3js` `tailwind` `typescript` `wallet-adapter`
+
+# Legacy Templates
+
+Legacy templates using @solana/web3.js
 
 ### [legacy-next-tailwind-counter](legacy/legacy-next-tailwind-counter)
 
