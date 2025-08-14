@@ -1,10 +1,10 @@
 [
+  "gill/gill-node-express",
   "mobile/web3js-expo",
   "mobile/web3js-expo-paper",
   "templates/template-next-tailwind",
   "templates/template-next-tailwind-basic",
   "templates/template-next-tailwind-counter",
-  "templates/template-node-express",
   "templates/template-node-script",
   "templates/template-react-vite-tailwind",
   "templates/template-react-vite-tailwind-basic",

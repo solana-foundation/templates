@@ -1,4 +1,4 @@
-# template-node-express
+# gill-node-express
 
 Simple node Express API that comes with [gill](https://github.com/solana-foundation/gill)
 based on [@solana/kit](https://github.com/anza-xyz/kit).
@@ -9,7 +9,7 @@ Clone the repo:
 
 ```shell
 git clone https://github.com/solana-foundation/templates
-cd templates/templates/template-node-express
+cd templates/gill/gill-node-express
 ```
 
 Install dependencies:

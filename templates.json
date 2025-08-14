@@ -1,5 +1,19 @@
 [
   {
+    "description": "Gill Templates (based on @solana/kit)",
+    "name": "Gill",
+    "path": "gill",
+    "templates": [
+      {
+        "description": "Node.js Express API with gill (based on @solana/kit)",
+        "id": "gh:solana-foundation/templates/gill/gill-node-express",
+        "keywords": ["express", "gill", "node", "solana-kit"],
+        "name": "gill-node-express",
+        "path": "gill/gill-node-express"
+      }
+    ]
+  },
+  {
     "description": "Templates using gill (based on @solana/kit)",
     "name": "Templates",
     "path": "templates",
@@ -24,13 +38,6 @@
         "keywords": ["anchor-counter", "gill", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
         "name": "template-next-tailwind-counter",
         "path": "templates/template-next-tailwind-counter"
-      },
-      {
-        "description": "Node.js Express API with gill (based on @solana/kit)",
-        "id": "gh:solana-foundation/templates/templates/template-node-express",
-        "keywords": ["express", "gill", "node", "solana-kit"],
-        "name": "template-node-express",
-        "path": "templates/template-node-express"
       },
       {
         "description": "Node.js script with gill (based on @solana/kit)",
