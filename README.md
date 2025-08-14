@@ -25,6 +25,14 @@ yarn create-solana-dapp [-t <template-name>]
 
 Gill Templates (based on @solana/kit)
 
+### [gill-next-tailwind-counter](gill/gill-next-tailwind-counter)
+
+`gh:solana-foundation/templates/gill/gill-next-tailwind-counter`
+
+> Next.js, Tailwind, Anchor Counter example, gill (based on @solana/kit), Wallet UI
+
+`anchor-counter` `gill` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui`
+
 ### [gill-node-express](gill/gill-node-express)
 
 `gh:solana-foundation/templates/gill/gill-node-express`
@@ -84,14 +92,6 @@ Templates using gill (based on @solana/kit)
 > Next.js, Tailwind, basic Anchor example, gill (based on @solana/kit), Wallet UI
 
 `anchor-basic` `gill` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui`
-
-### [template-next-tailwind-counter](templates/template-next-tailwind-counter)
-
-`gh:solana-foundation/templates/templates/template-next-tailwind-counter`
-
-> Next.js, Tailwind, Anchor Counter example, gill (based on @solana/kit), Wallet UI
-
-`anchor-counter` `gill` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui`
 
 # Solana Mobile
 

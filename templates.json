@@ -5,6 +5,13 @@
     "path": "gill",
     "templates": [
       {
+        "description": "Next.js, Tailwind, Anchor Counter example, gill (based on @solana/kit), Wallet UI",
+        "id": "gh:solana-foundation/templates/gill/gill-next-tailwind-counter",
+        "keywords": ["anchor-counter", "gill", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
+        "name": "gill-next-tailwind-counter",
+        "path": "gill/gill-next-tailwind-counter"
+      },
+      {
         "description": "Node.js Express API with gill (based on @solana/kit)",
         "id": "gh:solana-foundation/templates/gill/gill-node-express",
         "keywords": ["express", "gill", "node", "solana-kit"],
@@ -59,13 +66,6 @@
         "keywords": ["anchor-basic", "gill", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
         "name": "template-next-tailwind-basic",
         "path": "templates/template-next-tailwind-basic"
-      },
-      {
-        "description": "Next.js, Tailwind, Anchor Counter example, gill (based on @solana/kit), Wallet UI",
-        "id": "gh:solana-foundation/templates/templates/template-next-tailwind-counter",
-        "keywords": ["anchor-counter", "gill", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
-        "name": "template-next-tailwind-counter",
-        "path": "templates/template-next-tailwind-counter"
       }
     ]
   },

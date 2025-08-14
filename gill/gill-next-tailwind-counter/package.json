@@ -1,5 +1,5 @@
 {
-  "name": "template-next-tailwind-counter",
+  "name": "gill-next-tailwind-counter",
   "description": "Next.js, Tailwind, Anchor Counter example, gill (based on @solana/kit), Wallet UI",
   "keywords": [
     "anchor-counter",
