@@ -1,4 +1,4 @@
-import { Address } from "gill"
+import { Address } from 'gill'
 
 interface MerkleTreeNode {
   claimant: number[] // PublicKey as byte array
@@ -19,6 +19,6 @@ export interface MerkleTree {
 }
 
 export interface Recipient {
-  recipient: Address;
-  amount: number;
+  recipient: Address
+  amount: number
 }

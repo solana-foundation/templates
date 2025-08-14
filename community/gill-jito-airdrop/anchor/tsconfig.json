@@ -13,14 +13,6 @@
     "strict": false,
     "skipLibCheck": true
   },
-  "include": [
-    "scripts/**/*.ts",
-    "tests/**/*.ts",
-    "migrations/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "target",
-    "dist"
-  ]
+  "include": ["scripts/**/*.ts", "tests/**/*.ts", "migrations/**/*.ts"],
+  "exclude": ["node_modules", "target", "dist"]
 }

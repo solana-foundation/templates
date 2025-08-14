@@ -13,7 +13,7 @@ export interface MerkleTreeData {
 function createLeaf(recipient: Address, amount: number): Uint8Array {
   // Convert Address (string) to bytes - Address is base58 encoded
   const recipientBytes = Buffer.from(bs58.decode(recipient))
-  
+
   const data = Buffer.concat([
     recipientBytes,
     Buffer.from(new Uint8Array(new BigUint64Array([BigInt(amount)]).buffer)),

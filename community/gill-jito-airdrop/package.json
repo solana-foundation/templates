@@ -31,7 +31,7 @@
     "node": ">=22.0.0",
     "pnpm": ">=8.0.0"
   },
-  "dependencies": { 
+  "dependencies": {
     "@coral-xyz/anchor": "^0.31.1",
     "@tanstack/react-query": "^5.82.0",
     "@wallet-ui/react": "1.1.0-canary-20250617152337",

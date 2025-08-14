@@ -1,7 +1,7 @@
 /**
  * Airdrop System Configuration
  * Centralized configuration for the airdrop claiming system
- * 
+ *
  * 💡 For development: Uses mock program ID by default
  * 🚀 For production: Set NEXT_PUBLIC_PROGRAM_ID environment variable
  *    (automatically set when you run anchor/scripts/deploy-setup.ts)
@@ -10,16 +10,16 @@
 export const AIRDROP_CONFIG = {
   // Network settings
   NETWORK: (process.env.NEXT_PUBLIC_SOLANA_NETWORK || 'devnet') as 'devnet' | 'mainnet' | 'testnet',
-  
+
   // Program addresses (mock ID will be updated by deploy-setup script)
   AIRDROP_PROGRAM_ID: process.env.NEXT_PUBLIC_PROGRAM_ID,
-  
+
   // Transaction settings
   MIN_SOL_BALANCE: 0.005, // Minimum SOL needed for transaction fees
-  
+
   // UI settings
   ENABLE_DEBUG_LOGS: process.env.NODE_ENV === 'development',
-  
+
   // Private key (for development only - server-side only)
   PRIVATE_KEY: process.env.USER_PRIVATE_KEY,
 } as const
@@ -31,7 +31,7 @@ export function validateConfig(): void {
   if (!AIRDROP_CONFIG.PRIVATE_KEY) {
     throw new Error('USER_PRIVATE_KEY environment variable is required')
   }
-  
+
   if (!AIRDROP_CONFIG.AIRDROP_PROGRAM_ID) {
     throw new Error('NEXT_PUBLIC_PROGRAM_ID environment variable is required')
   }
@@ -49,4 +49,4 @@ export function logConfig(): void {
       hasPrivateKey: !!AIRDROP_CONFIG.PRIVATE_KEY,
     })
   }
-} 
+}
