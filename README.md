@@ -41,6 +41,14 @@ Gill Templates (based on @solana/kit)
 
 `gill` `node` `solana-kit`
 
+### [gill-react-vite-tailwind](gill/gill-react-vite-tailwind)
+
+`gh:solana-foundation/templates/gill/gill-react-vite-tailwind`
+
+> React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI
+
+`gill` `react` `solana-kit` `tailwind` `typescript` `vite` `wallet-ui`
+
 ### [gill-react-vite-tailwind-basic](gill/gill-react-vite-tailwind-basic)
 
 `gh:solana-foundation/templates/gill/gill-react-vite-tailwind-basic`
@@ -84,14 +92,6 @@ Templates using gill (based on @solana/kit)
 > Next.js, Tailwind, Anchor Counter example, gill (based on @solana/kit), Wallet UI
 
 `anchor-counter` `gill` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui`
-
-### [template-react-vite-tailwind](templates/template-react-vite-tailwind)
-
-`gh:solana-foundation/templates/templates/template-react-vite-tailwind`
-
-> React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI
-
-`gill` `react` `solana-kit` `tailwind` `typescript` `vite` `wallet-ui`
 
 # Solana Mobile
 

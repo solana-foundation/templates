@@ -19,6 +19,13 @@
         "path": "gill/gill-node-script"
       },
       {
+        "description": "React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI",
+        "id": "gh:solana-foundation/templates/gill/gill-react-vite-tailwind",
+        "keywords": ["gill", "react", "solana-kit", "tailwind", "typescript", "vite", "wallet-ui"],
+        "name": "gill-react-vite-tailwind",
+        "path": "gill/gill-react-vite-tailwind"
+      },
+      {
         "description": "React+Vite, Tailwind, gill (based on @solana/kit), basic Anchor example, Wallet UI",
         "id": "gh:solana-foundation/templates/gill/gill-react-vite-tailwind-basic",
         "keywords": ["anchor-basic", "gill", "react", "solana-kit", "tailwind", "typescript", "vite", "wallet-ui"],
@@ -59,13 +66,6 @@
         "keywords": ["anchor-counter", "gill", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
         "name": "template-next-tailwind-counter",
         "path": "templates/template-next-tailwind-counter"
-      },
-      {
-        "description": "React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI",
-        "id": "gh:solana-foundation/templates/templates/template-react-vite-tailwind",
-        "keywords": ["gill", "react", "solana-kit", "tailwind", "typescript", "vite", "wallet-ui"],
-        "name": "template-react-vite-tailwind",
-        "path": "templates/template-react-vite-tailwind"
       }
     ]
   },
