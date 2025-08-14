@@ -1,4 +1,5 @@
 [
+  "gill/gill-next-tailwind-basic",
   "gill/gill-next-tailwind-counter",
   "gill/gill-node-express",
   "gill/gill-node-script",
@@ -8,7 +9,6 @@
   "mobile/web3js-expo",
   "mobile/web3js-expo-paper",
   "templates/template-next-tailwind",
-  "templates/template-next-tailwind-basic",
   "web3js/web3js-next-tailwind",
   "web3js/web3js-next-tailwind-basic",
   "web3js/web3js-next-tailwind-counter",

@@ -1,4 +1,4 @@
-# template-next-tailwind-basic
+# gill-next-tailwind-basic
 
 This is a Next.js app containing:
 
@@ -14,7 +14,7 @@ This is a Next.js app containing:
 #### Download the template
 
 ```shell
-pnpm create solana-dapp@latest -t gh:solana-foundation/templates/templates/template-next-tailwind-basic
+pnpm create solana-dapp@latest -t gh:solana-foundation/templates/gill/gill-next-tailwind-basic
 ```
 
 #### Install Dependencies
