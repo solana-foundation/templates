@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   },
 
   // Enable server-side environment variables in client components when needed
-  serverComponentsExternalPackages: [],
+  serverExternalPackages: [],
 }
 
 export default nextConfig
