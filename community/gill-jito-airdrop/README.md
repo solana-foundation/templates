@@ -220,7 +220,7 @@ Generates the necessary TypeScript types and client code from the Solana program
 pnpm codama:generate
 ```
 
-Then setup the program:
+Then set up the program:
 
 ```bash
 pnpm airdrop:setup
@@ -232,7 +232,7 @@ This single command will:
 - ✅ Generate test wallets for airdrop recipients
 - ✅ Build and deploy the Solana program
 - ✅ Update all configuration files
-- ✅ Generate Merkle tree for airdrop distribution
+- ✅ Generate the Merkle tree for airdrop distribution
 
 #### Initialize the on-chain airdrop state and makes it ready for claiming:
 

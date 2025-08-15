@@ -1,5 +1,25 @@
 {
-  "name": "airdrop-claim-template",
+  "name": "gill-jito-airdrop",
+  "description": "A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree",
+  "keywords": [
+    "nextjs",
+    "react",
+    "tailwind",
+    "typescript",
+    "wallet-ui"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Generates the necessary TypeScript types and client code from the Solana program:",
+      "+{pm} codama:generate",
+      "Then set up the program:",
+      "+{pm} airdrop:setup",
+      "Initialize the on-chain airdrop state:",
+      "+{pm} airdrop:init",
+      "Run the app:",
+      "+{pm} dev"
+    ]
+  },
   "scripts": {
     "build": "next build",
     "airdrop:setup": "cd anchor && npx ts-node scripts/index.ts setup",
@@ -17,14 +37,6 @@
     "type-check": "tsc --noEmit",
     "type-check:node": "tsc --project tsconfig.node.json --noEmit"
   },
-  "description": "Next.js, Tailwind, Wallet UI",
-  "keywords": [
-    "nextjs",
-    "react",
-    "tailwind",
-    "typescript",
-    "wallet-ui"
-  ],
   "version": "0.0.0",
   "private": true,
   "engines": {
