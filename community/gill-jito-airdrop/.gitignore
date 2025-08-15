@@ -41,12 +41,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.anchor
-.DS_Store
 target
-**/*.rs.bk
 node_modules
-test-ledger
 .yarn
 
 # Keypairs - keep these private
@@ -60,3 +56,14 @@ test-wallets.json
 anchor/generated/**
 anchor/deploy-wallet.json
 
+
+# Anchor
+/anchor/.anchor
+/anchor/target/debug
+/anchor/target/deploy
+/anchor/target/release
+/anchor/target/sbf-solana-solana
+/anchor/target/test-ledger
+/anchor/target/.rustc_info.json
+test-ledger
+**/*.rs.bk

@@ -145,6 +145,14 @@
     "description": "Templates maintained by the Solana community",
     "name": "Community Templates",
     "path": "community",
-    "templates": []
+    "templates": [
+      {
+        "description": "A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree",
+        "id": "gh:solana-foundation/templates/community/gill-jito-airdrop",
+        "keywords": ["nextjs", "react", "tailwind", "typescript", "wallet-ui"],
+        "name": "gill-jito-airdrop",
+        "path": "community/gill-jito-airdrop"
+      }
+    ]
   }
 ]

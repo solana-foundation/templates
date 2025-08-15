@@ -141,3 +141,11 @@ Templates using @solana/web3.js (legacy)
 # Community Templates
 
 Templates maintained by the Solana community
+
+### [gill-jito-airdrop](community/gill-jito-airdrop)
+
+`gh:solana-foundation/templates/community/gill-jito-airdrop`
+
+> A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree
+
+`nextjs` `react` `tailwind` `typescript` `wallet-ui`
