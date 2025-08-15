@@ -23,6 +23,9 @@ importers:
 
   community/gill-jito-airdrop:
     dependencies:
+      '@solana/kit':
+        specifier: ^2.3.0
+        version: 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@tanstack/react-query':
         specifier: ^5.82.0
         version: 5.84.1(react@19.1.1)
