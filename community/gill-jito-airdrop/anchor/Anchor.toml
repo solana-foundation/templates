@@ -1,0 +1,20 @@
+[toolchain]
+anchor_version = "0.31.1"
+package_manager = "pnpm"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.devnet]
+solana_distributor = "6Gs656WdKHM2XuZU3CZQ7SJNo63FecawsLECE6wFnozT"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "devnet"
+wallet = "deploy-wallet.json"
+
+[scripts]
+test = "pnpm exec vitest run"
