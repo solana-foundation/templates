@@ -23,9 +23,9 @@
   "repokit": {
     "groups": [
       {
-        "description": "Templates using gill (based on @solana/kit)",
-        "name": "Templates",
-        "path": "templates"
+        "description": "Gill Templates (based on @solana/kit)",
+        "name": "Gill",
+        "path": "gill"
       },
       {
         "description": "Solana Mobile Templates",
@@ -33,9 +33,14 @@
         "name": "Solana Mobile"
       },
       {
-        "description": "Legacy templates using @solana/web3.js",
-        "name": "Legacy Templates",
-        "path": "legacy"
+        "description": "Templates using @solana/web3.js (legacy)",
+        "name": "Web3.js Templates",
+        "path": "web3js"
+      },
+      {
+        "description": "Templates maintained by the Solana community",
+        "name": "Community Templates",
+        "path": "community"
       }
     ]
   },

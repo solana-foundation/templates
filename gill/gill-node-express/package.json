@@ -1,0 +1,70 @@
+{
+  "name": "gill-node-express",
+  "description": "Node.js Express API with gill (based on @solana/kit)",
+  "keywords": [
+    "express",
+    "gill",
+    "node",
+    "solana-kit"
+  ],
+  "create-solana-dapp": {
+    "rename": {
+      "scaffold": {
+        "to": "{{name}}",
+        "paths": [
+          "src"
+        ]
+      }
+    },
+    "instructions": [
+      "To set up the .env file and create a keypair-signer.json file, run this:",
+      "+{pm} run setup",
+      "To build the Docker image, run this:",
+      "+{pm} run docker:build",
+      "To run the Docker image, run this:",
+      "+{pm} run docker:run"
+    ]
+  },
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "ci": "npm run build",
+    "dev": "esrun --watch src/index.ts",
+    "docker:build": "docker build -t gill-node-express:latest .",
+    "docker:run": "docker run --rm --name gill-node-express -p 3000:3000 --env-file .env -e SOLANA_SIGNER_PATH=keypair-signer.json -v ./keypair-signer.json:/srv/api/keypair-signer.json gill-node-express:latest",
+    "fmt": "prettier --write .",
+    "fmt:check": "prettier --check .",
+    "setup": "npm run setup-env && npm run setup-keypair-signer",
+    "setup-env": "shx test -e .env || shx cp .env.example .env",
+    "setup-keypair-signer": "shx test -e keypair-signer.json || solana-keygen new --no-bip39-passphrase --outfile keypair-signer.json",
+    "lint": "eslint .",
+    "start": "node ./dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.1.0",
+    "eslint": "^9.32.0",
+    "esrun": "^3.2.30",
+    "globals": "^16.3.0",
+    "prettier": "^3.6.2",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.38.0"
+  },
+  "dependencies": {
+    "@types/cors": "^2.8.19",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "gill": "0.10.2",
+    "kleur": "^4.1.5",
+    "lru-cache": "^11.1.0",
+    "shx": "^0.4.0",
+    "ws": "^8.18.3",
+    "zod": "^4.0.14"
+  }
+}

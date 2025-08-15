@@ -1,8 +1,8 @@
 packages:
-  - legacy/*
-  - mobile/*
-  - templates/*
   - community/*
+  - gill/*
+  - mobile/*
+  - web3js/*
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@tailwindcss/oxide'
