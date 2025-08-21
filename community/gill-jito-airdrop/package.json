@@ -46,7 +46,7 @@
     "@wallet-ui/tailwind": "1.1.0-canary-20250617152337",
     "bs58": "^6.0.0",
     "clsx": "^2.1.1",
-    "codama": "^1.3.1",
+    "codama": "^1.3.3",
     "gill": "^0.10.2",
     "js-sha3": "^0.9.3",
     "next": "15.3.5",
@@ -57,10 +57,10 @@
     "tw-animate-css": "^1.3.5"
   },
   "devDependencies": {
-    "@codama/cli": "^1.2.2",
-    "@codama/nodes-from-anchor": "^1.2.3",
-    "@codama/renderers": "^1.0.29",
-    "@codama/visitors-core": "^1.3.1",
+    "@codama/cli": "^1.3.1",
+    "@codama/nodes-from-anchor": "^1.2.5",
+    "@codama/renderers": "^1.0.31",
+    "@codama/visitors-core": "^1.3.3",
     "@eslint/eslintrc": "^3.3.1",
     "@tailwindcss/postcss": "^4.1.11",
     "@types/bn.js": "^5.1.0",
