@@ -45,15 +45,15 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@eslint/js": "^9.32.0",
+    "@eslint/js": "^9.33.0",
     "@types/express": "^5.0.3",
-    "@types/node": "^24.1.0",
-    "eslint": "^9.32.0",
+    "@types/node": "^24.3.0",
+    "eslint": "^9.33.0",
     "esrun": "^3.2.30",
     "globals": "^16.3.0",
     "prettier": "^3.6.2",
-    "typescript": "~5.8.3",
-    "typescript-eslint": "^8.38.0"
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.40.0"
   },
   "dependencies": {
     "@types/cors": "^2.8.19",
@@ -65,6 +65,6 @@
     "lru-cache": "^11.1.0",
     "shx": "^0.4.0",
     "ws": "^8.18.3",
-    "zod": "^4.0.14"
+    "zod": "^4.0.17"
   }
 }

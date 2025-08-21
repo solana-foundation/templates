@@ -1,4 +1,4 @@
-import { IdentifierString } from '@wallet-standard/base'
+import { IdentifierString } from '@wallet-standard/core'
 import { ClusterNetwork } from '@/components/cluster/cluster-network'
 
 export interface Cluster {
