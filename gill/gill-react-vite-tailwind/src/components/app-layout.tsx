@@ -25,7 +25,7 @@ export function AppLayout({
         </main>
         <AppFooter />
       </div>
-      <Toaster />
+      <Toaster closeButton />
     </ThemeProvider>
   )
 }
