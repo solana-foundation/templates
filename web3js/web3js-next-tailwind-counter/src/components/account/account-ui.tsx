@@ -2,7 +2,7 @@
 
 import { useWallet } from '@solana/wallet-adapter-react'
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
-import { RefreshCw } from 'lucide-react'
+import { CopyCheck, RefreshCw } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 
@@ -19,9 +19,11 @@ import { ellipsify } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { AppAlert } from '@/components/app-alert'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { AppModal } from '@/components/app-modal'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { toast } from 'sonner'
 
 export function AccountBalance({ address }: { address: PublicKey }) {
   const query = useGetBalance({ address })
@@ -251,10 +253,22 @@ function BalanceSol({ balance }: { balance: number }) {
 }
 
 function ModalReceive({ address }: { address: PublicKey }) {
+  async function handleCopy() {
+    await navigator.clipboard.writeText(address.toString())
+    toast('Address copied to clipboard', {
+      icon: <CopyCheck size={16} />,
+      description: 'You can now paste it to receive assets.',
+    })
+  }
   return (
-    <AppModal title="Receive">
+    <AppModal
+      title="Receive"
+      submitLabel='Copy Address'
+      submit={handleCopy}>
       <p>Receive assets by sending them to your public key:</p>
-      <code>{address.toString()}</code>
+      <div className="flex items-center gap-2">
+        <ExplorerLink path={`account/${address}`} label={address.toString()} />
+      </div>
     </AppModal>
   )
 }
@@ -290,9 +304,15 @@ function ModalSend({ address }: { address: PublicKey }) {
   const mutation = useTransferSol({ address })
   const [destination, setDestination] = useState('')
   const [amount, setAmount] = useState('1')
+  const [amountType, setAmountType] = useState<'SOL' | 'Lamports'>('SOL')
 
   if (!address || !wallet.sendTransaction) {
     return <div>Wallet not connected</div>
+  }
+
+  const getAmountInLamports = () => {
+    const numAmount = parseFloat(amount)
+    return amountType === 'Lamports' ? numAmount / 1_000_000_000 : numAmount
   }
 
   return (
@@ -303,7 +323,7 @@ function ModalSend({ address }: { address: PublicKey }) {
       submit={() => {
         mutation.mutateAsync({
           destination: new PublicKey(destination),
-          amount: parseFloat(amount),
+          amount: getAmountInLamports(),
         })
       }}
     >
@@ -316,17 +336,41 @@ function ModalSend({ address }: { address: PublicKey }) {
         type="text"
         value={destination}
       />
-      <Label htmlFor="amount">Amount</Label>
-      <Input
-        disabled={mutation.isPending}
-        id="amount"
-        min="1"
-        onChange={(e) => setAmount(e.target.value)}
-        placeholder="Amount"
-        step="any"
-        type="number"
-        value={amount}
-      />
+       <div className="space-y-2">
+        <Label htmlFor="amount">Amount</Label>
+        <div className="flex gap-2">
+          <Input
+            disabled={mutation.isPending}
+            id="amount"
+            min="0"
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="Amount"
+            step="any"
+            type="number"
+            value={amount}
+            className="flex-1"
+          />
+          <Select value={amountType} onValueChange={(value) => setAmountType(value as 'SOL' | 'Lamports')}>
+            <SelectTrigger className="w-32 border-input hover:bg-accent hover:text-accent-foreground">
+              <SelectValue placeholder="Select" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="SOL">SOL</SelectItem>
+              <SelectItem value="Lamports">Lamports</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        {amountType === 'SOL' && amount && (
+          <p className="text-xs text-muted-foreground">
+            = {(parseFloat(amount) * 1_000_000_000).toLocaleString()} Lamports
+          </p>
+        )}
+        {amountType === 'Lamports' && amount && (
+          <p className="text-xs text-muted-foreground">
+            = {(parseFloat(amount) / 1_000_000_000).toFixed(9)} SOL
+          </p>
+        )}
+      </div>
     </AppModal>
   )
 }
