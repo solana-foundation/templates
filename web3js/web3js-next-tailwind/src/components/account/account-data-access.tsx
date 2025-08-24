@@ -12,6 +12,8 @@ import {
   VersionedTransaction,
 } from '@solana/web3.js'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useTransactionToast } from '../use-transaction-toast'
+import { toast } from 'sonner'
 
 export function useGetBalance({ address }: { address: PublicKey }) {
   const { connection } = useConnection()
@@ -52,7 +54,7 @@ export function useGetTokenAccounts({ address }: { address: PublicKey }) {
 
 export function useTransferSol({ address }: { address: PublicKey }) {
   const { connection } = useConnection()
-  // const transactionToast = useTransactionToast()
+  const transactionToast = useTransactionToast()
   const wallet = useWallet()
   const client = useQueryClient()
 
@@ -60,32 +62,25 @@ export function useTransferSol({ address }: { address: PublicKey }) {
     mutationKey: ['transfer-sol', { endpoint: connection.rpcEndpoint, address }],
     mutationFn: async (input: { destination: PublicKey; amount: number }) => {
       let signature: TransactionSignature = ''
-      try {
-        const { transaction, latestBlockhash } = await createTransaction({
-          publicKey: address,
-          destination: input.destination,
-          amount: input.amount,
-          connection,
-        })
+      const { transaction, latestBlockhash } = await createTransaction({
+        publicKey: address,
+        destination: input.destination,
+        amount: input.amount,
+        connection,
+      })
 
-        // Send transaction and await for signature
-        signature = await wallet.sendTransaction(transaction, connection)
+      // Send transaction and await for signature
+      signature = await wallet.sendTransaction(transaction, connection)
 
-        // Send transaction and await for signature
-        await connection.confirmTransaction({ signature, ...latestBlockhash }, 'confirmed')
+      // Send transaction and await for signature
+      await connection.confirmTransaction({ signature, ...latestBlockhash }, 'confirmed')
 
-        console.log(signature)
-        return signature
-      } catch (error: unknown) {
-        console.log('error', `Transaction failed! ${error}`, signature)
-
-        return
-      }
+      console.log('Transfer signature:', signature)
+      return signature
     },
     onSuccess: async (signature) => {
       if (signature) {
-        // TODO: Add back Toast
-        // transactionToast(signature)
+        transactionToast(signature)
         console.log('Transaction sent', signature)
       }
       await Promise.all([
@@ -98,15 +93,15 @@ export function useTransferSol({ address }: { address: PublicKey }) {
       ])
     },
     onError: (error) => {
-      // TODO: Add Toast
-      console.error(`Transaction failed! ${error}`)
+      toast.error(`Transaction failed! ${error}`)
+      console.error('Transaction failed:', error)
     },
   })
 }
 
 export function useRequestAirdrop({ address }: { address: PublicKey }) {
   const { connection } = useConnection()
-  // const transactionToast = useTransactionToast()
+  const transactionToast = useTransactionToast()
   const client = useQueryClient()
 
   return useMutation({
@@ -121,8 +116,7 @@ export function useRequestAirdrop({ address }: { address: PublicKey }) {
       return signature
     },
     onSuccess: async (signature) => {
-      // TODO: Add back Toast
-      // transactionToast(signature)
+      transactionToast(signature)
       console.log('Airdrop sent', signature)
       await Promise.all([
         client.invalidateQueries({
