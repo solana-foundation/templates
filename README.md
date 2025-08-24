@@ -16,7 +16,7 @@ npm create solana-dapp@latest [-t <template-name>]
 pnpm create solana-dapp@latest [-t <template-name>]
 
 # yarn
-yarn create-solana-dapp [-t <template-name>]
+yarn create solana-dapp [-t <template-name>]
 ```
 
 <!-- automd:file src="TEMPLATES.md" -->
