@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import React from 'react'
+import { ReactNode } from 'react'
 
 export function AppModal({
   children,
@@ -9,14 +9,14 @@ export function AppModal({
   submitDisabled,
   submitLabel,
 }: {
-  children: React.ReactNode
+  children: ReactNode
   title: string
   submit?: () => void
   submitDisabled?: boolean
   submitLabel?: string
 }) {
   return (
-    <Dialog>
+    <Dialog modal={false}>
       <DialogTrigger asChild>
         <Button variant="outline">{title}</Button>
       </DialogTrigger>

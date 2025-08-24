@@ -16,7 +16,7 @@ export function AppModal({
   submitLabel?: string
 }) {
   return (
-    <Dialog>
+    <Dialog modal={false}>
       <DialogTrigger asChild>
         <Button variant="outline">{title}</Button>
       </DialogTrigger>
