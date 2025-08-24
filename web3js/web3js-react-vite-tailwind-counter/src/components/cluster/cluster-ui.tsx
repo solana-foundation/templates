@@ -6,6 +6,7 @@ import { useCluster } from './cluster-data-access'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { AppAlert } from '@/components/app-alert'
+import { ArrowUpRightFromSquare } from 'lucide-react'
 
 export function ExplorerLink({ path, label, className }: { path: string; label: string; className?: string }) {
   const { getExplorerUrl } = useCluster()
@@ -14,9 +15,10 @@ export function ExplorerLink({ path, label, className }: { path: string; label: 
       href={getExplorerUrl(path)}
       target="_blank"
       rel="noopener noreferrer"
-      className={className ? className : `link font-mono`}
+      className={className ? className : `link font-mono inline-flex gap-1`}
     >
       {label}
+      <ArrowUpRightFromSquare size={12} />
     </a>
   )
 }

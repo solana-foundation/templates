@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { AppAlert } from '@/components/app-alert'
 import { useWalletUi } from '@wallet-ui/react'
 import { useClusterVersion } from './use-cluster-version'
+import { ArrowUpRightFromSquare } from 'lucide-react'
 
 export function ExplorerLink({
   className,
@@ -19,9 +20,10 @@ export function ExplorerLink({
       href={getExplorerLink({ ...link, cluster: cluster.cluster })}
       target="_blank"
       rel="noopener noreferrer"
-      className={className ? className : `link font-mono`}
+      className={className ? className : `link font-mono inline-flex gap-1`}
     >
       {label}
+      <ArrowUpRightFromSquare size={12} />
     </a>
   )
 }
