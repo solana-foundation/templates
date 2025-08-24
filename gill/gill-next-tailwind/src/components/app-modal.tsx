@@ -16,11 +16,16 @@ export function AppModal({
   submitLabel?: string
 }) {
   return (
-    <Dialog>
+    <Dialog modal={false}>
       <DialogTrigger asChild>
         <Button variant="outline">{title}</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[525px]">
+      <DialogContent className="sm:max-w-[525px]" onPointerDownOutside={(e) => {
+        const target = e.target as Element
+        if (target.closest('[data-sonner-toast]') || target.closest('.sonner-toast')) {
+          e.preventDefault()
+        }
+      }}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>

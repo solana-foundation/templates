@@ -93,32 +93,25 @@ export function useTransferSolMutation({ address }: { address: Address }) {
 
   return useMutation({
     mutationFn: async (input: { destination: Address; amount: number }) => {
-      try {
-        const { value: latestBlockhash } = await client.rpc.getLatestBlockhash({ commitment: 'confirmed' }).send()
+      const { value: latestBlockhash } = await client.rpc.getLatestBlockhash({ commitment: 'confirmed' }).send()
 
-        const transaction = createTransaction({
-          feePayer: signer,
-          version: 0,
-          latestBlockhash,
-          instructions: [
-            getTransferSolInstruction({
-              amount: input.amount,
-              destination: input.destination,
-              source: signer,
-            }),
-          ],
-        })
+      const transaction = createTransaction({ 
+        feePayer: signer,
+        version: 0,
+        latestBlockhash,
+        instructions: [
+          getTransferSolInstruction({
+            amount: input.amount,
+            destination: input.destination,
+            source: signer,
+          }),
+        ],
+      })
 
-        const signatureBytes = await signAndSendTransactionMessageWithSigners(transaction)
-        const signature = getBase58Decoder().decode(signatureBytes)
-
-        console.log(signature)
-        return signature
-      } catch (error: unknown) {
-        console.log('error', `Transaction failed! ${error}`)
-
-        return
-      }
+      const signatureBytes = await signAndSendTransactionMessageWithSigners(transaction)
+      const signature = getBase58Decoder().decode(signatureBytes)
+      console.log('Transfer signature:', signature)
+      return signature
     },
     onSuccess: async (tx) => {
       toastTx(tx)
@@ -126,6 +119,7 @@ export function useTransferSolMutation({ address }: { address: Address }) {
     },
     onError: (error) => {
       toast.error(`Transaction failed! ${error}`)
+      console.error('Transaction failed:', error)
     },
   })
 }
