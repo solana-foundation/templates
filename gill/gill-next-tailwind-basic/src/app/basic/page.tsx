@@ -1,6 +1,5 @@
 'use client'
-
-import BasicFeature from '@/components/basic/basic-feature'
+import BasicFeature from '@/features/basic/basic-feature'
 
 export default function Page() {
   return <BasicFeature />
