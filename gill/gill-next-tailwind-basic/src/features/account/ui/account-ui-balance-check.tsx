@@ -1,12 +1,12 @@
 import { Address } from 'gill'
-import { useWalletUi } from '@wallet-ui/react'
+import { useSolana } from '@/components/solana/use-solana'
 import { AppAlert } from '@/components/app-alert'
 import { Button } from '@/components/ui/button'
 import { useRequestAirdropMutation } from '../data-access/use-request-airdrop-mutation'
 import { useGetBalanceQuery } from '../data-access/use-get-balance-query'
 
 export function AccountUiBalanceCheck({ address }: { address: Address }) {
-  const { cluster } = useWalletUi()
+  const { cluster } = useSolana()
   const mutation = useRequestAirdropMutation({ address })
   const query = useGetBalanceQuery({ address })
 

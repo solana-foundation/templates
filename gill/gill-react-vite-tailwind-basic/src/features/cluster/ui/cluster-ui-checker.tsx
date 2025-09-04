@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { AppAlert } from '@/components/app-alert'
-import { useWalletUi } from '@wallet-ui/react'
+import { useSolana } from '@/components/solana/use-solana'
 import { useClusterVersion } from '../data-access/use-cluster-version'
 
 export function ClusterUiChecker({ children }: { children: ReactNode }) {
-  const { cluster } = useWalletUi()
+  const { cluster } = useSolana()
   const query = useClusterVersion()
 
   if (query.isLoading) {

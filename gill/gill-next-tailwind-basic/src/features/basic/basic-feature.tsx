@@ -1,4 +1,4 @@
-import { useWalletUi } from '@wallet-ui/react'
+import { useSolana } from '@/components/solana/use-solana'
 import { WalletButton } from '@/components/solana/solana-provider'
 import { AppHero } from '@/components/app-hero'
 import { BasicUiProgramExplorerLink } from './ui/basic-ui-program-explorer-link'
@@ -6,7 +6,7 @@ import { BasicUiCreate } from './ui/basic-ui-create'
 import { BasicUiProgram } from '@/features/basic/ui/basic-ui-program'
 
 export default function BasicFeature() {
-  const { account } = useWalletUi()
+  const { account } = useSolana()
 
   if (!account) {
     return (

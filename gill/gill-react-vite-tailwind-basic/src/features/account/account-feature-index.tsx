@@ -1,9 +1,9 @@
-import { useWalletUi } from '@wallet-ui/react'
+import { useSolana } from '@/components/solana/use-solana'
 import { WalletButton } from '@/components/solana/solana-provider'
 import { Navigate } from 'react-router'
 
 export default function AccountFeatureIndex() {
-  const { account } = useWalletUi()
+  const { account } = useSolana()
 
   if (account) {
     return <Navigate to={`/account/${account.address.toString()}`} replace />

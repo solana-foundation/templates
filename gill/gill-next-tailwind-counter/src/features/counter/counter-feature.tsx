@@ -1,4 +1,4 @@
-import { useWalletUi } from '@wallet-ui/react'
+import { useSolana } from '@/components/solana/use-solana'
 import { WalletButton } from '@/components/solana/solana-provider'
 import { AppHero } from '@/components/app-hero'
 import { CounterUiButtonInitialize } from './ui/counter-ui-button-initialize'
@@ -7,7 +7,7 @@ import { CounterUiProgramExplorerLink } from './ui/counter-ui-program-explorer-l
 import { CounterUiProgramGuard } from './ui/counter-ui-program-guard'
 
 export default function CounterFeature() {
-  const { account } = useWalletUi()
+  const { account } = useSolana()
 
   return (
     <CounterUiProgramGuard>

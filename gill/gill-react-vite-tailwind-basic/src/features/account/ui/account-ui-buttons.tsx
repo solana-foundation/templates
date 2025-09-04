@@ -1,13 +1,13 @@
 import { Address } from 'gill'
 
-import { useWalletUi } from '@wallet-ui/react'
+import { useSolana } from '@/components/solana/use-solana'
 import { AccountUiModalAirdrop } from './account-ui-modal-airdrop'
 import { AccountUiModalReceive } from './account-ui-modal-receive'
 import { AccountUiModalSend } from './account-ui-modal-send'
 import { ErrorBoundary } from 'react-error-boundary'
 
 export function AccountUiButtons({ address }: { address: Address }) {
-  const { cluster } = useWalletUi()
+  const { cluster } = useSolana()
 
   return (
     <div>

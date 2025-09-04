@@ -1,5 +1,5 @@
 import { toast } from 'sonner'
-import { AppExplorerLink } from '@/components/app-explorer-link.tsx'
+import { AppExplorerLink } from './app-explorer-link.tsx'
 
 export function useTransactionToast() {
   return (signature: string) => {

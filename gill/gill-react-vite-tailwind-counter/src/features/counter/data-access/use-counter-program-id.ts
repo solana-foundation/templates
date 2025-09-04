@@ -1,8 +1,8 @@
-import { useWalletUi } from '@wallet-ui/react'
 import { useMemo } from 'react'
 import { getCounterProgramId } from '@project/anchor'
+import { useSolana } from '@/components/solana/use-solana'
 
 export function useCounterProgramId() {
-  const { cluster } = useWalletUi()
+  const { cluster } = useSolana()
   return useMemo(() => getCounterProgramId(cluster.id), [cluster])
 }

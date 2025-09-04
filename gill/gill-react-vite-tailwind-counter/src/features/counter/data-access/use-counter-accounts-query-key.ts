@@ -1,7 +1,7 @@
-import { useWalletUi } from '@wallet-ui/react'
+import { useSolana } from '@/components/solana/use-solana'
 
 export function useCounterAccountsQueryKey() {
-  const { cluster } = useWalletUi()
+  const { cluster } = useSolana()
 
   return ['counter', 'accounts', { cluster }]
 }

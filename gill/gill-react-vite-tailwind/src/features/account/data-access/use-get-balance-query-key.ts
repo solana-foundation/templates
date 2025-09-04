@@ -1,8 +1,8 @@
 import type { Address } from 'gill'
-import { useWalletUi } from '@wallet-ui/react'
+import { useSolana } from '@/components/solana/use-solana'
 
 export function useGetBalanceQueryKey({ address }: { address: Address }) {
-  const { cluster } = useWalletUi()
+  const { cluster } = useSolana()
 
   return ['get-balance', { cluster, address }]
 }

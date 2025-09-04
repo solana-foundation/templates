@@ -1,9 +1,9 @@
-import { useWalletUi } from '@wallet-ui/react'
 import type { Instruction, TransactionSendingSigner } from 'gill'
 import { createTransaction, getBase58Decoder, signAndSendTransactionMessageWithSigners } from 'gill'
+import { useSolana } from './use-solana'
 
 export function useWalletTransactionSignAndSend() {
-  const { client } = useWalletUi()
+  const { client } = useSolana()
 
   return async (ix: Instruction | Instruction[], signer: TransactionSendingSigner) => {
     const { value: latestBlockhash } = await client.rpc.getLatestBlockhash().send()

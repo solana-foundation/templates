@@ -1,4 +1,4 @@
-import { useWalletUi } from '@wallet-ui/react'
+import { useSolana } from '@/components/solana/use-solana'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useWalletUiSigner } from '@/components/solana/use-wallet-ui-signer'
 import { useWalletTransactionSignAndSend } from '@/components/solana/use-wallet-transaction-sign-and-send'
@@ -12,7 +12,7 @@ import { toast } from 'sonner'
 installEd25519()
 
 export function useCounterInitializeMutation() {
-  const { cluster } = useWalletUi()
+  const { cluster } = useSolana()
   const queryClient = useQueryClient()
   const signer = useWalletUiSigner()
   const signAndSend = useWalletTransactionSignAndSend()

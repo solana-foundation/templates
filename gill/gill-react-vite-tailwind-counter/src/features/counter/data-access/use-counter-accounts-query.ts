@@ -1,10 +1,10 @@
-import { useWalletUi } from '@wallet-ui/react'
+import { useSolana } from '@/components/solana/use-solana'
 import { useQuery } from '@tanstack/react-query'
 import { getCounterProgramAccounts } from '@project/anchor'
 import { useCounterAccountsQueryKey } from './use-counter-accounts-query-key'
 
 export function useCounterAccountsQuery() {
-  const { client } = useWalletUi()
+  const { client } = useSolana()
 
   return useQuery({
     queryKey: useCounterAccountsQueryKey(),

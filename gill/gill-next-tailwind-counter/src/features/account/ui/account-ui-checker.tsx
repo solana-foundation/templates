@@ -1,9 +1,9 @@
-import { useWalletUi } from '@wallet-ui/react'
+import { useSolana } from '@/components/solana/use-solana'
 import { address } from 'gill'
 import { AccountUiBalanceCheck } from './account-ui-balance-check'
 
 export function AccountUiChecker() {
-  const { account } = useWalletUi()
+  const { account } = useSolana()
   if (!account) {
     return null
   }

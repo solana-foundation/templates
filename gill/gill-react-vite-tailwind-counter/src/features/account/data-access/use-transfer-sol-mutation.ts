@@ -2,14 +2,14 @@ import { Address, createTransaction, getBase58Decoder, signAndSendTransactionMes
 import { getTransferSolInstruction } from 'gill/programs'
 import { toast } from 'sonner'
 import { useMutation } from '@tanstack/react-query'
-import { useWalletUi } from '@wallet-ui/react'
+import { useSolana } from '@/components/solana/use-solana'
 import { toastTx } from '@/components/toast-tx'
 import { useWalletUiSigner } from '@/components/solana/use-wallet-ui-signer'
 import { useInvalidateGetBalanceQuery } from './use-invalidate-get-balance-query'
 import { useInvalidateGetSignaturesQuery } from './use-invalidate-get-signatures-query'
 
 export function useTransferSolMutation({ address }: { address: Address }) {
-  const { client } = useWalletUi()
+  const { client } = useSolana()
   const signer = useWalletUiSigner()
   const invalidateBalanceQuery = useInvalidateGetBalanceQuery({ address })
   const invalidateSignaturesQuery = useInvalidateGetSignaturesQuery({ address })

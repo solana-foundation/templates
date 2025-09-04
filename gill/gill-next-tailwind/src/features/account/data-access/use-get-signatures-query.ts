@@ -1,10 +1,10 @@
 import type { Address } from 'gill'
-import { useWalletUi } from '@wallet-ui/react'
 import { useQuery } from '@tanstack/react-query'
+import { useSolana } from '@/components/solana/use-solana'
 import { useGetSignaturesQueryKey } from './use-get-signatures-query-key'
 
 export function useGetSignaturesQuery({ address }: { address: Address }) {
-  const { client } = useWalletUi()
+  const { client } = useSolana()
 
   return useQuery({
     queryKey: useGetSignaturesQueryKey({ address }),

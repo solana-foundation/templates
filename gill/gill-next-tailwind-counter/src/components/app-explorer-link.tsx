@@ -1,5 +1,5 @@
 import { getExplorerLink, GetExplorerLinkArgs } from 'gill'
-import { useWalletUi } from '@wallet-ui/react'
+import { useSolana } from '@/components/solana/use-solana'
 
 export function AppExplorerLink({
   className,
@@ -9,7 +9,7 @@ export function AppExplorerLink({
   className?: string
   label: string
 }) {
-  const { cluster } = useWalletUi()
+  const { cluster } = useSolana()
   return (
     <a
       href={getExplorerLink({ ...link, cluster: cluster.cluster })}

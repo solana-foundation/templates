@@ -1,8 +1,8 @@
-import { useWalletUi } from '@wallet-ui/react'
+import { useSolana } from '@/components/solana/use-solana'
 import { useQuery } from '@tanstack/react-query'
 
 export function useClusterVersion() {
-  const { client, cluster } = useWalletUi()
+  const { client, cluster } = useSolana()
   return useQuery({
     retry: false,
     queryKey: ['version', { cluster }],
