@@ -97,6 +97,14 @@ Gill Templates (based on @solana/kit)
 
 `anchor-counter` `gill` `react` `solana-kit` `tailwind` `typescript` `vite` `wallet-ui`
 
+### [gill-react-vite-tailwind-minimal](gill/gill-react-vite-tailwind-minimal)
+
+`gh:solana-foundation/templates/gill/gill-react-vite-tailwind-minimal`
+
+> Minimal React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI
+
+`gill` `minimal` `react` `solana-kit` `tailwind` `typescript` `vite` `wallet-ui`
+
 # Solana Mobile
 
 Solana Mobile Templates

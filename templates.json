@@ -66,6 +66,13 @@
         "keywords": ["anchor-counter", "gill", "react", "solana-kit", "tailwind", "typescript", "vite", "wallet-ui"],
         "name": "gill-react-vite-tailwind-counter",
         "path": "gill/gill-react-vite-tailwind-counter"
+      },
+      {
+        "description": "Minimal React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI",
+        "id": "gh:solana-foundation/templates/gill/gill-react-vite-tailwind-minimal",
+        "keywords": ["gill", "minimal", "react", "solana-kit", "tailwind", "typescript", "vite", "wallet-ui"],
+        "name": "gill-react-vite-tailwind-minimal",
+        "path": "gill/gill-react-vite-tailwind-minimal"
       }
     ]
   },
