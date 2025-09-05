@@ -49,6 +49,14 @@ Gill Templates (based on @solana/kit)
 
 `anchor-counter` `gill` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui`
 
+### [gill-next-tailwind-minimal](gill/gill-next-tailwind-minimal)
+
+`gh:solana-foundation/templates/gill/gill-next-tailwind-minimal`
+
+> Minimal Next.js, Tailwind, gill (based on @solana/kit), Wallet UI
+
+`gill` `minimal` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui`
+
 ### [gill-node-express](gill/gill-node-express)
 
 `gh:solana-foundation/templates/gill/gill-node-express`
