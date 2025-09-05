@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react'
 import { ClusterUiChecker } from '@/features/cluster/ui/cluster-ui-checker'
 import { AccountUiChecker } from '@/features/account/ui/account-ui-checker'

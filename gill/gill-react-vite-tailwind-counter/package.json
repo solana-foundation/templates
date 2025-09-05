@@ -57,6 +57,7 @@
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@solana/webcrypto-ed25519-polyfill": "^2.3.0",
+    "@solana-mobile/wallet-standard-mobile": "^0.4.1",
     "@tailwindcss/vite": "^4.1.12",
     "@tanstack/react-query": "^5.85.5",
     "@wallet-ui/react": "1.1.1",
