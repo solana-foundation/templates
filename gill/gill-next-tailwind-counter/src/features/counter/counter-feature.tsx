@@ -1,5 +1,5 @@
 import { useSolana } from '@/components/solana/use-solana'
-import { WalletButton } from '@/components/solana/solana-provider'
+import { WalletDropdown } from '@/components/wallet-dropdown'
 import { AppHero } from '@/components/app-hero'
 import { CounterUiButtonInitialize } from './ui/counter-ui-button-initialize'
 import { CounterUiList } from './ui/counter-ui-list'
@@ -26,7 +26,7 @@ export default function CounterFeature() {
           <CounterUiButtonInitialize />
         ) : (
           <div style={{ display: 'inline-block' }}>
-            <WalletButton />
+            <WalletDropdown />
           </div>
         )}
       </AppHero>

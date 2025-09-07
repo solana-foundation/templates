@@ -1,15 +1,6 @@
 import { ReactNode } from 'react'
-import {
-  createSolanaDevnet,
-  createSolanaLocalnet,
-  createWalletUiConfig,
-  WalletUi,
-  WalletUiClusterDropdown,
-  WalletUiDropdown,
-} from '@wallet-ui/react'
-import { solanaMobileWalletAdapter } from './solana-mobile-wallet-adapter.ts'
-
-export { WalletUiDropdown as WalletButton, WalletUiClusterDropdown as ClusterButton }
+import { createSolanaDevnet, createSolanaLocalnet, createWalletUiConfig, WalletUi } from '@wallet-ui/react'
+import { solanaMobileWalletAdapter } from './solana-mobile-wallet-adapter'
 
 const config = createWalletUiConfig({
   clusters: [createSolanaDevnet(), createSolanaLocalnet()],

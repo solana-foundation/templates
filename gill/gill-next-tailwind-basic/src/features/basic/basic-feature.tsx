@@ -1,5 +1,5 @@
 import { useSolana } from '@/components/solana/use-solana'
-import { WalletButton } from '@/components/solana/solana-provider'
+import { WalletDropdown } from '@/components/wallet-dropdown'
 import { AppHero } from '@/components/app-hero'
 import { BasicUiProgramExplorerLink } from './ui/basic-ui-program-explorer-link'
 import { BasicUiCreate } from './ui/basic-ui-create'
@@ -13,7 +13,7 @@ export default function BasicFeature() {
       <div className="max-w-4xl mx-auto">
         <div className="hero py-[64px]">
           <div className="hero-content text-center">
-            <WalletButton />
+            <WalletDropdown />
           </div>
         </div>
       </div>
