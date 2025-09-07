@@ -14,7 +14,6 @@ export function solanaMobileWalletAdapter({
   clusters: SolanaCluster[]
 }) {
   if (typeof window === 'undefined') {
-    console.warn(`Solana Mobile Wallet Adapter not loaded: no window object`)
     return
   }
   if (!window.isSecureContext) {
