@@ -7,9 +7,9 @@ import { AccountUiModalSend } from './account-ui-modal-send'
 import { ErrorBoundary } from 'react-error-boundary'
 
 export function AccountUiButtons({ address }: { address: Address }) {
-  const { cluster } = useSolana()
+  const { account, cluster } = useSolana()
 
-  return (
+  return account ? (
     <div>
       <div className="space-x-2">
         {cluster.id === 'solana:mainnet' ? null : <AccountUiModalAirdrop address={address} />}
@@ -19,5 +19,5 @@ export function AccountUiButtons({ address }: { address: Address }) {
         <AccountUiModalReceive address={address} />
       </div>
     </div>
-  )
+  ) : null
 }
