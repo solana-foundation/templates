@@ -54,12 +54,10 @@ export function AccountUiTransactions({ address }: { address: Address }) {
                     <TableCell className="font-mono text-right">
                       <AppExplorerLink block={item.slot.toString()} label={item.slot.toString()} />
                     </TableCell>
-                    <TableCell>{new Date((Number(item.blockTime) ?? 0) * 1000).toISOString()}</TableCell>
+                    <TableCell>{new Date(Number(item.blockTime ?? '0') * 1000).toISOString()}</TableCell>
                     <TableCell className="text-right">
                       {item.err ? (
-                        <span className="text-red-500" title={JSON.stringify(item.err)}>
-                          Failed
-                        </span>
+                        <span className="text-red-500">Failed</span>
                       ) : (
                         <span className="text-green-500">Success</span>
                       )}

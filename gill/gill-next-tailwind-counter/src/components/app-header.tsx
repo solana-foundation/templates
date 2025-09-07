@@ -16,7 +16,7 @@ export function AppHeader({ links = [] }: { links: { label: string; path: string
   }
 
   return (
-    <header className="relative z-50 px-4 py-2 bg-neutral-100 dark:bg-neutral-900 dark:text-neutral-400">
+    <header className="relative z-50 px-4 py-2 bg-card/50">
       <div className="mx-auto flex justify-between items-center">
         <div className="flex items-baseline gap-4">
           <Link className="text-xl hover:text-neutral-500 dark:hover:text-white" href="/">
@@ -51,11 +51,16 @@ export function AppHeader({ links = [] }: { links: { label: string; path: string
         {showMenu && (
           <div className="md:hidden fixed inset-x-0 top-[52px] bottom-0 bg-neutral-100/95 dark:bg-neutral-900/95 backdrop-blur-sm">
             <div className="flex flex-col p-4 gap-4 border-t dark:border-neutral-800">
+              <div className="flex justify-end items-center gap-4">
+                <WalletButton size="sm" />
+                <ClusterButton size="sm" />
+                <ThemeSelect />
+              </div>
               <ul className="flex flex-col gap-4">
                 {links.map(({ label, path }) => (
                   <li key={path}>
                     <Link
-                      className={`hover:text-neutral-500 dark:hover:text-white block text-lg py-2  ${isActive(path) ? 'text-neutral-500 dark:text-white' : ''} `}
+                      className={`block text-lg py-2  ${isActive(path) ? 'text-foreground' : 'text-muted-foreground'} hover:text-foreground`}
                       href={path}
                       onClick={() => setShowMenu(false)}
                     >
@@ -64,11 +69,6 @@ export function AppHeader({ links = [] }: { links: { label: string; path: string
                   </li>
                 ))}
               </ul>
-              <div className="flex flex-col gap-4">
-                <WalletButton />
-                <ClusterButton />
-                <ThemeSelect />
-              </div>
             </div>
           </div>
         )}
