@@ -49,7 +49,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "next lint",
-    "setup": "npm run anchor keys sync && npm run codama:js",
+    "setup": "npm run anchor keys sync && npm run anchor build && npm run codama:js",
     "start": "next start"
   },
   "dependencies": {

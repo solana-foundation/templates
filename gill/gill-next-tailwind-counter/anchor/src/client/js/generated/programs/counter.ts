@@ -22,7 +22,7 @@ import {
 } from '../instructions';
 
 export const COUNTER_PROGRAM_ADDRESS =
-  'JAVuBXeBZqXNtS73azhBDAoYaaAFfo4gWXoZe2e7Jf8H' as Address<'JAVuBXeBZqXNtS73azhBDAoYaaAFfo4gWXoZe2e7Jf8H'>;
+  'Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe' as Address<'Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe'>;
 
 export enum CounterAccount {
   Counter,
@@ -121,7 +121,7 @@ export function identifyCounterInstruction(
 }
 
 export type ParsedCounterInstruction<
-  TProgram extends string = 'JAVuBXeBZqXNtS73azhBDAoYaaAFfo4gWXoZe2e7Jf8H',
+  TProgram extends string = 'Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe',
 > =
   | ({
       instructionType: CounterInstruction.Close;
