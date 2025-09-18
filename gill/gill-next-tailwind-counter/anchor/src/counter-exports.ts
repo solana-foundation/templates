@@ -16,7 +16,7 @@ export function getCounterProgramId(cluster: SolanaClusterId) {
     case 'solana:devnet':
     case 'solana:testnet':
       // This is the program ID for the Counter program on devnet and testnet.
-      return address('6z68wfurCMYkZG51s1Et9BJEd9nJGUusjHXNt4dGbNNF')
+      return address('Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe')
     case 'solana:mainnet':
     default:
       return COUNTER_PROGRAM_ADDRESS
