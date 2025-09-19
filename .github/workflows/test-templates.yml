@@ -10,6 +10,9 @@ on:
       - main
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   setup-templates:
     runs-on: ubuntu-latest
