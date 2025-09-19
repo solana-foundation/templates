@@ -2,10 +2,12 @@
 
 This is a Next.js app containing:
 
-- Tailwind CSS setup for styling
-- Useful wallet UI elements setup using [Gill](https://gill.site/)
+- Tailwind and Shadcn UI for styling
+- [Gill](https://gill.site/) Solana SDK
+- Shadcn [Wallet UI](https://registry.wallet-ui.dev) components
 - A basic Counter Solana program written in Anchor
-- UI components for interacting with the Counter program
+- [codama](https://github.com/codama-idl/codama) to generate a JS sdk for the program
+- UI components for interacting with the program
 
 ## Getting Started
 
@@ -14,13 +16,13 @@ This is a Next.js app containing:
 #### Download the template
 
 ```shell
-pnpm create solana-dapp@latest -t gh:solana-foundation/templates/gill/gill-next-tailwind-counter
+npx create-solana-dapp@latest -t gh:solana-foundation/templates/gill/gill-next-tailwind-counter
 ```
 
 #### Install Dependencies
 
 ```shell
-pnpm install
+npm install
 ```
 
 ## Apps
@@ -32,7 +34,7 @@ This is a Solana program written in Rust using the Anchor framework.
 #### Commands
 
 You can use any normal anchor commands. Either move to the `anchor` directory and run the `anchor` command or prefix the
-command with `pnpm`, eg: `pnpm anchor`.
+command with `npm`, eg: `npm run anchor`.
 
 #### Sync the program id:
 
@@ -41,31 +43,31 @@ Anchor config file and update the `declare_id!` macro in the `./src/lib.rs` file
 the constant in the `anchor/src/counter-exports.ts` file.
 
 ```shell
-pnpm run setup
+npm run setup
 ```
 
 #### Build the program:
 
 ```shell
-pnpm anchor-build
+npm run anchor-build
 ```
 
 #### Start the test validator with the program deployed:
 
 ```shell
-pnpm anchor-localnet
+npm run anchor-localnet
 ```
 
 #### Run the tests
 
 ```shell
-pnpm anchor-test
+npm run anchor-test
 ```
 
 #### Deploy to Devnet
 
 ```shell
-pnpm anchor deploy --provider.cluster devnet
+npm run anchor deploy --provider.cluster devnet
 ```
 
 ### web
@@ -74,14 +76,14 @@ This is a React app that uses the Anchor generated client to interact with the S
 
 #### Commands
 
-Start the web app
+Start the app
 
 ```shell
-pnpm dev
+npm run dev
 ```
 
-Build the web app
+Build the app
 
 ```shell
-pnpm build
+npm run build
 ```

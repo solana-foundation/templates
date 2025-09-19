@@ -15,19 +15,19 @@ cd templates/gill/gill-node-express
 Install dependencies:
 
 ```shell
-pnpm install
+npm install
 ```
 
 Start the api:
 
 ```shell
-pnpm run dev
+npm run dev
 ```
 
 Build the api:
 
 ```shell
-pnpm run build
+npm run build
 ```
 
 The artifacts will be in the `dist` directory. You can now run the api using `npm run start` or `node dist/index.js`.
@@ -37,13 +37,13 @@ The artifacts will be in the `dist` directory. You can now run the api using `np
 Build the Docker image:
 
 ```shell
-pnpm run docker:build
+npm run docker:build
 ```
 
 Run the Docker image:
 
 ```shell
-pnpm run docker:run
+npm run docker:run
 ```
 
 ## Environment variables

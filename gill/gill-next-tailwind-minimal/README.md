@@ -2,8 +2,9 @@
 
 This is a Next.js app containing:
 
-- Tailwind CSS setup for styling
-- Useful wallet UI elements setup using [Gill](https://gill.site/)
+- Tailwind and Shadcn UI for styling
+- [Gill](https://gill.site/) Solana SDK
+- Shadcn [Wallet UI](https://registry.wallet-ui.dev) components
 
 ## Getting Started
 
@@ -12,17 +13,17 @@ This is a Next.js app containing:
 #### Download the template
 
 ```shell
-pnpm create solana-dapp@latest -t gh:solana-foundation/templates/gill/gill-next-tailwind
+npx create-solana-dapp@latest -t gh:solana-foundation/templates/gill/gill-next-tailwind
 ```
 
 #### Install Dependencies
 
 ```shell
-pnpm install
+npm install
 ```
 
-#### Start the web app
+#### Start the app
 
 ```shell
-pnpm dev
+npm run dev
 ```
