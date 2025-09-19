@@ -16,8 +16,8 @@
   "license": "MIT",
   "devDependencies": {
     "@beeman/repokit": "0.0.0-canary-20250719033644",
-    "@types/node": "^24.3.0",
-    "automd": "^0.4.0",
+    "@types/node": "^24.5.2",
+    "automd": "^0.4.2",
     "prettier": "^3.6.2"
   },
   "repokit": {
