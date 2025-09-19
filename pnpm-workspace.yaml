@@ -1,8 +1,4 @@
-packages:
-  - community/*
-  - gill/*
-  - mobile/*
-  - web3js/*
+minimumReleaseAge: 1440
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@tailwindcss/oxide'
@@ -12,3 +8,8 @@ onlyBuiltDependencies:
   - sharp
   - unrs-resolver
   - utf-8-validate
+packages:
+  - community/*
+  - gill/*
+  - mobile/*
+  - web3js/*
