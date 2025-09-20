@@ -1,9 +1,7 @@
-import { useBasicProgramId } from '@/features/basic/data-access/use-basic-program-id'
+import { BASIC_PROGRAM_ADDRESS } from '@project/anchor'
 import { AppExplorerLink } from '@/components/app-explorer-link'
 import { ellipsify } from '@wallet-ui/react'
 
 export function BasicUiProgramExplorerLink() {
-  const programId = useBasicProgramId()
-
-  return <AppExplorerLink address={programId.toString()} label={ellipsify(programId.toString())} />
+  return <AppExplorerLink address={BASIC_PROGRAM_ADDRESS} label={ellipsify(BASIC_PROGRAM_ADDRESS)} />
 }
