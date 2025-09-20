@@ -1,8 +1,11 @@
 import { ReactNode } from 'react'
 
+import { AppAlert } from '@/components/app-alert'
+import { useSolana } from '@/components/solana/use-solana'
 import { useCounterProgram } from '@/features/counter/data-access/use-counter-program'
 
 export function CounterUiProgramGuard({ children }: { children: ReactNode }) {
+  const { cluster } = useSolana()
   const programAccountQuery = useCounterProgram()
 
   if (programAccountQuery.isLoading) {
@@ -11,9 +14,7 @@ export function CounterUiProgramGuard({ children }: { children: ReactNode }) {
 
   if (!programAccountQuery.data?.value) {
     return (
-      <div className="alert alert-info flex justify-center">
-        <span>Program account not found. Make sure you have deployed the program and are on the correct cluster.</span>
-      </div>
+      <AppAlert>Program account not found on {cluster.label}. Be sure to deploy your program and try again.</AppAlert>
     )
   }
 
