@@ -3,11 +3,11 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { ReactNode } from 'react'
 
 export function AppAlert({
-  action,
+  action = null,
   children,
   className = '',
 }: {
-  action: ReactNode
+  action?: ReactNode
   children: ReactNode
   className?: string
 }) {

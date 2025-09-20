@@ -1,6 +1,10 @@
 import { useGetProgramAccountQuery } from '@/features/basic/data-access/use-get-program-account-query'
 
+import { AppAlert } from '@/components/app-alert'
+import { useSolana } from '@/components/solana/use-solana'
+
 export function BasicUiProgram() {
+  const { cluster } = useSolana()
   const query = useGetProgramAccountQuery()
 
   if (query.isLoading) {
@@ -8,9 +12,7 @@ export function BasicUiProgram() {
   }
   if (!query.data?.value) {
     return (
-      <div className="alert alert-info flex justify-center">
-        <span>Program account not found. Make sure you have deployed the program and are on the correct cluster.</span>
-      </div>
+      <AppAlert>Program account not found on {cluster.label}. Be sure to deploy your program and try again.</AppAlert>
     )
   }
   return (
