@@ -26,7 +26,7 @@ export default function BasicFeature() {
         <p className="mb-6">
           <BasicUiProgramExplorerLink />
         </p>
-        <BasicUiCreate />
+        <BasicUiCreate account={account} />
       </AppHero>
       <BasicUiProgram />
     </div>

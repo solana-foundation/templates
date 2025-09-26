@@ -2,12 +2,12 @@ import { BASIC_PROGRAM_ADDRESS, getGreetInstruction } from '@project/anchor'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { toastTx } from '@/components/toast-tx'
-import { useWalletTransactionSignAndSend } from '@/components/solana/use-wallet-transaction-sign-and-send'
-import { useWalletUiSigner } from '@/components/solana/use-wallet-ui-signer'
+import { UiWalletAccount, useWalletUiSigner } from '@wallet-ui/react'
+import { useWalletUiSignAndSend } from '@wallet-ui/react-gill'
 
-export function useGreetMutation() {
-  const txSigner = useWalletUiSigner()
-  const signAndSend = useWalletTransactionSignAndSend()
+export function useGreetMutation({ account }: { account: UiWalletAccount }) {
+  const txSigner = useWalletUiSigner({ account })
+  const signAndSend = useWalletUiSignAndSend()
 
   return useMutation({
     mutationFn: async () => {
