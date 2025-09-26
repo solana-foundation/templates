@@ -1,4 +1,5 @@
 import { useWalletUi } from '@wallet-ui/react'
+import { useWalletUiGill } from '@wallet-ui/react-gill'
 
 /**
  * Custom hook to abstract Wallet UI and related functionality from your app.
@@ -7,8 +8,10 @@ import { useWalletUi } from '@wallet-ui/react'
  */
 export function useSolana() {
   const walletUi = useWalletUi()
+  const client = useWalletUiGill()
 
   return {
     ...walletUi,
+    client,
   }
 }

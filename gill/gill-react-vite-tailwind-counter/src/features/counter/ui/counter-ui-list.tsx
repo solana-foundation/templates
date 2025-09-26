@@ -1,7 +1,8 @@
 import { CounterUiCard } from './counter-ui-card'
 import { useCounterAccountsQuery } from '@/features/counter/data-access/use-counter-accounts-query'
+import { UiWalletAccount } from '@wallet-ui/react'
 
-export function CounterUiList() {
+export function CounterUiList({ account }: { account: UiWalletAccount }) {
   const counterAccountsQuery = useCounterAccountsQuery()
 
   if (counterAccountsQuery.isLoading) {
@@ -20,7 +21,7 @@ export function CounterUiList() {
   return (
     <div className="grid lg:grid-cols-2 gap-4">
       {counterAccountsQuery.data?.map((counter) => (
-        <CounterUiCard key={counter.address} counter={counter} />
+        <CounterUiCard account={account} key={counter.address} counter={counter} />
       ))}
     </div>
   )

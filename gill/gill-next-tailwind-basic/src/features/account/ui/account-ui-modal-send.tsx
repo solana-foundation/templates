@@ -1,12 +1,13 @@
 import { address, Address } from 'gill'
 import { useState } from 'react'
+import { UiWalletAccount } from '@wallet-ui/react'
 import { AppModal } from '@/components/app-modal'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { useTransferSolMutation } from '../data-access/use-transfer-sol-mutation'
 
-export function AccountUiModalSend(props: { address: Address }) {
-  const mutation = useTransferSolMutation({ address: props.address })
+export function AccountUiModalSend(props: { account: UiWalletAccount; address: Address }) {
+  const mutation = useTransferSolMutation({ account: props.account, address: props.address })
   const [destination, setDestination] = useState('')
   const [amount, setAmount] = useState('1')
 

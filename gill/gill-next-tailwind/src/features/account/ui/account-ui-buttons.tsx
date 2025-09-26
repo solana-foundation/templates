@@ -13,7 +13,7 @@ export function AccountUiButtons({ address }: { address: Address }) {
       <div className="space-x-2">
         {cluster.id === 'solana:mainnet' ? null : <AccountUiModalAirdrop address={address} />}
         <ErrorBoundary errorComponent={() => null}>
-          <AccountUiModalSend address={address} />
+          <AccountUiModalSend account={account} address={address} />
         </ErrorBoundary>
         <AccountUiModalReceive address={address} />
       </div>

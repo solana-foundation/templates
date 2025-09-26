@@ -1,10 +1,11 @@
 import { CounterAccount } from '@project/anchor'
+import { UiWalletAccount } from '@wallet-ui/react'
 import { Button } from '@/components/ui/button'
 
 import { useCounterCloseMutation } from '@/features/counter/data-access/use-counter-close-mutation'
 
-export function CounterUiButtonClose({ counter }: { counter: CounterAccount }) {
-  const closeMutation = useCounterCloseMutation({ counter })
+export function CounterUiButtonClose({ account, counter }: { account: UiWalletAccount; counter: CounterAccount }) {
+  const closeMutation = useCounterCloseMutation({ account, counter })
 
   return (
     <Button

@@ -23,14 +23,14 @@ export default function CounterFeature() {
           <CounterUiProgramExplorerLink />
         </p>
         {account ? (
-          <CounterUiButtonInitialize />
+          <CounterUiButtonInitialize account={account} />
         ) : (
           <div style={{ display: 'inline-block' }}>
             <WalletDropdown />
           </div>
         )}
       </AppHero>
-      {account ? <CounterUiList /> : null}
+      {account ? <CounterUiList account={account} /> : null}
     </CounterUiProgramGuard>
   )
 }

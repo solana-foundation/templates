@@ -1,14 +1,20 @@
 import { CounterAccount, getDecrementInstruction } from '@project/anchor'
 import { useMutation } from '@tanstack/react-query'
-import { useWalletUiSigner } from '@/components/solana/use-wallet-ui-signer'
-import { useWalletTransactionSignAndSend } from '@/components/solana/use-wallet-transaction-sign-and-send'
+import { UiWalletAccount, useWalletUiSigner } from '@wallet-ui/react'
+import { useWalletUiSignAndSend } from '@wallet-ui/react-gill'
 import { toastTx } from '@/components/toast-tx'
 import { useCounterAccountsInvalidate } from './use-counter-accounts-invalidate'
 
-export function useCounterDecrementMutation({ counter }: { counter: CounterAccount }) {
+export function useCounterDecrementMutation({
+  account,
+  counter,
+}: {
+  account: UiWalletAccount
+  counter: CounterAccount
+}) {
   const invalidateAccounts = useCounterAccountsInvalidate()
-  const signer = useWalletUiSigner()
-  const signAndSend = useWalletTransactionSignAndSend()
+  const signer = useWalletUiSigner({ account })
+  const signAndSend = useWalletUiSignAndSend()
 
   return useMutation({
     mutationFn: async () => await signAndSend(getDecrementInstruction({ counter: counter.address }), signer),
