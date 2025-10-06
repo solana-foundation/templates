@@ -14,6 +14,10 @@ async function main() {
     console.log('Then set: RPC_ENDPOINT=https://devnet.helius-rpc.com?api-key=YOUR_KEY\n')
     process.exit(1)
   }
+
+  // createRpc accepts 3 endpoints: (1) standard Solana RPC, (2) compression API (Photon indexer), (3) prover
+  // Helius provides all three services on the same endpoint, so we pass it three times
+  // See: https://www.zkcompression.com/learn/node-operators
   const rpc = createRpc(RPC_ENDPOINT, RPC_ENDPOINT, RPC_ENDPOINT)
 
   const devWallet = process.env.DEV_WALLET || path.join(__dirname, '..', 'dev-wallet.json')

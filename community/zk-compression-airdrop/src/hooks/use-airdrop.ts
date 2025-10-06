@@ -39,6 +39,9 @@ export function useAirdrop(): UseAirdropReturn {
       setError(null)
 
       try {
+        // createRpc accepts 3 endpoints: (1) standard Solana RPC, (2) compression API (Photon indexer), (3) prover
+        // Helius provides all three services on the same endpoint, so we pass it three times
+        // See: https://www.zkcompression.com/learn/node-operators
         const rpc = createRpc(config.network, config.network, config.network)
         const mint = new PublicKey(config.mintAddress)
         const { recipients, amounts } = parseRecipients(airdropData)
