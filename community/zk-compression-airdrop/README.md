@@ -164,7 +164,7 @@ Compressed token accounts are stored in on-chain Merkle trees, not as individual
 
 1. **Mint address** on Solana Explorer (shows the mint, not individual accounts)
 2. **Photon RPC** with [special methods](https://www.zkcompression.com/resources/json-rpc-methods) like `getCompressedTokenAccountsByOwner`
-3. **RPC providers** that run Photon indexers (Helius, Triton, or [run your own](https://www.zkcompression.com/learn/node-operators))
+3. **RPC providers** that run Photon indexers (Helius or [run your own](https://www.zkcompression.com/learn/node-operators))
 
 ## Customization
 
