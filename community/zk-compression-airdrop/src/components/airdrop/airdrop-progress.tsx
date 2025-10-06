@@ -52,7 +52,7 @@ export function AirdropProgressDisplay({ progress, mintAddress, clusterParam = '
             <Alert>
               <AlertDescription className="text-xs">
                 <strong>About ZK Compression:</strong> Compressed token accounts are stored in Merkle trees on the
-                ledger, making them ~5000x cheaper than regular SPL tokens. Individual transaction signatures won&apos;t
+                ledger, making them around 5000x cheaper than regular SPL tokens. Individual transaction signatures won&apos;t
                 show token accounts on standard explorers - use the mint address above to see activity, or query
                 balances via the ZK Compression RPC indexer.
               </AlertDescription>

@@ -4,12 +4,12 @@ A Next.js application for distributing SPL tokens using [ZK Compression](https:/
 
 ## Features
 
-- 🚀 **ZK Compressed Tokens**: Rent-free token accounts stored in Merkle trees
-- 💰 **Cost Efficient**: ~5000x cheaper than standard SPL tokens
-- 🎯 **Direct Minting**: Simple authority-based distribution (no merkle proofs needed)
-- 📦 **Batch Processing**: Configurable batch sizes for optimal transaction handling
-- 🎨 **Modern UI**: Built with Next.js, Tailwind, Shadcn UI, and Gill SDK
-- 🔗 **Wallet Integration**: Connect with Phantom, Solflare, and other Solana wallets
+- **ZK Compressed Tokens**: Rent-free token accounts stored in Merkle trees
+- **Cost Efficient**: ~5000x cheaper than standard SPL tokens
+- **Direct Minting**: Simple authority-based distribution (no merkle proofs needed)
+- **Batch Processing**: Configurable batch sizes for optimal transaction handling
+- **Modern UI**: Built with Next.js, Tailwind, Shadcn UI, and Gill SDK
+- **Wallet Integration**: Connect with Phantom, Solflare, and other Solana wallets
 
 ## Tech Stack
 
@@ -154,7 +154,7 @@ Splits recipients across multiple transactions to stay within transaction size l
 **ZK Compressed Tokens:**
 
 - Token accounts stored in Merkle trees
-- ~5000x cheaper (no rent!)
+- About 5000x cheaper (no rent!)
 - 1000 recipients = ~0.0004 SOL
 - Requires ZK Compression indexer to query
 

@@ -11,7 +11,7 @@ function loadRecipientsFromTestWallets(): Recipient[] {
   const walletsPath = path.join(__dirname, 'test-wallets.json')
 
   if (!fs.existsSync(walletsPath)) {
-    console.log('\n⚠️  No test wallets found. Run: npx tsx scripts/generate-test-wallets.ts\n')
+    console.log('\nNo test wallets found. Run: npx tsx scripts/generate-test-wallets.ts\n')
     process.exit(1)
   }
 
@@ -55,7 +55,7 @@ async function main() {
 
   fs.writeFileSync(path.join(__dirname, 'airdrop-recipients.json'), JSON.stringify(airdropData, null, 2))
 
-  console.log('\n✅ Recipients list generated!')
+  console.log('\nRecipients list generated!')
   console.log('Total amount:', (Number(totalAmount) / 10 ** config.decimals).toLocaleString())
   console.log('Saved to scripts/airdrop-recipients.json')
 }

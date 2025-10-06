@@ -30,7 +30,7 @@ async function main() {
   if (fs.existsSync(walletsPath)) {
     const existingWallets = JSON.parse(fs.readFileSync(walletsPath, 'utf-8'))
     if (existingWallets.length >= count) {
-      console.log(`✅ ${existingWallets.length} test wallets already exist`)
+      console.log(`${existingWallets.length} test wallets already exist`)
       console.log('Delete scripts/test-wallets.json to regenerate\n')
 
       existingWallets.forEach((w: WalletInfo, i: number) => {
@@ -48,19 +48,19 @@ async function main() {
   for (let i = 1; i <= count; i++) {
     const wallet = generateWallet(`test-wallet-${i}`)
     wallets.push(wallet)
-    console.log(`✅ ${wallet.name}`)
+    console.log(`${wallet.name}`)
     console.log(`   Public:  ${wallet.publicKey}`)
     console.log(`   Private: ${wallet.privateKey}\n`)
   }
 
   fs.writeFileSync(walletsPath, JSON.stringify(wallets, null, 2))
 
-  console.log(`💾 Saved ${count} wallets to scripts/test-wallets.json`)
-  console.log('\n📋 Each wallet contains:')
+  console.log(`Saved ${count} wallets to scripts/test-wallets.json`)
+  console.log('\n Each wallet contains:')
   console.log('   • publicKey: Base58 encoded public key')
   console.log('   • privateKey: Base58 encoded private key (import to Phantom/Solflare)')
   console.log('   • secretKey: Byte array for programmatic use')
-  console.log('\n⚠️  These are test wallets - do not use in production!')
+  console.log('\n  These are test wallets - do not use in production!')
 }
 
 main().catch(console.error)

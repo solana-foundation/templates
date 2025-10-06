@@ -9,7 +9,7 @@ import path from 'path'
 async function main() {
   const RPC_ENDPOINT = process.env.RPC_ENDPOINT
   if (!RPC_ENDPOINT) {
-    console.error('\n❌ RPC_ENDPOINT environment variable not set')
+    console.error('\nRPC_ENDPOINT environment variable not set')
     console.log('Get a free API key from: https://dev.helius.xyz/')
     console.log('Then set: RPC_ENDPOINT=https://devnet.helius-rpc.com?api-key=YOUR_KEY\n')
     process.exit(1)
@@ -44,7 +44,7 @@ async function main() {
 
   const { mint, transactionSignature } = await createMint(rpc, payerKeypair, payerKeypair.publicKey, 9)
 
-  console.log('✅ Mint created!')
+  console.log('Mint created!')
   console.log('Mint Address:', mint.toBase58())
   console.log('Transaction:', transactionSignature)
 
