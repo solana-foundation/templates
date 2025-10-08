@@ -20,7 +20,7 @@ A Next.js application for distributing SPL tokens using [ZK Compression](https:/
 ## Prerequisites
 
 1. **Node.js** (v22 or higher)
-2. **pnpm** (recommended) or npm
+2. **npm** (recommended) or npm
 3. **Solana Wallet** with devnet SOL
 4. **Helius RPC API Key** (free tier works) - [Get one here](https://dev.helius.xyz/)
 
@@ -31,7 +31,7 @@ A Next.js application for distributing SPL tokens using [ZK Compression](https:/
 ### 1. Install Dependencies
 
 ```bash
-pnpm install
+npm install
 ```
 
 ### 2. Set Up Environment Variables
@@ -203,12 +203,12 @@ maxBatchSize={Math.min(airdropData.recipients.length, 50)} // Change 50 to your 
 
 | Script                    | Description                                 |
 | ------------------------- | ------------------------------------------- |
-| `pnpm airdrop:setup`      | Complete setup: wallets + mint + recipients |
-| `pnpm airdrop:wallets`    | Generate test wallet recipients             |
-| `pnpm airdrop:mint`       | Create compressed token mint                |
-| `pnpm airdrop:recipients` | Generate airdrop recipients list            |
-| `pnpm dev`                | Start development server                    |
-| `pnpm build`              | Build for production                        |
+| `npm airdrop:setup`      | Complete setup: wallets + mint + recipients |
+| `npm airdrop:wallets`    | Generate test wallet recipients             |
+| `npm airdrop:mint`       | Create compressed token mint                |
+| `npm airdrop:recipients` | Generate airdrop recipients list            |
+| `npm dev`                | Start development server                    |
+| `npm build`              | Build for production                        |
 
 ## Troubleshooting
 
