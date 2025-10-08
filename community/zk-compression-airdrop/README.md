@@ -96,7 +96,7 @@ npm run airdrop:wallets
 npm run airdrop:mint
 
 # Generate recipients list from test wallets
-pnpm airdrop:recipients
+npm airdrop:recipients
 ```
 
 ## How It Works
