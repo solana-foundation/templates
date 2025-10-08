@@ -73,7 +73,7 @@ This single command will:
 3. Generate the airdrop recipients list
 
 ```bash
-pnpm airdrop:setup
+npm run airdrop:setup
 ```
 
 ### 5. Start the Development Server
