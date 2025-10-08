@@ -13,7 +13,7 @@
     "airdrop:mint": "npx tsx scripts/create-compressed-mint.ts",
     "airdrop:recipients": "npx tsx scripts/generate-recipients.ts"
   },
-  "description": "Minimal Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
+  "description": "ZK-Compression based airdrop app built with Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
   "keywords": [
     "gill",
     "minimal",
@@ -22,7 +22,11 @@
     "solana-kit",
     "tailwind",
     "typescript",
-    "wallet-ui"
+    "wallet-ui",
+    "zk-compression",
+    "airdrop",
+    "zero-knowledge",
+    "zk"
   ],
   "version": "0.0.0",
   "private": true,
