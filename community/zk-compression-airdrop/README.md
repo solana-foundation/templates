@@ -93,7 +93,7 @@ If you want to run the setup steps individually:
 npm run airdrop:wallets
 
 # Create a new compressed token mint
-pnpm airdrop:mint
+npm run airdrop:mint
 
 # Generate recipients list from test wallets
 pnpm airdrop:recipients
