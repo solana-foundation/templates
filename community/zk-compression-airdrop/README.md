@@ -79,7 +79,7 @@ npm run airdrop:setup
 ### 5. Start the Development Server
 
 ```bash
-pnpm dev
+npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) and execute the airdrop!
