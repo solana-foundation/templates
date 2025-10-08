@@ -20,7 +20,7 @@ A Next.js application for distributing SPL tokens using [ZK Compression](https:/
 
 ## Prerequisites
 
-1. **Node.js** (v18 or higher)
+1. **Node.js** (v22 or higher)
 2. **pnpm** (recommended) or npm
 3. **Solana Wallet** with devnet SOL
 4. **Helius RPC API Key** (free tier works) - [Get one here](https://dev.helius.xyz/)
