@@ -13,7 +13,7 @@ function useSignMessage({ address }: { address: PublicKey }) {
   const { signMessage } = useWalletUi()
   return useMutation({
     mutationFn: async (input: { message: string }) => {
-      return signMessage(Buffer.from(input.message, 'utf8')).then((signature) => signature.toString())
+      return signMessage(new TextEncoder().encode(input.message)).then((signature) => signature.toString())
     },
   })
 }
