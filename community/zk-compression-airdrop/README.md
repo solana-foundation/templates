@@ -8,7 +8,6 @@ A Next.js application for distributing SPL tokens using [ZK Compression](https:/
 - **Cost Efficient**: ~5000x cheaper than standard SPL tokens
 - **Direct Minting**: Simple authority-based distribution (no merkle proofs needed)
 - **Batch Processing**: Configurable batch sizes for optimal transaction handling
-- **Modern UI**: Built with Next.js, Tailwind, Shadcn UI, and Gill SDK
 - **Wallet Integration**: Connect with Phantom, Solflare, and other Solana wallets
 
 ## Tech Stack
