@@ -2,38 +2,9 @@ import { PublicKey, type Keypair } from '@solana/web3.js'
 import BN from 'bn.js'
 import { createRpc, type Rpc } from '@lightprotocol/stateless.js'
 import { mintTo } from '@lightprotocol/compressed-token'
+import type { AirdropData } from './airdrop-types'
 
-export interface AirdropRecipient {
-  recipient: string
-  amount: string
-  index: number
-}
-
-export interface AirdropConfig {
-  mintAddress: string
-  authority: string
-  decimals: number
-  name: string
-  symbol: string
-  network: string
-}
-
-export interface AirdropData {
-  mint: string
-  decimals: number
-  totalRecipients: number
-  totalAmount: string
-  recipients: AirdropRecipient[]
-  generatedAt: string
-}
-
-export interface AirdropProgress {
-  currentBatch: number
-  totalBatches: number
-  successfulMints: number
-  failedMints: number
-  signatures: string[]
-}
+export type { AirdropConfig, AirdropData, AirdropProgress, AirdropRecipient } from './airdrop-types'
 
 export async function executeAirdropBatch(
   rpc: Rpc,
@@ -68,3 +39,5 @@ export function formatTokenAmount(amount: string | bigint, decimals: number): st
   const amountBigInt = typeof amount === 'string' ? BigInt(amount) : amount
   return (Number(amountBigInt) / 10 ** decimals).toLocaleString()
 }
+
+

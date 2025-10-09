@@ -40,7 +40,7 @@ export function AirdropControls({
               <Info className="h-4 w-4 text-muted-foreground cursor-help" />
               <div className="invisible group-hover:visible absolute left-0 top-6 z-10 w-64 rounded-md bg-popover p-3 text-xs text-popover-foreground shadow-md border">
                 Batch size controls how many recipients receive tokens per transaction. All recipients will receive
-                tokens - batching just splits them across multiple transactions to optimize for transaction size limits.
+                tokens, batching just splits them across multiple transactions to optimize for transaction size limits.
                 Smaller batches = more transactions but safer.
               </div>
             </div>

@@ -33,3 +33,4 @@ export function AirdropAlerts({ error, hasWallet, isAuthorized, expectedAuthorit
     </>
   )
 }
+

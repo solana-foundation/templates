@@ -31,7 +31,6 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@coral-xyz/anchor": "^0.31.1",
     "@lightprotocol/compressed-token": "^0.22.0",
     "@lightprotocol/stateless.js": "^0.22.0",
     "@radix-ui/react-avatar": "^1.1.10",
@@ -44,13 +43,14 @@
     "@solana/spl-token": "^0.4.14",
     "@solana/web3.js": "^1.98.4",
     "@tanstack/react-query": "^5.89.0",
-    "@wallet-ui/react": "1.1.1",
-    "@wallet-ui/tailwind": "1.1.1",
+    "@wallet-ui/react": "2.0.0",
+    "@wallet-ui/react-gill": "2.0.0",
+    "@wallet-ui/tailwind": "2.0.0",
     "bs58": "^6.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.2.3",
-    "gill": "0.10.2",
+    "gill": "0.12.0",
     "jotai": "^2.14.0",
     "js-sha3": "^0.9.3",
     "lucide-react": "^0.544.0",
@@ -64,6 +64,7 @@
     "tw-animate-css": "^1.3.8"
   },
   "devDependencies": {
+    "@coral-xyz/anchor": "^0.31.1",
     "@eslint/eslintrc": "^3.3.1",
     "@tailwindcss/postcss": "^4.1.13",
     "@types/bn.js": "^5.1.0",

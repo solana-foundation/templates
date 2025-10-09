@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatTokenAmount, type AirdropConfig, type AirdropData } from '@/lib/airdrop'
+import { formatTokenAmount } from '@/features/airdrop/data-access/airdrop-utils'
+import type { AirdropConfig, AirdropData } from '@/features/airdrop/data-access/airdrop-types'
 
 interface AirdropStatsProps {
   config: AirdropConfig
@@ -41,3 +42,4 @@ export function AirdropStats({ config, airdropData }: AirdropStatsProps) {
     </div>
   )
 }
+

@@ -5,15 +5,9 @@ import { PublicKey, Keypair } from '@solana/web3.js'
 import BN from 'bn.js'
 import bs58 from 'bs58'
 import { useSolana } from '@/components/solana/use-solana'
-import { createRpc } from '@lightprotocol/stateless.js'
 import { mintTo } from '@lightprotocol/compressed-token'
-import {
-  parseRecipients,
-  calculateBatches,
-  type AirdropData,
-  type AirdropConfig,
-  type AirdropProgress,
-} from '@/lib/airdrop'
+import { parseRecipients, calculateBatches, createRpcConnection } from './airdrop-utils'
+import type { AirdropData, AirdropConfig, AirdropProgress } from './airdrop-types'
 
 interface UseAirdropReturn {
   executeAirdrop: (config: AirdropConfig, airdropData: AirdropData, batchSize?: number) => Promise<void>
@@ -39,10 +33,7 @@ export function useAirdrop(): UseAirdropReturn {
       setError(null)
 
       try {
-        // createRpc accepts 3 endpoints: (1) standard Solana RPC, (2) compression API (Photon indexer), (3) prover
-        // Helius provides all three services on the same endpoint, so we pass it three times
-        // See: https://www.zkcompression.com/learn/node-operators
-        const rpc = createRpc(config.network, config.network, config.network)
+        const rpc = createRpcConnection(config.network)
         const mint = new PublicKey(config.mintAddress)
         const { recipients, amounts } = parseRecipients(airdropData)
         const totalBatches = calculateBatches(recipients.length, batchSize)
@@ -108,3 +99,5 @@ export function useAirdrop(): UseAirdropReturn {
     error,
   }
 }
+
+

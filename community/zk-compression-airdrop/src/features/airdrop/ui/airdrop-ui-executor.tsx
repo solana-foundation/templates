@@ -1,12 +1,12 @@
 'use client'
 
-import { AirdropStats } from './airdrop-stats'
-import { AirdropProgressDisplay } from './airdrop-progress'
-import { AirdropControls } from './airdrop-controls'
-import { AirdropAlerts } from './airdrop-alerts'
-import { useAirdrop } from '@/hooks/use-airdrop'
+import { AirdropStats } from './airdrop-ui-stats'
+import { AirdropProgressDisplay } from './airdrop-ui-progress'
+import { AirdropControls } from './airdrop-ui-controls'
+import { AirdropAlerts } from './airdrop-ui-alerts'
+import { useAirdrop } from '@/features/airdrop/data-access/use-airdrop'
 import { useSolana } from '@/components/solana/use-solana'
-import type { AirdropConfig, AirdropData } from '@/lib/airdrop'
+import type { AirdropConfig, AirdropData } from '@/features/airdrop/data-access/airdrop-types'
 
 interface AirdropExecutorProps {
   config: AirdropConfig
