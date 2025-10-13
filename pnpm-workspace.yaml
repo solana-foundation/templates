@@ -11,5 +11,4 @@ onlyBuiltDependencies:
 packages:
   - community/*
   - gill/*
-  - mobile/*
   - web3js/*
