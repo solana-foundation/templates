@@ -38,3 +38,8 @@ yarn-error.*
 
 app-example
 tmp/
+
+# Opt-in to Continuous Native Generation
+# https://docs.expo.dev/workflow/continuous-native-generation/
+/android
+/ios
