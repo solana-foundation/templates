@@ -70,12 +70,13 @@ jobs:
           cd "$TEMP_DIR"
 
           BRANCH="${{ github.head_ref || github.ref_name }}"
-          echo "Installing from branch: $BRANCH"
+          REPO="${{ github.event.pull_request.head.repo.full_name || github.repository }}"
+          echo "Installing from repo: $REPO, branch: $BRANCH"
 
           case ${{ matrix.pm }} in
-          npm) npx create-solana-dapp@latest --template gh:${{ github.repository }}/${{ matrix.template }}#${BRANCH} sandbox ;;
-          pnpm) pnpx create-solana-dapp@latest --template gh:${{ github.repository }}/${{ matrix.template }}#${BRANCH} sandbox ;;
-          yarn) yarn create solana-dapp --template gh:${{ github.repository }}/${{ matrix.template }}#${BRANCH} sandbox ;;
+          npm) npx create-solana-dapp@latest --template gh:${REPO}/${{ matrix.template }}#${BRANCH} sandbox ;;
+          pnpm) pnpx create-solana-dapp@latest --template gh:${REPO}/${{ matrix.template }}#${BRANCH} sandbox ;;
+          yarn) yarn create solana-dapp --template gh:${REPO}/${{ matrix.template }}#${BRANCH} sandbox ;;
           esac
 
           cd sandbox
