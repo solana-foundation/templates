@@ -4,21 +4,22 @@
   "description": "Solana Templates for create-solana-dapp",
   "main": "index.js",
   "scripts": {
-    "clean": "repokit clean",
-    "generate": "repokit generate",
+    "clean": "tsx scripts/clean.ts",
+    "generate": "tsx scripts/generate.ts && automd",
     "format": "prettier --write .",
-    "lint": "repokit lint",
+    "lint": "tsx scripts/lint.ts && prettier --check .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "update-deps": "pnpm -r update --latest"
+    "update-deps": "pnpm -r update --latest",
+    "validate": "tsx scripts/validate.ts"
   },
   "keywords": [],
   "author": "Solana Developers",
   "license": "MIT",
   "devDependencies": {
-    "@beeman/repokit": "0.0.0-canary-20250719033644",
     "@types/node": "^24.5.2",
     "automd": "^0.4.2",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "tsx": "^4.19.2"
   },
   "repokit": {
     "groups": [
