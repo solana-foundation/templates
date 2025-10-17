@@ -2,6 +2,8 @@
 
 Official templates for the [create-solana-dapp](https://github.com/solana-developers/create-solana-dapp) CLI.
 
+<!-- Test edit for GitHub Actions fork testing -->
+
 ## Usage
 
 Run the `create-solana-dapp` command and use the interactive prompts to create a new project.
