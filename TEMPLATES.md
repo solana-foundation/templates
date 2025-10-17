@@ -165,3 +165,11 @@ Templates maintained by the Solana community
 > A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree
 
 `nextjs` `react` `tailwind` `typescript` `wallet-ui`
+
+### [zk-compression-airdrop](community/zk-compression-airdrop)
+
+`gh:solana-foundation/templates/community/zk-compression-airdrop`
+
+> ZK-Compression based airdrop app built with Next.js, Tailwind, gill (based on @solana/kit), Wallet UI
+
+`gill` `minimal` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui` `zk-compression` `airdrop` `zero-knowledge` `zk`
