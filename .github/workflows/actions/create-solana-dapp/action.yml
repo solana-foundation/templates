@@ -1,0 +1,36 @@
+name: 'Run create-solana-dapp'
+description: 'Run create-solana-dapp with the given command and template'
+inputs:
+  cmd:
+    description: 'The command to run'
+    required: true
+  node-version:
+    description: 'The Node.js version to use.'
+    required: true
+  package-manager:
+    description: 'The package manager to use.'
+    required: true
+  template:
+    description: 'The template to install'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Environment
+      uses: ./.github/workflows/actions/setup
+      with:
+        node-version: ${{ inputs.node-version }}
+        package-manager: ${{ inputs.package-manager }}
+
+    - name: Create and Build using create-solana-dapp
+      run: |
+        cd $(mktemp -d)
+        BRANCH="${{ github.head_ref || github.ref_name }}"
+        REPO="${{ github.event.pull_request.head.repo.full_name || github.repository }}"
+        echo "Installing from repo: $REPO, branch: $BRANCH"
+        ${{ inputs.cmd }} --template gh:${REPO}/${{ inputs.template }}#${BRANCH} sandbox
+        cd sandbox
+        ${{ inputs.package-manager }} install
+        npm run ci
+      shell: bash

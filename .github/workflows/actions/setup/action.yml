@@ -1,0 +1,38 @@
+name: 'Setup Environment'
+description: 'Sets up the environment for testing by installing dependencies and configuring git.'
+inputs:
+  node-version:
+    description: 'The Node.js version to use.'
+    required: true
+  package-manager:
+    description: 'The package manager to use.'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Anchor
+      uses: metadaoproject/setup-anchor@v3.1
+      with:
+        anchor-version: '0.30.1'
+        solana-cli-version: '2.0.21'
+        node-version: ${{ inputs.node-version }}
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Configure Git identity
+      run: |
+        git config --global user.email "ci-bot@example.com"
+        git config --global user.name "CI Bot"
+      shell: bash
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Install package manager
+      if: ${{  inputs.package-manager != 'npm' }}
+      run: npm install -g ${{ inputs.package-manager }}
+      shell: bash

@@ -1,35 +1,52 @@
 {
-  "name": "solana-templates",
+  "name": "@solana-foundation/templates",
   "version": "1.0.0",
-  "description": "",
+  "description": "Solana Templates for create-solana-dapp",
   "main": "index.js",
   "scripts": {
-    "clean": "rm -rf node_modules && pnpm -r exec rm -rf {build,dist,node_modules,.anchor,.next}",
-    "fmt": "prettier --write .",
+    "clean": "repokit clean",
+    "generate": "repokit generate",
+    "format": "prettier --write .",
+    "lint": "repokit lint",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "update-deps": "pnpm -r update --latest",
-    "update-template-readmes": "npx esrun ./scripts/create-template-readme.ts",
-    "update-readme": "pnpm update-template-readmes && automd && prettier --write {README.md,**/README.md,templates.json}"
+    "update-deps": "pnpm -r update --latest"
   },
   "keywords": [],
   "author": "Solana Developers",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^24.0.12",
-    "automd": "^0.4.0",
-    "esrun": "^3.2.30",
+    "@beeman/repokit": "0.0.0-canary-20250719033644",
+    "@types/node": "^24.5.2",
+    "automd": "^0.4.2",
     "prettier": "^3.6.2"
   },
-  "templateGroups": [
-    {
-      "description": "Templates using gill (based on @solana/kit)",
-      "directory": "templates",
-      "name": "Templates"
-    },
-    {
-      "description": "Legacy templates using @solana/web3.js",
-      "directory": "legacy",
-      "name": "Legacy Templates"
-    }
-  ]
+  "repokit": {
+    "groups": [
+      {
+        "description": "Gill Templates (based on @solana/kit)",
+        "name": "Gill",
+        "path": "gill"
+      },
+      {
+        "description": "Solana Mobile Templates",
+        "path": "mobile",
+        "name": "Solana Mobile"
+      },
+      {
+        "description": "Templates using @solana/web3.js (legacy)",
+        "name": "Web3.js Templates",
+        "path": "web3js"
+      },
+      {
+        "description": "Templates maintained by the Solana community",
+        "name": "Community Templates",
+        "path": "community"
+      }
+    ]
+  },
+  "repository": {
+    "name": "solana-foundation/templates",
+    "type": "git",
+    "url": "https://github.com/solana-foundation/templates"
+  }
 }

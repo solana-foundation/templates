@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmit": false,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "types": ["vitest/globals", "node"],
+    "typeRoots": ["./node_modules/@types", "../node_modules/@types"],
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "strict": false,
+    "skipLibCheck": true
+  },
+  "include": ["scripts/**/*.ts", "tests/**/*.ts", "migrations/**/*.ts"],
+  "exclude": ["node_modules", "target", "dist"]
+}

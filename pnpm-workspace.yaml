@@ -1,6 +1,4 @@
-packages:
-  - legacy/*
-  - templates/*
+minimumReleaseAge: 1440
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@tailwindcss/oxide'
@@ -10,3 +8,7 @@ onlyBuiltDependencies:
   - sharp
   - unrs-resolver
   - utf-8-validate
+packages:
+  - community/*
+  - gill/*
+  - web3js/*
