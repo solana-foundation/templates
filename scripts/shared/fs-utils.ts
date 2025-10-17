@@ -1,18 +1,14 @@
 /**
- * Functional wrappers for file system operations
+ * File system utilities
  *
  * All functions return Results instead of throwing exceptions
- * for predictable error handling in functional pipelines.
+ * for predictable error handling.
  */
 
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, unlinkSync } from 'fs'
 import { join, relative } from 'path'
 import { Result, ok, err, tryCatch } from './result.js'
 import type { PackageJson } from './types.js'
-
-// ============================================================================
-// File Reading
-// ============================================================================
 
 /**
  * Read a file as a string
@@ -39,10 +35,6 @@ export const readPackageJson = (dir: string): Result<PackageJson> => {
   return readJsonFile<PackageJson>(path)
 }
 
-// ============================================================================
-// File Writing
-// ============================================================================
-
 /**
  * Write string to file
  */
@@ -61,10 +53,6 @@ export const writeJsonFile = <T>(path: string, data: T): Result<void> => {
     writeFileSync(path, json, 'utf-8')
   })
 }
-
-// ============================================================================
-// Directory Operations
-// ============================================================================
 
 /**
  * List all entries in a directory
@@ -111,10 +99,6 @@ export const hasPackageJson = (dir: string): boolean => {
   return fileExists(join(dir, 'package.json'))
 }
 
-// ============================================================================
-// File Deletion
-// ============================================================================
-
 /**
  * Delete a file if it exists
  * Returns ok(true) if deleted, ok(false) if didn't exist
@@ -129,10 +113,6 @@ export const deleteFile = (path: string): Result<boolean> => {
     return true
   })
 }
-
-// ============================================================================
-// Path Operations
-// ============================================================================
 
 /**
  * Get relative path from one directory to another

@@ -29,18 +29,10 @@ import {
 } from './shared/types.js'
 import { ok, err, type Result, unwrap } from './shared/result.js'
 
-// ============================================================================
-// Constants
-// ============================================================================
-
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT_DIR = join(__dirname, '..')
 const TEMPLATES_JSON_PATH = join(ROOT_DIR, 'templates.json')
 const TEMPLATES_MD_PATH = join(ROOT_DIR, 'TEMPLATES.md')
-
-// ============================================================================
-// Configuration
-// ============================================================================
 
 /**
  * Read configuration from root package.json
@@ -62,10 +54,6 @@ const readRootConfig = (): Result<RootConfig> => {
 
   return ok({ groups, repositoryName })
 }
-
-// ============================================================================
-// Template Scanning
-// ============================================================================
 
 /**
  * Generate template ID in giget format
@@ -157,10 +145,6 @@ const scanAllGroups = (
   return ok(groupMap)
 }
 
-// ============================================================================
-// Template Transformation
-// ============================================================================
-
 /**
  * Transform template metadata to JSON format
  */
@@ -200,10 +184,6 @@ const buildTemplateGroups = (
     .filter((group) => group.templates.length > 0)
 }
 
-// ============================================================================
-// Markdown Generation
-// ============================================================================
-
 /**
  * Generate markdown for a single template
  */
@@ -237,10 +217,6 @@ const generateTemplatesMd = (groups: readonly TemplateGroup[]): string => {
   return sections.join('\n\n')
 }
 
-// ============================================================================
-// File Writing
-// ============================================================================
-
 /**
  * Write generated files to disk
  */
@@ -262,10 +238,6 @@ const writeGeneratedFiles = (
 
   return ok(undefined)
 }
-
-// ============================================================================
-// Main Pipeline
-// ============================================================================
 
 /**
  * Main generation pipeline
@@ -291,10 +263,6 @@ const generate = (): Result<void> => {
   // Write generated files
   return writeGeneratedFiles(templateGroups)
 }
-
-// ============================================================================
-// CLI Entry Point
-// ============================================================================
 
 const main = () => {
   console.log('Generating template metadata...')

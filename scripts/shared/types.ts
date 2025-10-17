@@ -5,10 +5,6 @@
  * the output format consumed by create-solana-dapp and templates-site.
  */
 
-// ============================================================================
-// Domain Types
-// ============================================================================
-
 /**
  * Configuration for a template group from package.json repokit config
  */
@@ -75,10 +71,6 @@ export type RootConfig = {
   readonly groups: readonly GroupConfig[]
   readonly repositoryName: string
 }
-
-// ============================================================================
-// Type Guards
-// ============================================================================
 
 /**
  * Check if value has required package.json fields

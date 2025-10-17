@@ -1,5 +1,5 @@
 /**
- * Result type for functional error handling
+ * Result type for error handling
  *
  * Prefer Result over throwing exceptions for predictable error flows.
  * Use exceptions only for truly exceptional/unrecoverable errors.
@@ -8,10 +8,6 @@
 export type Result<T, E = string> =
   | { readonly ok: true; readonly value: T }
   | { readonly ok: false; readonly error: E }
-
-// ============================================================================
-// Constructors
-// ============================================================================
 
 /**
  * Create a successful result
@@ -29,16 +25,8 @@ export const err = <E = string>(error: E): Result<never, E> => ({
   error,
 })
 
-// ============================================================================
-// Combinators
-// ============================================================================
-
 /**
  * Map over a successful result
- *
- * @example
- * const result = ok(5)
- * const doubled = map(result, x => x * 2) // ok(10)
  */
 export const map = <T, U, E>(result: Result<T, E>, fn: (value: T) => U): Result<U, E> => {
   return result.ok ? ok(fn(result.value)) : result
@@ -46,10 +34,6 @@ export const map = <T, U, E>(result: Result<T, E>, fn: (value: T) => U): Result<
 
 /**
  * Chain results (flatMap/bind)
- *
- * @example
- * const result = ok(5)
- * const chained = chain(result, x => x > 0 ? ok(x * 2) : err('negative'))
  */
 export const chain = <T, U, E>(
   result: Result<T, E>,
@@ -86,15 +70,8 @@ export const unwrap = <T, E>(result: Result<T, E>): T => {
   throw new Error(String(result.error))
 }
 
-// ============================================================================
-// Utilities
-// ============================================================================
-
 /**
  * Wrap a function that might throw in a Result
- *
- * @example
- * const result = tryCatch(() => JSON.parse(str))
  */
 export const tryCatch = <T>(fn: () => T): Result<T, string> => {
   try {
