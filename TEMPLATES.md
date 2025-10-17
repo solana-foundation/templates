@@ -165,3 +165,11 @@ Templates maintained by the Solana community
 > A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree
 
 `nextjs` `react` `tailwind` `typescript` `wallet-ui`
+
+### [x402-solana-protocol](community/x402-solana-protocol)
+
+`gh:solana-foundation/templates/community/gill-node-solanax402`
+
+> x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK
+
+`solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
