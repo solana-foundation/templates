@@ -166,6 +166,13 @@
         "keywords": ["nextjs", "react", "tailwind", "typescript", "wallet-ui"],
         "name": "gill-jito-airdrop",
         "path": "community/gill-jito-airdrop"
+      },
+      {
+        "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK",
+        "id": "gh:solana-foundation/templates/community/gill-node-solanax402",
+        "keywords": ["solana", "x402", "payment", "protocol", "blockchain", "typescript", "gill"],
+        "name": "x402-solana-protocol",
+        "path": "community/gill-node-solanax402"
       }
     ]
   }

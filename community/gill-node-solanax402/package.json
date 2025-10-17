@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "ci": "npm run build && npm run lint && npm run format:check",
     "clean": "rm -rf dist",
     "dev:facilitator": "tsx watch src/facilitator/index.ts",
     "dev:server": "tsx watch src/server/index.ts",
