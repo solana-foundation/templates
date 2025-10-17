@@ -55,6 +55,13 @@ jobs:
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             CHANGED_FILES="${{ steps.changed-files.outputs.changed_files }}"
 
+            # Check if any workflow or global config files changed - if so, test all templates
+            if echo "$CHANGED_FILES" | grep -q -E '^\.github/workflows/'; then
+              echo "Workflow files changed, testing all templates"
+              echo templates=$(echo $ALL_TEMPLATES | sed 's/ //g') | tee --append $GITHUB_OUTPUT
+              exit 0
+            fi
+
             # Extract template paths from changed files
             AFFECTED_TEMPLATES=$(echo "$CHANGED_FILES" | grep -E '^(community|gill|mobile|web3js)/' | cut -d'/' -f1-2 | sort -u || true)
 
