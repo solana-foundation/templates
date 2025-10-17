@@ -201,8 +201,8 @@ maxBatchSize={Math.min(airdropData.recipients.length, 50)} // Change 50 to your 
 
 ## Scripts Reference
 
-| Script                    | Description                                 |
-| ------------------------- | ------------------------------------------- |
+| Script                   | Description                                 |
+| ------------------------ | ------------------------------------------- |
 | `npm airdrop:setup`      | Complete setup: wallets + mint + recipients |
 | `npm airdrop:wallets`    | Generate test wallet recipients             |
 | `npm airdrop:mint`       | Create compressed token mint                |

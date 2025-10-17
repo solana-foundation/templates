@@ -29,4 +29,3 @@ export interface AirdropProgress {
   failedMints: number
   signatures: string[]
 }
-

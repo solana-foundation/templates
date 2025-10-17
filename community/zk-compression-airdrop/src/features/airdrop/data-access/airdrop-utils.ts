@@ -39,5 +39,3 @@ export function formatTokenAmount(amount: string | bigint, decimals: number): st
   const amountBigInt = typeof amount === 'string' ? BigInt(amount) : amount
   return (Number(amountBigInt) / 10 ** decimals).toLocaleString()
 }
-
-

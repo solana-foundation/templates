@@ -7,19 +7,12 @@ export { AirdropControls } from './ui/airdrop-ui-controls'
 export { AirdropAlerts } from './ui/airdrop-ui-alerts'
 
 export { useAirdrop } from './data-access/use-airdrop'
-export { 
-  parseRecipients, 
-  calculateBatches, 
+export {
+  parseRecipients,
+  calculateBatches,
   formatTokenAmount,
   executeAirdropBatch,
-  createRpcConnection
+  createRpcConnection,
 } from './data-access/airdrop-utils'
 
-export type {
-  AirdropConfig,
-  AirdropData,
-  AirdropProgress,
-  AirdropRecipient
-} from './data-access/airdrop-types'
-
-
+export type { AirdropConfig, AirdropData, AirdropProgress, AirdropRecipient } from './data-access/airdrop-types'

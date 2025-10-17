@@ -11,5 +11,3 @@ interface AirdropFeatureProps {
 export function AirdropFeature({ config, airdropData }: AirdropFeatureProps) {
   return <AirdropExecutor config={config} airdropData={airdropData} />
 }
-
-

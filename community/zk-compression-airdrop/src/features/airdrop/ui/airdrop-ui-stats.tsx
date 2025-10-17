@@ -42,4 +42,3 @@ export function AirdropStats({ config, airdropData }: AirdropStatsProps) {
     </div>
   )
 }
-
