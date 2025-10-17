@@ -44,6 +44,9 @@ importers:
       '@wallet-standard/core':
         specifier: ^1.1.1
         version: 1.1.1
+      buffer:
+        specifier: ^6.0.3
+        version: 6.0.3
       deepmerge:
         specifier: ^4.3.1
         version: 4.3.1
