@@ -72,11 +72,14 @@ export class NonceDatabase {
           .then(() => {
             console.log('Nonce database initialized successfully');
             // Verify the table structure
-            this.db!.all("PRAGMA table_info(nonces)", (err, columns) => {
+            this.db!.all('PRAGMA table_info(nonces)', (err, columns) => {
               if (err) {
                 console.error('Error checking table structure:', err);
               } else {
-                console.log('Table columns:', (columns as any[]).map((col) => col.name));
+                console.log(
+                  'Table columns:',
+                  (columns as any[]).map((col) => col.name)
+                );
               }
             });
             resolve();
@@ -435,4 +438,3 @@ export class NonceDatabase {
     });
   }
 }
-

@@ -311,7 +311,10 @@ export class X402Middleware {
 
       clearTimeout(timeoutId);
 
-      const data = (await response.json()) as { success?: boolean; data?: { facilitator?: string; timestamp?: string } };
+      const data = (await response.json()) as {
+        success?: boolean;
+        data?: { facilitator?: string; timestamp?: string };
+      };
       return {
         healthy: true,
         facilitator: data.data?.facilitator,
@@ -372,4 +375,3 @@ export function createX402MiddlewareWithUtils(routeConfig: RouteConfig = {}, opt
     settlePayment: (paymentRequest: PaymentRequestData) => middleware.settlePayment(paymentRequest),
   };
 }
-

@@ -54,4 +54,3 @@ export async function getFacilitatorContext(): Promise<FacilitatorContext> {
 
   return context;
 }
-

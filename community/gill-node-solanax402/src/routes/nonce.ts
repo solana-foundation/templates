@@ -26,12 +26,7 @@ export function getNonceRoute(context: NonceRouteContext) {
 
       res.json(successResponse(details));
     } catch (error) {
-      res.status(500).json(errorResponse(
-        error instanceof Error ? error.message : 'Unknown error',
-        'NONCE_ERROR',
-        500
-      ));
+      res.status(500).json(errorResponse(error instanceof Error ? error.message : 'Unknown error', 'NONCE_ERROR', 500));
     }
   };
 }
-

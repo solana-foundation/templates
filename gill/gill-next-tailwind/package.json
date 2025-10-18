@@ -1,6 +1,8 @@
 {
   "name": "gill-next-tailwind",
+  "displayName": "Gill Boilerplate",
   "description": "Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
+  "usecase": "Starter",
   "keywords": [
     "gill",
     "nextjs",

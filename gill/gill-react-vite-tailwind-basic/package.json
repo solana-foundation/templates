@@ -1,6 +1,8 @@
 {
   "name": "gill-react-vite-tailwind-basic",
+  "displayName": "Vite Fullstack Boilerplate",
   "description": "React+Vite, Tailwind, gill (based on @solana/kit), basic Anchor example, Wallet UI",
+  "usecase": "Starter",
   "keywords": [
     "anchor-basic",
     "gill",

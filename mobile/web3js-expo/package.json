@@ -1,6 +1,8 @@
 {
   "name": "web3js-expo",
+  "displayName": "Mobile Expo Boilerplate",
   "description": "A template for building a Solana mobile app with Expo and React Native.",
+  "usecase": "Mobile",
   "keywords": [
     "expo",
     "mobile-wallet-adapter",

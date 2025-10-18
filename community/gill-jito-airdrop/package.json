@@ -1,6 +1,8 @@
 {
   "name": "gill-jito-airdrop",
+  "displayName": "Merkletree Airdrop",
   "description": "A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree",
+  "usecase": "Airdrop",
   "keywords": [
     "nextjs",
     "react",

@@ -40,4 +40,3 @@ export function successResponse<T>(data: T): ApiSuccessResponse<T> {
     data,
   };
 }
-

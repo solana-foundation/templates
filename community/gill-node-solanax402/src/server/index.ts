@@ -52,13 +52,9 @@ app.get('/health', async (_req, res) => {
       })
     );
   } catch (error) {
-    res.status(500).json(
-      errorResponse(
-        error instanceof Error ? error.message : 'Unknown error',
-        'HEALTH_CHECK_FAILED',
-        500
-      )
-    );
+    res
+      .status(500)
+      .json(errorResponse(error instanceof Error ? error.message : 'Unknown error', 'HEALTH_CHECK_FAILED', 500));
   }
 });
 
@@ -219,13 +215,7 @@ app.get('/stats', async (_req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json(
-        errorResponse(
-          error instanceof Error ? error.message : 'Failed to get stats',
-          'STATS_ERROR',
-          500
-        )
-      );
+      .json(errorResponse(error instanceof Error ? error.message : 'Failed to get stats', 'STATS_ERROR', 500));
   }
 });
 
@@ -272,4 +262,3 @@ process.on('SIGTERM', shutdown);
 start();
 
 export { app, context };
-

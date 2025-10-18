@@ -1,6 +1,8 @@
 {
   "name": "gill-next-tailwind-minimal",
+  "displayName": "Minimal Boilerplate",
   "description": "Minimal Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
+  "usecase": "Starter",
   "keywords": [
     "gill",
     "minimal",

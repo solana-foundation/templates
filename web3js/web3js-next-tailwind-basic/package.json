@@ -1,5 +1,7 @@
 {
   "name": "web3js-next-tailwind-basic",
+  "displayName": "Web3js Basic",
+  "usecase": "Legacy",
   "description": "Next.js, Tailwind, @solana/web3.js, Wallet Adapter, basic Anchor program",
   "keywords": [
     "anchor-basic",

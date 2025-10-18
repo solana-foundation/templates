@@ -1,6 +1,8 @@
 {
   "name": "gill-node-express",
+  "displayName": "Express Server",
   "description": "Node.js Express API with gill (based on @solana/kit)",
+  "usecase": "Backend",
   "keywords": [
     "express",
     "gill",

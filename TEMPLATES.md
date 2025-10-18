@@ -166,7 +166,7 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `tailwind` `typescript` `wallet-ui`
 
-### [x402-solana-protocol](community/x402-solana-protocol)
+### [x402-solana-protocol](community/gill-node-solanax402)
 
 `gh:solana-foundation/templates/community/gill-node-solanax402`
 

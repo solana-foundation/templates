@@ -15,7 +15,7 @@ const KEYPAIR_FILE = './test-client-keypair.json';
 if (fs.existsSync(KEYPAIR_FILE)) {
   console.log(' Client keypair already exists!\n');
   const saved = JSON.parse(fs.readFileSync(KEYPAIR_FILE, 'utf-8'));
-  
+
   console.log('╔══════════════════════════════════════════════════════════════════════╗');
   console.log('║  EXISTING CLIENT KEYPAIR                                             ║');
   console.log('╚══════════════════════════════════════════════════════════════════════╝');

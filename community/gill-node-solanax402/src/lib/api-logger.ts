@@ -30,4 +30,3 @@ export const log: ApiLogger = {
     console.error(formatMessage('ERROR', message, args));
   },
 };
-

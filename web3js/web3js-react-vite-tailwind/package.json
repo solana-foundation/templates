@@ -1,5 +1,7 @@
 {
   "name": "web3js-react-vite-tailwind",
+  "displayName": "Web3js Boilerplate (Vite)",
+  "usecase": "Legacy",
   "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter",
   "keywords": [
     "react",

@@ -1,6 +1,8 @@
 {
   "name": "web3js-expo-paper",
+  "displayName": "Paper Boilerplate",
   "description": "A template for building a Solana mobile app with Expo and React Native Paper.",
+  "usecase": "Mobile",
   "keywords": [
     "expo",
     "mobile-wallet-adapter",
