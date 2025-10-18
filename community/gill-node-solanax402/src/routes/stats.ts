@@ -21,11 +21,7 @@ export function getStatsRoute(context: StatsRouteContext) {
       const stats = await context.nonceDb.getNonceStats();
       res.json(successResponse(stats));
     } catch (error) {
-      res.status(500).json(errorResponse(
-        error instanceof Error ? error.message : 'Unknown error',
-        'STATS_ERROR',
-        500
-      ));
+      res.status(500).json(errorResponse(error instanceof Error ? error.message : 'Unknown error', 'STATS_ERROR', 500));
     }
   };
 }
@@ -40,12 +36,9 @@ export function cleanupNoncesRoute(context: StatsRouteContext) {
       console.log(`Cleaned up ${cleaned} expired nonces`);
       res.json(successResponse({ cleaned }));
     } catch (error) {
-      res.status(500).json(errorResponse(
-        error instanceof Error ? error.message : 'Unknown error',
-        'CLEANUP_ERROR',
-        500
-      ));
+      res
+        .status(500)
+        .json(errorResponse(error instanceof Error ? error.message : 'Unknown error', 'CLEANUP_ERROR', 500));
     }
   };
 }
-

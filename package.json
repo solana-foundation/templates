@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "clean": "tsx scripts/clean.ts",
+    "create-image": "tsx scripts/create-image.ts",
     "generate": "tsx scripts/generate.ts && automd",
     "format": "prettier --write .",
     "lint": "tsx scripts/lint.ts && prettier --check .",
@@ -17,8 +18,11 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^24.5.2",
+    "@vercel/og": "^0.7.2",
     "automd": "^0.4.2",
     "prettier": "^3.6.2",
+    "puppeteer": "^23.11.1",
+    "sharp": "^0.33.5",
     "tsx": "^4.19.2"
   },
   "repokit": {

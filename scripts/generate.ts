@@ -11,14 +11,7 @@
 
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
-import {
-  readPackageJson,
-  readDirs,
-  writeJsonFile,
-  writeFile,
-  hasPackageJson,
-  joinPath,
-} from './shared/fs-utils.js'
+import { readPackageJson, readDirs, writeJsonFile, writeFile, hasPackageJson, joinPath } from './shared/fs-utils.js'
 import {
   type TemplateMetadata,
   type TemplateJson,
@@ -65,11 +58,7 @@ const generateTemplateId = (repositoryName: string, templatePath: string): strin
 /**
  * Extract template metadata from a template directory's package.json
  */
-const extractTemplateMetadata = (
-  dir: string,
-  groupPath: string,
-  directoryName: string,
-): Result<TemplateMetadata> => {
+const extractTemplateMetadata = (dir: string, groupPath: string, directoryName: string): Result<TemplateMetadata> => {
   const pkgResult = readPackageJson(dir)
   if (!pkgResult.ok) {
     return err(`Failed to read package.json in ${dir}: ${pkgResult.error}`)
@@ -85,7 +74,9 @@ const extractTemplateMetadata = (
 
   return ok({
     name: pkg.name,
+    displayName: pkg.displayName,
     description: pkg.description || '',
+    usecase: pkg.usecase,
     keywords: [...(pkg.keywords || [])],
     path: relativePath,
   })
@@ -94,10 +85,7 @@ const extractTemplateMetadata = (
 /**
  * Scan a group directory for templates
  */
-const scanGroup = (
-  groupPath: string,
-  repositoryName: string,
-): Result<readonly TemplateMetadata[]> => {
+const scanGroup = (groupPath: string, repositoryName: string): Result<readonly TemplateMetadata[]> => {
   const groupDir = join(ROOT_DIR, groupPath)
   const entriesResult = readDirs(groupDir)
 
@@ -148,16 +136,22 @@ const scanAllGroups = (
 /**
  * Transform template metadata to JSON format
  */
-const toTemplateJson = (
-  metadata: TemplateMetadata,
-  repositoryName: string,
-): TemplateJson => ({
-  description: metadata.description,
-  id: generateTemplateId(repositoryName, metadata.path),
-  keywords: [...metadata.keywords],
-  name: metadata.name,
-  path: metadata.path,
-})
+const toTemplateJson = (metadata: TemplateMetadata, repositoryName: string): TemplateJson => {
+  const base = {
+    description: metadata.description,
+    id: generateTemplateId(repositoryName, metadata.path),
+    image: `${metadata.path}/og-image.png`,
+    keywords: [...metadata.keywords],
+    name: metadata.name,
+    path: metadata.path,
+  }
+
+  // Add optional fields if they exist
+  const withDisplayName = metadata.displayName ? { ...base, displayName: metadata.displayName } : base
+  const withUsecase = metadata.usecase ? { ...withDisplayName, usecase: metadata.usecase } : withDisplayName
+
+  return withUsecase
+}
 
 /**
  * Build template groups for JSON output
@@ -207,9 +201,7 @@ const generateTemplatesMd = (groups: readonly TemplateGroup[]): string => {
   const sections = groups.map((group) => {
     const groupHeader = [`# ${group.name}`, '', group.description, ''].join('\n')
 
-    const templatesSection = group.templates
-      .map((template) => templateToMarkdown(template))
-      .join('\n\n')
+    const templatesSection = group.templates.map((template) => templateToMarkdown(template)).join('\n\n')
 
     return `${groupHeader}\n${templatesSection}`
   })
@@ -220,9 +212,7 @@ const generateTemplatesMd = (groups: readonly TemplateGroup[]): string => {
 /**
  * Write generated files to disk
  */
-const writeGeneratedFiles = (
-  groups: readonly TemplateGroup[],
-): Result<void> => {
+const writeGeneratedFiles = (groups: readonly TemplateGroup[]): Result<void> => {
   // Write templates.json
   const jsonResult = writeJsonFile(TEMPLATES_JSON_PATH, groups)
   if (!jsonResult.ok) {

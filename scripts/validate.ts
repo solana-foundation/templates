@@ -191,11 +191,7 @@ const checkDuplicateIds = (): ValidationIssue[] => {
 
 // Main validation pipeline
 const validate = (): Result<void> => {
-  const allIssues: ValidationIssue[] = [
-    ...checkFilesExist(),
-    ...validateTemplatesJson(),
-    ...checkDuplicateIds(),
-  ]
+  const allIssues: ValidationIssue[] = [...checkFilesExist(), ...validateTemplatesJson(), ...checkDuplicateIds()]
 
   const errors = allIssues.filter((issue) => issue.severity === 'error')
   const warnings = allIssues.filter((issue) => issue.severity === 'warning')

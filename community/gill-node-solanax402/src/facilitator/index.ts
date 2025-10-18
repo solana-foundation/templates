@@ -93,13 +93,16 @@ async function start() {
     await context.nonceDb.initialize();
 
     // Start cleanup interval
-    setInterval(async () => {
-      try {
-        await context.nonceDb.cleanupExpiredNonces();
-      } catch (error) {
-        context.log.error('Cleanup error:', error);
-      }
-    }, 60 * 60 * 1000); // Every hour
+    setInterval(
+      async () => {
+        try {
+          await context.nonceDb.cleanupExpiredNonces();
+        } catch (error) {
+          context.log.error('Cleanup error:', error);
+        }
+      },
+      60 * 60 * 1000
+    ); // Every hour
 
     // Start server
     app.listen(context.config.port, () => {
@@ -107,7 +110,6 @@ async function start() {
       context.log.info(`Facilitator Public Key: ${context.facilitatorAddress.toString()}`);
       context.log.info(`Solana RPC: ${context.config.solanaRpcUrl}`);
       context.log.info(`Simulation Mode: ${context.config.simulateTransactions}`);
-
     });
   } catch (error) {
     context.log.error('Failed to start Facilitator App:', error);
@@ -129,4 +131,3 @@ process.on('SIGTERM', shutdown);
 start();
 
 export { app, context };
-

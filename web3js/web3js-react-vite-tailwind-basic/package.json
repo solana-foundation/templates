@@ -1,5 +1,7 @@
 {
   "name": "web3js-react-vite-tailwind-basic",
+  "displayName": "Web3js Basic",
+  "usecase": "Legacy",
   "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter, basic Anchor program",
   "keywords": [
     "anchor-basic",

@@ -2,7 +2,7 @@
 
 /**
  * Test HTTP 402 Payment Required Response
- * 
+ *
  * This test verifies that the server correctly returns HTTP 402
  * when no payment is provided.
  */
@@ -18,7 +18,7 @@ async function testNoPayment() {
   console.log(' Sending request WITHOUT X-Payment header...');
   console.log(`   URL: ${SERVER_URL}${PROTECTED_RESOURCE}`);
   console.log();
-  
+
   try {
     const response = await fetch(`${SERVER_URL}${PROTECTED_RESOURCE}`, {
       method: 'GET',
@@ -26,24 +26,26 @@ async function testNoPayment() {
         // No X-Payment header!
       },
     });
-    
+
     console.log(' Response received:');
     console.log(`   Status: ${response.status} ${response.statusText}`);
     console.log();
-    
+
     if (response.status === 402) {
       console.log(' SUCCESS! Server returned HTTP 402 Payment Required');
       console.log();
-      
+
       const data = await response.json();
       console.log(' Response body:');
       console.log(JSON.stringify(data, null, 2));
       console.log();
-      
+
       console.log(' Payment requirements:');
       if (data.accepts && data.accepts.length > 0) {
         const paymentInfo = data.accepts[0];
-        console.log(`   Amount: ${paymentInfo.maxAmountRequired} lamports (${Number(paymentInfo.maxAmountRequired) / 1_000_000_000} SOL)`);
+        console.log(
+          `   Amount: ${paymentInfo.maxAmountRequired} lamports (${Number(paymentInfo.maxAmountRequired) / 1_000_000_000} SOL)`
+        );
         console.log(`   Asset: ${paymentInfo.asset}`);
         console.log(`   Pay To: ${paymentInfo.payTo}`);
         console.log(`   Network: ${paymentInfo.network}`);
@@ -53,18 +55,15 @@ async function testNoPayment() {
       console.log('='.repeat(70));
       console.log(' HTTP 402 middleware is working correctly!');
       console.log('   The server properly rejects requests without payment.');
-      
     } else if (response.status === 200) {
       console.log(' ERROR! Server returned HTTP 200 OK');
       console.log('   This resource should require payment!');
       console.log('   The x402 middleware may not be configured correctly.');
-      
     } else {
       console.log(`  Unexpected status: ${response.status}`);
       const text = await response.text();
       console.log('Response:', text);
     }
-    
   } catch (error) {
     console.error(' Request failed:', error.message);
     console.error();

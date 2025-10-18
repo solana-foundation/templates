@@ -5,9 +5,7 @@
  * Use exceptions only for truly exceptional/unrecoverable errors.
  */
 
-export type Result<T, E = string> =
-  | { readonly ok: true; readonly value: T }
-  | { readonly ok: false; readonly error: E }
+export type Result<T, E = string> = { readonly ok: true; readonly value: T } | { readonly ok: false; readonly error: E }
 
 /**
  * Create a successful result
@@ -35,20 +33,14 @@ export const map = <T, U, E>(result: Result<T, E>, fn: (value: T) => U): Result<
 /**
  * Chain results (flatMap/bind)
  */
-export const chain = <T, U, E>(
-  result: Result<T, E>,
-  fn: (value: T) => Result<U, E>,
-): Result<U, E> => {
+export const chain = <T, U, E>(result: Result<T, E>, fn: (value: T) => Result<U, E>): Result<U, E> => {
   return result.ok ? fn(result.value) : result
 }
 
 /**
  * Map over an error result
  */
-export const mapError = <T, E, F>(
-  result: Result<T, E>,
-  fn: (error: E) => F,
-): Result<T, F> => {
+export const mapError = <T, E, F>(result: Result<T, E>, fn: (error: E) => F): Result<T, F> => {
   return result.ok ? result : err(fn(result.error))
 }
 
@@ -84,9 +76,7 @@ export const tryCatch = <T>(fn: () => T): Result<T, string> => {
 /**
  * Wrap an async function in a Result
  */
-export const tryCatchAsync = async <T>(
-  fn: () => Promise<T>,
-): Promise<Result<T, string>> => {
+export const tryCatchAsync = async <T>(fn: () => Promise<T>): Promise<Result<T, string>> => {
   try {
     const value = await fn()
     return ok(value)

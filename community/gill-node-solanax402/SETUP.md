@@ -22,12 +22,14 @@ npm install
 The facilitator needs a Solana keypair to sign and pay for transactions.
 
 **Option A: Using Solana CLI**
+
 ```bash
 solana-keygen new --outfile facilitator-keypair.json
 solana-keygen pubkey facilitator-keypair.json
 ```
 
 **Option B: Using Node.js**
+
 ```javascript
 import { Keypair } from '@solana/web3.js';
 import bs58 from 'bs58';
@@ -81,6 +83,7 @@ solana airdrop 2 <FACILITATOR_PUBLIC_KEY> --url devnet
 ```
 
 Verify balance:
+
 ```bash
 solana balance <FACILITATOR_PUBLIC_KEY> --url devnet
 ```
@@ -96,6 +99,7 @@ This compiles TypeScript files from `src/` to `dist/`.
 ### 6. Start Applications
 
 **Using PM2 (recommended):**
+
 ```bash
 npm start
 ```
@@ -103,21 +107,25 @@ npm start
 This starts both facilitator and server as background processes.
 
 **View logs:**
+
 ```bash
 npm run logs
 ```
 
 **Stop applications:**
+
 ```bash
 npm stop
 ```
 
 **Restart applications:**
+
 ```bash
 npm restart
 ```
 
 **Using npm scripts directly (development):**
+
 ```bash
 # Terminal 1: Start facilitator
 npm run dev:facilitator
@@ -147,11 +155,13 @@ Get the public key from `test-client-keypair.json` or from the script output.
 ### Run Tests
 
 **Main test (TRUE x402 instant finality):**
+
 ```bash
 npm test
 ```
 
 This test:
+
 - Creates a payment request with signed transaction
 - Sends to server's protected endpoint
 - Facilitator verifies and settles payment
@@ -159,21 +169,25 @@ This test:
 - Returns premium content
 
 **Test HTTP 402 response (no payment):**
+
 ```bash
 npm run test:402
 ```
 
 This test:
+
 - Requests protected resource without payment
 - Expects HTTP 402 Payment Required response
 - Verifies payment requirements in response
 
 **Test replay attack prevention:**
+
 ```bash
 npm run test:replay
 ```
 
 This test:
+
 - Sends payment request twice with same nonce
 - First attempt succeeds
 - Second attempt is rejected (replay attack blocked)
@@ -183,11 +197,13 @@ This test:
 ### Check Application Status
 
 **Facilitator health:**
+
 ```bash
 curl http://localhost:3001/health | jq .
 ```
 
 Expected response:
+
 ```json
 {
   "success": true,
@@ -200,16 +216,19 @@ Expected response:
 ```
 
 **Server health:**
+
 ```bash
 curl http://localhost:3000/health | jq .
 ```
 
 **View statistics:**
+
 ```bash
 curl http://localhost:3001/stats | jq .
 ```
 
 Expected response:
+
 ```json
 {
   "success": true,
@@ -237,16 +256,19 @@ curl http://localhost:3000/api/premium-data
 ```
 
 This should return HTTP 402 with payment requirements:
+
 ```json
 {
   "error": "Payment Required",
-  "accepts": [{
-    "maxAmountRequired": "10000000",
-    "asset": "SOL",
-    "payTo": "merchant_address",
-    "network": "devnet",
-    "resource": "/api/premium-data"
-  }]
+  "accepts": [
+    {
+      "maxAmountRequired": "10000000",
+      "asset": "SOL",
+      "payTo": "merchant_address",
+      "network": "devnet",
+      "resource": "/api/premium-data"
+    }
+  ]
 }
 ```
 
@@ -299,6 +321,7 @@ npm restart
 ```
 
 Or use watch mode for automatic restart:
+
 ```bash
 npm run dev:facilitator  # Terminal 1
 npm run dev:server       # Terminal 2
@@ -328,6 +351,7 @@ npm run fmt:check
 ### Issue: "FACILITATOR_PRIVATE_KEY is required"
 
 **Solution:**
+
 - Ensure `.env` file exists in project root
 - Verify `FACILITATOR_PRIVATE_KEY` is set and on a single line
 - Restart applications after updating `.env`
@@ -335,6 +359,7 @@ npm run fmt:check
 ### Issue: "Port 3001 already in use"
 
 **Solution:**
+
 ```bash
 # Stop PM2 processes
 npm stop
@@ -346,6 +371,7 @@ lsof -ti:3001 | xargs kill -9
 ### Issue: Tests fail with "insufficient SOL"
 
 **Solution:**
+
 - Fund test client wallet: `solana airdrop 1 <address> --url devnet`
 - Check client balance: `solana balance <address> --url devnet`
 - Ensure `SIMULATE_TRANSACTIONS=false` in `.env`
@@ -353,6 +379,7 @@ lsof -ti:3001 | xargs kill -9
 ### Issue: "Configuration validation failed"
 
 **Solution:**
+
 - Check all required environment variables in `.env`
 - Ensure URLs are valid (start with http:// or https://)
 - Verify port numbers are integers
@@ -361,6 +388,7 @@ lsof -ti:3001 | xargs kill -9
 ### Issue: Transactions failing on-chain
 
 **Solution:**
+
 - Ensure facilitator has SOL for gas: `solana balance <facilitator> --url devnet`
 - Check Solana devnet status: https://status.solana.com/
 - Verify RPC endpoint is accessible: `curl https://api.devnet.solana.com`
@@ -369,6 +397,7 @@ lsof -ti:3001 | xargs kill -9
 ### Issue: Nonce database errors
 
 **Solution:**
+
 ```bash
 # Stop applications
 npm stop
@@ -383,6 +412,7 @@ npm start
 ### Issue: PM2 not loading environment variables
 
 **Solution:**
+
 - PM2 loads `.env` via `node_args: '-r dotenv/config'` in `ecosystem.config.cjs`
 - Verify `.env` file path is correct
 - Restart PM2: `npm run pm2:delete && npm start`
@@ -417,6 +447,7 @@ NONCE_EXPIRY_HOURS=24
 ### Process Management
 
 Use PM2 in production:
+
 ```bash
 # Start with PM2
 npm start
@@ -452,6 +483,7 @@ curl http://localhost:3000/health
 ## Support
 
 For issues or questions:
+
 1. Check this guide and README.md
 2. Review logs: `npm run logs`
 3. Check PM2 status: `npx pm2 list`

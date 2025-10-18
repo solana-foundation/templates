@@ -13,17 +13,10 @@
 
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
-import {
-  readPackageJson,
-  readDirs,
-  hasPackageJson,
-} from './shared/fs-utils.js'
-import {
-  type GroupConfig,
-  type PackageJson,
-  isTemplatePackageJson,
-} from './shared/types.js'
+import { readPackageJson, readDirs, hasPackageJson, fileExists } from './shared/fs-utils.js'
+import { type GroupConfig, type PackageJson, isTemplatePackageJson } from './shared/types.js'
 import { type Result, ok, err } from './shared/result.js'
+import { validateImage } from './shared/image-utils.tsx'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT_DIR = join(__dirname, '..')
@@ -68,7 +61,7 @@ const validateTemplatePackageJson = (pkg: PackageJson, templatePath: string): Va
 }
 
 // Scan a single group for validation errors
-const lintGroup = (groupPath: string): ValidationError[] => {
+const lintGroup = async (groupPath: string): Promise<ValidationError[]> => {
   const groupDir = join(ROOT_DIR, groupPath)
   const entriesResult = readDirs(groupDir)
 
@@ -95,6 +88,17 @@ const lintGroup = (groupPath: string): ValidationError[] => {
 
     const pkgErrors = validateTemplatePackageJson(pkgResult.value, templatePath)
     errors.push(...pkgErrors)
+
+    const imagePath = join(entryPath, 'og-image.png')
+    if (!fileExists(imagePath)) {
+      errors.push({ path: templatePath, message: 'Missing og-image.png' })
+      continue
+    }
+
+    const imageValidation = await validateImage(imagePath)
+    if (!imageValidation.ok) {
+      errors.push({ path: templatePath, message: `Invalid image: ${imageValidation.error}` })
+    }
   }
 
   return errors
@@ -131,14 +135,14 @@ const checkDuplicateNames = (groups: readonly GroupConfig[]): ValidationError[] 
       paths.map((path) => ({
         path,
         message: `Duplicate template name "${name}" found in: ${paths.join(', ')}`,
-      }))
+      })),
     )
 
   return duplicates
 }
 
 // Main linting pipeline
-const lint = (): Result<void> => {
+const lint = async (): Promise<Result<void>> => {
   const configResult = readRootConfig()
   if (!configResult.ok) {
     return configResult
@@ -149,7 +153,7 @@ const lint = (): Result<void> => {
 
   // Lint each group
   for (const group of groups) {
-    const groupErrors = lintGroup(group.path)
+    const groupErrors = await lintGroup(group.path)
     allErrors.push(...groupErrors)
   }
 
@@ -158,16 +162,19 @@ const lint = (): Result<void> => {
   allErrors.push(...duplicateErrors)
 
   if (allErrors.length > 0) {
+    allErrors.forEach((error) => {
+      console.error(`  ${error.path}: ${error.message}`)
+    })
     return err(`Found ${allErrors.length} validation error(s)`)
   }
 
   return ok(undefined)
 }
 
-const main = () => {
+const main = async () => {
   console.log('Linting template structure...')
 
-  const result = lint()
+  const result = await lint()
 
   if (!result.ok) {
     console.error(`\nValidation failed: ${result.error}\n`)

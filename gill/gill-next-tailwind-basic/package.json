@@ -1,6 +1,8 @@
 {
   "name": "gill-next-tailwind-basic",
+  "displayName": "Fullstack Boilerplate",
   "description": "Next.js, Tailwind, basic Anchor example, gill (based on @solana/kit), Wallet UI",
+  "usecase": "Starter",
   "keywords": [
     "anchor-basic",
     "gill",

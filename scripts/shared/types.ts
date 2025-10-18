@@ -19,7 +19,9 @@ export type GroupConfig = {
  */
 export type PackageJson = {
   readonly name: string
+  readonly displayName?: string
   readonly description?: string
+  readonly usecase?: string
   readonly keywords?: readonly string[]
   readonly repository?: {
     readonly name?: string
@@ -36,7 +38,9 @@ export type PackageJson = {
  */
 export type TemplateMetadata = {
   readonly name: string
+  readonly displayName?: string
   readonly description: string
+  readonly usecase?: string
   readonly keywords: readonly string[]
   readonly path: string
 }
@@ -47,10 +51,13 @@ export type TemplateMetadata = {
  */
 export type TemplateJson = {
   readonly description: string
+  readonly displayName?: string
   readonly id: string
+  readonly image: string
   readonly keywords: readonly string[]
   readonly name: string
   readonly path: string
+  readonly usecase?: string
 }
 
 /**
@@ -103,9 +110,5 @@ export const isValidGroupConfig = (value: unknown): value is GroupConfig => {
 
   const obj = value as Record<string, unknown>
 
-  return (
-    typeof obj.name === 'string' &&
-    typeof obj.description === 'string' &&
-    typeof obj.path === 'string'
-  )
+  return typeof obj.name === 'string' && typeof obj.description === 'string' && typeof obj.path === 'string'
 }

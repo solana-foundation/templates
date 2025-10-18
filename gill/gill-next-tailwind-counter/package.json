@@ -1,6 +1,8 @@
 {
   "name": "gill-next-tailwind-counter",
+  "displayName": "Fullstack Counter Boilerplate",
   "description": "Next.js, Tailwind, Anchor Counter example, gill (based on @solana/kit), Wallet UI",
+  "usecase": "Starter",
   "keywords": [
     "anchor-counter",
     "gill",
