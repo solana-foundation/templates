@@ -27,6 +27,12 @@ const ROOT_DIR = join(__dirname, '..')
 const TEMPLATES_JSON_PATH = join(ROOT_DIR, 'templates.json')
 const TEMPLATES_MD_PATH = join(ROOT_DIR, 'TEMPLATES.md')
 
+// Constants
+const CONFIG_KEY = 'repokit' as const
+const OG_IMAGE_FILENAME = 'og-image.png' as const
+const GIGET_PREFIX = 'gh:' as const
+const DEFAULT_REPO = 'solana-foundation/templates' as const
+
 /**
  * Read configuration from root package.json
  */
@@ -37,13 +43,13 @@ const readRootConfig = (): Result<RootConfig> => {
   }
 
   const pkg = pkgResult.value
-  const groups = pkg.repokit?.groups
+  const groups = pkg[CONFIG_KEY]?.groups
 
   if (!groups || groups.length === 0) {
-    return err('No repokit.groups configuration found in package.json')
+    return err(`No ${CONFIG_KEY}.groups configuration found in package.json`)
   }
 
-  const repositoryName = pkg.repository?.name || 'solana-foundation/templates'
+  const repositoryName = pkg.repository?.name || DEFAULT_REPO
 
   return ok({ groups, repositoryName })
 }
@@ -52,7 +58,7 @@ const readRootConfig = (): Result<RootConfig> => {
  * Generate template ID in giget format
  */
 const generateTemplateId = (repositoryName: string, templatePath: string): string => {
-  return `gh:${repositoryName}/${templatePath}`
+  return `${GIGET_PREFIX}${repositoryName}/${templatePath}`
 }
 
 /**
@@ -85,7 +91,7 @@ const extractTemplateMetadata = (dir: string, groupPath: string, directoryName: 
 /**
  * Scan a group directory for templates
  */
-const scanGroup = (groupPath: string, repositoryName: string): Result<readonly TemplateMetadata[]> => {
+const scanGroup = (groupPath: string): Result<readonly TemplateMetadata[]> => {
   const groupDir = join(ROOT_DIR, groupPath)
   const entriesResult = readDirs(groupDir)
 
@@ -116,14 +122,11 @@ const scanGroup = (groupPath: string, repositoryName: string): Result<readonly T
 /**
  * Scan all groups and collect all templates
  */
-const scanAllGroups = (
-  groups: readonly GroupConfig[],
-  repositoryName: string,
-): Result<Map<string, readonly TemplateMetadata[]>> => {
+const scanAllGroups = (groups: readonly GroupConfig[]): Result<Map<string, readonly TemplateMetadata[]>> => {
   const groupMap = new Map<string, readonly TemplateMetadata[]>()
 
   for (const group of groups) {
-    const templatesResult = scanGroup(group.path, repositoryName)
+    const templatesResult = scanGroup(group.path)
     if (!templatesResult.ok) {
       return err(templatesResult.error)
     }
@@ -140,7 +143,7 @@ const toTemplateJson = (metadata: TemplateMetadata, repositoryName: string): Tem
   const base = {
     description: metadata.description,
     id: generateTemplateId(repositoryName, metadata.path),
-    image: `${metadata.path}/og-image.png`,
+    image: `${metadata.path}/${OG_IMAGE_FILENAME}`,
     keywords: [...metadata.keywords],
     name: metadata.name,
     path: metadata.path,
@@ -242,7 +245,7 @@ const generate = (): Result<void> => {
   const { groups, repositoryName } = configResult.value
 
   // Scan all template groups
-  const groupMapResult = scanAllGroups(groups, repositoryName)
+  const groupMapResult = scanAllGroups(groups)
   if (!groupMapResult.ok) {
     return groupMapResult
   }

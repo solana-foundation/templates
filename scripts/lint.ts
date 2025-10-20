@@ -21,6 +21,10 @@ import { validateImage } from './shared/image-utils.tsx'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT_DIR = join(__dirname, '..')
 
+// Constants
+const CONFIG_KEY = 'repokit' as const
+const OG_IMAGE_FILENAME = 'og-image.png' as const
+
 type ValidationError = {
   readonly path: string
   readonly message: string
@@ -33,9 +37,9 @@ const readRootConfig = (): Result<readonly GroupConfig[]> => {
     return err(`Failed to read root package.json: ${pkgResult.error}`)
   }
 
-  const groups = pkgResult.value.repokit?.groups
+  const groups = pkgResult.value[CONFIG_KEY]?.groups
   if (!groups || groups.length === 0) {
-    return err('No repokit.groups configuration found')
+    return err(`No ${CONFIG_KEY}.groups configuration found`)
   }
 
   return ok(groups)
@@ -89,9 +93,9 @@ const lintGroup = async (groupPath: string): Promise<ValidationError[]> => {
     const pkgErrors = validateTemplatePackageJson(pkgResult.value, templatePath)
     errors.push(...pkgErrors)
 
-    const imagePath = join(entryPath, 'og-image.png')
+    const imagePath = join(entryPath, OG_IMAGE_FILENAME)
     if (!fileExists(imagePath)) {
-      errors.push({ path: templatePath, message: 'Missing og-image.png' })
+      errors.push({ path: templatePath, message: `Missing ${OG_IMAGE_FILENAME}` })
       continue
     }
 

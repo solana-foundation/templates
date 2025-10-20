@@ -68,7 +68,7 @@ pnpm format      # Format code
 <!-- automd:contributors github="solana-foundation/templates" license="MIT" -->
 
 Published under the [MIT](https://github.com/solana-foundation/templates/blob/main/LICENSE) license.
-Made by [community](https://github.com/solana-foundation/templates/graphs/contributors)
+Made by [community](https://github.com/solana-foundation/templates/graphs/contributors) 💛
 <br><br>
 <a href="https://github.com/solana-foundation/templates/graphs/contributors">
 <img src="https://contrib.rocks/image?repo=solana-foundation/templates" />

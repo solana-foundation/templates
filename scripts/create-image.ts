@@ -17,6 +17,9 @@ import { fileExists } from './shared/fs-utils.js'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT_DIR = join(__dirname, '..')
 
+// Constants
+const OG_IMAGE_FILENAME = 'og-image.png' as const
+
 /**
  * Parse command line arguments
  */
@@ -68,7 +71,7 @@ const main = async () => {
 
   const { text, templatePath, logoPath, screenshotUrl } = args
   const templateDir = join(ROOT_DIR, templatePath)
-  const outputPath = join(templateDir, 'og-image.png')
+  const outputPath = join(templateDir, OG_IMAGE_FILENAME)
 
   console.log(`Generating OG image for: ${templatePath}`)
 

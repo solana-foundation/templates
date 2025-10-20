@@ -19,6 +19,9 @@ const ROOT_DIR = join(__dirname, '..')
 const TEMPLATES_JSON_PATH = join(ROOT_DIR, 'templates.json')
 const TEMPLATES_MD_PATH = join(ROOT_DIR, 'TEMPLATES.md')
 
+// Constants
+const GIGET_PREFIX = 'gh:' as const
+
 type ValidationIssue = {
   readonly severity: 'error' | 'warning'
   readonly message: string
@@ -129,10 +132,10 @@ const validateTemplatesJson = (): ValidationIssue[] => {
           severity: 'error',
           message: `Template "${templateId}" is missing id`,
         })
-      } else if (!template.id.startsWith('gh:')) {
+      } else if (!template.id.startsWith(GIGET_PREFIX)) {
         issues.push({
           severity: 'error',
-          message: `Template "${templateId}" id must start with "gh:"`,
+          message: `Template "${templateId}" id must start with "${GIGET_PREFIX}"`,
         })
       }
 
