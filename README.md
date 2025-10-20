@@ -39,6 +39,7 @@ See [TEMPLATES.md](TEMPLATES.md) for the complete list.
 We welcome contributions!
 
 **Adding a new template:**
+
 1. Create your template in the appropriate directory (gill/, web3js/, mobile/, or community/)
 2. Add required metadata to package.json (see existing templates for examples)
 3. Include displayName, usecase, and og-image.png
@@ -46,6 +47,7 @@ We welcome contributions!
 5. Open a PR with your changes
 
 **Improving existing templates:**
+
 - Report issues or suggest improvements
 - Submit PRs for bug fixes or enhancements
 - Update documentation
