@@ -2,19 +2,6 @@
 
 This guide provides comprehensive instructions for contributing community templates to the Solana Templates repository. Community templates are discoverable through `create-solana-dapp` and showcased on https://templates.solana.com.
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Template Requirements](#template-requirements)
-- [Creating Your Template](#creating-your-template)
-- [Metadata Configuration](#metadata-configuration)
-- [OG Image Generation](#og-image-generation)
-- [Generating Template Metadata](#generating-template-metadata)
-- [Validation and Testing](#validation-and-testing)
-- [Submission Process](#submission-process)
-- [Real Examples](#real-examples)
-- [Troubleshooting](#troubleshooting)
 
 ## Overview
 
