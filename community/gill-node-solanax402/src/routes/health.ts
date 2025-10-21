@@ -25,4 +25,3 @@ export function healthCheckRoute(context: HealthRouteContext) {
     );
   };
 }
-

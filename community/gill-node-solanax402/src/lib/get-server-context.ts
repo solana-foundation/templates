@@ -27,4 +27,3 @@ export function getServerContext(): ServerContext {
 
   return context;
 }
-

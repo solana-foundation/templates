@@ -2,7 +2,7 @@
 
 /**
  * Replay Attack Test
- * 
+ *
  * This test demonstrates that the x402 facilitator properly prevents
  * replay attacks by rejecting payment requests with reused nonces.
  */
@@ -35,7 +35,7 @@ console.log();
 async function createPaymentRequest(nonce) {
   const timestamp = Date.now();
   const expiry = timestamp + 3600000; // 1 hour
-  
+
   const payload = {
     amount: '10000000',
     recipient: MERCHANT_ADDRESS,
@@ -45,7 +45,7 @@ async function createPaymentRequest(nonce) {
     timestamp: timestamp,
     expiry: expiry,
   };
-  
+
   const structuredData = {
     domain: {
       name: 'x402-solana-protocol',
@@ -75,20 +75,20 @@ async function createPaymentRequest(nonce) {
       expiry: payload.expiry,
     },
   };
-  
+
   const messageToSign = JSON.stringify(structuredData);
   const messageBytes = Buffer.from(messageToSign, 'utf-8');
   const authSignature = nacl.sign.detached(messageBytes, clientKeypair.secretKey);
-  
+
   // Create Solana transaction
   const connection = new Connection(RPC_URL, 'confirmed');
   const { blockhash } = await connection.getLatestBlockhash('confirmed');
-  
+
   const transaction = new Transaction({
     feePayer: new PublicKey(FACILITATOR_PUBLIC_KEY),
     recentBlockhash: blockhash,
   });
-  
+
   transaction.add(
     SystemProgram.transfer({
       fromPubkey: clientKeypair.publicKey,
@@ -96,14 +96,16 @@ async function createPaymentRequest(nonce) {
       lamports: 10000000,
     })
   );
-  
+
   transaction.sign(clientKeypair);
-  
-  const serializedTransaction = transaction.serialize({
-    requireAllSignatures: false,
-    verifySignatures: true,
-  }).toString('base64');
-  
+
+  const serializedTransaction = transaction
+    .serialize({
+      requireAllSignatures: false,
+      verifySignatures: true,
+    })
+    .toString('base64');
+
   return {
     payload: payload,
     signature: bs58.encode(authSignature),
@@ -118,14 +120,14 @@ async function createPaymentRequest(nonce) {
 async function sendPaymentRequest(paymentRequest, attemptNumber) {
   console.log(` Attempt ${attemptNumber}: Sending payment request...`);
   console.log(`   Nonce: ${paymentRequest.payload.nonce.substring(0, 16)}...`);
-  
+
   const response = await fetch(`${SERVER_URL}${RESOURCE_URL}`, {
     method: 'GET',
     headers: {
       'X-Payment': JSON.stringify(paymentRequest),
     },
   });
-  
+
   return {
     status: response.status,
     data: await response.json(),
@@ -139,18 +141,18 @@ async function runReplayAttackTest() {
   try {
     // Generate a nonce for this test
     const nonce = crypto.randomBytes(32).toString('hex');
-    
+
     console.log('STEP 1: Create legitimate payment request');
     console.log('-'.repeat(70));
     const paymentRequest = await createPaymentRequest(nonce);
     console.log(' Payment request created');
     console.log(`   Nonce: ${nonce.substring(0, 16)}...`);
     console.log();
-    
+
     console.log('STEP 2: First attempt (should succeed)');
     console.log('-'.repeat(70));
     const firstAttempt = await sendPaymentRequest(paymentRequest, 1);
-    
+
     if (firstAttempt.status === 200) {
       console.log(' First attempt SUCCEEDED (expected)');
       console.log(`   Status: ${firstAttempt.status}`);
@@ -161,15 +163,15 @@ async function runReplayAttackTest() {
       return;
     }
     console.log();
-    
+
     console.log('STEP 3: Second attempt with SAME nonce (replay attack)');
     console.log('-'.repeat(70));
     console.log('  Attempting to reuse the same payment request...');
     console.log('   This should be REJECTED by the facilitator!');
     console.log();
-    
+
     const secondAttempt = await sendPaymentRequest(paymentRequest, 2);
-    
+
     if (secondAttempt.status === 402 || secondAttempt.status === 400) {
       console.log(' REPLAY ATTACK BLOCKED! (expected)');
       console.log(`   Status: ${secondAttempt.status}`);
@@ -192,7 +194,6 @@ async function runReplayAttackTest() {
       console.log();
       console.log(' SECURITY ISSUE: Nonce system may not be working correctly!');
     }
-    
   } catch (error) {
     console.error('\n Test failed:', error.message);
     console.error();
@@ -204,4 +205,3 @@ async function runReplayAttackTest() {
 }
 
 runReplayAttackTest();
-

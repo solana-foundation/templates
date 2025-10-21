@@ -1,6 +1,8 @@
 {
   "name": "gill-react-vite-tailwind",
+  "displayName": "Vite Boilerplate",
   "description": "React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI",
+  "usecase": "Starter",
   "keywords": [
     "gill",
     "react",

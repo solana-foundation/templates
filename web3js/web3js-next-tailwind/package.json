@@ -1,5 +1,7 @@
 {
   "name": "web3js-next-tailwind",
+  "displayName": "Web3js Boilerplate",
+  "usecase": "Legacy",
   "description": "Next.js, Tailwind, @solana/web3.js, Wallet Adapter",
   "keywords": [
     "nextjs",

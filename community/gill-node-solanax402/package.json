@@ -1,5 +1,7 @@
 {
   "name": "x402-solana-protocol",
+  "displayName": "x402 Express Server",
+  "usecase": "Payments",
   "version": "1.0.0",
   "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK",
   "main": "dist/facilitator/index.js",

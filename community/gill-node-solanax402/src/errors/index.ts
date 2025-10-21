@@ -69,4 +69,3 @@ export class SignatureVerificationError extends X402Error {
     this.name = 'SignatureVerificationError';
   }
 }
-
