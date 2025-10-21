@@ -8,6 +8,10 @@ We love your input! We want to make contributing to this project as easy and tra
 - Proposing new features
 - Becoming a maintainer
 
+## Contributing Community Templates
+
+If you're interested in contributing a community template, please see our comprehensive [Community Template Contributor Guide](./COMMUNITY_TEMPLATE_GUIDE.md) for detailed instructions.
+
 ## We Develop with GitHub
 
 We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
