@@ -38,6 +38,10 @@ See [TEMPLATES.md](TEMPLATES.md) for the complete list.
 
 We welcome contributions!
 
+**Adding a new community template:**
+
+See the [Community Template Contributor Guide](COMMUNITY_TEMPLATE_GUIDE.md) for comprehensive instructions on contributing templates to the community/ directory.
+
 **Adding a new template:**
 
 1. Create your template in the appropriate directory (gill/, web3js/, mobile/, or community/)
