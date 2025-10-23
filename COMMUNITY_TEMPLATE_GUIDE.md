@@ -2,7 +2,6 @@
 
 This guide provides comprehensive instructions for contributing community templates to the Solana Templates repository. Community templates are discoverable through `create-solana-dapp` and showcased on https://templates.solana.com.
 
-
 ## Overview
 
 Community templates are Solana project templates maintained by the community that demonstrate specific use cases, frameworks, or patterns. They are:
