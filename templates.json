@@ -375,6 +375,27 @@
         "path": "community/gill-node-solanax402",
         "displayName": "x402 Express Server",
         "usecase": "Payments"
+      },
+      {
+        "description": "ZK-Compression based airdrop app built with Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
+        "id": "gh:solana-foundation/templates/community/zk-compression-airdrop",
+        "image": "community/zk-compression-airdrop/og-image.png",
+        "keywords": [
+          "gill",
+          "minimal",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript",
+          "wallet-ui",
+          "zk-compression",
+          "airdrop",
+          "zero-knowledge",
+          "zk"
+        ],
+        "name": "zk-compression-airdrop",
+        "path": "community/zk-compression-airdrop"
       }
     ]
   }
