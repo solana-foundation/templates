@@ -166,6 +166,13 @@
         "keywords": ["nextjs", "react", "tailwind", "typescript", "wallet-ui"],
         "name": "gill-jito-airdrop",
         "path": "community/gill-jito-airdrop"
+      },
+      {
+        "description": "Complete Jupiter swap interface with Crossmint wallet integration, powered by Gill and Next.js",
+        "id": "gh:solana-foundation/templates/community/gill-jupiter-swap",
+        "keywords": ["jupiter", "swap", "crossmint", "gill", "nextjs", "react", "tailwind", "typescript", "wallet-ui"],
+        "name": "gill-jupiter-swap",
+        "path": "community/gill-jupiter-swap"
       }
     ]
   }
