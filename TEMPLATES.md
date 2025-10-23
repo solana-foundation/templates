@@ -166,10 +166,10 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `tailwind` `typescript` `wallet-ui`
 
-### [zk-compression-airdrop](community/zk-compression-airdrop)
+### [x402-solana-protocol](community/gill-node-solanax402)
 
-`gh:solana-foundation/templates/community/zk-compression-airdrop`
+`gh:solana-foundation/templates/community/gill-node-solanax402`
 
-> ZK-Compression based airdrop app built with Next.js, Tailwind, gill (based on @solana/kit), Wallet UI
+> x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK
 
-`gill` `minimal` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui` `zk-compression` `airdrop` `zero-knowledge` `zk`
+`solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`

@@ -1,5 +1,7 @@
 {
   "name": "web3js-next-tailwind-counter",
+  "displayName": "Web3js Counter",
+  "usecase": "Legacy",
   "description": "Next.js, Tailwind, @solana/web3.js, Wallet Adapter, Anchor Counter program",
   "keywords": [
     "anchor-counter",

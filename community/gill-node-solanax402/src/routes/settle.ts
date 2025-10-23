@@ -94,9 +94,7 @@ export function settlePaymentRoute(context: SettleRouteContext) {
         console.log(' Simulation Mode: Skipping balance checks for x402 demo');
       }
 
-      console.log(
-        ` Executing x402 payment: ${requiredAmount} lamports (${Number(requiredAmount) / 1000000000} SOL)`
-      );
+      console.log(` Executing x402 payment: ${requiredAmount} lamports (${Number(requiredAmount) / 1000000000} SOL)`);
 
       // Generate simulated or real transaction signature
       let transactionSignature: string;
@@ -116,17 +114,21 @@ export function settlePaymentRoute(context: SettleRouteContext) {
         console.log('   Client signed transaction (their SOL will move to merchant)');
         console.log('   Facilitator will add signature as fee payer (pays gas)');
         console.log();
-        
+
         try {
           transactionSignature = await context.solanaUtils.submitSponsoredTransaction(
             context.config.facilitatorPrivateKey, // facilitator private key (fee payer)
             paymentReq.signedTransaction // client-signed transaction
           );
           console.log('ATOMIC SETTLEMENT complete!');
-          console.log(`   View on Solana Explorer: https://explorer.solana.com/tx/${transactionSignature}?cluster=devnet`);
+          console.log(
+            `   View on Solana Explorer: https://explorer.solana.com/tx/${transactionSignature}?cluster=devnet`
+          );
         } catch (error) {
           console.error('Sponsored transaction failed:', error);
-          throw new Error(`Failed to submit sponsored transaction: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          throw new Error(
+            `Failed to submit sponsored transaction: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
         }
       }
 
@@ -168,4 +170,3 @@ export function settlePaymentRoute(context: SettleRouteContext) {
     }
   };
 }
-

@@ -27,8 +27,9 @@ runs:
       run: |
         cd $(mktemp -d)
         BRANCH="${{ github.head_ref || github.ref_name }}"
-        echo "Installing from branch: $BRANCH"
-        ${{ inputs.cmd }} --template gh:${{ github.repository }}/${{ inputs.template }}#${BRANCH} sandbox
+        REPO="${{ github.event.pull_request.head.repo.full_name || github.repository }}"
+        echo "Installing from repo: $REPO, branch: $BRANCH"
+        ${{ inputs.cmd }} --template gh:${REPO}/${{ inputs.template }}#${BRANCH} sandbox
         cd sandbox
         ${{ inputs.package-manager }} install
         npm run ci

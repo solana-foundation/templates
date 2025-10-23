@@ -5,6 +5,10 @@
 pnpm-lock.yaml
 .next
 
+# Generated files
+templates.json
+TEMPLATES.md
+
 # Ignore any dist, tmp, or node_modules directories
 gill/**/.env
 gill/**/.anchor

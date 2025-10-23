@@ -1,6 +1,8 @@
 {
   "name": "gill-react-vite-tailwind-counter",
+  "displayName": "Vite Counter Boilerplate",
   "description": "React+Vite, Tailwind, gill (based on @solana/kit), Anchor Counter example, Wallet UI",
+  "usecase": "Starter",
   "keywords": [
     "anchor-counter",
     "gill",

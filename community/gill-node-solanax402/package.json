@@ -1,11 +1,14 @@
 {
   "name": "x402-solana-protocol",
+  "displayName": "x402 Express Server",
+  "usecase": "Payments",
   "version": "1.0.0",
   "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK",
   "main": "dist/facilitator/index.js",
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "ci": "npm run build && npm run lint && npm run format:check",
     "clean": "rm -rf dist",
     "dev:facilitator": "tsx watch src/facilitator/index.ts",
     "dev:server": "tsx watch src/server/index.ts",
