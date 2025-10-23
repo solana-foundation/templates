@@ -229,6 +229,25 @@
     "path": "web3js",
     "templates": [
       {
+        "description": "Next.js 15 template for Solana DEX analytics with Jupiter Ultra.",
+        "id": "gh:solana-foundation/templates/web3js/nextjs-dex-analytics",
+        "image": "web3js/nextjs-dex-analytics/og-image.png",
+        "keywords": [
+          "solana",
+          "nextjs",
+          "typescript",
+          "dex",
+          "analytics",
+          "jupiter",
+          "defillama",
+          "helius"
+        ],
+        "name": "solana-dex-analytics-template",
+        "path": "web3js/nextjs-dex-analytics",
+        "displayName": "Solana DEX Analytics (Next.js)",
+        "usecase": "DeFi"
+      },
+      {
         "description": "Next.js, Tailwind, @solana/web3.js, Wallet Adapter",
         "id": "gh:solana-foundation/templates/web3js/web3js-next-tailwind",
         "image": "web3js/web3js-next-tailwind/og-image.png",
