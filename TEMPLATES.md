@@ -106,6 +106,14 @@ Solana Mobile Templates
 
 Templates using @solana/web3.js (legacy)
 
+### [solana-dex-analytics-template](web3js/nextjs-dex-analytics)
+
+`gh:solana-foundation/templates/web3js/nextjs-dex-analytics`
+
+> Next.js 15 template for Solana DEX analytics with Jupiter Ultra.
+
+`solana` `nextjs` `typescript` `dex` `analytics` `jupiter` `defillama` `helius`
+
 ### [web3js-next-tailwind](web3js/web3js-next-tailwind)
 
 `gh:solana-foundation/templates/web3js/web3js-next-tailwind`

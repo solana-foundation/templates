@@ -1,0 +1,14 @@
+{
+  "name": "Solana DEX Analytics Template",
+  "short_name": "Solana DEX",
+  "description": "Open-source Solana DEX analytics template with Next.js 15",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#8B5CF6",
+  "orientation": "portrait-primary",
+  "icons": [],
+  "categories": ["finance", "productivity"],
+  "lang": "en-US",
+  "dir": "ltr"
+}
