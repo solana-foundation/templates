@@ -235,7 +235,7 @@ export interface PaymentRequestData {
 /**
  * Payment Request Structure
  * This represents a complete payment request with signature
- * 
+ *
  * For TRUE x402 atomic settlement:
  * - Client creates Solana transaction (transfer SOL from client to merchant)
  * - Client signs the transaction
@@ -339,11 +339,11 @@ export class PaymentRequest {
       signature: this.signature,
       clientPublicKey: this.clientPublicKey,
     };
-    
+
     if (this.signedTransaction) {
       data.signedTransaction = this.signedTransaction;
     }
-    
+
     return JSON.stringify(data);
   }
 
@@ -366,4 +366,3 @@ export class PaymentRequest {
     }
   }
 }
-

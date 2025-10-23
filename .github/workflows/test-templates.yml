@@ -9,6 +9,8 @@ on:
     branches:
       - main
   pull_request:
+  schedule:
+    - cron: '0 0 * * *' # Daily at midnight UTC
 
 permissions:
   contents: read
@@ -20,15 +22,72 @@ jobs:
       templates: ${{ steps.set-matrix.outputs.templates }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          # Get changed files in the PR
+          git fetch origin ${{ github.base_ref }}
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - id: set-matrix
         shell: bash
         run: |
-          echo templates=$(echo $(cat .github/workflows/templates.json) | sed 's/ //g' ) | tee --append $GITHUB_OUTPUT
+          ALL_TEMPLATES=$(cat .github/workflows/templates.json)
+
+          # For scheduled runs or pushes to main, test all templates
+          if [[ "${{ github.event_name }}" == "schedule" ]] || [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "Running all templates (scheduled or push to main)"
+            echo templates=$(echo $ALL_TEMPLATES | sed 's/ //g') | tee --append $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # For PRs, filter templates based on changed files
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            CHANGED_FILES="${{ steps.changed-files.outputs.changed_files }}"
+
+            # Check if any workflow or global config files changed - if so, test all templates
+            if echo "$CHANGED_FILES" | grep -q -E '^\.github/workflows/'; then
+              echo "Workflow files changed, testing all templates"
+              echo templates=$(echo $ALL_TEMPLATES | sed 's/ //g') | tee --append $GITHUB_OUTPUT
+              exit 0
+            fi
+
+            # Extract template paths from changed files
+            AFFECTED_TEMPLATES=$(echo "$CHANGED_FILES" | grep -E '^(community|gill|mobile|web3js)/' | cut -d'/' -f1-2 | sort -u || true)
+
+            if [[ -z "$AFFECTED_TEMPLATES" ]]; then
+              echo "No template files changed, skipping template tests"
+              echo 'templates=[]' | tee --append $GITHUB_OUTPUT
+              exit 0
+            fi
+
+            echo "Affected templates:"
+            echo "$AFFECTED_TEMPLATES"
+
+            # Filter the templates.json to only include affected templates
+            FILTERED_TEMPLATES=$(echo "$ALL_TEMPLATES" | jq -c --arg templates "$AFFECTED_TEMPLATES" '
+              [.[] | select(. as $item | ($templates | split("\n") | map(. == $item) | any))]
+            ')
+
+            echo "Filtered templates: $FILTERED_TEMPLATES"
+            echo templates=$(echo $FILTERED_TEMPLATES | sed 's/ //g') | tee --append $GITHUB_OUTPUT
+          fi
 
   test-npm:
     name: Test (npm)
     runs-on: ubuntu-latest
     needs: [setup-templates]
+    if: needs.setup-templates.outputs.templates != '[]'
     strategy:
       fail-fast: false
       matrix:
@@ -49,6 +108,7 @@ jobs:
     name: Test (pnpm)
     runs-on: ubuntu-latest
     needs: [setup-templates]
+    if: needs.setup-templates.outputs.templates != '[]'
     strategy:
       fail-fast: false
       matrix:
@@ -69,6 +129,7 @@ jobs:
     name: Test (yarn)
     runs-on: ubuntu-latest
     needs: [setup-templates]
+    if: needs.setup-templates.outputs.templates != '[]'
     strategy:
       fail-fast: false
       matrix:
