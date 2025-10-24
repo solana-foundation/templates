@@ -166,6 +166,14 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `tailwind` `typescript` `wallet-ui`
 
+### [gill-supabase-template](community/gill-supabase-web3)
+
+`gh:solana-foundation/templates/community/gill-supabase-web3`
+
+> Next.js, Tailwind, gill (based on @solana/kit), Wallet UI
+
+`gill` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui` `supabase`
+
 ### [x402-solana-protocol](community/gill-node-solanax402)
 
 `gh:solana-foundation/templates/community/gill-node-solanax402`

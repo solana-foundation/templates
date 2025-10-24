@@ -359,6 +359,25 @@
         "usecase": "Airdrop"
       },
       {
+        "description": "Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
+        "id": "gh:solana-foundation/templates/community/gill-supabase-web3",
+        "image": "community/gill-supabase-web3/og-image.png",
+        "keywords": [
+          "gill",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript",
+          "wallet-ui",
+          "supabase"
+        ],
+        "name": "gill-supabase-template",
+        "path": "community/gill-supabase-web3",
+        "displayName": "Gill Supabase Web3 Auth Template",
+        "usecase": "Starter"
+      },
+      {
         "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK",
         "id": "gh:solana-foundation/templates/community/gill-node-solanax402",
         "image": "community/gill-node-solanax402/og-image.png",
