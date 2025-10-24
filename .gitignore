@@ -1,6 +1,7 @@
 /tmp
 node_modules
 .DS_Store
+.serena
 
 # We only want a top-level `pnpm-lock.yaml` file.
 gill/**/package-lock.json
