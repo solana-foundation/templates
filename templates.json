@@ -359,6 +359,30 @@
         "usecase": "Airdrop"
       },
       {
+        "description": "Next.js Solana dapp with one-command deployment to Arweave via AR.IO Network using permaweb-deploy CLI",
+        "id": "gh:solana-foundation/templates/community/gill-next-permaweb-arns",
+        "image": "community/gill-next-permaweb-arns/og-image.png",
+        "keywords": [
+          "arweave",
+          "ar.io",
+          "arns",
+          "permaweb",
+          "gill",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript",
+          "wallet-ui",
+          "decentralized-hosting",
+          "permaweb-deploy"
+        ],
+        "name": "gill-next-permaweb-arns",
+        "path": "community/gill-next-permaweb-arns",
+        "displayName": "AR.IO Network + ArNS",
+        "usecase": "Deployment"
+      },
+      {
         "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK",
         "id": "gh:solana-foundation/templates/community/gill-node-solanax402",
         "image": "community/gill-node-solanax402/og-image.png",
