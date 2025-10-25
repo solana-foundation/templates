@@ -1,0 +1,47 @@
+name: Deploy to Permaweb
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build application
+        run: pnpm build
+
+      - name: Deploy to Permaweb
+        run: |
+          pnpm exec permaweb-deploy deploy \
+            --arns-name ${{ secrets.ARNS_NAME }} \
+            --deploy-folder out \
+            --on-demand ario \
+            --max-token-amount 2.0
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Deployment summary
+        run: |
+          echo "✅ Deployed to Permaweb!" >> $GITHUB_STEP_SUMMARY
+          echo "🌐 ArNS: https://${{ secrets.ARNS_NAME }}.ar.io" >> $GITHUB_STEP_SUMMARY

@@ -166,6 +166,14 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `tailwind` `typescript` `wallet-ui`
 
+### [gill-next-permaweb-arns](community/gill-next-permaweb-arns)
+
+`gh:solana-foundation/templates/community/gill-next-permaweb-arns`
+
+> Next.js Solana dapp with one-command deployment to Arweave via AR.IO Network using permaweb-deploy CLI
+
+`arweave` `ar.io` `arns` `permaweb` `gill` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui` `decentralized-hosting` `permaweb-deploy`
+
 ### [x402-solana-protocol](community/gill-node-solanax402)
 
 `gh:solana-foundation/templates/community/gill-node-solanax402`
