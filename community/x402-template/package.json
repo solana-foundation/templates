@@ -1,0 +1,61 @@
+{
+  "name": "x402-template",
+  "version": "0.1.0",
+  "private": true,
+  "displayName": "X402 Template",
+  "description": "Next.js Solana starter with X402 payment protocol integration",
+  "usecase": "Starter",
+  "keywords": [
+    "solana",
+    "nextjs",
+    "x402",
+    "template",
+    "starter"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Install dependencies:",
+      "+{pm} install",
+      "Start dev server:",
+      "+{pm} dev"
+    ],
+    "rename": {
+      "project-name": {
+        "to": "{{name}}",
+        "paths": [
+          "README.md",
+          "src"
+        ]
+      }
+    }
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@solana/wallet-adapter-base": "^0.9.27",
+    "@solana/wallet-adapter-react": "^0.15.39",
+    "@solana/wallet-adapter-react-ui": "^0.9.39",
+    "@solana/wallet-adapter-wallets": "^0.19.37",
+    "@solana/web3.js": "^1.98.4",
+    "@wallet-standard/core": "^1.1.1",
+    "@wallet-standard/react": "^1.0.1",
+    "next": "16.0.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "@solana/wallet-standard-features": "^1.3.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
