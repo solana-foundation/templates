@@ -7,7 +7,12 @@
  * when no payment is provided.
  */
 
-const SERVER_URL = 'http://localhost:3000';
+import { config } from 'dotenv';
+
+// Load environment variables
+config();
+
+const SERVER_URL = process.env.SERVER_URL || 'http://localhost:3000';
 const PROTECTED_RESOURCE = '/api/premium-data';
 
 console.log(' Testing HTTP 402 Payment Required Response\n');
