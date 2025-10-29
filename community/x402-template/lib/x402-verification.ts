@@ -82,7 +82,7 @@ export async function verifyPayment(payment: Payment, resource: string): Promise
     console.log('Payment verified successfully:', signature)
 
     try {
-      await fetch(`${X402_CONFIG.FACILITATOR_BASE_URL}/settle`, {
+      const settleResponse = await fetch(`${X402_CONFIG.FACILITATOR_BASE_URL}/settle`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,8 +92,27 @@ export async function verifyPayment(payment: Payment, resource: string): Promise
           payment,
         }),
       })
-    } catch {
-      // Settlement failed (non-critical)
+
+      if (!settleResponse.ok) {
+        const settleResult = await settleResponse.json()
+        return {
+          isValid: false,
+          reason: settleResult.reason || 'Settlement verification failed',
+        }
+      }
+
+      const settleResult = await settleResponse.json()
+      if (!settleResult.success) {
+        return {
+          isValid: false,
+          reason: settleResult.reason || 'Settlement verification failed',
+        }
+      }
+    } catch (error) {
+      return {
+        isValid: false,
+        reason: error instanceof Error ? `Settlement failed: ${error.message}` : 'Settlement failed',
+      }
     }
 
     return { isValid: true, signature }
