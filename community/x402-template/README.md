@@ -680,9 +680,7 @@ export function usePaymentFlow() {
     // 1. Get treasury and USDC mint addresses
     const treasuryPk = getTreasuryPk()
     const usdcMint = getUsdcMintPk()
-    const usdcAmount = Math.floor(
-      env.NEXT_PUBLIC_PAYMENT_AMOUNT_USD * Math.pow(10, env.NEXT_PUBLIC_USDC_DECIMALS)
-    )
+    const usdcAmount = Math.floor(env.NEXT_PUBLIC_PAYMENT_AMOUNT_USD * Math.pow(10, env.NEXT_PUBLIC_USDC_DECIMALS))
 
     // 2. Find token accounts (Associated Token Accounts)
     const ownerAddress: Address = address(publicKey.toString())
@@ -705,7 +703,7 @@ export function usePaymentFlow() {
     const transaction = await convertGillInstructionToWeb3Transaction(
       transferInstruction,
       publicKey,
-      latestBlockhash.blockhash
+      latestBlockhash.blockhash,
     )
 
     // 5. Send transaction via wallet adapter
@@ -934,10 +932,7 @@ export async function POST(request: NextRequest) {
   let foundTransfer = false
   for (const ix of transaction.transaction.message.instructions) {
     if (ix.programId === TOKEN_PROGRAM_ID) {
-      if (
-        ix.keys[0]?.pubkey === expectedSenderAta &&
-        ix.keys[2]?.pubkey === expectedTreasuryAta
-      ) {
+      if (ix.keys[0]?.pubkey === expectedSenderAta && ix.keys[2]?.pubkey === expectedTreasuryAta) {
         foundTransfer = true
         break
       }
@@ -1053,6 +1048,7 @@ export const env = envSchema.parse(process.env)
 ```
 
 **Benefits:**
+
 - Type-safe environment variables
 - Clear error messages for misconfiguration
 - Default values for optional settings
@@ -1068,6 +1064,7 @@ const { connection } = useConnection()
 ```
 
 **Benefits:**
+
 - Works with all Solana wallets (Phantom, Solflare, etc.)
 - Standard hooks-based API
 - Automatic wallet detection
@@ -1082,6 +1079,7 @@ Payment flow organized into custom hooks:
 - `usePaymentCheck()` - Checks existing payment
 
 **Benefits:**
+
 - Separation of concerns
 - Testable logic
 - Reusable components

@@ -23,5 +23,3 @@ export function ActionButton({ text, onClick, disabled, isLoading }: ActionButto
     </button>
   )
 }
-
-

@@ -158,6 +158,14 @@ Templates using @solana/web3.js (legacy)
 
 Templates maintained by the Solana community
 
+### [{{project-name}}](community/gill-node-solanax402)
+
+`gh:solana-foundation/templates/community/gill-node-solanax402`
+
+> x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK
+
+`solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
+
 ### [gill-jito-airdrop](community/gill-jito-airdrop)
 
 `gh:solana-foundation/templates/community/gill-jito-airdrop`
@@ -166,13 +174,13 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `tailwind` `typescript` `wallet-ui`
 
-### [x402-solana-protocol](community/gill-node-solanax402)
+### [x402-template](community/x402-template)
 
-`gh:solana-foundation/templates/community/gill-node-solanax402`
+`gh:solana-foundation/templates/community/x402-template`
 
-> x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK
+> Next.js Solana starter with X402 payment protocol integration
 
-`solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
+`solana` `nextjs` `x402` `template` `starter`
 
 ### [zk-compression-airdrop](community/zk-compression-airdrop)
 

@@ -9,12 +9,7 @@ import helmet from 'helmet';
 import { getServerContext } from '../lib/get-server-context.js';
 import { createX402MiddlewareWithUtils } from '../lib/x402-middleware.js';
 import { successResponse, errorResponse } from '../lib/api-response-helpers.js';
-import {
-  REQUEST_TIMEOUT,
-  RETRY_ATTEMPTS,
-  REQUEST_BODY_LIMIT,
-  PAYMENT_AMOUNTS,
-} from '../lib/constants.js';
+import { REQUEST_TIMEOUT, RETRY_ATTEMPTS, REQUEST_BODY_LIMIT, PAYMENT_AMOUNTS } from '../lib/constants.js';
 
 // Initialize context
 const context = getServerContext();

@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
             }
           }
         }
-        
+
         if (ixObj.programId === TOKEN_PROGRAM_ID) {
           const keys = ixObj.keys
           if (Array.isArray(keys) && keys.length >= 4) {
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
             }
           }
         }
-        
+
         if (ixObj.parsed?.type === 'transferChecked') {
           if (
             ixObj.parsed.info?.source === expectedSenderAta &&

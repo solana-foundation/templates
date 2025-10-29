@@ -22,4 +22,3 @@ export function buildPaymentHeader(params: {
 
   return JSON.stringify(paymentData)
 }
-
