@@ -8,7 +8,6 @@ export function create402Response(request: NextRequest, clearCookie = false): Ne
   const userAgent = request.headers.get('User-Agent')
 
   if (accept?.includes('text/html') && userAgent?.includes('Mozilla')) {
-    // Redirect to the paywall page
     const paywallUrl = new URL('/paywall', request.url)
     paywallUrl.searchParams.set('resource', pathname)
     const response = NextResponse.redirect(paywallUrl, 302)
