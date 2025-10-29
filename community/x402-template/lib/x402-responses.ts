@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { solanaPaywallHtml } from './paywall-template'
 import { X402_CONFIG } from './x402-config'
 
 export function create402Response(request: NextRequest, clearCookie = false): NextResponse {
@@ -9,10 +8,10 @@ export function create402Response(request: NextRequest, clearCookie = false): Ne
   const userAgent = request.headers.get('User-Agent')
 
   if (accept?.includes('text/html') && userAgent?.includes('Mozilla')) {
-    const response = new NextResponse(solanaPaywallHtml, {
-      status: 402,
-      headers: { 'Content-Type': 'text/html' },
-    })
+    // Redirect to the paywall page
+    const paywallUrl = new URL('/paywall', request.url)
+    paywallUrl.searchParams.set('resource', pathname)
+    const response = NextResponse.redirect(paywallUrl, 302)
     if (clearCookie) {
       response.cookies.delete(X402_CONFIG.COOKIE_NAME)
     }
