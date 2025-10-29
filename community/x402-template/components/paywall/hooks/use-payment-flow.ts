@@ -1,16 +1,20 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { Transaction } from '@solana/web3.js'
+import { address, type Address, type Instruction } from 'gill'
 import { env } from '@/lib/env'
 import {
   getUsdcMintPk,
   getTreasuryPk,
-  getAssociatedTokenAddressAsync,
-  createUsdcTransferCheckedIx,
+  getAssociatedTokenAddress,
+  createTransferCheckedInstruction,
   confirmTransaction,
+  getClient,
 } from '@/lib/solana'
 import { buildPaymentHeader } from '@/lib/x402'
+
+const CONFIRMATION_DELAY_MS = 2000
+const REDIRECT_DELAY_MS = 1500
 
 type StatusType = 'success' | 'error' | 'info' | null
 
@@ -21,6 +25,62 @@ interface UsePaymentFlowReturn {
   showStatus: (message: string, type: StatusType) => void
   statusMessage: string
   statusType: StatusType
+}
+
+/**
+ * Converts a Gill instruction to a web3.js Transaction for wallet adapter compatibility.
+ * This is necessary because wallet adapters (Phantom, Solflare, etc.) only accept
+ * web3.js Transaction objects for signing.
+ *
+ * @param gillInstruction - The Gill instruction to convert
+ * @param feePayer - The wallet's PublicKey (from wallet adapter, which uses web3.js types)
+ * @param recentBlockhash - Recent blockhash for the transaction
+ */
+async function convertGillInstructionToWeb3Transaction(
+  gillInstruction: Instruction,
+  feePayer: unknown, // web3.js PublicKey from wallet adapter
+  recentBlockhash: string,
+) {
+  const { Transaction, PublicKey, TransactionInstruction } = await import('@solana/web3.js')
+
+  const web3Instruction = new TransactionInstruction({
+    programId: new PublicKey(gillInstruction.programAddress),
+    keys: (gillInstruction.accounts || []).map((acc) => ({
+      pubkey: new PublicKey(acc.address),
+      isSigner: acc.role === 2,
+      isWritable: acc.role === 1 || acc.role === 2,
+    })),
+    data: Buffer.from(gillInstruction.data || new Uint8Array()),
+  })
+
+  const transaction = new Transaction()
+  transaction.feePayer = feePayer as InstanceType<typeof PublicKey>
+  transaction.recentBlockhash = recentBlockhash
+  transaction.add(web3Instruction)
+
+  return transaction
+}
+
+function getErrorMessage(error: unknown): string {
+  const errorMsg = error instanceof Error ? error.message : ''
+
+  if (errorMsg.includes('already been processed')) {
+    return 'Transaction was already sent. Please manually refresh the page.'
+  }
+
+  if (errorMsg.includes('0x1') || errorMsg.includes('insufficient')) {
+    return 'Insufficient USDC balance. Get devnet USDC at: https://faucet.circle.com/'
+  }
+
+  if (errorMsg.includes('User rejected') || errorMsg.includes('cancelled')) {
+    return 'Transaction cancelled by user.'
+  }
+
+  if (errorMsg.includes('Payment verification failed')) {
+    return 'Payment was sent but verification failed. Check console for details, then manually refresh to see if it worked.'
+  }
+
+  return `Payment failed: ${errorMsg || 'Unknown error'}`
 }
 
 export function usePaymentFlow(): UsePaymentFlowReturn {
@@ -57,25 +117,30 @@ export function usePaymentFlow(): UsePaymentFlowReturn {
 
       showStatus('Finding token accounts...', 'info')
 
-      const senderTokenAccount = await getAssociatedTokenAddressAsync(usdcMint, publicKey)
-      const treasuryTokenAccount = await getAssociatedTokenAddressAsync(usdcMint, treasuryPk)
+      const ownerAddress: Address = address(publicKey.toString())
+
+      const senderTokenAccount = await getAssociatedTokenAddress(usdcMint, ownerAddress)
+      const treasuryTokenAccount = await getAssociatedTokenAddress(usdcMint, treasuryPk)
 
       showStatus('Building transaction...', 'info')
 
-      const transaction = new Transaction()
-      transaction.feePayer = publicKey
-
-      const transferInstruction = await createUsdcTransferCheckedIx({
+      const transferInstruction = createTransferCheckedInstruction({
         source: senderTokenAccount,
+        mint: usdcMint,
         destination: treasuryTokenAccount,
-        owner: publicKey,
-        amount: usdcAmount,
+        owner: ownerAddress,
+        amount: BigInt(usdcAmount),
+        decimals: env.NEXT_PUBLIC_USDC_DECIMALS,
       })
 
-      transaction.add(transferInstruction)
+      const { rpc } = getClient()
+      const { value: latestBlockhash } = await rpc.getLatestBlockhash().send()
 
-      const { blockhash } = await connection.getLatestBlockhash('confirmed')
-      transaction.recentBlockhash = blockhash
+      const transaction = await convertGillInstructionToWeb3Transaction(
+        transferInstruction,
+        publicKey,
+        latestBlockhash.blockhash,
+      )
 
       showStatus('Please approve the transaction in Phantom...', 'info')
 
@@ -91,10 +156,9 @@ export function usePaymentFlow(): UsePaymentFlowReturn {
       }
 
       showStatus('Confirming transaction...', 'info')
-
       await confirmTransaction(signature)
 
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      await new Promise((resolve) => setTimeout(resolve, CONFIRMATION_DELAY_MS))
 
       const paymentHeader = buildPaymentHeader({
         signature,
@@ -122,7 +186,7 @@ export function usePaymentFlow(): UsePaymentFlowReturn {
 
         setTimeout(() => {
           router.push('/protected')
-        }, 1500)
+        }, REDIRECT_DELAY_MS)
       } else {
         const errorText = await response.text()
         console.error('❌ Payment verification failed!')
@@ -133,22 +197,7 @@ export function usePaymentFlow(): UsePaymentFlowReturn {
       }
     } catch (error) {
       console.error('Payment error:', error)
-
-      let errorMessage = `Payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`
-
-      const errorMsg = error instanceof Error ? error.message : ''
-      if (errorMsg.includes('already been processed')) {
-        errorMessage = 'Transaction was already sent. Please manually refresh the page.'
-      } else if (errorMsg.includes('0x1') || errorMsg.includes('insufficient')) {
-        errorMessage = 'Insufficient USDC balance. Get devnet USDC at: https://faucet.circle.com/'
-      } else if (errorMsg.includes('User rejected') || errorMsg.includes('cancelled')) {
-        errorMessage = 'Transaction cancelled by user.'
-      } else if (errorMsg.includes('Payment verification failed')) {
-        errorMessage =
-          'Payment was sent but verification failed. Check console for details, then manually refresh to see if it worked.'
-      }
-
-      showStatus(errorMessage, 'error')
+      showStatus(getErrorMessage(error), 'error')
       setButtonText('Retry Payment')
     } finally {
       setIsLoading(false)

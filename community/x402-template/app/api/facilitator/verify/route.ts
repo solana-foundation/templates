@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { Connection } from '@solana/web3.js'
+export const runtime = 'nodejs'
 
-const RPC_ENDPOINT = 'https://api.devnet.solana.com'
+import { NextRequest, NextResponse } from 'next/server'
+import { signature as gillSignature } from 'gill'
+import { getClient } from '@/lib/solana'
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,14 +32,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ isValid: false, reason: 'Invalid amount' }, { status: 200 })
     }
 
-    // Verify the transaction on-chain
-    const connection = new Connection(RPC_ENDPOINT, 'confirmed')
+    const { rpc } = getClient()
+    const sig = gillSignature(signature)
 
     let transaction
     try {
-      transaction = await connection.getTransaction(signature, {
-        maxSupportedTransactionVersion: 0,
-      })
+      transaction = await rpc
+        .getTransaction(sig, {
+          encoding: 'jsonParsed',
+          maxSupportedTransactionVersion: 0,
+        })
+        .send()
     } catch {
       return NextResponse.json({ isValid: false, reason: 'Transaction not found' }, { status: 200 })
     }
