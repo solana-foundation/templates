@@ -15,9 +15,6 @@ export async function GET() {
       {
         scheme: env.NEXT_PUBLIC_PAYMENT_SCHEME,
         network: env.NEXT_PUBLIC_NETWORK,
-        extra: {
-          feePayer: env.NEXT_PUBLIC_FEE_PAYER,
-        },
       },
     ],
   })

@@ -39,9 +39,6 @@ export function create402Response(request: NextRequest, clearCookie = false): Ne
               discoverable: true,
             },
           },
-          extra: {
-            feePayer: X402_CONFIG.FEE_PAYER,
-          },
         },
       ],
     },

@@ -179,10 +179,7 @@ Response:
   "kinds": [
     {
       "scheme": "exact",
-      "network": "solana-devnet",
-      "extra": {
-        "feePayer": "2wKupLR9q6w..."
-      }
+      "network": "solana-devnet"
     }
   ]
 }
@@ -197,9 +194,6 @@ export async function GET() {
       {
         scheme: 'exact',
         network: 'solana-devnet',
-        extra: {
-          feePayer: process.env.TREASURY_WALLET_ADDRESS,
-        },
       },
     ],
   })
@@ -643,9 +637,6 @@ export function create402Response(request: NextRequest, clearCookie = false): Ne
           payTo: X402_CONFIG.TREASURY_ADDRESS,
           maxTimeoutSeconds: X402_CONFIG.PAYMENT_TIMEOUT_SECONDS,
           asset: X402_CONFIG.USDC_DEVNET_MINT,
-          extra: {
-            feePayer: X402_CONFIG.FEE_PAYER,
-          },
         },
       ],
     },
