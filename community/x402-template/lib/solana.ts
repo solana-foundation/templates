@@ -1,50 +1,113 @@
-import { Connection, PublicKey, TransactionInstruction } from '@solana/web3.js'
 import {
-  getAssociatedTokenAddress,
-  createTransferCheckedInstruction as splCreateTransferCheckedInstruction,
-} from '@solana/spl-token'
+  createSolanaClient,
+  address,
+  type Address,
+  type SolanaClient,
+  signature,
+  getProgramDerivedAddress,
+  getAddressEncoder,
+  type Instruction,
+  AccountRole,
+} from 'gill'
 import { env } from './env'
 
-export function getConnection(): Connection {
-  return new Connection(env.NEXT_PUBLIC_RPC_ENDPOINT, 'confirmed')
+export const TOKEN_PROGRAM_ID = address('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
+export const ASSOCIATED_TOKEN_PROGRAM_ID = address('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL')
+
+let gillClient: SolanaClient | null = null
+
+export function getClient(): SolanaClient {
+  if (!gillClient) {
+    gillClient = createSolanaClient({
+      urlOrMoniker: 'devnet',
+    })
+  }
+  return gillClient
 }
 
-export function getUsdcMintPk(): PublicKey {
-  return new PublicKey(env.NEXT_PUBLIC_USDC_DEVNET_MINT)
+export function getUsdcMintPk(): Address {
+  return address(env.NEXT_PUBLIC_USDC_DEVNET_MINT)
 }
 
-export function getTreasuryPk(): PublicKey {
-  return new PublicKey(env.NEXT_PUBLIC_TREASURY_ADDRESS)
+export function getTreasuryPk(): Address {
+  return address(env.NEXT_PUBLIC_TREASURY_ADDRESS)
 }
 
-export async function getAssociatedTokenAddressAsync(mint: PublicKey, owner: PublicKey): Promise<PublicKey> {
-  return getAssociatedTokenAddress(mint, owner)
+export async function getAssociatedTokenAddress(mint: Address, owner: Address): Promise<Address> {
+  const [ata] = await getProgramDerivedAddress({
+    programAddress: ASSOCIATED_TOKEN_PROGRAM_ID,
+    seeds: [
+      getAddressEncoder().encode(owner),
+      getAddressEncoder().encode(TOKEN_PROGRAM_ID),
+      getAddressEncoder().encode(mint),
+    ],
+  })
+  return ata
 }
 
-export async function createUsdcTransferCheckedIx(params: {
-  source: PublicKey
-  destination: PublicKey
-  owner: PublicKey
-  amount: number
-}): Promise<TransactionInstruction> {
-  const mint = getUsdcMintPk()
-  const decimals = env.NEXT_PUBLIC_USDC_DECIMALS
+export function createTransferCheckedInstruction(params: {
+  source: Address
+  mint: Address
+  destination: Address
+  owner: Address
+  amount: bigint
+  decimals: number
+}): Instruction {
+  const data = new Uint8Array(10)
+  data[0] = 12 // TransferChecked instruction discriminator
 
-  return splCreateTransferCheckedInstruction(
-    params.source,
-    mint,
-    params.destination,
-    params.owner,
-    params.amount,
-    decimals,
-  )
+  // Amount as little-endian u64
+  const amountView = new DataView(data.buffer, 1, 8)
+  amountView.setBigUint64(0, params.amount, true)
+
+  // Decimals as u8
+  data[9] = params.decimals
+
+  return {
+    programAddress: TOKEN_PROGRAM_ID,
+    accounts: [
+      { address: params.source, role: AccountRole.WRITABLE },
+      { address: params.mint, role: AccountRole.READONLY },
+      { address: params.destination, role: AccountRole.WRITABLE },
+      { address: params.owner, role: AccountRole.WRITABLE_SIGNER },
+    ],
+    data,
+  }
 }
 
-export async function confirmTransaction(signature: string): Promise<void> {
-  const connection = getConnection()
-  const confirmResult = await connection.confirmTransaction(signature, 'finalized')
+export async function confirmTransaction(signatureStr: string): Promise<void> {
+  const { rpc } = getClient()
+  const sig = signature(signatureStr)
 
-  if (confirmResult.value.err) {
-    throw new Error(`Transaction failed on-chain: ${JSON.stringify(confirmResult.value.err)}`)
+  let confirmed = false
+  let attempts = 0
+  const maxAttempts = 30
+
+  while (!confirmed && attempts < maxAttempts) {
+    try {
+      const result = await rpc.getSignatureStatuses([sig]).send()
+      const status = result.value[0]
+
+      if (status?.err) {
+        throw new Error(`Transaction failed on-chain: ${JSON.stringify(status.err)}`)
+      }
+
+      if (status?.confirmationStatus === 'confirmed' || status?.confirmationStatus === 'finalized') {
+        confirmed = true
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        attempts++
+      }
+    } catch (error) {
+      if (attempts >= maxAttempts - 1) {
+        throw error
+      }
+      attempts++
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    }
+  }
+
+  if (!confirmed) {
+    throw new Error(`Transaction confirmation timeout after ${maxAttempts} attempts`)
   }
 }

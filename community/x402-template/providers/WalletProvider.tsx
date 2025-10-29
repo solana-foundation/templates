@@ -24,7 +24,11 @@ export function WalletProvider({ children }: WalletProviderProps) {
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <SolanaWalletProvider wallets={wallets} autoConnect={false} onError={(error) => console.error('Wallet error:', error)}>
+      <SolanaWalletProvider
+        wallets={wallets}
+        autoConnect={false}
+        onError={(error) => console.error('Wallet error:', error)}
+      >
         {children}
       </SolanaWalletProvider>
     </ConnectionProvider>

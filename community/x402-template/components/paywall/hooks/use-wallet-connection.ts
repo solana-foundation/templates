@@ -123,4 +123,3 @@ export function useWalletConnection(formattedAmount: string): UseWalletConnectio
     statusType,
   }
 }
-

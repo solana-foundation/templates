@@ -1,12 +1,14 @@
+export const runtime = 'nodejs'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { address, signature as gillSignature, type Address } from 'gill'
 import { env } from '@/lib/env'
-import { getConnection, getUsdcMintPk, getTreasuryPk, getAssociatedTokenAddressAsync } from '@/lib/solana'
+import { getClient, getUsdcMintPk, getTreasuryPk, getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from '@/lib/solana'
 
 const paymentHeaderSchema = z.object({
   x402Version: z.number().int().positive(),
-  scheme: z.literal('exact'),
+  scheme: z.string(),
   network: z.string(),
   payload: z.object({
     signature: z.string(),
@@ -38,7 +40,6 @@ async function verifyPayment(request: NextRequest) {
 
     const { payload } = validation.data
 
-    // Basic checks
     if (payload.to !== env.NEXT_PUBLIC_TREASURY_ADDRESS) {
       return NextResponse.json({ error: 'Invalid treasury address' }, { status: 400 })
     }
@@ -47,7 +48,11 @@ async function verifyPayment(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token mint' }, { status: 400 })
     }
 
-    if (validation.data.network !== 'solana-devnet') {
+    if (validation.data.scheme !== env.NEXT_PUBLIC_PAYMENT_SCHEME) {
+      return NextResponse.json({ error: 'Invalid payment scheme' }, { status: 400 })
+    }
+
+    if (validation.data.network !== env.NEXT_PUBLIC_NETWORK) {
       return NextResponse.json({ error: 'Invalid network' }, { status: 400 })
     }
 
@@ -60,10 +65,14 @@ async function verifyPayment(request: NextRequest) {
     }
 
     try {
-      const connection = getConnection()
-      const transaction = await connection.getTransaction(payload.signature, {
-        maxSupportedTransactionVersion: 0,
-      })
+      const { rpc } = getClient()
+      const sig = gillSignature(payload.signature)
+      const transaction = await rpc
+        .getTransaction(sig, {
+          encoding: 'jsonParsed',
+          maxSupportedTransactionVersion: 0,
+        })
+        .send()
 
       if (!transaction) {
         return NextResponse.json({ error: 'Transaction not found on-chain' }, { status: 404 })
@@ -75,11 +84,10 @@ async function verifyPayment(request: NextRequest) {
 
       const treasuryPk = getTreasuryPk()
       const usdcMint = getUsdcMintPk()
-      const { PublicKey: PublicKeyClass } = await import('@solana/web3.js')
-      const fromPk = new PublicKeyClass(payload.from)
+      const fromAddr: Address = address(payload.from)
 
-      const expectedSenderAta = await getAssociatedTokenAddressAsync(usdcMint, fromPk)
-      const expectedTreasuryAta = await getAssociatedTokenAddressAsync(usdcMint, treasuryPk)
+      const expectedSenderAta = await getAssociatedTokenAddress(usdcMint, fromAddr)
+      const expectedTreasuryAta = await getAssociatedTokenAddress(usdcMint, treasuryPk)
 
       const instructions =
         'instructions' in transaction.transaction.message ? transaction.transaction.message.instructions : []
@@ -89,16 +97,16 @@ async function verifyPayment(request: NextRequest) {
       if (Array.isArray(instructions)) {
         for (const ix of instructions) {
           const ixObj = ix as {
-            programId?: { equals?: (pk: unknown) => boolean }
-            keys?: Array<{ pubkey?: { toString: () => string } }>
+            programId?: string
+            keys?: Array<{ pubkey?: string }>
           }
-          if (ixObj.programId?.equals?.(TOKEN_PROGRAM_ID)) {
+          if (ixObj.programId === TOKEN_PROGRAM_ID) {
             const keys = ixObj.keys
             if (Array.isArray(keys) && keys.length >= 4) {
-              const sourceStr = keys[0]?.pubkey?.toString()
-              const destinationStr = keys[2]?.pubkey?.toString()
+              const sourceStr = keys[0]?.pubkey
+              const destinationStr = keys[2]?.pubkey
 
-              if (sourceStr === expectedSenderAta.toString() && destinationStr === expectedTreasuryAta.toString()) {
+              if (sourceStr === expectedSenderAta && destinationStr === expectedTreasuryAta) {
                 foundTransfer = true
                 break
               }
@@ -115,30 +123,26 @@ async function verifyPayment(request: NextRequest) {
               const ixObj = ix as unknown as { programIdIndex?: number; accounts?: number[] }
               if (typeof ixObj.programIdIndex === 'number') {
                 const msg = transaction.transaction.message as unknown as {
-                  getAccountKeys?: () => { get?: (index: number) => { pubkey?: { equals?: (pk: unknown) => boolean } } }
-                  staticAccountKeys?: Array<{ pubkey?: { equals?: (pk: unknown) => boolean } }>
+                  getAccountKeys?: () => { get?: (index: number) => string }
+                  staticAccountKeys?: Array<string>
                 }
 
-                let accountKeys: Array<{ pubkey?: { equals?: (pk: unknown) => boolean; toString?: () => string } }> = []
+                let accountKeys: Array<string> = []
                 if (msg.getAccountKeys) {
                   const keys = msg.getAccountKeys()
-                  accountKeys = Array.from({ length: 256 }, (_, i) => keys.get?.(i)).filter(Boolean) as Array<{
-                    pubkey?: { equals?: (pk: unknown) => boolean; toString?: () => string }
-                  }>
+                  accountKeys = Array.from({ length: 256 }, (_, i) => keys.get?.(i)).filter(Boolean) as Array<string>
                 } else if (msg.staticAccountKeys) {
                   accountKeys = msg.staticAccountKeys
                 }
 
-                const programId = accountKeys[ixObj.programIdIndex]?.pubkey
-                if (programId?.equals?.(TOKEN_PROGRAM_ID)) {
+                const programId = accountKeys[ixObj.programIdIndex]
+                if (programId === TOKEN_PROGRAM_ID) {
                   const accounts = ixObj.accounts
                   if (Array.isArray(accounts) && accounts.length >= 4) {
-                    const sourceKey = accountKeys[accounts[0]]?.pubkey
-                    const destKey = accountKeys[accounts[2]]?.pubkey
-                    const sourceStr = sourceKey?.toString?.() || ''
-                    const destStr = destKey?.toString?.() || ''
+                    const sourceStr = accountKeys[accounts[0]] || ''
+                    const destStr = accountKeys[accounts[2]] || ''
 
-                    if (sourceStr === expectedSenderAta.toString() && destStr === expectedTreasuryAta.toString()) {
+                    if (sourceStr === expectedSenderAta && destStr === expectedTreasuryAta) {
                       foundTransfer = true
                       break
                     }
@@ -176,6 +180,5 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  // Support POST for flexibility - same logic as GET
   return verifyPayment(request)
 }

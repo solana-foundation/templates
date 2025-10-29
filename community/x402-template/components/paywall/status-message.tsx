@@ -15,11 +15,7 @@ export function StatusMessage({ message, type }: StatusMessageProps) {
   if (!message || !type) return null
 
   return (
-    <div
-      className={`p-3.5 rounded-lg mb-5 text-sm border ${
-        statusClasses[type]
-      } animate-in slide-in-from-top-2`}
-    >
+    <div className={`p-3.5 rounded-lg mb-5 text-sm border ${statusClasses[type]} animate-in slide-in-from-top-2`}>
       {message}
     </div>
   )

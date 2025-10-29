@@ -9,5 +9,3 @@ export function WalletAddress({ address }: WalletAddressProps) {
     </div>
   )
 }
-
-
