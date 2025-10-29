@@ -1253,3 +1253,7 @@ MIT License - Use this freely for learning and experimentation.
 **Remember:** This is a learning tool, not production software. Use it to understand concepts, then build robust production systems with proper infrastructure, security, and testing.
 
 Happy learning! 🎓
+
+## Courtesy
+
+[Kronos](https://kronos.build) team: [X402 template](https://github.com/Kronos-Guild/x402-template)
