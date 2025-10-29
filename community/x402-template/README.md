@@ -354,7 +354,7 @@ Response:
 │  └──────────────────────────────────────────┘    │
 └──────────────────────────────────────────────────┘
        │
-       │ "Yes, valid!" or "No, invalid because..."
+       │ "Yes, valid!" or "No, invalid because.."
        ↓
 ┌──────────────┐
 │   Server     │
@@ -591,7 +591,6 @@ export default async function proxy(request: NextRequest) {
     }
   }
 
-  // No valid payment found...
 ```
 
 **What happens:**
@@ -1251,8 +1250,8 @@ Now that you understand the flow, try these exercises:
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
-cd x402-template
+
+pnpm create solana-dapp@latest -t gh:solana-foundation/templates/community/x402-template
 
 # Install dependencies
 pnpm install
@@ -1298,7 +1297,7 @@ NEXT_PUBLIC_PAYMENT_TIMEOUT_SECONDS=60
 - `NEXT_PUBLIC_NETWORK` - Network to use (solana-devnet, solana-mainnet-beta)
 - `NEXT_PUBLIC_COOKIE_MAX_AGE` - How long payment session lasts (seconds)
 
-**Note:** All variables have defaults defined in `lib/env.ts`, so the app works without any `.env.local` file!
+**Note:** All variables have defaults defined in `lib/env.ts`, so the app works without any `.env.local` file! For customizing to your own `.env`, please add yours.
 
 ### Get Test USDC
 
