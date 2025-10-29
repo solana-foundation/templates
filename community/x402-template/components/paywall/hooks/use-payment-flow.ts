@@ -10,6 +10,7 @@ import {
   createTransferCheckedInstruction,
   confirmTransaction,
   getClient,
+  getTokenAccountBalance,
 } from '@/lib/solana'
 import { buildPaymentHeader } from '@/lib/x402'
 
@@ -114,6 +115,7 @@ export function usePaymentFlow(): UsePaymentFlowReturn {
       const treasuryPk = getTreasuryPk()
       const usdcMint = getUsdcMintPk()
       const usdcAmount = Math.floor(env.NEXT_PUBLIC_PAYMENT_AMOUNT_USD * Math.pow(10, env.NEXT_PUBLIC_USDC_DECIMALS))
+      const formattedAmount = env.NEXT_PUBLIC_PAYMENT_AMOUNT_USD.toFixed(2)
 
       showStatus('Finding token accounts...', 'info')
 
@@ -121,6 +123,17 @@ export function usePaymentFlow(): UsePaymentFlowReturn {
 
       const senderTokenAccount = await getAssociatedTokenAddress(usdcMint, ownerAddress)
       const treasuryTokenAccount = await getAssociatedTokenAddress(usdcMint, treasuryPk)
+
+      showStatus('Checking USDC balance...', 'info')
+
+      const balance = await getTokenAccountBalance(senderTokenAccount)
+      
+      if (balance < BigInt(usdcAmount)) {
+        const balanceFormatted = (Number(balance) / Math.pow(10, env.NEXT_PUBLIC_USDC_DECIMALS)).toFixed(2)
+        throw new Error(
+          `Insufficient USDC balance. You have ${balanceFormatted} USDC but need ${formattedAmount} USDC. Get devnet USDC at: https://faucet.circle.com/`
+        )
+      }
 
       showStatus('Building transaction...', 'info')
 

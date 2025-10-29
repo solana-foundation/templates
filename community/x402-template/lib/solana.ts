@@ -75,6 +75,38 @@ export function createTransferCheckedInstruction(params: {
   }
 }
 
+export async function getTokenAccountBalance(tokenAccount: Address): Promise<bigint> {
+  const { rpc } = getClient()
+  
+  try {
+    const accountInfo = await rpc.getAccountInfo(tokenAccount, { encoding: 'base64' }).send()
+    
+    if (!accountInfo.value) {
+      return BigInt(0)
+    }
+
+    const data = accountInfo.value.data
+    let dataBytes: Uint8Array
+    
+    if (typeof data === 'string') {
+      dataBytes = new Uint8Array(Buffer.from(data, 'base64'))
+    } else if (Array.isArray(data)) {
+      dataBytes = new Uint8Array(Buffer.from(data[0], 'base64'))
+    } else {
+      dataBytes = new Uint8Array(Buffer.from(data as string, 'base64'))
+    }
+    
+    // Token account balance is at offset 64 (u64 little-endian)
+    const balanceView = new DataView(dataBytes.buffer, 64, 8)
+    const balance = balanceView.getBigUint64(0, true)
+    
+    return balance
+  } catch {
+    // If account doesn't exist or error reading, return 0
+    return BigInt(0)
+  }
+}
+
 export async function confirmTransaction(signatureStr: string): Promise<void> {
   const { rpc } = getClient()
   const sig = signature(signatureStr)
