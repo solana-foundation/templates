@@ -166,7 +166,6 @@ export function usePaymentFlow(): UsePaymentFlowReturn {
         to: env.NEXT_PUBLIC_TREASURY_ADDRESS,
         amount: usdcAmount.toString(),
         token: env.NEXT_PUBLIC_USDC_DEVNET_MINT,
-        network: 'solana-devnet',
       })
 
       showStatus('Verifying payment with server...', 'info')

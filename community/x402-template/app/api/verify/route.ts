@@ -8,7 +8,7 @@ import { getClient, getUsdcMintPk, getTreasuryPk, getAssociatedTokenAddress, TOK
 
 const paymentHeaderSchema = z.object({
   x402Version: z.number().int().positive(),
-  scheme: z.literal('exact'),
+  scheme: z.string(),
   network: z.string(),
   payload: z.object({
     signature: z.string(),
@@ -48,7 +48,11 @@ async function verifyPayment(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token mint' }, { status: 400 })
     }
 
-    if (validation.data.network !== 'solana-devnet') {
+    if (validation.data.scheme !== env.NEXT_PUBLIC_PAYMENT_SCHEME) {
+      return NextResponse.json({ error: 'Invalid payment scheme' }, { status: 400 })
+    }
+
+    if (validation.data.network !== env.NEXT_PUBLIC_NETWORK) {
       return NextResponse.json({ error: 'Invalid network' }, { status: 400 })
     }
 

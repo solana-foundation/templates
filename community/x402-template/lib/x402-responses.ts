@@ -23,14 +23,14 @@ export function create402Response(request: NextRequest, clearCookie = false): Ne
       error: 'Payment required',
       accepts: [
         {
-          scheme: 'exact',
-          network: 'solana-devnet',
+          scheme: X402_CONFIG.PAYMENT_SCHEME,
+          network: X402_CONFIG.NETWORK,
           maxAmountRequired: X402_CONFIG.REQUIRED_AMOUNT,
           resource: `${request.nextUrl.protocol}//${request.nextUrl.host}${pathname}`,
-          description: 'Access to protected content',
+          description: X402_CONFIG.PAYMENT_DESCRIPTION,
           mimeType: '',
           payTo: X402_CONFIG.TREASURY_ADDRESS,
-          maxTimeoutSeconds: 60,
+          maxTimeoutSeconds: X402_CONFIG.PAYMENT_TIMEOUT_SECONDS,
           asset: X402_CONFIG.USDC_DEVNET_MINT,
           outputSchema: {
             input: {

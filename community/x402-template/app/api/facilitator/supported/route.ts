@@ -7,26 +7,16 @@
  */
 
 import { NextResponse } from 'next/server'
+import { env } from '@/lib/env'
 
 export async function GET() {
-  // Treasury wallet address (where payments are sent) - also used as fee payer
-  const feePayer = process.env.TREASURY_WALLET_ADDRESS || '2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4'
-
-  // Return x402-compliant response
   return NextResponse.json({
     kinds: [
       {
-        scheme: 'exact',
-        network: 'solana-devnet',
+        scheme: env.NEXT_PUBLIC_PAYMENT_SCHEME,
+        network: env.NEXT_PUBLIC_NETWORK,
         extra: {
-          feePayer: feePayer,
-        },
-      },
-      {
-        scheme: 'exact',
-        network: 'solana',
-        extra: {
-          feePayer: feePayer,
+          feePayer: env.NEXT_PUBLIC_FEE_PAYER,
         },
       },
     ],

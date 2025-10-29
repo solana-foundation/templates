@@ -1,15 +1,16 @@
+import { X402_CONFIG } from './x402-config'
+
 export function buildPaymentHeader(params: {
   signature: string
   from: string
   to: string
   amount: string
   token: string
-  network: string
 }): string {
   const paymentData = {
     x402Version: 1,
-    scheme: 'exact',
-    network: params.network,
+    scheme: X402_CONFIG.PAYMENT_SCHEME,
+    network: X402_CONFIG.NETWORK,
     payload: {
       signature: params.signature,
       from: params.from,
