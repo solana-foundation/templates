@@ -469,12 +469,12 @@ Our implementation is **educational** - it's embedded in the same Next.js app:
 │  │ (middleware) │                   │
 │  └──────┬───────┘                   │
 │         │ HTTP POST                 │
-│         ↓                            │
+│         ↓                           │
 │  ┌──────────────────────────────┐   │
 │  │ app/api/facilitator/         │   │
 │  │   verify/route.ts            │   │
 │  └──────┬───────────────────────┘   │
-└─────────┼──────────────────────────┘
+└─────────┼───────────────────────────┘
           │
           ↓
     ┌──────────────┐
@@ -505,9 +505,11 @@ We've built a complete x402 demonstration using:
 
 - **Blockchain:** Solana (devnet)
 - **Currency:** USDC
-- **Wallet:** Phantom
-- **Framework:** Next.js
-- **Price:** 0.01 USDC per access
+- **Wallet:** Phantom (via Solana Wallet Adapter)
+- **Framework:** Next.js 16 with App Router
+- **Solana SDK:** Gill (modern, type-safe Solana library)
+- **Type Safety:** Zod for environment validation
+- **Price:** 0.01 USDC per access (configurable)
 
 ### Architecture
 
@@ -516,7 +518,7 @@ We've built a complete x402 demonstration using:
 │                         Browser                             │
 │  ┌──────────────┐           ┌──────────────┐                │
 │  │ Phantom      │           │ Paywall UI   │                │
-│  │ Wallet       │◄─────────►│ (HTML)       │                │
+│  │ Wallet       │◄─────────►│ (React)      │                │
 │  └──────────────┘           └──────────────┘                │
 └────────────────────────┬────────────────────────────────────┘
                          │
@@ -528,25 +530,39 @@ We've built a complete x402 demonstration using:
 │  ┌──────────────────────────────────────────────────────┐   │
 │  │ proxy.ts (Middleware)                                │   │
 │  │ • Checks for payment cookie                          │   │
-│  │ • Returns 402 if no payment                          │   │
+│  │ • Redirects to /paywall if no payment                │   │
 │  │ • Verifies X-PAYMENT header                          │   │
 │  └────────────┬─────────────────────────────────────────┘   │
 │               │                                             │
 │  ┌────────────▼─────────────────────────────────────────┐   │
+│  │ app/(paywall)/paywall/page.tsx                       │   │
+│  │ • Renders React paywall UI                           │   │
+│  │ • Uses Solana Wallet Adapter                         │   │
+│  │ • Handles payment flow via hooks                     │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                                                             │
+│  ┌──────────────────────────────────────────────────────┐   │
 │  │ lib/x402-verification.ts                             │   │
-│  │ • Calls facilitator                                  │   │
+│  │ • Calls facilitator verify & settle                  │   │
 │  │ • Manages transaction storage                        │   │
 │  └────────────┬─────────────────────────────────────────┘   │
 │               │                                             │
 │  ┌────────────▼─────────────────────────────────────────┐   │
 │  │ app/api/facilitator/verify/route.ts                  │   │
 │  │ • Validates payment parameters                       │   │
-│  │ • Fetches transaction from Solana                    │   │
+│  │ • Fetches transaction from Solana (via Gill)         │   │
 │  │ • Verifies transaction succeeded                     │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                                                             │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │ app/api/facilitator/settle/route.ts                  │   │
+│  │ • Verifies transfer instruction exists               │   │
+│  │ • Confirms sender/receiver/amount match              │   │
+│  │ • Finalizes payment settlement                       │   │
 │  └────────────┬─────────────────────────────────────────┘   │
 └───────────────┼─────────────────────────────────────────────┘
                 │
-                │ RPC calls
+                │ RPC calls (via Gill)
                 │
 ┌───────────────▼──────────────────────────────────────────────┐
 │              Solana Blockchain (Devnet)                      │
@@ -597,15 +613,18 @@ export default async function proxy(request: NextRequest) {
 
 ```typescript
 export function create402Response(request: NextRequest, clearCookie = false): NextResponse {
+  const pathname = request.nextUrl.pathname
   const accept = request.headers.get('Accept')
   const userAgent = request.headers.get('User-Agent')
 
-  // Browser gets HTML paywall
+  // Browser gets redirected to React paywall page
   if (accept?.includes('text/html') && userAgent?.includes('Mozilla')) {
-    const response = new NextResponse(solanaPaywallHtml, {
-      status: 402,
-      headers: { 'Content-Type': 'text/html' },
-    })
+    const paywallUrl = new URL('/paywall', request.url)
+    paywallUrl.searchParams.set('resource', pathname)
+    const response = NextResponse.redirect(paywallUrl, 302)
+    if (clearCookie) {
+      response.cookies.delete(X402_CONFIG.COOKIE_NAME)
+    }
     return response
   }
 
@@ -616,16 +635,26 @@ export function create402Response(request: NextRequest, clearCookie = false): Ne
       error: 'Payment required',
       accepts: [
         {
-          scheme: 'exact',
-          network: 'solana-devnet',
+          scheme: X402_CONFIG.PAYMENT_SCHEME,
+          network: X402_CONFIG.NETWORK,
           maxAmountRequired: X402_CONFIG.REQUIRED_AMOUNT, // "10000"
+          resource: `${request.nextUrl.protocol}//${request.nextUrl.host}${pathname}`,
+          description: X402_CONFIG.PAYMENT_DESCRIPTION,
           payTo: X402_CONFIG.TREASURY_ADDRESS,
+          maxTimeoutSeconds: X402_CONFIG.PAYMENT_TIMEOUT_SECONDS,
           asset: X402_CONFIG.USDC_DEVNET_MINT,
+          extra: {
+            feePayer: X402_CONFIG.FEE_PAYER,
+          },
         },
       ],
     },
     { status: 402 },
   )
+
+  if (clearCookie) {
+    response.cookies.delete(X402_CONFIG.COOKIE_NAME)
+  }
 
   return response
 }
@@ -633,74 +662,94 @@ export function create402Response(request: NextRequest, clearCookie = false): Ne
 
 **What happens:**
 
-- Browser users see beautiful HTML paywall with Phantom integration
-- API clients get structured JSON with payment requirements
-- Both responses use **HTTP 402** status code
-- Response tells client exactly how to pay (network, amount, token, address)
+- Browser users get redirected to `/paywall` (a React page with Solana Wallet Adapter)
+- API clients get structured JSON with full payment requirements
+- Browser redirect includes the original resource path as a query parameter
+- Response tells client exactly how to pay (network, amount, token, address, timeout, etc.)
 
 ### Step 3: Client Makes Payment on Solana
 
-**File:** `lib/paywall-template.ts` (simplified)
+**File:** `components/paywall/hooks/use-payment-flow.ts` (simplified)
 
-```javascript
-// User clicks "Pay with Phantom"
-async function makePayment() {
-  // 1. Connect to Phantom wallet
-  const walletProvider = window.phantom?.solana
-  const response = await walletProvider.connect()
-  const walletAddress = response.publicKey.toString()
+```typescript
+export function usePaymentFlow() {
+  const { publicKey, sendTransaction } = useWallet()
+  const { connection } = useConnection()
 
-  // 2. Create USDC transfer transaction
-  const transaction = new solanaWeb3.Transaction()
-  const transferInstruction = createTransferCheckedInstruction(
-    senderTokenAccount, // User's USDC account
-    usdcMint,
-    treasuryTokenAccount, // Our treasury
-    senderPubkey, // User's wallet
-    10000, // 0.01 USDC
-    6, // USDC decimals
-  )
-  transaction.add(transferInstruction)
+  const handlePayment = async () => {
+    // 1. Get treasury and USDC mint addresses
+    const treasuryPk = getTreasuryPk()
+    const usdcMint = getUsdcMintPk()
+    const usdcAmount = Math.floor(
+      env.NEXT_PUBLIC_PAYMENT_AMOUNT_USD * Math.pow(10, env.NEXT_PUBLIC_USDC_DECIMALS)
+    )
 
-  // 3. User signs and sends transaction
-  const { signature } = await walletProvider.signAndSendTransaction(transaction)
+    // 2. Find token accounts (Associated Token Accounts)
+    const ownerAddress: Address = address(publicKey.toString())
+    const senderTokenAccount = await getAssociatedTokenAddress(usdcMint, ownerAddress)
+    const treasuryTokenAccount = await getAssociatedTokenAddress(usdcMint, treasuryPk)
 
-  // 4. Wait for confirmation
-  await connection.confirmTransaction(signature, 'finalized')
+    // 3. Create USDC transfer instruction using Gill
+    const transferInstruction = createTransferCheckedInstruction({
+      source: senderTokenAccount,
+      mint: usdcMint,
+      destination: treasuryTokenAccount,
+      owner: ownerAddress,
+      amount: BigInt(usdcAmount),
+      decimals: env.NEXT_PUBLIC_USDC_DECIMALS,
+    })
 
-  // 5. Send payment proof to server
-  const paymentData = {
-    x402Version: 1,
-    scheme: 'exact',
-    network: 'solana-devnet',
-    payload: {
-      signature: signature, // Transaction ID
-      from: walletAddress, // Who paid
-      to: TREASURY_ADDRESS, // Where payment went
-      amount: '10000', // How much
-      token: USDC_DEVNET_MINT, // What token
-    },
+    // 4. Get recent blockhash and build transaction
+    const { rpc } = getClient()
+    const { value: latestBlockhash } = await rpc.getLatestBlockhash().send()
+    const transaction = await convertGillInstructionToWeb3Transaction(
+      transferInstruction,
+      publicKey,
+      latestBlockhash.blockhash
+    )
+
+    // 5. Send transaction via wallet adapter
+    const signature = await sendTransaction(transaction, connection)
+
+    // 6. Wait for confirmation
+    await confirmTransaction(signature)
+
+    // 7. Build x402 payment header
+    const paymentHeader = buildPaymentHeader({
+      signature,
+      from: publicKey.toString(),
+      to: env.NEXT_PUBLIC_TREASURY_ADDRESS,
+      amount: usdcAmount.toString(),
+      token: env.NEXT_PUBLIC_USDC_DEVNET_MINT,
+    })
+
+    // 8. Send payment proof to server
+    const response = await fetch('/protected', {
+      method: 'GET',
+      headers: { 'X-PAYMENT': paymentHeader },
+    })
+
+    if (response.ok) {
+      router.push('/protected') // Access granted!
+    }
   }
 
-  // Retry original request with payment proof
-  const response = await fetch(window.location.href, {
-    method: 'GET',
-    headers: {
-      'X-PAYMENT': JSON.stringify(paymentData),
-    },
-  })
+  return { handlePayment }
 }
 ```
 
 **What happens:**
 
-- User connects Phantom wallet
-- Creates USDC transfer transaction on Solana
+- User connects Phantom wallet via Solana Wallet Adapter
+- Hook calculates USDC amount and finds Associated Token Accounts
+- Creates transfer instruction using Gill (type-safe Solana SDK)
+- Converts Gill instruction to web3.js format (wallet adapter requirement)
 - Phantom prompts user to approve transaction
 - Transaction broadcasts to Solana network
-- Client waits for blockchain confirmation
-- Client constructs x402 payment header with proof
-- Client retries original request with `X-PAYMENT` header
+- Client waits for blockchain confirmation (polling signature status)
+- Client constructs x402 payment header using `buildPaymentHeader()` helper
+- Client makes request to `/protected` with `X-PAYMENT` header
+- On success, redirects to protected page
 
 ### Step 4: Server Verifies Payment
 
@@ -710,35 +759,63 @@ async function makePayment() {
 export async function verifyPayment(payment: Payment, resource: string): Promise<VerificationResult> {
   const { signature, from, to, amount } = payment.payload
 
-  // Check if we already verified this transaction
+  // Check if we already verified this transaction (prevent replay attacks)
   if (await transactionStorage.has(signature)) {
     return { isValid: true, signature }
   }
 
   // Build payment requirements for facilitator
   const paymentRequirements = {
-    scheme: 'exact',
-    network: 'solana-devnet',
+    scheme: X402_CONFIG.PAYMENT_SCHEME,
+    network: X402_CONFIG.NETWORK,
     maxAmountRequired: X402_CONFIG.REQUIRED_AMOUNT,
+    resource,
+    description: X402_CONFIG.PAYMENT_DESCRIPTION,
     payTo: X402_CONFIG.TREASURY_ADDRESS,
+    maxTimeoutSeconds: X402_CONFIG.PAYMENT_TIMEOUT_SECONDS,
     asset: X402_CONFIG.USDC_DEVNET_MINT,
   }
 
-  // Call facilitator to verify on-chain
+  // Step 1: Call facilitator to verify on-chain
   const verifyResponse = await fetch(`${X402_CONFIG.FACILITATOR_BASE_URL}/verify`, {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ payment, paymentRequirements }),
   })
 
-  const result = await verifyResponse.json()
+  const verifyResult = await verifyResponse.json()
 
-  if (result.isValid) {
-    // Store signature to prevent replay attacks
-    await transactionStorage.add(signature, { from, to, amount })
-    console.log('Payment verified successfully:', signature)
+  if (!verifyResult.isValid) {
+    return {
+      isValid: false,
+      reason: verifyResult.reason || 'Payment verification failed',
+    }
   }
 
-  return result
+  // Step 2: Settle the payment (verify transfer instruction)
+  const settleResponse = await fetch(`${X402_CONFIG.FACILITATOR_BASE_URL}/settle`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      transactionId: verifyResult.transactionId,
+      payment,
+    }),
+  })
+
+  const settleResult = await settleResponse.json()
+
+  if (!settleResult.success) {
+    return {
+      isValid: false,
+      reason: settleResult.reason || 'Settlement verification failed',
+    }
+  }
+
+  // Store signature to prevent replay attacks
+  await transactionStorage.add(signature, { from, to, amount })
+  console.log('Payment verified and settled successfully:', signature)
+
+  return { isValid: true, signature }
 }
 ```
 
@@ -746,12 +823,13 @@ export async function verifyPayment(payment: Payment, resource: string): Promise
 
 - Extract transaction signature from payment header
 - Check if we've already verified this transaction (prevent replay)
-- Call facilitator service to verify payment
-- Facilitator checks blockchain to confirm transaction
-- If valid, store signature in verified transactions
+- Call facilitator `/verify` endpoint to check transaction exists and succeeded
+- Call facilitator `/settle` endpoint to verify actual transfer instruction
+- Settle endpoint confirms sender, receiver, amount, and token all match
+- If both steps pass, store signature in verified transactions
 - Return verification result
 
-### Step 5: Facilitator Checks Blockchain
+### Step 5: Facilitator Verifies Transaction Exists
 
 **File:** `app/api/facilitator/verify/route.ts`
 
@@ -771,22 +849,32 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ isValid: false, reason: 'Invalid token' })
   }
 
-  // Fetch transaction from Solana
-  const connection = new Connection('https://api.devnet.solana.com')
-  const transaction = await connection.getTransaction(signature, {
-    maxSupportedTransactionVersion: 0,
-  })
+  // Fetch transaction from Solana using Gill
+  const { rpc } = getClient()
+  const sig = gillSignature(signature)
+
+  let transaction
+  try {
+    transaction = await rpc
+      .getTransaction(sig, {
+        encoding: 'jsonParsed',
+        maxSupportedTransactionVersion: 0,
+      })
+      .send()
+  } catch {
+    return NextResponse.json({ isValid: false, reason: 'Transaction not found' })
+  }
 
   if (!transaction) {
     return NextResponse.json({ isValid: false, reason: 'Transaction not found' })
   }
 
-  // Check if transaction succeeded
+  // Check if transaction succeeded on-chain
   if (transaction.meta?.err) {
-    return NextResponse.json({ isValid: false, reason: 'Transaction failed' })
+    return NextResponse.json({ isValid: false, reason: 'Transaction failed on-chain' })
   }
 
-  // All checks passed!
+  // Transaction exists and succeeded
   return NextResponse.json({
     isValid: true,
     transactionId: signature,
@@ -797,13 +885,98 @@ export async function POST(request: NextRequest) {
 **What happens:**
 
 - Receives payment and requirements from verifier
-- Validates payment parameters match requirements
-- Connects to Solana RPC endpoint
-- Fetches actual transaction from blockchain
-- Verifies transaction exists and succeeded
-- Returns verification result
+- Validates payment parameters match requirements (address, amount, token)
+- Creates Gill client and converts signature to Gill type
+- Fetches actual transaction from Solana blockchain via RPC
+- Verifies transaction exists and didn't fail
+- Returns verification result with transaction ID
 
-### Step 6: Grant Access with Session
+### Step 6: Facilitator Settles Payment
+
+**File:** `app/api/facilitator/settle/route.ts` (simplified)
+
+```typescript
+export async function POST(request: NextRequest) {
+  const { transactionId, payment } = await request.json()
+  const { from, to, amount, token } = payment.payload
+
+  // Fetch transaction again from blockchain
+  const { rpc } = getClient()
+  const sig = gillSignature(transactionId)
+  const transaction = await rpc
+    .getTransaction(sig, {
+      encoding: 'jsonParsed',
+      maxSupportedTransactionVersion: 0,
+    })
+    .send()
+
+  if (!transaction || transaction.meta?.err) {
+    return NextResponse.json({ success: false, reason: 'Transaction not found or failed' })
+  }
+
+  // Validate payment parameters again
+  if (to !== env.NEXT_PUBLIC_TREASURY_ADDRESS) {
+    return NextResponse.json({ success: false, reason: 'Invalid treasury address' })
+  }
+  if (token !== env.NEXT_PUBLIC_USDC_DEVNET_MINT) {
+    return NextResponse.json({ success: false, reason: 'Invalid token mint' })
+  }
+
+  // Calculate expected Associated Token Accounts
+  const treasuryPk = getTreasuryPk()
+  const usdcMint = getUsdcMintPk()
+  const fromAddr: Address = address(from)
+  const expectedSenderAta = await getAssociatedTokenAddress(usdcMint, fromAddr)
+  const expectedTreasuryAta = await getAssociatedTokenAddress(usdcMint, treasuryPk)
+
+  // Search for transfer instruction in transaction
+  // Checks both main instructions and inner instructions
+  let foundTransfer = false
+  for (const ix of transaction.transaction.message.instructions) {
+    if (ix.programId === TOKEN_PROGRAM_ID) {
+      if (
+        ix.keys[0]?.pubkey === expectedSenderAta &&
+        ix.keys[2]?.pubkey === expectedTreasuryAta
+      ) {
+        foundTransfer = true
+        break
+      }
+    }
+  }
+
+  if (!foundTransfer) {
+    return NextResponse.json({
+      success: false,
+      reason: 'Transaction does not contain expected transfer instruction',
+    })
+  }
+
+  // All checks passed - payment settled!
+  return NextResponse.json({
+    success: true,
+    message: 'Payment settled',
+    transactionId,
+  })
+}
+```
+
+**What happens:**
+
+- Receives transaction ID and payment details from verification step
+- Fetches transaction from blockchain again (double-check)
+- Validates treasury address and token mint match expectations
+- Calculates expected Associated Token Accounts for sender and treasury
+- Searches transaction instructions for Token Program transfer
+- Verifies transfer instruction contains correct sender and receiver ATAs
+- Also checks inner instructions (for CPI calls)
+- If transfer instruction found with correct accounts, settlement succeeds
+- This prevents attacks where someone sends an unrelated transaction signature
+
+**Why Settlement Matters:**
+
+The settle step adds an extra layer of security by verifying the transaction actually contains a transfer instruction from the correct sender to the correct receiver. Without this, someone could theoretically submit any successful transaction signature, not necessarily one that sent USDC to your treasury.
+
+### Step 7: Grant Access with Session
 
 **File:** `proxy.ts` (continued)
 
@@ -838,6 +1011,84 @@ return response // Grants access to protected content
 
 ---
 
+## Key Technologies Used
+
+### Gill - Modern Solana SDK
+
+This template uses [Gill](https://github.com/anza-xyz/gill), a next-generation Solana SDK that provides:
+
+- **Type Safety** - Full TypeScript types with zero `any` types
+- **Modern API** - Promise-based, async/await friendly
+- **Tree-shakeable** - Only bundle what you use
+- **Better DX** - Cleaner APIs than web3.js
+
+**Example:**
+
+```typescript
+import { address, signature, getClient } from 'gill'
+
+const { rpc } = getClient()
+const sig = signature('5yG8KpD...')
+const tx = await rpc.getTransaction(sig).send()
+```
+
+**Why Gill?**
+
+- Server-side: Gill provides cleaner, type-safe blockchain interaction
+- Client-side: We still use `@solana/web3.js` because wallet adapters require it
+- We convert between Gill and web3.js types when needed (`convertGillInstructionToWeb3Transaction`)
+
+### Zod - Runtime Type Validation
+
+Environment variables are validated at runtime using [Zod](https://zod.dev/):
+
+```typescript
+const envSchema = z.object({
+  NEXT_PUBLIC_RPC_ENDPOINT: z.string().url().default('https://api.devnet.solana.com'),
+  NEXT_PUBLIC_PAYMENT_AMOUNT_USD: z.coerce.number().default(0.01),
+  // ... more validations
+})
+
+export const env = envSchema.parse(process.env)
+```
+
+**Benefits:**
+- Type-safe environment variables
+- Clear error messages for misconfiguration
+- Default values for optional settings
+- Compile-time and runtime validation
+
+### Solana Wallet Adapter
+
+Standard wallet integration using [@solana/wallet-adapter-react](https://github.com/anza-xyz/wallet-adapter):
+
+```typescript
+const { publicKey, sendTransaction } = useWallet()
+const { connection } = useConnection()
+```
+
+**Benefits:**
+- Works with all Solana wallets (Phantom, Solflare, etc.)
+- Standard hooks-based API
+- Automatic wallet detection
+- Connection management
+
+### React Hooks Architecture
+
+Payment flow organized into custom hooks:
+
+- `usePaymentFlow()` - Handles payment transaction
+- `useWalletConnection()` - Manages wallet connection
+- `usePaymentCheck()` - Checks existing payment
+
+**Benefits:**
+- Separation of concerns
+- Testable logic
+- Reusable components
+- Clean component code
+
+---
+
 ## Learning Exercises
 
 Now that you understand the flow, try these exercises:
@@ -845,53 +1096,77 @@ Now that you understand the flow, try these exercises:
 ### Beginner
 
 1. **Change the Price**
-   - Edit `lib/x402-config.ts`
-   - Change `REQUIRED_AMOUNT` to `"20000"` (0.02 USDC)
-   - Test the payment flow
+   - Create a `.env.local` file
+   - Add `NEXT_PUBLIC_PAYMENT_AMOUNT_USD=0.02`
+   - Restart dev server and test the payment flow
+   - Check how `lib/env.ts` validates this value
 
 2. **Customize the Paywall**
-   - Edit `lib/paywall-template.ts`
-   - Change colors, text, or styling
-   - See your changes at `/protected`
+   - Edit `components/paywall/paywall-container.tsx`
+   - Change the gradient colors or text
+   - Edit `components/paywall/price-box.tsx` to customize price display
+   - See your changes at `/paywall`
 
 3. **Add a New Protected Route**
    - Create `app/premium/page.tsx`
-   - Access it - should show paywall
+   - Access it directly - should redirect to paywall
    - Why? Check `proxy.ts` matcher config
+   - Try adding `/premium/:path*` to the matcher
 
 ### Intermediate
 
 4. **Track Payment Analytics**
-   - Add logging to `lib/x402-verification.ts`
-   - Log: timestamp, amount, from address
-   - Build a simple analytics view
+   - Add logging to `app/api/facilitator/settle/route.ts`
+   - Log: timestamp, amount, from address, transaction signature
+   - Create `app/api/analytics/route.ts` to view payments
+   - Display payment history on a new page
 
 5. **Different Prices for Different Routes**
    - Modify `proxy.ts` to check pathname
-   - Set different `REQUIRED_AMOUNT` based on route
+   - Pass different amounts in `create402Response` based on route
+   - Update `lib/x402-config.ts` to support dynamic pricing
    - `/protected` = 0.01 USDC, `/premium` = 0.05 USDC
 
 6. **Add Payment Expiry**
-   - Modify `lib/transaction-storage.ts`
-   - Add shorter TTL (e.g., 1 hour instead of 24)
-   - Test cookie expiration
+   - Modify cookie `maxAge` in `proxy.ts` (currently 24 hours)
+   - Add environment variable `NEXT_PUBLIC_COOKIE_MAX_AGE`
+   - Test different expiry times (1 hour, 30 minutes)
+   - Add expiry countdown on protected page
+
+7. **Custom Payment Hook**
+   - Study `components/paywall/hooks/use-payment-flow.ts`
+   - Create a new hook `use-payment-status.ts` for checking payment status
+   - Add real-time payment status updates
+   - Display progress during confirmation
 
 ### Advanced
 
-7. **Implement Mainnet Support**
-   - Add mainnet configuration
-   - Handle both devnet and mainnet
-   - Add network selection UI
+8. **Implement Mainnet Support**
+   - Update `lib/env.ts` to add mainnet RPC endpoint
+   - Add network switching in `lib/solana.ts`
+   - Update `NEXT_PUBLIC_NETWORK` to support mainnet
+   - Add network selection toggle in paywall UI
+   - **WARNING:** Test thoroughly before using real money!
 
-8. **Build Redis Storage**
-   - Replace `lib/transaction-storage.ts`
-   - Use Redis for distributed caching
-   - Handle multiple server instances
+9. **Build Redis Storage**
+   - Install `ioredis` package
+   - Replace `lib/transaction-storage.ts` with Redis implementation
+   - Use Redis for distributed caching across server instances
+   - Add proper error handling and connection management
+   - Set TTL (Time To Live) for verified transactions
 
-9. **Add Webhook Notifications**
-   - Create `/api/webhooks` endpoint
-   - Send notifications on successful payment
-   - Integrate with Discord/Slack
+10. **Add Webhook Notifications**
+    - Create `app/api/webhooks/route.ts` endpoint
+    - Send POST request from settle endpoint on successful payment
+    - Integrate with Discord webhook or Slack incoming webhook
+    - Include payment details: amount, signature, timestamp
+    - Add retry logic for failed webhook deliveries
+
+11. **Build with Gill Throughout**
+    - Replace remaining `@solana/web3.js` usage with Gill
+    - Create custom wallet adapter that uses Gill types
+    - Implement transaction building entirely with Gill
+    - Explore Gill's advanced features (subscriptions, batch requests)
 
 ---
 
@@ -902,28 +1177,32 @@ Now that you understand the flow, try these exercises:
 - Learn x402 protocol concepts
 - Understand Solana payments
 - See blockchain verification in action
-- Study clean TypeScript architecture
+- Study clean TypeScript architecture with modern tools (Gill, Zod)
 
 ✅ **A Working Demonstration**
 
 - Complete payment flow end-to-end
 - Real Solana transactions on devnet
-- Functional Phantom wallet integration
+- Full wallet integration via Solana Wallet Adapter
 - Verifiable on Solana Explorer
+- Settlement verification with instruction parsing
 
 ✅ **A Starting Point**
 
-- Clean, modular codebase (71 line middleware!)
+- Clean, modular codebase (57 line middleware!)
+- Component-based architecture with React hooks
 - Well-documented and commented
 - Easy to understand and modify
 - Foundation for your own system
 
 ✅ **Best Practices Example**
 
-- Separation of concerns
-- Type-safe TypeScript
-- Secure cookie handling
-- On-chain verification
+- Separation of concerns (hooks, components, utilities)
+- Type-safe TypeScript with Gill and Zod
+- Secure cookie handling (httpOnly, sameSite)
+- Comprehensive on-chain verification (verify + settle)
+- Environment validation with defaults
+- Modern React patterns
 
 ---
 
@@ -993,6 +1272,45 @@ pnpm install
 pnpm dev
 ```
 
+### Configuration (Optional)
+
+All environment variables have sensible defaults, but you can customize them:
+
+**Create `.env.local` file:**
+
+```bash
+# Solana Network
+NEXT_PUBLIC_RPC_ENDPOINT=https://api.devnet.solana.com
+NEXT_PUBLIC_NETWORK=solana-devnet
+
+# Payment Configuration
+NEXT_PUBLIC_PAYMENT_AMOUNT_USD=0.01
+NEXT_PUBLIC_USDC_DECIMALS=6
+NEXT_PUBLIC_USDC_DEVNET_MINT=4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU
+
+# Your Treasury (where payments go)
+NEXT_PUBLIC_TREASURY_ADDRESS=CmGgLQL36Y9ubtTsy2zmE46TAxwCBm66onZmPPhUWNqv
+
+# Session & Facilitator
+NEXT_PUBLIC_COOKIE_NAME=solana_payment_verified
+NEXT_PUBLIC_COOKIE_MAX_AGE=86400
+NEXT_PUBLIC_FACILITATOR_URL=http://localhost:3000/api/facilitator
+
+# Payment Details
+NEXT_PUBLIC_PAYMENT_SCHEME=exact
+NEXT_PUBLIC_PAYMENT_DESCRIPTION="Access to protected content"
+NEXT_PUBLIC_PAYMENT_TIMEOUT_SECONDS=60
+```
+
+**Environment Variables Explained:**
+
+- `NEXT_PUBLIC_PAYMENT_AMOUNT_USD` - Price in USD (e.g., 0.01 = 1 cent)
+- `NEXT_PUBLIC_TREASURY_ADDRESS` - Your Solana wallet address (receives payments)
+- `NEXT_PUBLIC_NETWORK` - Network to use (solana-devnet, solana-mainnet-beta)
+- `NEXT_PUBLIC_COOKIE_MAX_AGE` - How long payment session lasts (seconds)
+
+**Note:** All variables have defaults defined in `lib/env.ts`, so the app works without any `.env.local` file!
+
 ### Get Test USDC
 
 1. Install Phantom wallet
@@ -1030,19 +1348,39 @@ cat .verified-transactions.json
 ```
 x402-template/
 ├── lib/
+│   ├── env.ts                  # 🔐 Environment validation (Zod)
+│   ├── solana.ts               # ⛓️  Solana utilities (Gill)
+│   ├── x402.ts                 # 🔧 x402 utilities
 │   ├── x402-config.ts          # ⚙️  Configuration
 │   ├── x402-responses.ts       # 📄 402 responses
 │   ├── x402-verification.ts    # ✅ Payment verification
-│   ├── transaction-storage.ts  # 💾 Storage layer
-│   └── paywall-template.ts     # 🎨 HTML paywall UI
+│   └── transaction-storage.ts  # 💾 Storage layer
+├── components/
+│   └── paywall/
+│       ├── paywall-container.tsx   # 🎨 Main paywall UI
+│       ├── price-box.tsx           # 💵 Price display
+│       ├── status-message.tsx      # 📢 Status display
+│       ├── action-button.tsx       # 🔘 Action button
+│       ├── wallet-address.tsx      # 👛 Wallet display
+│       └── hooks/
+│           ├── use-payment-check.ts      # ✓ Check payment
+│           ├── use-payment-flow.ts       # 💸 Payment flow
+│           └── use-wallet-connection.ts  # 🔌 Wallet connection
+├── providers/
+│   └── WalletProvider.tsx      # 🔌 Solana Wallet Adapter
 ├── app/
-│   ├── api/facilitator/
-│   │   ├── verify/route.ts     # 🔍 Blockchain verification
-│   │   ├── settle/route.ts     # 💰 Settlement (optional)
-│   │   └── supported/route.ts  # 📋 Supported methods
+│   ├── (paywall)/
+│   │   └── paywall/page.tsx    # 💳 Paywall page
+│   ├── api/
+│   │   ├── facilitator/
+│   │   │   ├── verify/route.ts     # 🔍 Transaction verification
+│   │   │   ├── settle/route.ts     # 💰 Payment settlement
+│   │   │   └── supported/route.ts  # 📋 Supported methods
+│   │   └── clear-payment/route.ts  # 🧹 Clear payment cookie
 │   ├── protected/page.tsx      # 🔒 Protected content
-│   └── page.tsx                # 🏠 Public homepage
-├── proxy.ts                    # 🛡️  x402 middleware (71 lines!)
+│   ├── page.tsx                # 🏠 Public homepage
+│   └── layout.tsx              # 📐 Root layout
+├── proxy.ts                    # 🛡️  x402 middleware (57 lines!)
 └── README.md                   # 📖 This guide
 ```
 
@@ -1172,14 +1510,18 @@ If you want to build a real x402 system, you'll need:
 
 - [Solana Documentation](https://docs.solana.com/) - Official docs
 - [Solana Cookbook](https://solanacookbook.com/) - Practical guides
-- [Solana Web3.js](https://solana-labs.github.io/solana-web3.js/) - JavaScript SDK
+- [Gill](https://github.com/anza-xyz/gill) - Modern, type-safe Solana SDK (used in this template)
+- [Solana Web3.js](https://solana-labs.github.io/solana-web3.js/) - Classic JavaScript SDK
+- [Solana Wallet Adapter](https://github.com/anza-xyz/wallet-adapter) - Standard wallet integration
 - [Solana Explorer](https://explorer.solana.com/) - View transactions
 
-### Tools
+### Development Tools
 
 - [Phantom Wallet](https://phantom.app/) - Solana wallet
 - [Circle USDC Faucet](https://faucet.circle.com/) - Get test USDC
 - [Solana Faucet](https://faucet.solana.com/) - Get test SOL
+- [Zod](https://zod.dev/) - TypeScript-first schema validation
+- [Next.js](https://nextjs.org/) - React framework (App Router)
 
 ---
 
@@ -1211,6 +1553,18 @@ Test your knowledge:
    Security. HttpOnly cookies can't be accessed by JavaScript, protecting against XSS attacks. An attacker who injects malicious JavaScript can't steal the payment session.
    </details>
 
+5. **Why do we need both verify AND settle endpoints?**
+   <details>
+   <summary>Answer</summary>
+   Verify checks if the transaction exists and succeeded. Settle checks if the transaction actually contains a transfer from the correct sender to the correct receiver with the correct amount. Without settle, someone could submit any successful transaction signature, even one that didn't pay you!
+   </details>
+
+6. **Why use Gill on the server but web3.js on the client?**
+   <details>
+   <summary>Answer</summary>
+   Wallet adapters (Phantom, Solflare, etc.) only accept web3.js Transaction objects. So we use Gill for clean, type-safe server-side code and convert to web3.js format when communicating with wallets. This gives us the best of both worlds: modern SDK for our code, compatibility with existing wallets.
+   </details>
+
 ---
 
 ## Contributing to Your Learning
@@ -1238,17 +1592,28 @@ MIT License - Use this freely for learning and experimentation.
 - ✅ What x402 protocol is and why it matters
 - ✅ How HTTP 402 enables seamless payments
 - ✅ How blockchain provides payment proof
-- ✅ How to verify transactions on-chain
+- ✅ How to verify transactions on-chain with verify + settle pattern
 - ✅ How session management works
+- ✅ Modern Solana development with Gill
+- ✅ Type-safe development with Zod
+- ✅ React hooks patterns for blockchain interactions
 - ✅ The difference between learning code and production code
 
 **Next steps:**
 
-- Try the learning exercises
-- Read through all the code
-- Experiment with modifications
+- Try the learning exercises (beginner → advanced)
+- Read through all the code (well-commented!)
+- Experiment with the hooks and components
+- Explore Gill's capabilities
 - Build your own x402 implementation
 - Share your learnings with others
+
+**Key Takeaways:**
+
+- Settlement verification is crucial for security (not just transaction existence)
+- Type safety (Gill + Zod) prevents many runtime errors
+- Hooks make blockchain interactions testable and reusable
+- Modern tooling makes Solana development more approachable
 
 **Remember:** This is a learning tool, not production software. Use it to understand concepts, then build robust production systems with proper infrastructure, security, and testing.
 
