@@ -19,14 +19,18 @@ import fs from 'fs';
 import crypto from 'crypto';
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
+import { config } from 'dotenv';
 import { Connection, PublicKey, SystemProgram, Transaction, Keypair } from '@solana/web3.js';
 
-// Configuration
-const SERVER_URL = 'http://localhost:3000';
+// Load environment variables
+config();
+
+// Configuration from environment variables
+const SERVER_URL = process.env.SERVER_URL || 'http://localhost:3000';
 const RESOURCE_URL = '/api/premium-data';
-const FACILITATOR_PUBLIC_KEY = '38dZtt5G8rRTWdokBckLtuWXGb7QG9HSn2sMaJAf1yK3'; // Fee payer
-const MERCHANT_ADDRESS = 'G4EPtLiZgwy4htv2AdgK9A42bxN2Nwug1PJ46d5LjHat'; // Payment recipient
-const RPC_URL = 'https://api.devnet.solana.com';
+const FACILITATOR_PUBLIC_KEY = process.env.FACILITATOR_PUBLIC_KEY || ''; // Fee payer
+const MERCHANT_ADDRESS = process.env.MERCHANT_SOLANA_ADDRESS || ''; // Payment recipient
+const RPC_URL = process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com';
 
 // Load client keypair
 const keypairData = JSON.parse(fs.readFileSync('./test-client-keypair.json', 'utf-8'));
