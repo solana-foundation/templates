@@ -3,22 +3,21 @@
  * TypeScript implementation with x402 middleware using Gill template patterns
  */
 
-import express, { type Express } from 'express';
+import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { getServerContext } from '../lib/get-server-context.js';
 import { createX402MiddlewareWithUtils } from '../lib/x402-middleware.js';
 import { successResponse, errorResponse } from '../lib/api-response-helpers.js';
-import { REQUEST_TIMEOUT, RETRY_ATTEMPTS, REQUEST_BODY_LIMIT, PAYMENT_AMOUNTS } from '../lib/constants.js';
 
 // Initialize context
 const context = getServerContext();
-const app: Express = express();
+const app = express();
 
 // Setup middleware
 app.use(helmet());
 app.use(cors());
-app.use(express.json({ limit: REQUEST_BODY_LIMIT }));
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Request logging
@@ -32,8 +31,8 @@ const x402Utils = createX402MiddlewareWithUtils(
   {},
   {
     facilitatorUrl: context.config.facilitatorUrl,
-    timeout: REQUEST_TIMEOUT,
-    retryAttempts: RETRY_ATTEMPTS,
+    timeout: 30000,
+    retryAttempts: 3,
   }
 );
 
@@ -76,15 +75,15 @@ app.get('/public', (_req, res) => {
 // Premium data endpoint - 0.01 SOL
 const premiumRouteMw = createX402MiddlewareWithUtils(
   {
-    amount: PAYMENT_AMOUNTS.PREMIUM_DATA,
+    amount: '10000000', // 0.01 SOL in lamports (10M lamports)
     payTo: context.config.merchantSolanaAddress || context.config.facilitatorPublicKey || '',
     asset: 'SOL',
-    network: `solana-${context.config.solanaNetwork}`,
+    network: 'solana-devnet',
   },
   {
     facilitatorUrl: context.config.facilitatorUrl,
-    timeout: REQUEST_TIMEOUT,
-    retryAttempts: RETRY_ATTEMPTS,
+    timeout: 30000,
+    retryAttempts: 3,
   }
 );
 
@@ -111,15 +110,15 @@ app.get('/api/premium-data', premiumRouteMw.middleware, (req, res) => {
 // Generate content endpoint - 0.005 SOL
 const generateContentMw = createX402MiddlewareWithUtils(
   {
-    amount: PAYMENT_AMOUNTS.GENERATE_CONTENT,
+    amount: '5000000', // 0.005 SOL (5M lamports)
     payTo: context.config.merchantSolanaAddress || context.config.facilitatorPublicKey || '',
     asset: 'SOL',
-    network: `solana-${context.config.solanaNetwork}`,
+    network: 'solana-devnet',
   },
   {
     facilitatorUrl: context.config.facilitatorUrl,
-    timeout: REQUEST_TIMEOUT,
-    retryAttempts: RETRY_ATTEMPTS,
+    timeout: 30000,
+    retryAttempts: 3,
   }
 );
 
@@ -147,15 +146,15 @@ app.post('/api/generate-content', generateContentMw.middleware, (req, res): void
 // File download endpoint - 0.02 SOL
 const downloadMw = createX402MiddlewareWithUtils(
   {
-    amount: PAYMENT_AMOUNTS.DOWNLOAD_FILE,
+    amount: '20000000', // 0.02 SOL (20M lamports)
     payTo: context.config.merchantSolanaAddress || context.config.facilitatorPublicKey || '',
     asset: 'SOL',
-    network: `solana-${context.config.solanaNetwork}`,
+    network: 'solana-devnet',
   },
   {
     facilitatorUrl: context.config.facilitatorUrl,
-    timeout: REQUEST_TIMEOUT,
-    retryAttempts: RETRY_ATTEMPTS,
+    timeout: 30000,
+    retryAttempts: 3,
   }
 );
 
@@ -167,8 +166,7 @@ app.get('/api/download/:fileId', downloadMw.middleware, (req, res) => {
       message: 'File download authorized',
       data: {
         fileId: fileId,
-        // TODO: Implement actual file download URL generation
-        downloadUrl: `/files/${fileId}`,
+        downloadUrl: `https://example.com/files/${fileId}`,
         expiresAt: new Date(Date.now() + 3600000).toISOString(), // 1 hour
         payment: req.payment,
       },
@@ -179,15 +177,15 @@ app.get('/api/download/:fileId', downloadMw.middleware, (req, res) => {
 // Tier-based access endpoint - 0.05 SOL
 const tierMw = createX402MiddlewareWithUtils(
   {
-    amount: PAYMENT_AMOUNTS.TIER_ACCESS,
+    amount: '50000000', // 0.05 SOL (50M lamports)
     payTo: context.config.merchantSolanaAddress || context.config.facilitatorPublicKey || '',
     asset: 'SOL',
-    network: `solana-${context.config.solanaNetwork}`,
+    network: 'solana-devnet',
   },
   {
     facilitatorUrl: context.config.facilitatorUrl,
-    timeout: REQUEST_TIMEOUT,
-    retryAttempts: RETRY_ATTEMPTS,
+    timeout: 30000,
+    retryAttempts: 3,
   }
 );
 
