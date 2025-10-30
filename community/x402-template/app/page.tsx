@@ -9,7 +9,7 @@ export default function Home() {
           <p className="text-gray-600 dark:text-gray-400 mb-6">
             This is a Next.js template with Solana payment integration using the x402 protocol.
           </p>
-          <div className='flex gap-4'>
+          <div className="flex gap-4">
             <Link
               href="/content/cheap"
               className="inline-block px-6 py-3 bg-neutral-800 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity"

@@ -44,12 +44,12 @@ This template demonstrates a streamlined implementation of the X402 payment prot
 
 ## Features
 
-- **X402 Payment Middleware** - Powered by `x402-next` package  
+- **X402 Payment Middleware** - Powered by `x402-next` package
 - **Solana Integration** - Uses Solana blockchain for payment verification
-- **Multiple Price Tiers** - Configure different prices for different routes  
-- **Session Management** - Automatic session handling after payment  
-- **Type-Safe** - Full TypeScript support with Viem types  
-- **Next.js 16** - Built on the latest Next.js App Router  
+- **Multiple Price Tiers** - Configure different prices for different routes
+- **Session Management** - Automatic session handling after payment
+- **Type-Safe** - Full TypeScript support with Viem types
+- **Next.js 16** - Built on the latest Next.js App Router
 
 ---
 
@@ -145,10 +145,7 @@ export const middleware = (req: NextRequest) => {
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico).*)',
-    '/',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)', '/'],
 }
 ```
 
@@ -270,6 +267,7 @@ export default async function PremiumPage() {
 ### Testing with Devnet
 
 When using `solana-devnet`:
+
 - Payments use test tokens (no real money)
 - Perfect for development and testing
 - Get test tokens from [Solana Faucet](https://faucet.solana.com/)
@@ -277,6 +275,7 @@ When using `solana-devnet`:
 ### Going to Production
 
 To accept real payments:
+
 1. Change network to `solana-mainnet-beta` in `middleware.ts`
 2. Update your wallet address to your production wallet
 3. Test thoroughly before deploying!
@@ -310,14 +309,17 @@ This template uses minimal dependencies:
 ## Learn More
 
 ### X402 Protocol
+
 - [X402 Specification](https://github.com/coinbase/x402) - Official protocol documentation
 - [X402 Next Package](https://www.npmjs.com/package/x402-next) - Middleware used in this template
 
 ### Solana
+
 - [Solana Documentation](https://docs.solana.com/) - Official Solana docs
 - [Solana Explorer](https://explorer.solana.com/) - View transactions on-chain
 
 ### Coinbase Developer
+
 - [CDP Docs](https://docs.cdp.coinbase.com/) - Coinbase Developer documentation
 
 ---
