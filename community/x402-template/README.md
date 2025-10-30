@@ -4,6 +4,8 @@
 
 This template demonstrates a streamlined implementation of the X402 payment protocol using the `x402-next` package, making it easy to add cryptocurrency payment gates to your Next.js applications.
 
+> ⚠️ **Using on Mainnet?** This template is configured for testnet (devnet) by default. To accept real payments on mainnet, you'll need to set up CDP API keys and configure a fee payer. See the [CDP X402 Mainnet Documentation](https://docs.cdp.coinbase.com/x402/quickstart-for-sellers#running-on-mainnet) for complete setup instructions.
+
 ## Table of Contents
 
 - [What is X402?](#what-is-x402)
