@@ -1,7 +1,6 @@
 import { z } from 'zod'
 
 const server = z.object({
-  DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 })
 
@@ -15,7 +14,6 @@ const client = z.object({
  * middlewares) or client-side so we need to destruct manually.
  */
 const processEnv = {
-  DATABASE_URL: process.env.DATABASE_URL,
   NODE_ENV: process.env.NODE_ENV,
   NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
@@ -26,7 +24,6 @@ const processEnv = {
 
 const merged = server.merge(client)
 
-type MergedInput = z.input<typeof merged>
 type MergedOutput = z.infer<typeof merged>
 
 let env = process.env as MergedOutput

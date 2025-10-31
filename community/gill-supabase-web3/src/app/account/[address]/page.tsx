@@ -1,5 +1,3 @@
-'use client'
-
 import AccountFeatureDetail from '@/features/account/account-feature-detail'
 import { ProtectedRoute } from '@/components/auth/protected-route'
 

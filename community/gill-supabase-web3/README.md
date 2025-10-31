@@ -33,12 +33,6 @@ This is a Next.js app containing:
 - Optimistic updates for better UX
 - React Query Devtools for debugging
 
-### 🗄️ **Database**
-
-- Prisma ORM with PostgreSQL
-- User management with wallet address storage
-- Automatic migrations and type generation
-
 ## Getting Started
 
 ### Prerequisites
@@ -67,9 +61,6 @@ cp .env.example .env.local
 2. Fill in your environment variables:
 
 ```env
-# Database
-DATABASE_URL="postgresql://username:password@localhost:5432/mydb?schema=public"
-
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
 NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-key"
@@ -99,7 +90,6 @@ npm run dev
 
 The app uses strict environment validation. All required variables must be set or the build will fail:
 
-- `DATABASE_URL`: PostgreSQL connection string
 - `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anonymous key
 
@@ -108,17 +98,10 @@ The app uses strict environment validation. All required variables must be set o
 1. **Connect Wallet**: User connects their Solana wallet
 2. **Sign Message**: User signs an authentication message
 3. **Supabase Auth**: Session created in Supabase
-4. **Database Storage**: User record stored/updated in Prisma database
-5. **Protected Access**: User can access protected routes like `/account`
-
-## API Endpoints
-
-- `POST /api/auth/wallet` - Authenticate and store wallet user
+4. **Protected Access**: User can access protected routes like `/account`
 
 ## Scripts
 
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run start` - Start production server
-- `npx prisma studio` - Open Prisma database GUI
-- `npx prisma migrate dev` - Run database migrations

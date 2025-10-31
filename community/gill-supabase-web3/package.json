@@ -7,12 +7,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "next lint",
-    "start": "next start",
-    "db:generate": "prisma migrate dev",
-    "db:migrate": "prisma migrate deploy",
-    "db:push": "prisma db push",
-    "db:reset": "prisma migrate reset",
-    "db:studio": "prisma studio"
+    "start": "next start"
   },
   "displayName": "Gill Supabase Web3 Auth Template",
   "description": "Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
@@ -30,7 +25,6 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@prisma/client": "^6.18.0",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
@@ -51,7 +45,6 @@
     "lucide-react": "^0.544.0",
     "next": "15.5.6",
     "next-themes": "^0.4.6",
-    "prisma": "^6.18.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-error-boundary": "^6.0.0",
