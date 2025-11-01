@@ -10,6 +10,7 @@ on:
       - 'scripts/**'
       - 'package.json'
       - '.github/workflows/validate-templates.yml'
+      - '.github/workflows/templates.json'
   push:
     branches:
       - main
@@ -50,7 +51,7 @@ jobs:
 
       - name: Check for uncommitted changes
         run: |
-          if ! git diff --exit-code templates.json TEMPLATES.md; then
+          if ! git diff --exit-code templates.json TEMPLATES.md .github/workflows/templates.json; then
             echo "Error: Generated files have uncommitted changes"
             echo "Please run 'pnpm generate' and commit the changes"
             exit 1
