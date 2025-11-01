@@ -43,11 +43,13 @@ jobs:
         shell: bash
         run: |
           ALL_TEMPLATES=$(cat .github/workflows/templates.json)
+          # Filter out community templates - they are maintained externally
+          TESTABLE_TEMPLATES=$(echo $ALL_TEMPLATES | jq -c '[.[] | select(startswith("community/") | not)]')
 
-          # For scheduled runs or pushes to main, test all templates
+          # For scheduled runs or pushes to main, test all templates (except community)
           if [[ "${{ github.event_name }}" == "schedule" ]] || [[ "${{ github.event_name }}" == "push" ]]; then
-            echo "Running all templates (scheduled or push to main)"
-            echo templates=$(echo $ALL_TEMPLATES | sed 's/ //g') | tee --append $GITHUB_OUTPUT
+            echo "Running all templates except community (scheduled or push to main)"
+            echo templates=$(echo $TESTABLE_TEMPLATES | sed 's/ //g') | tee --append $GITHUB_OUTPUT
             exit 0
           fi
 
@@ -55,15 +57,15 @@ jobs:
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             CHANGED_FILES="${{ steps.changed-files.outputs.changed_files }}"
 
-            # Check if any workflow or global config files changed - if so, test all templates
+            # Check if any workflow or global config files changed - if so, test all templates (except community)
             if echo "$CHANGED_FILES" | grep -q -E '^\.github/workflows/'; then
-              echo "Workflow files changed, testing all templates"
-              echo templates=$(echo $ALL_TEMPLATES | sed 's/ //g') | tee --append $GITHUB_OUTPUT
+              echo "Workflow files changed, testing all templates except community"
+              echo templates=$(echo $TESTABLE_TEMPLATES | sed 's/ //g') | tee --append $GITHUB_OUTPUT
               exit 0
             fi
 
-            # Extract template paths from changed files
-            AFFECTED_TEMPLATES=$(echo "$CHANGED_FILES" | grep -E '^(community|gill|mobile|web3js)/' | cut -d'/' -f1-2 | sort -u || true)
+            # Extract template paths from changed files (excluding community)
+            AFFECTED_TEMPLATES=$(echo "$CHANGED_FILES" | grep -E '^(gill|mobile|web3js)/' | cut -d'/' -f1-2 | sort -u || true)
 
             if [[ -z "$AFFECTED_TEMPLATES" ]]; then
               echo "No template files changed, skipping template tests"
@@ -74,8 +76,8 @@ jobs:
             echo "Affected templates:"
             echo "$AFFECTED_TEMPLATES"
 
-            # Filter the templates.json to only include affected templates
-            FILTERED_TEMPLATES=$(echo "$ALL_TEMPLATES" | jq -c --arg templates "$AFFECTED_TEMPLATES" '
+            # Filter the templates.json to only include affected templates (excluding community)
+            FILTERED_TEMPLATES=$(echo "$TESTABLE_TEMPLATES" | jq -c --arg templates "$AFFECTED_TEMPLATES" '
               [.[] | select(. as $item | ($templates | split("\n") | map(. == $item) | any))]
             ')
 
