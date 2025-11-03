@@ -390,7 +390,7 @@
         "name": "x402-template",
         "path": "community/x402-template",
         "displayName": "X402 Next.js",
-        "usecase": "Starter"
+        "usecase": "Payments"
       },
       {
         "description": "ZK-Compression based airdrop app built with Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
