@@ -174,6 +174,14 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `tailwind` `typescript` `wallet-ui`
 
+### [solana-chatgpt-kit](community/solana-chatgpt-kit)
+
+`gh:solana-foundation/templates/community/solana-chatgpt-kit`
+
+> ChatGPT app with Solana features - Swaps, transfers, staking and data query via natural language. Browser wallets + x402 payments or private key mode
+
+`solana` `chatgpt` `openai` `mcp` `jupiter` `x402` `payments` `swap` `wallet` `defi` `staking` `nextjs` `typescript` `spl-token` `sns`
+
 ### [x402-template](community/x402-template)
 
 `gh:solana-foundation/templates/community/x402-template`
