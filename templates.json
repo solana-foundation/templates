@@ -377,6 +377,32 @@
         "usecase": "Airdrop"
       },
       {
+        "description": "ChatGPT app with Solana features - Swaps, transfers, staking and data query via natural language. Browser wallets + x402 payments or private key mode",
+        "id": "gh:solana-foundation/templates/community/solana-chatgpt-kit",
+        "image": "community/solana-chatgpt-kit/og-image.png",
+        "keywords": [
+          "solana",
+          "chatgpt",
+          "openai",
+          "mcp",
+          "jupiter",
+          "x402",
+          "payments",
+          "swap",
+          "wallet",
+          "defi",
+          "staking",
+          "nextjs",
+          "typescript",
+          "spl-token",
+          "sns"
+        ],
+        "name": "solana-chatgpt-kit",
+        "path": "community/solana-chatgpt-kit",
+        "displayName": "Solana ChatGPT Kit",
+        "usecase": "Starter"
+      },
+      {
         "description": "Next.js Solana starter with X402 payment protocol integration",
         "id": "gh:solana-foundation/templates/community/x402-template",
         "image": "community/x402-template/og-image.png",
