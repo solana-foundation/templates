@@ -377,23 +377,18 @@
         "usecase": "Payments"
       },
       {
-        "description": "Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
-        "id": "gh:solana-foundation/templates/community/gill-supabase-web3",
-        "image": "community/gill-supabase-web3/og-image.png",
+        "description": "Authenticate Solana wallets with Supabase",
+        "id": "gh:solana-foundation/templates/community/supabase-auth",
+        "image": "community/supabase-auth/og-image.png",
         "keywords": [
-          "gill",
-          "nextjs",
-          "react",
-          "solana-kit",
-          "tailwind",
-          "typescript",
-          "wallet-ui",
-          "supabase"
+          "supabase",
+          "authentication",
+          "solana"
         ],
-        "name": "gill-supabase-template",
-        "path": "community/gill-supabase-web3",
-        "displayName": "Gill Supabase Web3 Auth Template",
-        "usecase": "Starter"
+        "name": "supabase-auth",
+        "path": "community/supabase-auth",
+        "displayName": "Supabase Auth",
+        "usecase": "Auth"
       },
       {
         "description": "Next.js Solana starter with X402 payment protocol integration",

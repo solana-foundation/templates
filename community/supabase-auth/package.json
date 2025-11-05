@@ -1,5 +1,5 @@
 {
-  "name": "gill-supabase-template",
+  "name": "supabase-auth",
   "scripts": {
     "build": "next build",
     "ci": "npm run build && npm run lint && npm run format:check",
@@ -9,19 +9,24 @@
     "lint": "next lint",
     "start": "next start"
   },
-  "displayName": "Gill Supabase Web3 Auth Template",
-  "description": "Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
-  "usecase": "Starter",
+  "displayName": "Supabase Auth",
+  "description": "Authenticate Solana wallets with Supabase",
+  "usecase": "Auth",
   "keywords": [
-    "gill",
-    "nextjs",
-    "react",
-    "solana-kit",
-    "tailwind",
-    "typescript",
-    "wallet-ui",
-    "supabase"
+    "supabase",
+    "authentication",
+    "solana"
   ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Set up Supabase:",
+      "1. Create a project at https://supabase.com",
+      "2. Copy .env.example to .env.local and add your Supabase credentials",
+      "3. Run: +{pm} prisma generate",
+      "4. Run: +{pm} prisma migrate dev",
+      "Start the app: +{pm} run dev"
+    ]
+  },
   "version": "0.0.0",
   "private": true,
   "dependencies": {
