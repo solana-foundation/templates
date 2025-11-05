@@ -174,13 +174,13 @@ Templates maintained by the Solana community
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
 
-### [gill-supabase-template](community/gill-supabase-web3)
+### [supabase-auth](community/supabase-auth)
 
-`gh:solana-foundation/templates/community/gill-supabase-web3`
+`gh:solana-foundation/templates/community/supabase-auth`
 
-> Next.js, Tailwind, gill (based on @solana/kit), Wallet UI
+> Authenticate Solana wallets with Supabase
 
-`gill` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui` `supabase`
+`supabase` `authentication` `solana`
 
 ### [x402-template](community/x402-template)
 

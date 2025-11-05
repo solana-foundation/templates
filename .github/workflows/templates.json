@@ -1,7 +1,7 @@
 [
   "community/gill-jito-airdrop",
   "community/gill-node-solanax402",
-  "community/gill-supabase-web3",
+  "community/supabase-auth",
   "community/x402-template",
   "community/zk-compression-airdrop",
   "gill/gill-next-tailwind",
