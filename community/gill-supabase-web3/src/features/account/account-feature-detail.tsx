@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import { assertIsAddress } from 'gill'
 import { useMemo } from 'react'
 import { useParams } from 'next/navigation'

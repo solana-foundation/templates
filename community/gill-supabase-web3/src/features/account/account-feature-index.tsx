@@ -15,7 +15,7 @@ export default function AccountFeatureIndex() {
   }, [account, router])
 
   if (account) {
-    return null 
+    return null
   }
 
   return (
