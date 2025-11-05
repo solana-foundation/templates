@@ -158,6 +158,14 @@ Templates using @solana/web3.js (legacy)
 
 Templates maintained by the Solana community
 
+### [atomid-verification-template](community/atomid-verification-template)
+
+`gh:solana-foundation/templates/community/atomid-verification-template`
+
+> Permanent onchain identity with SAS integration. First PDA-owned attestation issuer on Solana. Soulbound credentials, proof-of-sacrifice verification, and rank-based access control.
+
+`atomid` `sas` `solana-attestation-service` `soulbound` `identity` `verification` `proof-of-sacrifice` `rank` `access-control` `gating` `leaderboard` `attestation` `pda` `credentials`
+
 ### [gill-jito-airdrop](community/gill-jito-airdrop)
 
 `gh:solana-foundation/templates/community/gill-jito-airdrop`
