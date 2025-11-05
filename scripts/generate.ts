@@ -26,6 +26,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT_DIR = join(__dirname, '..')
 const TEMPLATES_JSON_PATH = join(ROOT_DIR, 'templates.json')
 const TEMPLATES_MD_PATH = join(ROOT_DIR, 'TEMPLATES.md')
+const WORKFLOW_TEMPLATES_JSON_PATH = join(ROOT_DIR, '.github', 'workflows', 'templates.json')
 
 // Constants
 const CONFIG_KEY = 'repokit' as const
@@ -78,8 +79,11 @@ const extractTemplateMetadata = (dir: string, groupPath: string, directoryName: 
 
   const relativePath = join(groupPath, directoryName)
 
+  // Use directory name if package.json name contains template variables
+  const templateName = pkg.name.includes('{{') ? directoryName : pkg.name
+
   return ok({
-    name: pkg.name,
+    name: templateName,
     displayName: pkg.displayName,
     description: pkg.description || '',
     usecase: pkg.usecase,
@@ -213,6 +217,13 @@ const generateTemplatesMd = (groups: readonly TemplateGroup[]): string => {
 }
 
 /**
+ * Extract all template paths from groups and sort them
+ */
+const extractTemplatePaths = (groups: readonly TemplateGroup[]): readonly string[] => {
+  return groups.flatMap((group) => group.templates.map((template) => template.path)).sort((a, b) => a.localeCompare(b))
+}
+
+/**
  * Write generated files to disk
  */
 const writeGeneratedFiles = (groups: readonly TemplateGroup[]): Result<void> => {
@@ -227,6 +238,13 @@ const writeGeneratedFiles = (groups: readonly TemplateGroup[]): Result<void> => 
   const mdResult = writeFile(TEMPLATES_MD_PATH, markdown)
   if (!mdResult.ok) {
     return err(`Failed to write TEMPLATES.md: ${mdResult.error}`)
+  }
+
+  // Write .github/workflows/templates.json
+  const templatePaths = extractTemplatePaths(groups)
+  const workflowJsonResult = writeJsonFile(WORKFLOW_TEMPLATES_JSON_PATH, templatePaths)
+  if (!workflowJsonResult.ok) {
+    return err(`Failed to write .github/workflows/templates.json: ${workflowJsonResult.error}`)
   }
 
   return ok(undefined)
@@ -269,6 +287,7 @@ const main = () => {
 
   console.log('Generated templates.json')
   console.log('Generated TEMPLATES.md')
+  console.log('Generated .github/workflows/templates.json')
   console.log('Run "automd" to update README.md')
 }
 

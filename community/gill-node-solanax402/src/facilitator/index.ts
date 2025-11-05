@@ -94,16 +94,13 @@ async function start() {
     await context.nonceDb.initialize();
 
     // Start cleanup interval
-    setInterval(
-      async () => {
-        try {
-          await context.nonceDb.cleanupExpiredNonces();
-        } catch (error) {
-          context.log.error('Cleanup error:', error);
-        }
-      },
-      CLEANUP_INTERVAL_MS
-    );
+    setInterval(async () => {
+      try {
+        await context.nonceDb.cleanupExpiredNonces();
+      } catch (error) {
+        context.log.error('Cleanup error:', error);
+      }
+    }, CLEANUP_INTERVAL_MS);
 
     // Start server
     app.listen(context.config.port, () => {

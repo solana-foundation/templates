@@ -166,21 +166,21 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `tailwind` `typescript` `wallet-ui`
 
-### [gill-supabase-template](community/gill-supabase-web3)
-
-`gh:solana-foundation/templates/community/gill-supabase-web3`
-
-> Next.js, Tailwind, gill (based on @solana/kit), Wallet UI
-
-`gill` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui` `supabase`
-
-### [x402-solana-protocol](community/gill-node-solanax402)
+### [gill-node-solanax402](community/gill-node-solanax402)
 
 `gh:solana-foundation/templates/community/gill-node-solanax402`
 
 > x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
+
+### [x402-template](community/x402-template)
+
+`gh:solana-foundation/templates/community/x402-template`
+
+> Next.js Solana starter with X402 payment protocol integration
+
+`solana` `nextjs` `x402` `template` `starter`
 
 ### [zk-compression-airdrop](community/zk-compression-airdrop)
 
