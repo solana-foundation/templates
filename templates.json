@@ -359,6 +359,24 @@
         "usecase": "Airdrop"
       },
       {
+        "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK",
+        "id": "gh:solana-foundation/templates/community/gill-node-solanax402",
+        "image": "community/gill-node-solanax402/og-image.png",
+        "keywords": [
+          "solana",
+          "x402",
+          "payment",
+          "protocol",
+          "blockchain",
+          "typescript",
+          "gill"
+        ],
+        "name": "gill-node-solanax402",
+        "path": "community/gill-node-solanax402",
+        "displayName": "x402 Express Server",
+        "usecase": "Payments"
+      },
+      {
         "description": "Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
         "id": "gh:solana-foundation/templates/community/gill-supabase-web3",
         "image": "community/gill-supabase-web3/og-image.png",
@@ -376,24 +394,6 @@
         "path": "community/gill-supabase-web3",
         "displayName": "Gill Supabase Web3 Auth Template",
         "usecase": "Starter"
-      },
-      {
-        "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK",
-        "id": "gh:solana-foundation/templates/community/gill-node-solanax402",
-        "image": "community/gill-node-solanax402/og-image.png",
-        "keywords": [
-          "solana",
-          "x402",
-          "payment",
-          "protocol",
-          "blockchain",
-          "typescript",
-          "gill"
-        ],
-        "name": "gill-node-solanax402",
-        "path": "community/gill-node-solanax402",
-        "displayName": "x402 Express Server",
-        "usecase": "Payments"
       },
       {
         "description": "Next.js Solana starter with X402 payment protocol integration",
