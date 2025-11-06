@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useWallet } from '@crossmint/client-sdk-react-ui'
 import { useWallet as useStandardWallet } from '@solana/wallet-adapter-react'
-import { ArrowLeftRight, ArrowUpDown, Loader2, AlertCircle, CheckCircle, ExternalLink } from 'lucide-react'
+import { useWalletModal } from '@solana/wallet-adapter-react-ui'
+import { ArrowLeftRight, ArrowUpDown, Loader2, AlertCircle, CheckCircle, ExternalLink, Wallet } from 'lucide-react'
 import TokenSelector from './TokenSelector'
 import SlippageControl from './SlippageControl'
 import RouteVisualization from './RouteVisualization'
@@ -16,9 +17,11 @@ const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
 const CrossmintSwapInterface: React.FC = () => {
   const { wallet: crossmintWallet } = useWallet() // Crossmint wallet hook
   const { publicKey, signTransaction, connected } = useStandardWallet() // Standard wallet hook
+  const { setVisible } = useWalletModal() // Wallet modal for connecting standard wallets
 
   // Use Crossmint wallet if available, otherwise fall back to standard wallet
-  const wallet = crossmintWallet || (connected ? { address: publicKey?.toString(), signTransaction: signTransaction } : null)
+  const wallet =
+    crossmintWallet || (connected ? { address: publicKey?.toString(), signTransaction: signTransaction } : null)
   const [fromToken, setFromToken] = useState<Token | null>(null)
   const [toToken, setToToken] = useState<Token | null>(null)
   const [fromAmount, setFromAmount] = useState('')
@@ -41,11 +44,11 @@ const CrossmintSwapInterface: React.FC = () => {
         setError(null)
         console.log('🔄 Initializing Crossmint tokens...')
         console.log('🔍 Crossmint service available:', !!crossmintJupiterService)
-        
+
         // Use Crossmint service for token loading
         const tokenList = await crossmintJupiterService.loadTokens()
         console.log('📋 Crossmint tokens loaded:', tokenList.length)
-        
+
         if (tokenList.length === 0) {
           console.warn('⚠️ No tokens loaded, using fallback')
           // Import fallback tokens directly as last resort
@@ -56,8 +59,8 @@ const CrossmintSwapInterface: React.FC = () => {
         }
 
         const finalTokenList = tokenList.length > 0 ? tokenList : (await import('../data/tokens')).FALLBACK_TOKENS
-        const solToken = finalTokenList.find(token => token.address === SOL_MINT)
-        const usdcToken = finalTokenList.find(token => token.address === USDC_MINT)
+        const solToken = finalTokenList.find((token) => token.address === SOL_MINT)
+        const usdcToken = finalTokenList.find((token) => token.address === USDC_MINT)
 
         if (solToken) {
           setFromToken(solToken)
@@ -95,7 +98,7 @@ const CrossmintSwapInterface: React.FC = () => {
         toToken.address,
         amount,
         slippage * 100,
-        publicKey?.toString() // Pass public key as taker for standard wallets
+        publicKey?.toString(), // Pass public key as taker for standard wallets
       )
 
       setQuote(quoteData)
@@ -151,22 +154,16 @@ const CrossmintSwapInterface: React.FC = () => {
       if (crossmintWallet) {
         // Use Crossmint service for Crossmint wallet
         console.log('🔄 Executing Crossmint Jupiter swap...')
-        txSignature = await crossmintJupiterService.executeSwap(
-          crossmintWallet,
-          quote
-        )
+        txSignature = await crossmintJupiterService.executeSwap(crossmintWallet, quote)
         console.log('✅ Crossmint Jupiter swap completed successfully!')
       } else if (connected && publicKey && signTransaction) {
         // Use Crossmint service with standard wallet
         console.log('🔄 Executing Crossmint Jupiter swap with standard wallet...')
         const standardWallet = {
           address: publicKey.toString(),
-          signTransaction: signTransaction
+          signTransaction: signTransaction,
         }
-        txSignature = await crossmintJupiterService.executeSwap(
-          standardWallet,
-          quote
-        )
+        txSignature = await crossmintJupiterService.executeSwap(standardWallet, quote)
         console.log('✅ Crossmint Jupiter swap completed successfully!')
       } else {
         throw new Error('No wallet available for transaction signing')
@@ -179,10 +176,17 @@ const CrossmintSwapInterface: React.FC = () => {
       setQuote(null)
 
       console.log('🔗 View on Solscan:', `https://solscan.io/tx/${txSignature}`)
-
     } catch (err: any) {
       console.error('❌ Jupiter swap failed:', err)
-      setError(`Failed to execute swap: ${err.message}`)
+
+      // Check for 403 RPC error (public RPC blocking transactions)
+      if (err.message && (err.message.includes('403') || err.message.includes('Access forbidden'))) {
+        setError(
+          'RPC Error: The public Solana RPC blocks transactions. Please add a private RPC URL to your .env.local file. See README for setup instructions (Helius, QuickNode, Alchemy, or Triton).',
+        )
+      } else {
+        setError(`Failed to execute swap: ${err.message}`)
+      }
     } finally {
       setSwapping(false)
     }
@@ -240,7 +244,9 @@ const CrossmintSwapInterface: React.FC = () => {
       <div className="space-y-4">
         <div>
           <div className="flex items-center justify-between mb-3">
-            <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: '500', textTransform: 'uppercase' }}>From</span>
+            <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: '500', textTransform: 'uppercase' }}>
+              From
+            </span>
             <span style={{ color: '#d1d5db', fontSize: '0.75rem' }}>Balance: --</span>
           </div>
           <div className="flex items-center gap-3">
@@ -272,16 +278,13 @@ const CrossmintSwapInterface: React.FC = () => {
 
         <div>
           <div className="flex items-center justify-between mb-3">
-            <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: '500', textTransform: 'uppercase' }}>To</span>
+            <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: '500', textTransform: 'uppercase' }}>
+              To
+            </span>
             <span style={{ color: '#d1d5db', fontSize: '0.75rem' }}>Balance: --</span>
           </div>
           <div className="flex items-center gap-3">
-            <TokenSelector
-              selectedToken={toToken}
-              onTokenSelect={setToToken}
-              tokens={tokens}
-              loading={tokensLoading}
-            />
+            <TokenSelector selectedToken={toToken} onTokenSelect={setToToken} tokens={tokens} loading={tokensLoading} />
             <input
               type="number"
               placeholder="0.0"
@@ -297,9 +300,7 @@ const CrossmintSwapInterface: React.FC = () => {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span style={{ color: 'white' }}>Price Impact</span>
-                <span style={{ color: 'white' }}>
-                  {parseFloat(quote.priceImpactPct).toFixed(2)}%
-                </span>
+                <span style={{ color: 'white' }}>{parseFloat(quote.priceImpactPct).toFixed(2)}%</span>
               </div>
               <div className="flex justify-between">
                 <span style={{ color: 'white' }}>Route</span>
@@ -327,28 +328,44 @@ const CrossmintSwapInterface: React.FC = () => {
         )}
 
         <div>
-          <button
-            onClick={handleSwap}
-            disabled={!quote || loading || swapping || !fromAmount || parseFloat(fromAmount) <= 0 || !wallet}
-            className="btn btn-primary w-full"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-5 h-5 loading" />
-                Getting Quote...
-              </>
-            ) : swapping ? (
-              <>
-                <Loader2 className="w-5 h-5 loading" />
-                Executing with Crossmint...
-              </>
-            ) : (
+          {!wallet ? (
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                setVisible(true)
+              }}
+              className="btn btn-primary w-full"
+              type="button"
+            >
               <div className="flex items-center justify-center gap-2">
-                <ArrowLeftRight className="w-5 h-5" />
-                Execute Crossmint Swap
+                <Wallet className="w-5 h-5" />
+                Connect Wallet
               </div>
-            )}
-          </button>
+            </button>
+          ) : (
+            <button
+              onClick={handleSwap}
+              disabled={!quote || loading || swapping || !fromAmount || parseFloat(fromAmount) <= 0}
+              className="btn btn-primary w-full"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 loading" />
+                  Getting Quote...
+                </>
+              ) : swapping ? (
+                <>
+                  <Loader2 className="w-5 h-5 loading" />
+                  Executing with Crossmint...
+                </>
+              ) : (
+                <div className="flex items-center justify-center gap-2">
+                  <ArrowLeftRight className="w-5 h-5" />
+                  Execute Crossmint Swap
+                </div>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@ const RouteVisualization: React.FC<RouteVisualizationProps> = ({
   toToken,
   priceImpact,
   isVisible,
-  onToggle
+  onToggle,
 }) => {
   const getPriceImpactColor = (impact: number) => {
     if (impact < 1) return 'text-green-400'
@@ -59,9 +59,7 @@ const RouteVisualization: React.FC<RouteVisualizationProps> = ({
               {getPriceImpactIcon(priceImpact)}
               <span className="text-gray-300 text-sm">Price Impact</span>
             </div>
-            <span className={`font-medium ${getPriceImpactColor(priceImpact)}`}>
-              {priceImpact.toFixed(2)}%
-            </span>
+            <span className={`font-medium ${getPriceImpactColor(priceImpact)}`}>{priceImpact.toFixed(2)}%</span>
           </div>
 
           {/* Route Path */}
@@ -127,8 +125,7 @@ const RouteVisualization: React.FC<RouteVisualizationProps> = ({
                     <span className="text-gray-300">
                       {route.swapInfo.feeAmount && parseFloat(route.swapInfo.feeAmount) > 0
                         ? `${(parseFloat(route.swapInfo.feeAmount) / Math.pow(10, 6)).toFixed(4)} SOL`
-                        : 'No fee'
-                      }
+                        : 'No fee'}
                     </span>
                   </div>
                 ))}

@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { ArrowLeftRight, ArrowUpDown, Loader2, AlertCircle, CheckCircle, ExternalLink } from 'lucide-react'
+import { useWalletModal } from '@solana/wallet-adapter-react-ui'
+import { ArrowLeftRight, ArrowUpDown, Loader2, AlertCircle, CheckCircle, ExternalLink, Wallet } from 'lucide-react'
 import TokenSelector from './TokenSelector'
 import SlippageControl from './SlippageControl'
 import RouteVisualization from './RouteVisualization'
@@ -14,6 +15,7 @@ const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
 
 const SwapInterface: React.FC = () => {
   const { publicKey, signTransaction, connected } = useWallet()
+  const { setVisible } = useWalletModal()
   const [fromToken, setFromToken] = useState<Token | null>(null)
   const [toToken, setToToken] = useState<Token | null>(null)
   const [fromAmount, setFromAmount] = useState('')
@@ -36,8 +38,8 @@ const SwapInterface: React.FC = () => {
         const tokenList = await gillJupiterService.loadTokens()
         setTokens(tokenList)
 
-        const solToken = tokenList.find(token => token.address === SOL_MINT)
-        const usdcToken = tokenList.find(token => token.address === USDC_MINT)
+        const solToken = tokenList.find((token) => token.address === SOL_MINT)
+        const usdcToken = tokenList.find((token) => token.address === USDC_MINT)
 
         if (solToken) setFromToken(solToken)
         if (usdcToken) setToToken(usdcToken)
@@ -63,12 +65,7 @@ const SwapInterface: React.FC = () => {
 
     try {
       const amount = (parseFloat(fromAmount) * Math.pow(10, fromToken.decimals)).toString()
-      const quoteData = await gillJupiterService.getQuote(
-        fromToken.address,
-        toToken.address,
-        amount,
-        slippage * 100
-      )
+      const quoteData = await gillJupiterService.getQuote(fromToken.address, toToken.address, amount, slippage * 100)
 
       setQuote(quoteData)
       const outAmount = parseFloat(quoteData.outAmount) / Math.pow(10, toToken.decimals)
@@ -119,11 +116,7 @@ const SwapInterface: React.FC = () => {
 
     try {
       console.log('🔄 Executing Jupiter swap...')
-      const txSignature = await gillJupiterService.executeSwap(
-        publicKey,
-        signTransaction,
-        quote
-      )
+      const txSignature = await gillJupiterService.executeSwap(publicKey, signTransaction, quote)
       console.log('✅ Jupiter swap completed successfully!')
 
       setSwapSuccess(txSignature)
@@ -133,10 +126,17 @@ const SwapInterface: React.FC = () => {
       setQuote(null)
 
       console.log('🔗 View on Solscan:', `https://solscan.io/tx/${txSignature}`)
-
     } catch (err: any) {
       console.error('❌ Jupiter swap failed:', err)
-      setError(`Failed to execute swap: ${err.message}`)
+
+      // Check for 403 RPC error (public RPC blocking transactions)
+      if (err.message && (err.message.includes('403') || err.message.includes('Access forbidden'))) {
+        setError(
+          'RPC Error: The public Solana RPC blocks transactions. Please add a private RPC URL to your .env.local file. See README for setup instructions (Helius, QuickNode, Alchemy, or Triton).',
+        )
+      } else {
+        setError(`Failed to execute swap: ${err.message}`)
+      }
     } finally {
       setSwapping(false)
     }
@@ -194,7 +194,9 @@ const SwapInterface: React.FC = () => {
       <div className="space-y-4">
         <div>
           <div className="flex items-center justify-between mb-3">
-            <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: '500', textTransform: 'uppercase' }}>From</span>
+            <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: '500', textTransform: 'uppercase' }}>
+              From
+            </span>
             <span style={{ color: '#d1d5db', fontSize: '0.75rem' }}>Balance: --</span>
           </div>
           <div className="flex items-center gap-3">
@@ -226,16 +228,13 @@ const SwapInterface: React.FC = () => {
 
         <div>
           <div className="flex items-center justify-between mb-3">
-            <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: '500', textTransform: 'uppercase' }}>To</span>
+            <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: '500', textTransform: 'uppercase' }}>
+              To
+            </span>
             <span style={{ color: '#d1d5db', fontSize: '0.75rem' }}>Balance: --</span>
           </div>
           <div className="flex items-center gap-3">
-            <TokenSelector
-              selectedToken={toToken}
-              onTokenSelect={setToToken}
-              tokens={tokens}
-              loading={tokensLoading}
-            />
+            <TokenSelector selectedToken={toToken} onTokenSelect={setToToken} tokens={tokens} loading={tokensLoading} />
             <input
               type="number"
               placeholder="0.0"
@@ -251,9 +250,7 @@ const SwapInterface: React.FC = () => {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span style={{ color: 'white' }}>Price Impact</span>
-                <span style={{ color: 'white' }}>
-                  {parseFloat(quote.priceImpactPct).toFixed(2)}%
-                </span>
+                <span style={{ color: 'white' }}>{parseFloat(quote.priceImpactPct).toFixed(2)}%</span>
               </div>
               <div className="flex justify-between">
                 <span style={{ color: 'white' }}>Route</span>
@@ -281,34 +278,48 @@ const SwapInterface: React.FC = () => {
         )}
 
         <div>
-          <button
-            onClick={handleSwap}
-            disabled={!connected || !quote || loading || swapping || !fromAmount || parseFloat(fromAmount) <= 0}
-            className="btn btn-primary w-full"
-          >
-            {loading ? (
-              <>
-               <div className="flex items-center justify-center gap-2">
-                <Loader2 className="w-5 h-5 loading" />
-                Getting Quote...
-              </div>
-              </>
-            ) : swapping ? (
-              <>
+          {!connected ? (
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                setVisible(true)
+              }}
+              className="btn btn-primary w-full"
+              type="button"
+            >
               <div className="flex items-center justify-center gap-2">
-                <Loader2 className="w-5 h-5 loading" />
-                Executing Swap...
+                <Wallet className="w-5 h-5" />
+                Connect Wallet
               </div>
-              </>
-            ) : !connected ? (
-              'Connect Wallet'
-            ) : (
-              <div className="flex items-center justify-center gap-2">
-                <ArrowLeftRight className="w-5 h-5" />
-                Execute Swap
-              </div>
-            )}
-          </button>
+            </button>
+          ) : (
+            <button
+              onClick={handleSwap}
+              disabled={!quote || loading || swapping || !fromAmount || parseFloat(fromAmount) <= 0}
+              className="btn btn-primary w-full"
+            >
+              {loading ? (
+                <>
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader2 className="w-5 h-5 loading" />
+                    Getting Quote...
+                  </div>
+                </>
+              ) : swapping ? (
+                <>
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader2 className="w-5 h-5 loading" />
+                    Executing Swap...
+                  </div>
+                </>
+              ) : (
+                <div className="flex items-center justify-center gap-2">
+                  <ArrowLeftRight className="w-5 h-5" />
+                  Execute Swap
+                </div>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>

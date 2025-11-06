@@ -8,10 +8,7 @@ interface SlippageControlProps {
   onSlippageChange: (slippage: number) => void
 }
 
-const SlippageControl: React.FC<SlippageControlProps> = ({
-  slippage,
-  onSlippageChange
-}) => {
+const SlippageControl: React.FC<SlippageControlProps> = ({ slippage, onSlippageChange }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [customSlippage, setCustomSlippage] = useState(slippage.toString())
 
@@ -53,16 +50,14 @@ const SlippageControl: React.FC<SlippageControlProps> = ({
         <div className="absolute top-full right-0 mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-50 min-w-[200px]">
           <div className="p-4">
             <h3 className="text-white font-medium mb-3">Slippage Tolerance</h3>
-            
+
             <div className="grid grid-cols-2 gap-2 mb-4">
               {presets.map((preset) => (
                 <button
                   key={preset}
                   onClick={() => handlePresetClick(preset)}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    slippage === preset
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    slippage === preset ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                   }`}
                 >
                   {preset}%

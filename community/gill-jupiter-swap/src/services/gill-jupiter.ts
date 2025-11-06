@@ -12,13 +12,13 @@ export class GillJupiterService {
   constructor() {
     // Initialize Gill client with environment RPC URL
     this.client = createSolanaClient({
-      urlOrMoniker: process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com'
+      urlOrMoniker: process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com',
     })
 
     // Initialize connection for transaction sending
     this.connection = new Connection(
       process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com',
-      'confirmed'
+      'confirmed',
     )
   }
 
@@ -45,7 +45,7 @@ export class GillJupiterService {
           const data = await response.json()
           // Handle Jupiter V2 API response format
           if (Array.isArray(data) && data.length > 0) {
-            fetchedTokens = data.map(token => ({
+            fetchedTokens = data.map((token) => ({
               address: token.id || token.address, // V2 uses 'id' field
               symbol: token.symbol,
               name: token.name,
@@ -77,12 +77,7 @@ export class GillJupiterService {
   }
 
   // Get quote from Jupiter API
-  async getQuote(
-    inputMint: string,
-    outputMint: string,
-    amount: string,
-    slippageBps: number
-  ): Promise<QuoteResponse> {
+  async getQuote(inputMint: string, outputMint: string, amount: string, slippageBps: number): Promise<QuoteResponse> {
     try {
       console.log('🔄 Getting quote with Gill Jupiter service...')
       const queryParams = new URLSearchParams({
@@ -90,7 +85,7 @@ export class GillJupiterService {
         outputMint,
         amount,
         slippageBps: slippageBps.toString(),
-        maxAccounts: "33", // Ensures multi-hop swaps fit within limits
+        maxAccounts: '33', // Ensures multi-hop swaps fit within limits
       })
 
       const response = await fetch(`https://lite-api.jup.ag/swap/v1/quote?${queryParams}`)
@@ -114,47 +109,46 @@ export class GillJupiterService {
   async executeSwap(
     publicKey: PublicKey,
     signTransaction: (transaction: VersionedTransaction) => Promise<VersionedTransaction>,
-    quoteResponse: QuoteResponse
+    quoteResponse: QuoteResponse,
   ): Promise<string> {
     try {
       console.log('🔄 Executing Gill Jupiter swap...')
 
       // Build the swap transaction using Jupiter API directly
-      const swapResponse = await fetch("https://lite-api.jup.ag/swap/v1/swap", {
-        method: "POST",
+      const swapResponse = await fetch('https://lite-api.jup.ag/swap/v1/swap', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           userPublicKey: publicKey.toString(),
           quoteResponse: quoteResponse,
         }),
-      });
+      })
 
       if (!swapResponse.ok) {
-        const errorData = await swapResponse.json();
-        throw new Error(`Jupiter swap API error: ${errorData.message || swapResponse.statusText}`);
+        const errorData = await swapResponse.json()
+        throw new Error(`Jupiter swap API error: ${errorData.message || swapResponse.statusText}`)
       }
 
-      const swapResponseData = await swapResponse.json();
+      const swapResponseData = await swapResponse.json()
 
       // Deserialize the transaction
       const versionedTransaction = VersionedTransaction.deserialize(
-        Buffer.from(swapResponseData.swapTransaction, "base64")
-      );
+        Buffer.from(swapResponseData.swapTransaction, 'base64'),
+      )
 
       // Sign the transaction
-      const signedTransaction = await signTransaction(versionedTransaction);
+      const signedTransaction = await signTransaction(versionedTransaction)
 
       // Send the transaction
-      const txSignature = await this.connection.sendRawTransaction(signedTransaction.serialize());
+      const txSignature = await this.connection.sendRawTransaction(signedTransaction.serialize())
 
       console.log('✅ Gill Jupiter swap executed successfully!')
       console.log('📝 Transaction signature:', txSignature)
       console.log('🔗 View on Solscan:', `https://solscan.io/tx/${txSignature}`)
 
       return txSignature
-
     } catch (err) {
       console.error('❌ Gill Jupiter swap failed:', err)
       throw err
@@ -163,7 +157,7 @@ export class GillJupiterService {
 
   // Get token by address
   getTokenByAddress(address: string): Token | undefined {
-    return this.tokens.find(token => token.address === address)
+    return this.tokens.find((token) => token.address === address)
   }
 }
 

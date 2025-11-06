@@ -11,19 +11,15 @@ interface TokenSelectorProps {
   loading: boolean
 }
 
-const TokenSelector: React.FC<TokenSelectorProps> = ({
-  selectedToken,
-  onTokenSelect,
-  tokens,
-  loading
-}) => {
+const TokenSelector: React.FC<TokenSelectorProps> = ({ selectedToken, onTokenSelect, tokens, loading }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
 
-  const filteredTokens = tokens.filter(token =>
-    token.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    token.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    token.address.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredTokens = tokens.filter(
+    (token) =>
+      token.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      token.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      token.address.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
   const handleTokenSelect = (token: Token) => {
@@ -62,7 +58,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-50 max-h-80 overflow-hidden">
+        <div className="absolute top-full left-0 mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-50 max-h-80 overflow-hidden w-80">
           <div className="p-3 border-b border-gray-700">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -77,9 +73,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
           </div>
           <div className="max-h-60 overflow-y-auto">
             {filteredTokens.length === 0 ? (
-              <div className="p-4 text-center text-gray-400">
-                No tokens found
-              </div>
+              <div className="p-4 text-center text-gray-400">No tokens found</div>
             ) : (
               filteredTokens.map((token) => (
                 <button

@@ -13,13 +13,13 @@ export class CrossmintJupiterService {
   constructor() {
     // Initialize Gill client with environment RPC URL
     this.client = createSolanaClient({
-      urlOrMoniker: process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com'
+      urlOrMoniker: process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com',
     })
 
     // Initialize connection for transaction sending
     this.connection = new Connection(
       process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com',
-      'confirmed'
+      'confirmed',
     )
   }
 
@@ -47,7 +47,7 @@ export class CrossmintJupiterService {
           const data = await response.json()
           // Handle Jupiter V2 API response format
           if (Array.isArray(data) && data.length > 0) {
-            fetchedTokens = data.map(token => ({
+            fetchedTokens = data.map((token) => ({
               address: token.id || token.address, // V2 uses 'id' field
               symbol: token.symbol,
               name: token.name,
@@ -86,7 +86,7 @@ export class CrossmintJupiterService {
     outputMint: string,
     amount: string,
     slippageBps: number,
-    taker?: string // Optional taker public key
+    taker?: string, // Optional taker public key
   ): Promise<QuoteResponse> {
     try {
       console.log('🔄 Getting quote with Crossmint Jupiter service...')
@@ -95,7 +95,7 @@ export class CrossmintJupiterService {
         outputMint,
         amount,
         slippageBps: slippageBps.toString(),
-        maxAccounts: "33", // Ensures multi-hop swaps fit within limits
+        maxAccounts: '33', // Ensures multi-hop swaps fit within limits
         ...(taker && { taker }), // Add taker if provided
       })
 
@@ -119,34 +119,34 @@ export class CrossmintJupiterService {
   // Execute swap using the exact Crossmint pattern you provided
   async executeSwap(
     wallet: any, // Crossmint wallet from useWallet hook or mock standard wallet
-    quoteResponse: QuoteResponse
+    quoteResponse: QuoteResponse,
   ): Promise<string> {
     try {
       console.log('🔄 Executing Crossmint Jupiter swap...')
 
       // Build the swap transaction using Jupiter API directly (exact pattern from your example)
-      const swapResponse = await fetch("https://lite-api.jup.ag/swap/v1/swap", {
-        method: "POST",
+      const swapResponse = await fetch('https://lite-api.jup.ag/swap/v1/swap', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           userPublicKey: wallet.address,
           quoteResponse: quoteResponse,
         }),
-      });
+      })
 
       if (!swapResponse.ok) {
-        const errorData = await swapResponse.json();
-        throw new Error(`Jupiter swap API error: ${errorData.message || swapResponse.statusText}`);
+        const errorData = await swapResponse.json()
+        throw new Error(`Jupiter swap API error: ${errorData.message || swapResponse.statusText}`)
       }
 
-      const swapResponseData = await swapResponse.json();
+      const swapResponseData = await swapResponse.json()
 
       // Deserialize the transaction first
       const versionedTransaction = VersionedTransaction.deserialize(
-        Buffer.from(swapResponseData.swapTransaction, "base64")
-      );
+        Buffer.from(swapResponseData.swapTransaction, 'base64'),
+      )
 
       // Handle both Crossmint and standard wallets
       let txSignature: string
@@ -159,12 +159,11 @@ export class CrossmintJupiterService {
         console.log('✍️ Sending transaction with Crossmint wallet...')
         const txResult = await solanaWallet.sendTransaction({
           transaction: versionedTransaction as any, // Type casting to resolve version conflict
-        });
+        })
 
         // Extract the transaction signature from the result
-        txSignature = typeof txResult === 'string'
-          ? txResult
-          : txResult.transactionId || txResult.hash || JSON.stringify(txResult)
+        txSignature =
+          typeof txResult === 'string' ? txResult : txResult.transactionId || txResult.hash || JSON.stringify(txResult)
       } else {
         // This is a standard wallet - use direct signing
         console.log('✍️ Sending transaction with standard wallet...')
@@ -178,7 +177,6 @@ export class CrossmintJupiterService {
       console.log('🔗 View on Solscan:', `https://solscan.io/tx/${txSignature}`)
 
       return txSignature
-
     } catch (err) {
       console.error('❌ Crossmint Jupiter swap failed:', err)
       throw err
@@ -187,7 +185,7 @@ export class CrossmintJupiterService {
 
   // Get token by address
   getTokenByAddress(address: string): Token | undefined {
-    return this.tokens.find(token => token.address === address)
+    return this.tokens.find((token) => token.address === address)
   }
 }
 

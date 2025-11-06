@@ -11,10 +11,7 @@ export async function GET(request: NextRequest) {
     const slippageBps = searchParams.get('slippageBps')
 
     if (!inputMint || !outputMint || !amount || !slippageBps) {
-      return NextResponse.json(
-        { error: 'Missing required parameters' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 })
     }
 
     // Build Jupiter API URL
@@ -38,9 +35,9 @@ export async function GET(request: NextRequest) {
       headers: {
         'Content-Type': 'application/json',
         ...(process.env.NEXT_PUBLIC_JUPITER_API_KEY && {
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_JUPITER_API_KEY}`
-        })
-      }
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_JUPITER_API_KEY}`,
+        }),
+      },
     })
 
     if (!response.ok) {
@@ -48,18 +45,14 @@ export async function GET(request: NextRequest) {
       console.error('Jupiter API error:', response.status, errorText)
       return NextResponse.json(
         { error: `Jupiter API error: ${response.status} ${response.statusText}` },
-        { status: response.status }
+        { status: response.status },
       )
     }
 
     const quoteData = await response.json()
     return NextResponse.json(quoteData)
-
   } catch (error) {
     console.error('Quote API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
