@@ -89,7 +89,7 @@ x402_ts/
 
 ### Prerequisites
 
-Make sure you are using Node 20 so that node_sqlite3, needed for the facilitator, is configured correctly.
+Make sure you are using Node 22+ so that node_sqlite3, needed for the facilitator, is configured correctly.
 
 ### 1. Install Dependencies
 
