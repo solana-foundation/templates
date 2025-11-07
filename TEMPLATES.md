@@ -174,6 +174,14 @@ Templates maintained by the Solana community
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
 
+### [phantom-embedded-js](community/phantom-embedded-js)
+
+`gh:solana-foundation/templates/community/phantom-embedded-js`
+
+> Vite + vanilla JavaScript template for integrating Phantom's embedded user wallets on Solana
+
+`solana` `phantom` `wallet` `embedded-wallet` `javascript` `typescript` `vite` `oauth` `social-login`
+
 ### [supabase-auth](community/supabase-auth)
 
 `gh:solana-foundation/templates/community/supabase-auth`
