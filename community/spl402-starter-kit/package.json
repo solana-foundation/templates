@@ -1,0 +1,25 @@
+{
+  "name": "spl402-starter-kit",
+  "displayName": "SPL-402 Starter Kit",
+  "version": "1.0.0",
+  "description": "Full-stack starter kit for building payment-gated APIs using SPL-402 protocol on Solana",
+  "usecase": "Starter",
+  "keywords": [
+    "solana",
+    "spl-402",
+    "payments",
+    "web3",
+    "starter",
+    "fullstack",
+    "express",
+    "react",
+    "vite",
+    "wallet-adapter"
+  ],
+  "author": "SPL-402 Community",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/solana-foundation/templates"
+  }
+}

@@ -377,6 +377,27 @@
         "usecase": "Payments"
       },
       {
+        "description": "Full-stack starter kit for building payment-gated APIs using SPL-402 protocol on Solana",
+        "id": "gh:solana-foundation/templates/community/spl402-starter-kit",
+        "image": "community/spl402-starter-kit/og-image.png",
+        "keywords": [
+          "solana",
+          "spl-402",
+          "payments",
+          "web3",
+          "starter",
+          "fullstack",
+          "express",
+          "react",
+          "vite",
+          "wallet-adapter"
+        ],
+        "name": "spl402-starter-kit",
+        "path": "community/spl402-starter-kit",
+        "displayName": "SPL-402 Starter Kit",
+        "usecase": "Starter"
+      },
+      {
         "description": "Authenticate Solana wallets with Supabase",
         "id": "gh:solana-foundation/templates/community/supabase-auth",
         "image": "community/supabase-auth/og-image.png",

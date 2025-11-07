@@ -174,6 +174,14 @@ Templates maintained by the Solana community
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
 
+### [spl402-starter-kit](community/spl402-starter-kit)
+
+`gh:solana-foundation/templates/community/spl402-starter-kit`
+
+> Full-stack starter kit for building payment-gated APIs using SPL-402 protocol on Solana
+
+`solana` `spl-402` `payments` `web3` `starter` `fullstack` `express` `react` `vite` `wallet-adapter`
+
 ### [supabase-auth](community/supabase-auth)
 
 `gh:solana-foundation/templates/community/supabase-auth`
