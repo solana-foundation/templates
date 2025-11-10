@@ -19,6 +19,10 @@ export function initializeSDK(): BrowserSDK {
     throw new Error('Missing redirect URL. Set VITE_REDIRECT_URL in .env file.');
   }
 
+  if (!authUrl) {
+    throw new Error('Missing Phantom Auth URL. Set VITE_PHANTOM_AUTH_URL in .env file.');
+  }
+
   sdk = new BrowserSDK({
     providerType: "embedded",
     embeddedWalletType: "user-wallet",

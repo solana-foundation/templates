@@ -5,7 +5,14 @@ let connection: Connection | null = null;
 
 // Initialize connection to Solana blockchain
 export function initializeConnection(): Connection {
-  const rpcUrl = import.meta.env.VITE_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
+  const rpcUrl = import.meta.env.VITE_SOLANA_RPC_URL;
+  
+  if (!rpcUrl) {
+    throw new Error(
+      'Missing Solana RPC URL. Set VITE_SOLANA_RPC_URL in .env file. ' +
+      'Use a Solana RPC endpoint like https://api.mainnet-beta.solana.com'
+    );
+  }
   
   // Validate that we're using a Solana RPC endpoint, not Phantom API
   if (rpcUrl.includes('api.phantom.app')) {
