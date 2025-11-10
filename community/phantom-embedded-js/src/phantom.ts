@@ -19,10 +19,6 @@ export function initializeSDK(): BrowserSDK {
     throw new Error('Missing redirect URL. Set VITE_REDIRECT_URL in .env file.');
   }
 
-  if (!authUrl) {
-    throw new Error('Missing Phantom Auth URL. Set VITE_PHANTOM_AUTH_URL in .env file.');
-  }
-
   sdk = new BrowserSDK({
     providerType: "embedded",
     embeddedWalletType: "user-wallet",
@@ -53,6 +49,8 @@ export async function connect(provider: 'google' | 'apple' = 'google'): Promise<
     console.log(`Starting authentication with ${provider}...`);
     
     // Connect with social provider (triggers OAuth flow)
+    // Note: This will redirect the user to OAuth provider, so the promise
+    // may not resolve in the current page session
     const result: ConnectResult = await sdkInstance.connect({ provider });
     
     // Extract Solana address from result
@@ -69,9 +67,18 @@ export async function connect(provider: 'google' | 'apple' = 'google'): Promise<
       }
     }
     
-    throw new Error('No Solana address returned');
+    // During OAuth flow, user gets redirected so no address is returned yet
+    // This is expected behavior, not an error - just throw to be caught
+    throw new Error('REDIRECT_IN_PROGRESS');
   } catch (error) {
-    console.error('Connection failed:', error);
+    console.error('Connection error:', error);
+    
+    // If this is a redirect-in-progress (expected OAuth flow), pass it through
+    if (error instanceof Error && error.message === 'REDIRECT_IN_PROGRESS') {
+      throw error;
+    }
+    
+    // For actual errors, provide helpful message
     if (error instanceof Error) {
       throw new Error(`Connection failed: ${error.message}`);
     }

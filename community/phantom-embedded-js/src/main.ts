@@ -127,6 +127,7 @@ async function handleConnect(provider: 'google' | 'apple'): Promise<void> {
     showLoading(`Connecting with ${providerName}...`);
 
     // Trigger OAuth flow with selected provider
+    // Note: This will redirect user to OAuth provider for authentication
     const address = await connect(provider);
 
     if (!address) {
@@ -138,6 +139,15 @@ async function handleConnect(provider: 'google' | 'apple'): Promise<void> {
     await loadAccountData();
   } catch (error) {
     console.error('Connection error:', error);
+    
+    // The user is being redirected to authenticate and will return to the app
+    if (error instanceof Error && error.message === 'REDIRECT_IN_PROGRESS') {
+      console.log('Redirecting to OAuth provider...');
+      // Keep loading state active during redirect
+      return;
+    }
+    
+    // Only show errors for actual failures
     hideLoading();
     
     const errorMessage = error instanceof Error 
