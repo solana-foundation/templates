@@ -377,6 +377,26 @@
         "usecase": "Payments"
       },
       {
+        "description": "Vite + vanilla JavaScript template for integrating Phantom's embedded user wallets on Solana",
+        "id": "gh:solana-foundation/templates/community/phantom-embedded-js",
+        "image": "community/phantom-embedded-js/og-image.png",
+        "keywords": [
+          "solana",
+          "phantom",
+          "wallet",
+          "embedded-wallet",
+          "javascript",
+          "typescript",
+          "vite",
+          "oauth",
+          "social-login"
+        ],
+        "name": "phantom-embedded-js",
+        "path": "community/phantom-embedded-js",
+        "displayName": "Phantom Embedded JS",
+        "usecase": "Wallet"
+      },
+      {
         "description": "Authenticate Solana wallets with Supabase",
         "id": "gh:solana-foundation/templates/community/supabase-auth",
         "image": "community/supabase-auth/og-image.png",
