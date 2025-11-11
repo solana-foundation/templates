@@ -377,6 +377,27 @@
         "usecase": "Payments"
       },
       {
+        "description": "A minimal Expo starter template for integrating Phantom's embedded user wallets on Solana for mobile apps",
+        "id": "gh:solana-foundation/templates/community/phantom-embedded-react-native",
+        "image": "community/phantom-embedded-react-native/og-image.png",
+        "keywords": [
+          "solana",
+          "phantom",
+          "wallet",
+          "embedded-wallet",
+          "react-native",
+          "expo",
+          "mobile",
+          "typescript",
+          "oauth",
+          "authentication"
+        ],
+        "name": "phantom-embedded-react-native-starter",
+        "path": "community/phantom-embedded-react-native",
+        "displayName": "Phantom Embedded React Native Starter",
+        "usecase": "Mobile"
+      },
+      {
         "description": "Authenticate Solana wallets with Supabase",
         "id": "gh:solana-foundation/templates/community/supabase-auth",
         "image": "community/supabase-auth/og-image.png",
