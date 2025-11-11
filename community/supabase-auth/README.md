@@ -51,6 +51,8 @@ This installs [Next.js](https://nextjs.org), Supabase client, wallet libraries, 
 3. Fill in your project details (name, database password, region)
 4. Wait for the project to finish provisioning (about 2 minutes)
 
+[More details about projects](https://supabase.com/docs/guides/getting-started)
+
 Once your project is ready, you'll see the project dashboard.
 
 ### 4. Enable Web3 Authentication in Supabase
