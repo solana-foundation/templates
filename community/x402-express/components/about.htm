@@ -1,0 +1,71 @@
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>About - X402 Express Server</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/api">API</a>
+      <a href="/healthz">Health</a>
+    </nav>
+    
+    <div>
+      <h1>About X402 Express</h1>
+      
+      <h2>Project Overview</h2>
+      <p>This project demonstrates how to use X402 payment system with Express.js, allowing API endpoints to charge for access using Solana USDC payments.</p>
+      
+      <h2>Project Structure</h2>
+      <ul>
+        <li><strong>Server</strong> (<code>src/index.ts</code>): Express.js server with X402-protected API routes</li>
+        <li><strong>Client</strong> (<code>src/client.ts</code>): Example client that automatically pays when calling protected endpoints</li>
+        <li><strong>Routes</strong> (<code>src/routes/index.ts</code>): API routes with X402 payment middleware</li>
+        <li><strong>Config</strong> (<code>src/config.ts</code>): Centralized configuration for payment settings (network, asset, amount, payment address)</li>
+      </ul>
+      
+      <h2>Protected Route</h2>
+      <p>The <code>/api/protected</code> endpoint requires a payment of <strong>100 USDC</strong> to access. It uses X402 middleware to automatically verify and process payments.</p>
+      
+      <h2>Configuration</h2>
+      <p>Payment configuration is centralized in <code>src/config.ts</code>. The following environment variables can be set to customize the payment settings:</p>
+      <ul>
+        <li><code>PAY_TO_ADDRESS</code>: Solana address to receive payments (defaults to a test address)</li>
+        <li><code>NETWORK</code>: Solana network (defaults to <code>"mainnet-beta"</code>)</li>
+        <li><code>ASSET</code>: Token asset to use for payments (defaults to <code>"USDC"</code>)</li>
+        <li><code>AMOUNT</code>: Payment amount per request (defaults to <code>"100"</code>)</li>
+      </ul>
+      
+      <h2>Client Usage</h2>
+      <p>The client demonstrates how to automatically pay for API access using X402:</p>
+      <ol>
+        <li>Load your Solana keypair</li>
+        <li>Create a payment handler with X402</li>
+        <li>Wrap <code>fetch</code> to automatically handle payments</li>
+        <li>Call the protected endpoint (payment happens automatically)</li>
+      </ol>
+      
+      <h2>X402 Middleware</h2>
+      <p>X402 middleware is configured using centralized settings in <code>src/config.ts</code>:</p>
+      <ul>
+        <li><strong>Network:</strong> Solana mainnet-beta (configurable via <code>NETWORK</code> env var)</li>
+        <li><strong>Asset:</strong> USDC (configurable via <code>ASSET</code> env var)</li>
+        <li><strong>Amount:</strong> 100 USDC per request (configurable via <code>AMOUNT</code> env var)</li>
+        <li><strong>Payment Address:</strong> Set via <code>PAY_TO_ADDRESS</code> env var</li>
+        <li><strong>Facilitator:</strong> Handles payment verification at <code>https://facilitator.corbits.io</code></li>
+      </ul>
+      
+      <p>The middleware automatically:</p>
+      <ul>
+        <li>Validates incoming payment signatures</li>
+        <li>Verifies payment amounts</li>
+        <li>Grants access only after successful payment</li>
+      </ul>
+      
+      <h2>Development</h2>
+      <p>For detailed setup instructions, deployment guides, and code examples, please refer to the <a href="https://github.com/v1xingyue/x402-express" target="_blank">GitHub repository README</a>.</p>
+    </div>
+  </body>
+</html>
