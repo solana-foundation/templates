@@ -174,6 +174,14 @@ Templates maintained by the Solana community
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
 
+### [phantom-embedded-react-native-starter](community/phantom-embedded-react-native)
+
+`gh:solana-foundation/templates/community/phantom-embedded-react-native`
+
+> A minimal Expo starter template for integrating Phantom's embedded user wallets on Solana for mobile apps
+
+`solana` `phantom` `wallet` `embedded-wallet` `react-native` `expo` `mobile` `typescript` `oauth` `authentication`
+
 ### [supabase-auth](community/supabase-auth)
 
 `gh:solana-foundation/templates/community/supabase-auth`
