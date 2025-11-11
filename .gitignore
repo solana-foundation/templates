@@ -6,6 +6,9 @@ node_modules
 gill/**/package-lock.json
 gill/**/pnpm-lock.yaml
 gill/**/yarn.lock
+mobile/**/package-lock.json
+mobile/**/pnpm-lock.yaml
+mobile/**/yarn.lock
 web3js/**/package-lock.json
 web3js/**/pnpm-lock.yaml
 web3js/**/yarn.lock
