@@ -359,6 +359,28 @@
         "usecase": "Airdrop"
       },
       {
+        "description": "Complete Jupiter swap interface with Crossmint wallet integration, real-time quotes, and route optimization",
+        "id": "gh:solana-foundation/templates/community/gill-jupiter-swap",
+        "image": "community/gill-jupiter-swap/og-image.png",
+        "keywords": [
+          "solana",
+          "jupiter",
+          "swap",
+          "dex",
+          "crossmint",
+          "gill",
+          "nextjs",
+          "tailwind",
+          "typescript",
+          "wallet",
+          "defi"
+        ],
+        "name": "gill-jupiter-swap",
+        "path": "community/gill-jupiter-swap",
+        "displayName": "Gill + Jupiter Swap with Crossmint",
+        "usecase": "swaps"
+      },
+      {
         "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK",
         "id": "gh:solana-foundation/templates/community/gill-node-solanax402",
         "image": "community/gill-node-solanax402/og-image.png",
