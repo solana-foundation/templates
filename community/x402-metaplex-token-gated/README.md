@@ -98,10 +98,12 @@ NEXT_PUBLIC_PAYMENT_ADDRESS=your_payment_address
 Run the collection creation script to generate tier collections:
 
 ```bash
-npx tsx src/scripts/create-collections.ts
+pnpm create-collections
 ```
 
 This will output three collection addresses. Add them to your `.env.local` as shown above.
+
+**Note:** The script uses your `AUTHORITY_PRIVATE_KEY` and `SOLANA_RPC_URL` from `.env.local` to create three Metaplex Core collections (one per tier).
 
 ### 4. Start Development Server
 
