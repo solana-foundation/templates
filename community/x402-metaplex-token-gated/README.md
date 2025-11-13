@@ -12,7 +12,6 @@ This project implements a three-tier membership system (Bronze, Silver, Gold) wh
 - **NFT-Based Access Control**: Membership verification through on-chain NFT ownership
 - **Expiration System**: Time-limited memberships with grace periods
 - **Renewal Flow**: Extend existing memberships while preserving remaining time
-- **Upgrade Path**: Purchase higher tiers to unlock additional features
 - **Payment Integration**: x402 payment middleware for tier purchases
 - **Server-Side Verification**: NFT ownership verified via Helius DAS API
 - **Type-Safe**: Full TypeScript implementation with strict typing
