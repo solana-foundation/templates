@@ -3,6 +3,7 @@
   "scripts": {
     "build": "next build",
     "ci": "npm run build && npm run lint && npm run format:check",
+    "create-collections": "tsx src/scripts/create-collections.ts",
     "dev": "next dev --turbopack",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
