@@ -3,6 +3,7 @@ import bs58 from 'bs58'
 import { mintMembershipNFT, canMintNFT } from '@/lib/mint-nft'
 import { verifyWalletSignature } from '@/lib/solana-auth'
 import type { TierType } from '@/lib/types'
+import { TIER_ORDER } from '@/lib/config'
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    if (!['bronze', 'silver', 'gold'].includes(tier)) {
+    if (!TIER_ORDER.includes(tier)) {
       return NextResponse.json({ error: 'Invalid tier' }, { status: 400 })
     }
 
