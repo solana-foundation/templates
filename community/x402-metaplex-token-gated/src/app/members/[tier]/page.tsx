@@ -2,13 +2,12 @@ import { MemberContent } from '@/components/member-content'
 import { TIER_INFO } from '@/lib/config'
 import type { TierType } from '@/lib/types'
 import { notFound } from 'next/navigation'
-
-const VALID_TIERS = ['bronze', 'silver', 'gold'] as const
+import { TIER_ORDER } from '@/lib/config'
 
 export async function generateMetadata({ params }: { params: Promise<{ tier: string }> }) {
   const { tier } = await params
 
-  if (!VALID_TIERS.includes(tier as TierType)) {
+  if (!TIER_ORDER.includes(tier as TierType)) {
     return { title: 'Invalid Tier' }
   }
 
@@ -23,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ tier: str
 export default async function MembersPage({ params }: { params: Promise<{ tier: string }> }) {
   const { tier } = await params
 
-  if (!VALID_TIERS.includes(tier as TierType)) {
+  if (!TIER_ORDER.includes(tier as TierType)) {
     notFound()
   }
 
