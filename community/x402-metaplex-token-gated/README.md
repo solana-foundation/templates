@@ -366,9 +366,10 @@ export const EXPIRATION_PERIODS = {
 ### Testing on Devnet
 
 1. Get devnet SOL from faucet: https://faucet.solana.com
-2. Fund your authority wallet
-3. Use Phantom/Solflare wallets in devnet mode
-4. View transactions on Solana Explorer (devnet)
+2. Get devnet USDC from faucet: https://faucet.circle.com/
+3. Fund your authority wallet
+4. Use Phantom/Solflare wallets in devnet mode
+5. View transactions on Solana Explorer (devnet)
 
 ## Security Considerations
 
