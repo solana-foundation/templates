@@ -181,15 +181,15 @@ The `/account` route is protected and requires authentication. Unauthenticated u
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
+| Issue                                 | Solution                                                                                                        |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | "Invalid environment variables" error | Check that `.env.local` exists and contains both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
-| 422 error when signing in | Enable Web3 authentication in Supabase dashboard (Authentication → Providers → Web3) |
-| "Web3 provider is disabled" | Same as above. Web3 auth must be enabled in Supabase |
-| Wallet not connecting | Make sure a Solana wallet extension is installed and enabled in your browser |
-| 429 errors on airdrop | You've hit Devnet rate limits. Wait a few minutes or use a different RPC endpoint |
-| Port 3000 already in use | Change the port: `npm run dev -- -p 3001` or kill the process using port 3000 |
-| Build fails with type errors | Run `npm install` again to ensure all dependencies are installed correctly |
+| 422 error when signing in             | Enable Web3 authentication in Supabase dashboard (Authentication → Providers → Web3)                            |
+| "Web3 provider is disabled"           | Same as above. Web3 auth must be enabled in Supabase                                                            |
+| Wallet not connecting                 | Make sure a Solana wallet extension is installed and enabled in your browser                                    |
+| 429 errors on airdrop                 | You've hit Devnet rate limits. Wait a few minutes or use a different RPC endpoint                               |
+| Port 3000 already in use              | Change the port: `npm run dev -- -p 3001` or kill the process using port 3000                                   |
+| Build fails with type errors          | Run `npm install` again to ensure all dependencies are installed correctly                                      |
 
 If you're still stuck, check the browser console (F12) and the terminal where `npm run dev` is running. Error messages there usually point to the specific issue.
 
