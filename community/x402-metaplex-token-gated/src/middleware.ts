@@ -1,13 +1,15 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { paymentMiddleware } from 'x402-next'
 import { TIER_INFO } from './lib/config'
-import type { TierType } from './lib/types'
+import { validateTier } from './lib/utils'
 
 export const middleware = async (request: NextRequest) => {
   const pathname = request.nextUrl.pathname
-  const tier = pathname.split('/').pop() as TierType
+  const normalizedPath = pathname.replace(/\/$/, '')
+  const tierParam = normalizedPath.split('/').pop() || ''
+  const tier = validateTier(tierParam)
 
-  if (!['bronze', 'silver', 'gold'].includes(tier) || !tier) {
+  if (!tier) {
     return NextResponse.json({ error: 'Invalid tier' }, { status: 400 })
   }
 

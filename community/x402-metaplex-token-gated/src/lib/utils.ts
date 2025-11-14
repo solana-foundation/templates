@@ -2,10 +2,24 @@ import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import bs58 from 'bs58'
 import type { TierType } from './types'
-import { TIER_INFO } from './config'
+import { TIER_INFO, TIER_ORDER } from './config'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+/**
+ * Type guard that validates and narrows a string to TierType
+ */
+export function isValidTier(tier: string): tier is TierType {
+  return TIER_ORDER.includes(tier as TierType)
+}
+
+/**
+ * Validates tier and returns typed value or null
+ */
+export function validateTier(tier: string): TierType | null {
+  return isValidTier(tier) ? tier : null
 }
 
 export function ellipsify(str = '', len = 4, delimiter = '..') {

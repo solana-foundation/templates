@@ -3,9 +3,7 @@ import bs58 from 'bs58'
 import { renewMembershipNFT } from '@/lib/update-nft'
 import { verifyWalletSignature } from '@/lib/solana-auth'
 import { verifySpecificNFT } from '@/lib/verify-nft'
-import type { TierType } from '@/lib/types'
-import { TIER_ORDER } from '@/lib/config'
-
+import { isValidTier } from '@/lib/utils'
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +14,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    if (!TIER_ORDER.includes(tier)) {
+    if (!isValidTier(tier)) {
       return NextResponse.json({ error: 'Invalid tier' }, { status: 400 })
     }
 
@@ -36,7 +34,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'NFT tier does not match requested tier' }, { status: 400 })
     }
 
-    const result = await renewMembershipNFT(assetId, tier as TierType, nft.expiresAt, nft.issuedAt || Date.now())
+    const result = await renewMembershipNFT(assetId, tier, nft.expiresAt, nft.issuedAt || Date.now())
 
     if (!result.success) {
       return NextResponse.json({ error: result.error || 'Renewal failed' }, { status: 500 })
