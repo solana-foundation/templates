@@ -1,17 +1,17 @@
 import { MemberContent } from '@/components/member-content'
 import { TIER_INFO } from '@/lib/config'
-import type { TierType } from '@/lib/types'
+import { validateTier } from '@/lib/utils'
 import { notFound } from 'next/navigation'
-import { TIER_ORDER } from '@/lib/config'
 
 export async function generateMetadata({ params }: { params: Promise<{ tier: string }> }) {
-  const { tier } = await params
+  const { tier: tierParam } = await params
+  const tier = validateTier(tierParam)
 
-  if (!TIER_ORDER.includes(tier as TierType)) {
+  if (!tier) {
     return { title: 'Invalid Tier' }
   }
 
-  const config = TIER_INFO[tier as TierType]
+  const config = TIER_INFO[tier]
 
   return {
     title: `${config.name} Members Area`,
@@ -20,13 +20,14 @@ export async function generateMetadata({ params }: { params: Promise<{ tier: str
 }
 
 export default async function MembersPage({ params }: { params: Promise<{ tier: string }> }) {
-  const { tier } = await params
+  const { tier: tierParam } = await params
+  const tier = validateTier(tierParam)
 
-  if (!TIER_ORDER.includes(tier as TierType)) {
+  if (!tier) {
     notFound()
   }
 
-  const tierConfig = TIER_INFO[tier as TierType]
+  const tierConfig = TIER_INFO[tier]
 
-  return <MemberContent tier={tier as TierType} tierConfig={tierConfig} />
+  return <MemberContent tier={tier} tierConfig={tierConfig} />
 }
