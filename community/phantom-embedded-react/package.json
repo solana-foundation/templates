@@ -1,0 +1,82 @@
+{
+  "name": "phantom-embedded-react-starter",
+  "version": "1.0.0",
+  "description": "A minimal Next.js starter template for integrating Phantom's embedded user wallets on Solana using React hooks",
+  "displayName": "Phantom Embedded React Starter",
+  "usecase": "wallet",
+  "keywords": [
+    "solana",
+    "phantom",
+    "wallet",
+    "embedded-wallet",
+    "nextjs",
+    "typescript",
+    "react",
+    "oauth",
+    "authentication"
+  ],
+  "author": "Phantom",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phantom/phantom-embedded-react-starter"
+  },
+  "packageManager": "pnpm@10.20.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "create-solana-dapp": {
+    "instructions": [
+      "Your Phantom Embedded React starter is ready!",
+      "",
+      "Next steps:",
+      "+1. Copy .env.example to .env.local",
+      "+2. Get your App ID from https://phantom.com/portal/",
+      "+3. Whitelist your redirect URL in Phantom Portal (URL Config)",
+      "+4. Add NEXT_PUBLIC_PHANTOM_APP_ID and NEXT_PUBLIC_REDIRECT_URL to .env.local",
+      "",
+      "Start developing:",
+      "+{pm} dev",
+      "",
+      "Learn more:",
+      "- React SDK Docs: https://docs.phantom.com/sdks/react-sdk",
+      "- Phantom Portal: https://phantom.com/portal/",
+      "- Get Support: https://discord.gg/phantom"
+    ],
+    "rename": {
+      "phantom-embedded-react-starter": {
+        "to": "{{name}}",
+        "paths": [
+          "app",
+          "components",
+          "lib",
+          "package.json",
+          "README.md"
+        ]
+      }
+    }
+  },
+  "dependencies": {
+    "@phantom/browser-sdk": "^1.0.0-beta.18",
+    "@phantom/react-sdk": "^1.0.0-beta.21",
+    "@solana/web3.js": "^1.95.0",
+    "fastestsmallesttextencoderdecoder": "^1.0.22",
+    "next": "^15.0.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^15.0.3",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.6.0"
+  }
+}
