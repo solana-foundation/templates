@@ -1,6 +1,7 @@
 [
   "community/gill-jito-airdrop",
   "community/gill-node-solanax402",
+  "community/phantom-embedded-react",
   "community/supabase-auth",
   "community/x402-template",
   "community/zk-compression-airdrop",

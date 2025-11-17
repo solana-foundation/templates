@@ -174,6 +174,14 @@ Templates maintained by the Solana community
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
 
+### [phantom-embedded-react](community/phantom-embedded-react)
+
+`gh:solana-foundation/templates/community/phantom-embedded-react`
+
+> Next.js template with Phantom Embedded Wallet SDK for seamless Web3 authentication
+
+`solana` `phantom` `embedded-wallet` `nextjs` `react` `typescript` `tailwind` `web3` `authentication`
+
 ### [supabase-auth](community/supabase-auth)
 
 `gh:solana-foundation/templates/community/supabase-auth`

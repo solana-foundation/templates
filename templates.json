@@ -377,24 +377,24 @@
         "usecase": "Payments"
       },
       {
-        "description": "A minimal Next.js starter template for integrating Phantom's embedded user wallets on Solana using React hooks",
+        "description": "Next.js template with Phantom Embedded Wallet SDK for seamless Web3 authentication",
         "id": "gh:solana-foundation/templates/community/phantom-embedded-react",
         "image": "community/phantom-embedded-react/og-image.png",
         "keywords": [
           "solana",
           "phantom",
-          "wallet",
           "embedded-wallet",
           "nextjs",
-          "typescript",
           "react",
-          "oauth",
+          "typescript",
+          "tailwind",
+          "web3",
           "authentication"
         ],
         "name": "phantom-embedded-react",
         "path": "community/phantom-embedded-react",
-        "displayName": "Phantom Embedded React",
-        "usecase": "Wallet"
+        "displayName": "Phantom Embedded Wallet",
+        "usecase": "Starter"
       },
       {
         "description": "Authenticate Solana wallets with Supabase",
