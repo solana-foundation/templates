@@ -174,6 +174,14 @@ Templates maintained by the Solana community
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
 
+### [moneymq-x402](community/moneymq-x402)
+
+`gh:solana-foundation/templates/community/moneymq-x402`
+
+> Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana
+
+`x402` `moneymq` `payments` `micropayments` `solana` `api-monetization` `kora` `facilitator` `typescript`
+
 ### [supabase-auth](community/supabase-auth)
 
 `gh:solana-foundation/templates/community/supabase-auth`
