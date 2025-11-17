@@ -7,9 +7,12 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "client": "tsx src/client.ts"
+    "client": "tsx src/client.ts",
+    "server": "tsx src/server.ts"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.20.6",
     "@faremeter/fetch": "^0.11.0",
     "@faremeter/info": "^0.11.0",
     "@faremeter/middleware": "^0.11.0",
@@ -20,9 +23,5 @@
     "express": "^4.18.2",
     "ts-node": "^10.9.2",
     "undici": "^7.16.0"
-  },
-  "devDependencies": {
-    "@types/node": "^22.0.0",
-    "tsx": "^4.20.6"
   }
 }

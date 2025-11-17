@@ -25,6 +25,9 @@ The `/api/protected` endpoint requires a payment of **100 USDC** to access. It u
 # Start the server (configure for your deployment platform)
 # For Vercel:
 vercel dev
+
+# Without Vercel:
+npm run server
 ```
 
 ### Configuration
@@ -46,7 +49,7 @@ The client demonstrates how to automatically pay for API access using X402:
 
 1. Install dependencies:
 ```bash
-pnpm install
+npm install
 ```
 
 2. Configure environment variables in `.env`:
@@ -59,7 +62,7 @@ PROXY_URL=[optional proxy URL]
 
 Run the client to call the protected endpoint:
 ```bash
-pnpm run client
+npm run client
 ```
 
 The client will:
@@ -129,7 +132,7 @@ Deploy your own instance of this project to Vercel with one click:
 ```bash
 git clone <repository-url>
 cd x402-express
-pnpm install
+npm install
 ```
 
 2. **Set up environment variables:**
@@ -159,7 +162,7 @@ vercel dev
 
 5. **Test the client:**
 ```bash
-pnpm run client
+npm run client
 ```
 
 ### Adding More Protected Routes

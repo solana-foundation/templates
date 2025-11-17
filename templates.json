@@ -401,9 +401,9 @@
           "template",
           "starter"
         ],
-        "name": "x402-template",
-        "path": "community/x402-template",
-        "displayName": "X402 Next.js",
+        "name": "x402-express",
+        "path": "community/x402-express",
+        "displayName": "x402 Express Server",
         "usecase": "Payments"
       },
       {
