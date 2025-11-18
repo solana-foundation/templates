@@ -174,6 +174,14 @@ Templates maintained by the Solana community
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
 
+### [moneymq-x402](community/moneymq-x402)
+
+`gh:solana-foundation/templates/community/moneymq-x402`
+
+> Complete x402 demo with MoneyMQ, showing micropayment-protected APIs on Solana working locally with minimal setup
+
+`x402` `moneymq` `payments` `micropayments` `solana` `api-monetization` `kora` `facilitator` `typescript`
+
 ### [solana-chatgpt-kit](community/solana-chatgpt-kit)
 
 `gh:solana-foundation/templates/community/solana-chatgpt-kit`

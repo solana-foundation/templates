@@ -1,0 +1,42 @@
+{
+  "name": "moneymq-x402",
+  "displayName": "MoneyMQ x402 Demo",
+  "usecase": "Payments",
+  "version": "0.0.0",
+  "description": "Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana",
+  "keywords": [
+    "x402",
+    "moneymq",
+    "payments",
+    "micropayments",
+    "solana",
+    "api-monetization",
+    "kora",
+    "facilitator",
+    "typescript"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Install MoneyMQ CLI:",
+      "1. Clone MoneyMQ: git clone https://github.com/txtx/moneymq.git",
+      "2. Install: cd moneymq && cargo moneymq-install",
+      "",
+      "Set up the demo:",
+      "3. Install dependencies: +{pm} run install:all",
+      "4. Copy environment: cp .env.example .env",
+      "",
+      "Run the demo (requires 3 terminals):",
+      "Terminal 1: moneymq sandbox",
+      "Terminal 2: cd api && +{pm} start",
+      "Terminal 3: cd client && +{pm} start",
+      "",
+      "See README.md for detailed setup and usage"
+    ]
+  },
+  "scripts": {
+    "install:all": "cd api && pnpm install && cd ../client && pnpm install",
+    "start:api": "cd api && pnpm start",
+    "demo": "cd client && pnpm start"
+  },
+  "private": true
+}
