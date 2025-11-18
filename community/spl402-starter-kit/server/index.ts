@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import { createServer, createExpressMiddleware } from 'spl402'
@@ -20,7 +20,7 @@ app.use(express.json())
 
 const spl402 = createServer({
   network: 'mainnet-beta',
-  recipientAddress: process.env.RECIPIENT_WALLET,
+  recipientAddress: process.env.RECIPIENT_WALLET as string,
   rpcUrl: process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com',
   routes: [
     { path: '/api/free-data', price: 0 },
@@ -30,7 +30,7 @@ const spl402 = createServer({
   ],
 })
 
-app.get('/health', (req, res) => {
+app.get('/health', (req: Request, res: Response) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
@@ -41,7 +41,7 @@ app.get('/health', (req, res) => {
 
 app.use(createExpressMiddleware(spl402))
 
-app.get('/api/free-data', (req, res) => {
+app.get('/api/free-data', (req: Request, res: Response) => {
   res.json({
     message: 'This is free data',
     timestamp: new Date().toISOString(),
@@ -49,7 +49,7 @@ app.get('/api/free-data', (req, res) => {
   })
 })
 
-app.get('/api/premium-data', (req, res) => {
+app.get('/api/premium-data', (req: Request, res: Response) => {
   res.json({
     message: 'Welcome to premium tier!',
     data: {
@@ -61,7 +61,7 @@ app.get('/api/premium-data', (req, res) => {
   })
 })
 
-app.get('/api/ultra-premium', (req, res) => {
+app.get('/api/ultra-premium', (req: Request, res: Response) => {
   res.json({
     message: 'Ultra premium content unlocked!',
     data: {
@@ -84,7 +84,7 @@ app.get('/api/ultra-premium', (req, res) => {
   })
 })
 
-app.get('/api/enterprise-data', (req, res) => {
+app.get('/api/enterprise-data', (req: Request, res: Response) => {
   res.json({
     message: 'Enterprise tier activated!',
     data: {

@@ -3,16 +3,25 @@
   "version": "1.0.0",
   "type": "module",
   "description": "SPL-402 Server Template",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node index.js"
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx --watch index.ts"
   },
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "spl402": "^2.0.1",
+    "spl402": "^2.0.2",
     "@solana/web3.js": "^1.95.8"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/node": "^20.11.19",
+    "typescript": "^5.3.3",
+    "tsx": "^4.7.1",
+    "react": "^19.0.0"
   }
 }

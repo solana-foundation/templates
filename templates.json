@@ -395,7 +395,7 @@
         "name": "spl402-starter-kit",
         "path": "community/spl402-starter-kit",
         "displayName": "SPL-402 Starter Kit",
-        "usecase": "Starter"
+        "usecase": "Payments"
       },
       {
         "description": "Authenticate Solana wallets with Supabase",
