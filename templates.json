@@ -391,6 +391,25 @@
         "usecase": "Auth"
       },
       {
+        "description": "x402 payment server template for Solana with Rust",
+        "id": "gh:solana-foundation/templates/community/x402-solana-rust",
+        "image": "community/x402-solana-rust/og-image.png",
+        "keywords": [
+          "solana",
+          "x402",
+          "rust",
+          "payments",
+          "api",
+          "axum",
+          "actix",
+          "rocket"
+        ],
+        "name": "x402-solana-rust",
+        "path": "community/x402-solana-rust",
+        "displayName": "x402 Solana Rust",
+        "usecase": "Payments"
+      },
+      {
         "description": "Next.js Solana starter with X402 payment protocol integration",
         "id": "gh:solana-foundation/templates/community/x402-template",
         "image": "community/x402-template/og-image.png",
