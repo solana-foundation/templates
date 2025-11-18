@@ -79,8 +79,11 @@ const extractTemplateMetadata = (dir: string, groupPath: string, directoryName: 
 
   const relativePath = join(groupPath, directoryName)
 
+  // Use directory name if package.json name contains template variables
+  const templateName = pkg.name.includes('{{') ? directoryName : pkg.name
+
   return ok({
-    name: pkg.name,
+    name: templateName,
     displayName: pkg.displayName,
     description: pkg.description || '',
     usecase: pkg.usecase,

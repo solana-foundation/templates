@@ -158,14 +158,6 @@ Templates using @solana/web3.js (legacy)
 
 Templates maintained by the Solana community
 
-### [{{project-name}}](community/gill-node-solanax402)
-
-`gh:solana-foundation/templates/community/gill-node-solanax402`
-
-> x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK
-
-`solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
-
 ### [gill-jito-airdrop](community/gill-jito-airdrop)
 
 `gh:solana-foundation/templates/community/gill-jito-airdrop`
@@ -174,6 +166,14 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `tailwind` `typescript` `wallet-ui`
 
+### [gill-node-solanax402](community/gill-node-solanax402)
+
+`gh:solana-foundation/templates/community/gill-node-solanax402`
+
+> x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK
+
+`solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
+
 ### [solana-chatgpt-kit](community/solana-chatgpt-kit)
 
 `gh:solana-foundation/templates/community/solana-chatgpt-kit`
@@ -181,6 +181,14 @@ Templates maintained by the Solana community
 > ChatGPT app with Solana features - Swaps, transfers, staking and data query via natural language. Browser wallets + x402 payments or private key mode
 
 `solana` `chatgpt` `openai` `mcp` `jupiter` `x402` `payments` `swap` `wallet` `defi` `staking` `nextjs` `typescript` `spl-token` `sns`
+
+### [supabase-auth](community/supabase-auth)
+
+`gh:solana-foundation/templates/community/supabase-auth`
+
+> Authenticate Solana wallets with Supabase
+
+`supabase` `authentication` `solana`
 
 ### [x402-template](community/x402-template)
 

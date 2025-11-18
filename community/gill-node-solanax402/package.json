@@ -6,6 +6,9 @@
   "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK",
   "main": "dist/facilitator/index.js",
   "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "create-solana-dapp": {
     "instructions": "## Quick Start\n\n1. Generate facilitator keypair:\n   ```\n   solana-keygen new --outfile facilitator-keypair.json\n   ```\n\n2. Copy and configure environment:\n   ```\n   cp env.example .env\n   ```\n   Update FACILITATOR_PRIVATE_KEY and MERCHANT_SOLANA_ADDRESS\n\n3. Fund facilitator on devnet:\n   ```\n   solana airdrop 2 <FACILITATOR_PUBLIC_KEY> --url devnet\n   ```\n\n4. Build and start:\n   ```\n   npm run build\n   npm start\n   ```\n\n5. Generate test client:\n   ```\n   npm run generate:client\n   ```\n   Fund it: `solana airdrop 1 <CLIENT_KEY> --url devnet`\n\n6. Run tests:\n   ```\n   npm test\n   ```\n\nSee README.md and SETUP.md for detailed documentation.",
     "rename": {
