@@ -62,13 +62,6 @@ npx create-solana-dapp my-project --template x402-solana-rust
 cd my-project
 ```
 
-This will:
-
-- Create a new project directory
-- Install all dependencies
-- Run interactive setup wizard
-- Configure your chosen framework (Axum/Actix/Rocket)
-
 ### Configuration
 
 Copy environment template and add your Solana wallet:
@@ -86,8 +79,6 @@ Start the server:
 cargo run
 ```
 
-Server starts on `http://localhost:3000`
-
 ### Test
 
 **Web UI (Recommended):**
@@ -98,14 +89,6 @@ npm install
 cp .env.example .env
 # Edit .env - add your keypair
 npm run dev
-```
-
-**cURL:**
-
-```bash
-curl http://localhost:3000/api/health
-curl http://localhost:3000/api/free
-curl http://localhost:3000/api/paid
 ```
 
 ## API Endpoints
@@ -163,58 +146,27 @@ curl http://localhost:3000/api/paid
 
 See framework-specific documentation in `frameworks/<framework>/`
 
-### Testing Payments
-
-Use the included frontend testing UI:
-
-- Automatic wallet connection
-- Payment signing
-- Transaction submission
-- Real-time logging
-
-Or implement your own client following the x402 protocol specification.
-
 ## Security Considerations
 
-### ⚠️ CORS Configuration
+### CORS Configuration
 
 **IMPORTANT**: This template uses permissive CORS settings for development convenience. **Before deploying to production or mainnet**, you MUST update the CORS configuration to restrict origins.
 
-The current configuration allows requests from ANY origin, which poses a security risk in production environments. Malicious websites could make unauthorized requests to your API on behalf of users.
+The current configuration allows requests from ANY origin, which poses a security risk in production environments.
 
-**To secure your production deployment:**
-
-1. Open `src/main.rs` in your generated project
-2. Locate the CORS configuration section (marked with warnings)
-3. Replace the permissive configuration with restricted origins
-
-**Example production configurations are provided in the code comments for:**
-- Axum: Using specific `HeaderValue` origins
-- Actix: Using `Cors::default()` with allowed origins
-- Rocket: Using `AllowedOrigins::some_exact()`
-
-See the inline code comments in your framework's `src/main.rs` for specific examples.
+See the inline code comments in `src/main.rs` for production configuration examples (Axum, Actix, Rocket).
 
 ## Resources
 
 - [x402 Protocol Specification](https://x402.org)
 - [Frontend Documentation](frontend/README.md)
 - [Solana Documentation](https://docs.solana.com)
-- [USDC on Solana](https://www.circle.com/en/usdc)
 
 ## License
 
 MIT License - see [LICENSE](LICENSE) file for details
 
-## Contributing
-
-Contributions welcome! Please open an issue or PR.
-
 ## Contributors
 
 - **[0xsouravm](https://github.com/0xsouravm)** - Sourav Mishra
 - **[crypto-priest](https://github.com/crypto-priest)** - Mahavir Ganapati Dash
-
----
-
-Built for the Solana ecosystem ♥️
