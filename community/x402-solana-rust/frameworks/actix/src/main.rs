@@ -29,7 +29,22 @@ async fn main() -> std::io::Result<()> {
     log::info!("Try: curl http://{}/api/health", addr_clone);
 
     HttpServer::new(move || {
-        let cors = Cors::permissive();
+        // Configure CORS
+        // ⚠️  WARNING: This configuration allows ALL origins and is suitable for development only.
+        //
+        // SECURITY RISK: In production/mainnet deployments, this allows any website to make
+        // requests to your API, which could be exploited by malicious sites.
+        //
+        // For production, restrict origins to your specific domain(s):
+        //
+        // Example for production:
+        //   let cors = Cors::default()
+        //       .allowed_origin("https://yourdomain.com")
+        //       .allowed_methods(vec!["GET", "POST"])
+        //       .allowed_headers(vec![header::CONTENT_TYPE, header::HeaderName::from_static("x-payment")])
+        //       .max_age(3600);
+        //
+        let cors = Cors::permissive();  // ⚠️  Development only!
 
         App::new()
             .app_data(web::Data::new(config.clone()))

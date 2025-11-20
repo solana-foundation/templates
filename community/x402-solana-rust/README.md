@@ -174,6 +174,27 @@ Use the included frontend testing UI:
 
 Or implement your own client following the x402 protocol specification.
 
+## Security Considerations
+
+### ⚠️ CORS Configuration
+
+**IMPORTANT**: This template uses permissive CORS settings for development convenience. **Before deploying to production or mainnet**, you MUST update the CORS configuration to restrict origins.
+
+The current configuration allows requests from ANY origin, which poses a security risk in production environments. Malicious websites could make unauthorized requests to your API on behalf of users.
+
+**To secure your production deployment:**
+
+1. Open `src/main.rs` in your generated project
+2. Locate the CORS configuration section (marked with warnings)
+3. Replace the permissive configuration with restricted origins
+
+**Example production configurations are provided in the code comments for:**
+- Axum: Using specific `HeaderValue` origins
+- Actix: Using `Cors::default()` with allowed origins
+- Rocket: Using `AllowedOrigins::some_exact()`
+
+See the inline code comments in your framework's `src/main.rs` for specific examples.
+
 ## Resources
 
 - [x402 Protocol Specification](https://x402.org)

@@ -23,8 +23,22 @@ async fn main() -> anyhow::Result<()> {
     let config = Arc::new(config);
 
     // Configure CORS
+    // ⚠️  WARNING: This configuration allows ALL origins and is suitable for development only.
+    //
+    // SECURITY RISK: In production/mainnet deployments, this allows any website to make
+    // requests to your API, which could be exploited by malicious sites.
+    //
+    // For production, restrict origins to your specific domain(s):
+    //
+    // Example for production:
+    //   use axum::http::HeaderValue;
+    //   let cors = CorsLayer::new()
+    //       .allow_origin("https://yourdomain.com".parse::<HeaderValue>().unwrap())
+    //       .allow_methods([Method::GET, Method::POST])
+    //       .allow_headers(vec!["content-type".parse().unwrap(), "x-payment".parse().unwrap()]);
+    //
     let cors = CorsLayer::new()
-        .allow_origin(Any)
+        .allow_origin(Any)  // ⚠️  Development only!
         .allow_methods([Method::GET, Method::POST])
         .allow_headers(Any);
 

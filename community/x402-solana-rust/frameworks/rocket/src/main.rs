@@ -31,8 +31,22 @@ fn rocket() -> _ {
         .merge(("port", app_config.port));
 
     // Configure CORS
+    // ⚠️  WARNING: This configuration allows ALL origins and is suitable for development only.
+    //
+    // SECURITY RISK: In production/mainnet deployments, this allows any website to make
+    // requests to your API, which could be exploited by malicious sites.
+    //
+    // For production, restrict origins to your specific domain(s):
+    //
+    // Example for production:
+    //   let cors = CorsOptions::default()
+    //       .allowed_origins(AllowedOrigins::some_exact(&["https://yourdomain.com"]))
+    //       .allowed_methods(vec![Method::Get, Method::Post].into_iter().map(From::from).collect())
+    //       .allowed_headers(AllowedHeaders::some(&["content-type", "x-payment"]))
+    //       .allow_credentials(true);
+    //
     let cors = CorsOptions::default()
-        .allowed_origins(AllowedOrigins::all())
+        .allowed_origins(AllowedOrigins::all())  // ⚠️  Development only!
         .allowed_methods(
             vec![Method::Get, Method::Post, Method::Patch]
                 .into_iter()
