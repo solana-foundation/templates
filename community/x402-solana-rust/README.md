@@ -150,7 +150,7 @@ curl http://localhost:3000/api/paid
 │   ├── verification.rs   # Payment verification functions
 │   └── error.rs          # Error enum
 ├── frontend/             # Testing UI
-└── init.js               # Project generator
+└── create.js             # Project generator
 ```
 
 ## Development
