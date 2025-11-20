@@ -8,6 +8,7 @@ use solana_sdk::{
     signature::Signature,
     transaction::VersionedTransaction,
 };
+use std::str::FromStr;
 use crate::shared::{
     error::X402Error,
     types::PaymentRequirements,
@@ -82,6 +83,37 @@ pub fn validate_payment_transaction(
         return Err(format!(
             "Payment amount too low: got {}, need at least {}",
             transfer_amount, min_payment
+        ));
+    }
+
+    // Validate recipient address
+    // Parse required receiver wallet and mint addresses
+    let receiver_wallet = Pubkey::from_str(&requirements.pay_to)
+        .map_err(|_| "Invalid receiver address in requirements".to_string())?;
+
+    let usdc_mint = Pubkey::from_str(&requirements.asset)
+        .map_err(|_| "Invalid USDC mint address in requirements".to_string())?;
+
+    // Derive the expected Associated Token Account (ATA) for the receiver
+    let expected_ata = spl_associated_token_account::get_associated_token_address(
+        &receiver_wallet,
+        &usdc_mint,
+    );
+
+    // Extract destination account from instruction
+    // For Transfer (discriminator 3): destination is at account index 1
+    // For TransferChecked (discriminator 12): destination is at account index 2
+    let destination_account_index = if discriminator == 3 { 1 } else { 2 };
+
+    let destination_pubkey = token_ix.accounts.get(destination_account_index)
+        .and_then(|idx| transaction.message.static_account_keys().get(*idx as usize))
+        .ok_or("Missing destination account in transfer instruction".to_string())?;
+
+    // Verify payment is going to the correct recipient
+    if *destination_pubkey != expected_ata {
+        return Err(format!(
+            "Payment recipient mismatch: expected {}, got {}",
+            expected_ata, destination_pubkey
         ));
     }
 
