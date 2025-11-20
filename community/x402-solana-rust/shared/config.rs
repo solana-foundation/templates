@@ -1,5 +1,7 @@
 use std::env;
+use std::str::FromStr;
 use anyhow::{Context, Result};
+use solana_sdk::pubkey::Pubkey;
 
 #[derive(Clone, Debug)]
 pub struct Config {
@@ -18,10 +20,16 @@ impl Config {
         // Load .env file if it exists
         dotenv::dotenv().ok();
 
+        // Validate receiver address
+        let receiver_address = env::var("RECEIVER_WALLET_ADDRESS")
+            .context("RECEIVER_WALLET_ADDRESS must be set in .env")?;
+
+        Pubkey::from_str(&receiver_address)
+            .context("RECEIVER_WALLET_ADDRESS must be a valid Solana public key")?;
+
         Ok(Self {
             // Required fields
-            receiver_address: env::var("RECEIVER_WALLET_ADDRESS")
-                .context("RECEIVER_WALLET_ADDRESS must be set in .env")?,
+            receiver_address,
 
             // Optionals with default
             facilitator_url: env::var("FACILITATOR_URL")
