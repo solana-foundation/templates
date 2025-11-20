@@ -17,7 +17,6 @@ async fn main() -> anyhow::Result<()> {
     let addr = config.server_address();
 
     log::info!("Starting x402 Rust Server (Axum)");
-    log::info!("Facilitator: {}", config.facilitator_url);
     log::info!("Receiver: {}", config.receiver_address);
     log::info!("Network: {}", config.solana_network);
 

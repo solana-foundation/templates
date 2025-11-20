@@ -128,7 +128,6 @@ curl http://localhost:3000/api/paid
 - `SOLANA_RPC_URL` - RPC endpoint (default: devnet public RPC)
 - `USDC_MINT_ADDRESS` - USDC token address (default: devnet USDC)
 - `DEFAULT_PRICE` - Price in micro-USDC (default: 10000 = $0.01)
-- `FACILITATOR_URL` - Payment processor (default: PayAI community)
 - `HOST` - Server bind address (default: localhost)
 - `PORT` - Server port (default: 3000)
 

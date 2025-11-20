@@ -16,7 +16,6 @@ fn rocket() -> _ {
         .expect("Failed to load configuration");
 
     log::info!("Starting x402 Rust Server (Rocket)");
-    log::info!("Facilitator: {}", config.facilitator_url);
     log::info!("Receiver: {}", config.receiver_address);
     log::info!("Network: {}", config.solana_network);
 

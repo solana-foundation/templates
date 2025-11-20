@@ -6,7 +6,6 @@ use solana_sdk::pubkey::Pubkey;
 #[derive(Clone, Debug)]
 pub struct Config {
     pub receiver_address: String,
-    pub facilitator_url: String,
     pub solana_network: String,
     pub solana_rpc_url: String,
     pub usdc_mint: String,
@@ -32,9 +31,6 @@ impl Config {
             receiver_address,
 
             // Optionals with default
-            facilitator_url: env::var("FACILITATOR_URL")
-                .unwrap_or_else(|_| "https://facilitator.payai.network".to_string()),
-
             solana_network: env::var("SOLANA_NETWORK")
                 .unwrap_or_else(|_| "solana-devnet".to_string()),
 
