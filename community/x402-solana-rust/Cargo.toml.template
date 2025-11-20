@@ -22,6 +22,7 @@ thiserror = "2.0.17"
 # Solana
 solana-sdk = "3.0.0"
 solana-client = "3.1.1"
+spl-token = "6.0"
 bincode = {version = "2.0.1", features = ["serde"]}
 
 # Encoding/Decoding
@@ -36,7 +37,3 @@ env_logger = "0.11.8"
 
 # Framework-specific dependencies
 {{FRAMEWORK_DEPS}}
-
-[dev-dependencies]
-# For testing HTTP endpoints
-tower = { version = "0.5.2", features = ["util"] }

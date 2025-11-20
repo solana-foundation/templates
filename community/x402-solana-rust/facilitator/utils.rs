@@ -8,7 +8,6 @@ use solana_sdk::{
     signature::Signature,
     transaction::VersionedTransaction,
 };
-use std::str::FromStr;
 use crate::shared::{
     error::X402Error,
     types::PaymentRequirements,
@@ -44,8 +43,7 @@ pub fn validate_payment_transaction(
     }
 
     // Locate SPL Token Program instruction
-    let spl_token_program = Pubkey::from_str("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
-        .map_err(|_| "Failed to parse SPL Token program ID".to_string())?;
+    let spl_token_program = spl_token::id();
 
     let token_ix = transaction.message.instructions()
         .iter()
