@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>x402 Rust Server - API Tester</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="main-header">
+      <h1>x402 Rust Server API Tester</h1>
+      <p>Test your Solana-powered payment APIs</p>
+    </header>
+
+    <div class="container">
+      <div class="main-content">
+        <section class="framework-selector">
+          <h2>1. Server Configuration</h2>
+          <div class="server-info">
+            <div class="info-row-inline">
+              <label for="api-url">API Base URL:</label>
+              <input type="text" id="api-url" value="http://localhost:3000" />
+            </div>
+            <div class="detected-framework">
+              <label>Detected Framework:</label>
+              <span id="detected-framework">Not connected</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="api-testing">
+          <h2>2. Test API Endpoints</h2>
+
+          <!-- API endpoints are auto-generated from src/apis/*.ts -->
+          <div id="api-endpoints-container"></div>
+        </section>
+
+        <section class="wallet-section">
+          <h2>3. Wallet Configuration</h2>
+          <div class="network-toggle">
+            <label>Network:</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" data-network="devnet">Devnet</button>
+              <button class="toggle-btn" data-network="mainnet" title="Mainnet requires custom RPC (see .env)">
+                Mainnet
+              </button>
+            </div>
+          </div>
+          <div class="wallet-info">
+            <div class="info-row">
+              <label>Wallet Address:</label>
+              <span id="wallet-address">Not loaded</span>
+            </div>
+            <div class="info-row">
+              <label>RPC Endpoint:</label>
+              <span id="rpc-endpoint">https://api.devnet.solana.com</span>
+            </div>
+            <div class="info-row">
+              <label>SOL Balance:</label>
+              <span id="sol-balance">--</span>
+            </div>
+            <div class="info-row">
+              <label>USDC Balance:</label>
+              <span id="usdc-balance">--</span>
+            </div>
+            <button class="test-btn" id="load-wallet-btn">Load Wallet from .env</button>
+            <button class="test-btn" id="refresh-balance-btn" style="margin-left: 10px">Refresh Balance</button>
+          </div>
+        </section>
+      </div>
+
+      <aside class="sidebar">
+        <div class="logs">
+          <h2>Activity Log</h2>
+          <div id="log-container"></div>
+          <button class="clear-btn" id="clear-logs-btn">Clear Logs</button>
+        </div>
+      </aside>
+    </div>
+
+    <script type="module" src="src/main.ts"></script>
+  </body>
+</html>
