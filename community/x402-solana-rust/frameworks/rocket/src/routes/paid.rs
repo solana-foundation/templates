@@ -9,13 +9,22 @@ use crate::shared::{
     verification::{create_402_response, verify_payment, PaymentResult},
 };
 
-pub struct Payment402(pub Value);
+pub struct ApiResponse {
+    status: Status,
+    body: Value,
+}
 
-impl<'r> Responder<'r, 'static> for Payment402 {
+impl ApiResponse {
+    pub fn new(status: Status, body: Value) -> Self {
+        Self { status, body }
+    }
+}
+
+impl<'r> Responder<'r, 'static> for ApiResponse {
     fn respond_to(self, _: &'r Request<'_>) -> response::Result<'static> {
         Response::build()
-            .status(Status::new(402))
-            .sized_body(None, Cursor::new(self.0.to_string()))
+            .status(self.status)
+            .sized_body(None, Cursor::new(self.body.to_string()))
             .ok()
     }
 }
@@ -37,7 +46,7 @@ impl<'r> FromRequest<'r> for PaymentHeader {
 pub async fn paid_endpoint(
     config: &State<Arc<Config>>,
     payment_header: PaymentHeader,
-) -> Result<Json<Value>, Payment402> {
+) -> Result<Json<Value>, ApiResponse> {
     log::info!("Received request to /api/paid");
 
     let payment_header_value = payment_header.0.as_deref();
@@ -71,21 +80,30 @@ pub async fn paid_endpoint(
         PaymentResult::PaymentRequired(requirements) => {
             log::info!("Payment required - sending 402 response");
             let response = create_402_response(requirements);
-            Err(Payment402(serde_json::to_value(response).unwrap()))
+            Err(ApiResponse::new(
+                Status::new(402),
+                serde_json::to_value(response).unwrap()
+            ))
         }
         PaymentResult::InvalidPayment(details) => {
             log::warn!("Invalid payment header: {}", details);
-            Err(Payment402(json!({
-                "error": "Invalid payment header",
-                "details": details
-            })))
+            Err(ApiResponse::new(
+                Status::BadRequest,
+                json!({
+                    "error": "Invalid payment header",
+                    "details": details
+                })
+            ))
         }
         PaymentResult::Error(details) => {
             log::error!("Payment processing failed: {}", details);
-            Err(Payment402(json!({
-                "error": "Payment processing failed",
-                "details": details
-            })))
+            Err(ApiResponse::new(
+                Status::InternalServerError,
+                json!({
+                    "error": "Payment processing failed",
+                    "details": details
+                })
+            ))
         }
     }
 }
