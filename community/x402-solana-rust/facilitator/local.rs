@@ -18,8 +18,8 @@ pub struct LocalFacilitator {
 }
 
 impl LocalFacilitator {
-    pub fn new(rpc_url: String) -> Self {
-        Self { rpc_url }
+    pub fn new(rpc_url: &str) -> Self {
+        Self { rpc_url: rpc_url.to_string() }
     }
 }
 
@@ -53,7 +53,7 @@ impl Facilitator for LocalFacilitator {
         let transaction = decode_transaction(&request.payment.payload.transaction)?;
 
         // Submit to blockchain
-        let sig = broadcast_to_chain(self.rpc_url.clone(), transaction).await?;
+        let sig = broadcast_to_chain(&self.rpc_url, transaction).await?;
 
         // Return settlement confirmation
         Ok(SettleResponse {

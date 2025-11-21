@@ -122,9 +122,10 @@ pub fn validate_payment_transaction(
 
 /// Broadcast transaction to Solana network
 pub async fn broadcast_to_chain(
-    rpc_url: String,
+    rpc_url: &str,
     transaction: VersionedTransaction,
 ) -> Result<Signature, X402Error> {
+    let rpc_url = rpc_url.to_string();
     tokio::task::spawn_blocking(move || {
         let rpc_client = RpcClient::new(rpc_url);
 

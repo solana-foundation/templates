@@ -27,7 +27,7 @@ fn rocket() -> _ {
 
     // Configure Rocket to use our host and port
     let figment = rocket::Config::figment()
-        .merge(("address", app_config.host.clone()))
+        .merge(("address", &*app_config.host))
         .merge(("port", app_config.port));
 
     // Configure CORS

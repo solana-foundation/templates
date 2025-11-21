@@ -111,7 +111,7 @@ pub async fn verify_payment(
     };
 
     // Use local facilitator
-    let facilitator = LocalFacilitator::new(config.solana_rpc_url.clone());
+    let facilitator = LocalFacilitator::new(&config.solana_rpc_url);
 
     match process_payment(&facilitator, payment_payload, requirements).await {
         Ok(signature) => PaymentResult::Success(signature),

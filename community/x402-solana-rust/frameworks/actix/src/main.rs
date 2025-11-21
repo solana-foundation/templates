@@ -23,10 +23,9 @@ async fn main() -> std::io::Result<()> {
     log::info!("Network: {}", config.solana_network);
 
     let config = Arc::new(config);
-    let addr_clone = addr.clone();
 
-    log::info!("Server listening on http://{}", addr_clone);
-    log::info!("Try: curl http://{}/api/health", addr_clone);
+    log::info!("Server listening on http://{}", addr);
+    log::info!("Try: curl http://{}/api/health", addr);
 
     HttpServer::new(move || {
         // Configure CORS
