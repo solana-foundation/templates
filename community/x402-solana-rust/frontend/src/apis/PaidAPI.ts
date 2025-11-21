@@ -8,7 +8,11 @@ import {
   Keypair,
   Connection,
 } from '@solana/web3.js'
-import { getAssociatedTokenAddress, createTransferCheckedInstruction } from '@solana/spl-token'
+import {
+  getAssociatedTokenAddress,
+  createTransferCheckedInstruction,
+  createAssociatedTokenAccountInstruction
+} from '@solana/spl-token'
 import { getWallet, getConnection } from '../utils/wallet'
 import { getCurrentNetwork } from '../utils/network'
 import { log } from '../utils/logger'
@@ -205,17 +209,48 @@ export class PaidAPI extends BaseAPI {
     const feePayerPubkey = wallet.publicKey
 
     log('info', `Amount: ${amount} (${amount / 1_000_000} USDC)`)
-    log('info', 'Note: User needs SOL for transaction fees (~0.000005 SOL)')
+    log('info', 'Note: User needs SOL for transaction fees (~0.000005 SOL + potential ~0.002 SOL for ATA creation)')
 
     // Get associated token accounts
     const fromTokenAccount = await getAssociatedTokenAddress(usdcMint, wallet.publicKey)
     const toTokenAccount = await getAssociatedTokenAddress(usdcMint, receiverPubkey)
 
+    // Check if recipient's token account exists, create if needed
+    // NOTE: In production, receivers typically already have USDC ATAs set up.
+    // This check ensures the payment succeeds even if the receiver doesn't have an ATA yet.
+    // The sender pays a one-time fee (~0.00203928 SOL) to create the receiver's ATA.
+    // This fee is only paid once - subsequent transactions to the same receiver won't need this.
+    const recipientAccountInfo = await connection.getAccountInfo(toTokenAccount)
+
     const instructions = [
       ComputeBudgetProgram.setComputeUnitLimit({ units: 200_000 }),
       ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 1 }),
-      createTransferCheckedInstruction(fromTokenAccount, usdcMint, toTokenAccount, wallet.publicKey, amount, 6),
     ]
+
+    // Add ATA creation instruction if recipient doesn't have one
+    if (!recipientAccountInfo) {
+      log('info', 'Recipient ATA does not exist. Adding creation instruction (sender pays ~0.002 SOL fee)')
+      instructions.push(
+        createAssociatedTokenAccountInstruction(
+          wallet.publicKey,  // payer (sender pays the ATA creation fee)
+          toTokenAccount,    // ATA address
+          receiverPubkey,    // owner (payment recipient wallet)
+          usdcMint          // USDC mint
+        )
+      )
+    }
+
+    // Add the USDC transfer instruction
+    instructions.push(
+      createTransferCheckedInstruction(
+        fromTokenAccount,    // from (sender's USDC account)
+        usdcMint,           // mint
+        toTokenAccount,     // to (receiver's USDC account)
+        wallet.publicKey,   // owner (sender)
+        amount,             // amount in smallest units
+        6                   // decimals for USDC
+      )
+    )
 
     // Get latest blockhash RIGHT before creating transaction (minimize time window)
     log('info', 'Getting fresh blockhash...')
