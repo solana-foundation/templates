@@ -53,5 +53,9 @@
     "name": "solana-foundation/templates",
     "type": "git",
     "url": "https://github.com/solana-foundation/templates"
+  },
+  "dependencies": {
+    "minidenticons": "^4.2.1",
+    "tailwind-merge": "^3.4.0"
   }
 }

@@ -35,3 +35,6 @@ web3js/**/anchor/target/.rustc_info.json
 web3js/**/dist
 web3js/**/node_modules
 web3js/**/tmp
+community/privy-auth/yarn.lock
+community/privy-auth/package-lock.json
+yarn.lock

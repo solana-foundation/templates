@@ -437,6 +437,25 @@
         "usecase": "Auth"
       },
       {
+        "description": "Next.js + Tailwind + TypeScript template with Privy authentication, social logins, and embedded Solana wallet creation",
+        "id": "gh:solana-foundation/templates/community/privy-auth",
+        "image": "community/privy-auth/og-image.png",
+        "keywords": [
+          "privy",
+          "authentication",
+          "solana",
+          "nextjs",
+          "tailwind",
+          "typescript",
+          "social-login",
+          "embedded-wallet"
+        ],
+        "name": "privy-auth",
+        "path": "community/privy-auth",
+        "displayName": "Privy Auth",
+        "usecase": "Auth"
+      },
+      {
         "description": "Next.js Solana starter with X402 payment protocol integration",
         "id": "gh:solana-foundation/templates/community/x402-template",
         "image": "community/x402-template/og-image.png",
