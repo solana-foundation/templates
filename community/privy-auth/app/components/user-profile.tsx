@@ -9,29 +9,6 @@ import { Badge } from "./ui/badge";
 import { LogOutIcon } from "lucide-react";
 import { Button } from "./ui/button";
 
-type InfoItem = { label: string; value: string; hint?: string };
-const InfoList = ({ items }: { items: InfoItem[] }) =>
-  items.length ? (
-    <dl className="space-y-4">
-      {items.map((item) => (
-        <div
-          key={`${item.label}-${item.value}`}
-          className="flex items-start justify-between gap-4 border-b border-slate-100 pb-4 last:border-none last:pb-0"
-        >
-          <dt className="text-sm font-medium text-slate-500">{item.label}</dt>
-          <dd className="text-right text-sm font-semibold text-slate-900">
-            {item.value}
-            {item.hint && (
-              <p className="text-xs font-normal text-slate-500">{item.hint}</p>
-            )}
-          </dd>
-        </div>
-      ))}
-    </dl>
-  ) : (
-    <p className="text-sm text-slate-500">No verified signals yet.</p>
-  );
-
 const isWalletWithChainDetails = (
   wallet: { chainId?: string; walletClientType?: string } | undefined
 ): wallet is { chainId: string; walletClientType: string } =>
@@ -74,7 +51,6 @@ export function UserProfile() {
     );
 
   const walletHasChainMetadata = isWalletWithChainDetails(solanaWallet);
-  const walletChainId = walletHasChainMetadata ? solanaWallet.chainId : undefined;
   const walletClientType = walletHasChainMetadata
     ? solanaWallet.walletClientType
     : undefined;
@@ -128,35 +104,6 @@ export function UserProfile() {
       setUnlinkingAddress(null);
     }
   };
-
-  const identityItems: InfoItem[] = [
-    user?.email && { label: "Email", value: user.email.address },
-    user?.phone && { label: "Phone", value: user.phone.number },
-    user?.google && {
-      label: "Google",
-      value: user.google.email || user.google.name || "Connected",
-    },
-    user?.twitter && {
-      label: "Twitter",
-      value: `@${user.twitter.username}`,
-    },
-    user?.discord && {
-      label: "Discord",
-      value: user.discord.username,
-    },
-  ].filter(Boolean) as InfoItem[];
-
-  const insights: InfoItem[] = [
-    user?.id && { label: "User ID", value: user.id },
-    {
-      label: "Authentication Methods",
-      value: identityItems.length ? `${identityItems.length}` : "Wallet only",
-    },
-    walletChainId && {
-      label: "Chain",
-      value: walletChainId.replace("solana:", "").toUpperCase(),
-    },
-  ].filter(Boolean) as InfoItem[];
 
   const walletType = walletClientType === "privy"
       ? "Embedded"
