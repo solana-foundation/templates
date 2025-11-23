@@ -7,14 +7,8 @@
 
 import type { User } from "@privy-io/react-auth";
 
-/**
- * Extended user type with commonly accessed properties
- */
 export type PrivyUser = User;
 
-/**
- * Social login account types
- */
 export type SocialAccount = 
   | { type: "google"; email?: string; name?: string }
   | { type: "twitter"; username: string }
@@ -22,9 +16,6 @@ export type SocialAccount =
   | { type: "email"; address: string }
   | { type: "phone"; number: string };
 
-/**
- * Solana wallet information
- */
 export interface SolanaWalletInfo {
   address: string;
   walletClientType: "privy" | "external";
