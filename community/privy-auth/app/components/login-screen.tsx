@@ -24,7 +24,7 @@ export function LoginScreen() {
 
         {/* Description */}
         <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl text-pretty leading-relaxed">
-          Authenticate with social logins or a Solana wallet. Create embedded wallets for users who don't have one.
+          Authenticate with social logins or a Solana wallet. Create embedded wallets for users who don&apos;t have one.
         </p>
 
         {/* CTA Buttons */}
