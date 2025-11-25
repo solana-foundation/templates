@@ -5,7 +5,9 @@ export type LogType = 'info' | 'success' | 'error'
 export function log(type: LogType, message: string): void {
   const logContainer = document.getElementById('log-container')
   if (!logContainer) {
-    console.log(`[${type.toUpperCase()}] ${message}`)
+    if (import.meta.env.DEV) {
+      console.log(`[${type.toUpperCase()}] ${message}`)
+    }
     return
   }
 

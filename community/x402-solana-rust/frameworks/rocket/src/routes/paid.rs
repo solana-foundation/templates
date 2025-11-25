@@ -90,8 +90,8 @@ pub async fn paid_endpoint(
             Err(ApiResponse::new(
                 Status::BadRequest,
                 json!({
-                    "error": "Invalid payment header",
-                    "details": details
+                    "error": "Invalid payment",
+                    "message": "The payment header is invalid or malformed"
                 })
             ))
         }
@@ -100,8 +100,8 @@ pub async fn paid_endpoint(
             Err(ApiResponse::new(
                 Status::InternalServerError,
                 json!({
-                    "error": "Payment processing failed",
-                    "details": details
+                    "error": "Payment failed",
+                    "message": "An error occurred while processing your payment"
                 })
             ))
         }

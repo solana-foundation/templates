@@ -25,10 +25,14 @@ export const APIs: BaseAPI[] = Object.entries(apiModules)
       if (APIClass && typeof APIClass === 'function') {
         return new APIClass()
       }
-      console.warn(`No valid export found in ${path}`)
+      if (import.meta.env.DEV) {
+        console.warn(`No valid export found in ${path}`)
+      }
       return null
     } catch (error) {
-      console.error(`Failed to instantiate API from ${path}:`, error)
+      if (import.meta.env.DEV) {
+        console.error(`Failed to instantiate API from ${path}:`, error)
+      }
       return null
     }
   })
@@ -36,7 +40,9 @@ export const APIs: BaseAPI[] = Object.entries(apiModules)
 
 export { BaseAPI } from './BaseAPI'
 
-console.log(
-  `Auto-discovered ${APIs.length} APIs:`,
-  APIs.map((api) => api.name),
-)
+if (import.meta.env.DEV) {
+  console.log(
+    `Auto-discovered ${APIs.length} APIs:`,
+    APIs.map((api) => api.name),
+  )
+}

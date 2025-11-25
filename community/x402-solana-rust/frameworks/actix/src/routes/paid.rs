@@ -51,15 +51,15 @@ pub async fn paid_endpoint(
         PaymentResult::InvalidPayment(details) => {
             log::warn!("Invalid payment header: {}", details);
             HttpResponse::BadRequest().json(json!({
-                "error": "Invalid payment header",
-                "details": details
+                "error": "Invalid payment",
+                "message": "The payment header is invalid or malformed"
             }))
         }
         PaymentResult::Error(details) => {
             log::error!("Payment processing failed: {}", details);
             HttpResponse::InternalServerError().json(json!({
-                "error": "Payment processing failed",
-                "details": details
+                "error": "Payment failed",
+                "message": "An error occurred while processing your payment"
             }))
         }
     }
