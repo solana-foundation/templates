@@ -53,7 +53,6 @@ fn rocket() -> _ {
                 .map(From::from)
                 .collect(),
         )
-        .allow_credentials(true)
         .to_cors()
         .expect("Failed to create CORS fairing");
 

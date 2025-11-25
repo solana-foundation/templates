@@ -2,7 +2,7 @@ mod routes;
 mod facilitator;
 mod shared;
 
-use actix_web::{web, App, HttpServer, middleware::Logger};
+use actix_web::{web, App, HttpServer, middleware::Logger, http};
 use actix_cors::Cors;
 use std::sync::Arc;
 use shared::config::Config;
@@ -43,7 +43,10 @@ async fn main() -> std::io::Result<()> {
         //       .allowed_headers(vec![header::CONTENT_TYPE, header::HeaderName::from_static("x-payment")])
         //       .max_age(3600);
         //
-        let cors = Cors::permissive();  // ⚠️  Development only!
+        let cors = Cors::default()  // ⚠️  Development only!
+            .allow_any_origin()
+            .allowed_methods(vec!["GET", "POST"])
+            .allowed_headers(vec![http::header::CONTENT_TYPE, http::header::HeaderName::from_static("x-payment")]);
 
         App::new()
             .app_data(web::Data::new(config.clone()))
