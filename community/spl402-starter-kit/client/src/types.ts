@@ -9,14 +9,8 @@ export interface Endpoint {
   color: string
 }
 
-export interface ResponseData {
-  [key: string]: unknown
-}
+export type ResponseData = Record<string, string | number | boolean | object | null>
 
-export interface LoadingState {
-  [key: string]: boolean
-}
+export type LoadingState = Record<string, boolean>
 
-export interface ErrorState {
-  [key: string]: string | null
-}
+export type ErrorState = Record<string, string | null>

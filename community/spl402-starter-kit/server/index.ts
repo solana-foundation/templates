@@ -18,30 +18,37 @@ app.use(
 
 app.use(express.json())
 
+const NETWORK = process.env.SOLANA_NETWORK as 'mainnet-beta' | 'devnet' || 'devnet'
+const DEFAULT_RPC_URL = NETWORK === 'mainnet-beta'
+  ? 'https://api.mainnet-beta.solana.com'
+  : 'https://api.devnet.solana.com'
+
+const ROUTES = [
+  { path: '/api/free-data', price: 0 },
+  { path: '/api/premium-data', price: 0.001 },
+  { path: '/api/ultra-premium', price: 0.005 },
+  { path: '/api/enterprise-data', price: 0.01 },
+]
+
 const spl402 = createServer({
-  network: 'mainnet-beta',
+  network: NETWORK,
   recipientAddress: process.env.RECIPIENT_WALLET as string,
-  rpcUrl: process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com',
-  routes: [
-    { path: '/api/free-data', price: 0 },
-    { path: '/api/premium-data', price: 0.001 },
-    { path: '/api/ultra-premium', price: 0.005 },
-    { path: '/api/enterprise-data', price: 0.01 },
-  ],
+  rpcUrl: process.env.SOLANA_RPC_URL || DEFAULT_RPC_URL,
+  routes: ROUTES,
 })
 
-app.get('/health', (req: Request, res: Response) => {
+app.get('/health', (_req: Request, res: Response) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    network: 'mainnet-beta',
+    network: NETWORK,
     recipient: process.env.RECIPIENT_WALLET,
   })
 })
 
 app.use(createExpressMiddleware(spl402))
 
-app.get('/api/free-data', (req: Request, res: Response) => {
+app.get('/api/free-data', (_req: Request, res: Response) => {
   res.json({
     message: 'This is free data',
     timestamp: new Date().toISOString(),
@@ -49,7 +56,7 @@ app.get('/api/free-data', (req: Request, res: Response) => {
   })
 })
 
-app.get('/api/premium-data', (req: Request, res: Response) => {
+app.get('/api/premium-data', (_req: Request, res: Response) => {
   res.json({
     message: 'Welcome to premium tier!',
     data: {
@@ -61,7 +68,7 @@ app.get('/api/premium-data', (req: Request, res: Response) => {
   })
 })
 
-app.get('/api/ultra-premium', (req: Request, res: Response) => {
+app.get('/api/ultra-premium', (_req: Request, res: Response) => {
   res.json({
     message: 'Ultra premium content unlocked!',
     data: {
@@ -84,7 +91,7 @@ app.get('/api/ultra-premium', (req: Request, res: Response) => {
   })
 })
 
-app.get('/api/enterprise-data', (req: Request, res: Response) => {
+app.get('/api/enterprise-data', (_req: Request, res: Response) => {
   res.json({
     message: 'Enterprise tier activated!',
     data: {
@@ -110,20 +117,23 @@ app.get('/api/enterprise-data', (req: Request, res: Response) => {
 })
 
 app.listen(PORT, () => {
+  const endpointLines = ROUTES.map(route => {
+    const priceDisplay = route.price === 0 ? 'Free (0 SOL)' : `${route.price} SOL`
+    const pathPadded = `GET ${route.path}`.padEnd(30)
+    return `║  ${pathPadded} - ${priceDisplay.padEnd(20)} ║`
+  }).join('\n')
+
   console.log(`
 ╔════════════════════════════════════════════════════════╗
 ║  SPL-402 Server Template                               ║
 ╠════════════════════════════════════════════════════════╣
 ║  Status: Running                                       ║
-║  Port: ${PORT}                                         ║
-║  Network: mainnet-beta                                 ║
-║  Recipient: ${process.env.RECIPIENT_WALLET?.slice(0, 8)}...  ║
+║  Port: ${PORT.toString().padEnd(45)} ║
+║  Network: ${NETWORK.padEnd(42)} ║
+║  Recipient: ${(process.env.RECIPIENT_WALLET?.slice(0, 8) + '...').padEnd(38)} ║
 ╠════════════════════════════════════════════════════════╣
 ║  Endpoints:                                            ║
-║  GET /api/free-data       - Free (0 SOL)              ║
-║  GET /api/premium-data    - 0.001 SOL                 ║
-║  GET /api/ultra-premium   - 0.005 SOL                 ║
-║  GET /api/enterprise-data - 0.01 SOL                  ║
+${endpointLines}
 ║  GET /health              - Health check              ║
 ╚════════════════════════════════════════════════════════╝
   `)

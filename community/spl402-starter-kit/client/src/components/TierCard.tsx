@@ -5,7 +5,7 @@ interface TierCardProps {
   endpoint: Endpoint
   isLoading: boolean
   error: string | null
-  response: unknown
+  response: string | number | boolean | object | null | undefined
   onFetchData: () => void
 }
 
