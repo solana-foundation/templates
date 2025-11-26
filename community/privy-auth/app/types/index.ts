@@ -22,3 +22,11 @@ export interface SolanaWalletInfo {
   chainId: string;
 }
 
+export type SessionClaims = Record<string, unknown> & {
+  exp?: number;
+  iat?: number;
+  aud?: string | string[];
+  sid?: string;
+  sub?: string;
+  jti?: string;
+};
