@@ -1,6 +1,6 @@
 # SPL-402 Starter Kit
 
-A full-stack starter template for building payment-gated APIs using the SPL-402 protocol on Solana. Enable pay-per-request APIs with <1s payment verification and zero platform fees.
+A full-stack starter template for building payment-gated APIs using the SPL-402 protocol on Solana. Enable pay-per-request APIs with 500ms payment verification and zero platform fees.
 
 ## What is SPL-402?
 
@@ -27,7 +27,7 @@ Learn more: [spl402.org](http://spl402.org) | [GitHub](http://github.com/astroha
 
 ### Prerequisites
 
-- Node.js 18 or higher
+- Node.js 22 or higher
 - A Solana wallet (Phantom, Solflare, etc.)
 - SOL on mainnet for testing payments
 
@@ -43,8 +43,9 @@ Edit the `.env` file with your configuration:
 
 ```env
 PORT=3001
-RECIPIENT_WALLET=your_solana_wallet_address
-SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
+RECIPIENT_WALLET=your_solana_wallet_address_here
+SOLANA_NETWORK=devnet
+SOLANA_RPC_URL=https://api.devnet.solana.com
 FRONTEND_URL=http://localhost:5173
 ```
 
@@ -138,21 +139,20 @@ app.get('/api/your-endpoint', (req: Request, res: Response) => {
 
 **Security**: Never commit `.env` files. Use HTTPS in production. Set appropriate CORS origins.
 
-## Testing on Devnet
+## Mainnet deployment
 
-To test without spending real SOL, switch to Devnet:
+Devnet by default, to switch to mainnet:
 
 **Server** - Update `.env`:
 
 ```env
-SOLANA_RPC_URL=https://api.devnet.solana.com
+SOLANA_NETWORK=mainnet
+SOLANA_RPC_URL=solana_mainnet_RPC_here
 ```
 
-**Client** - Connect wallet and switch network to Devnet in your wallet settings (Phantom, Solflare, etc.)
+**Client** - Connect wallet and switch network to Mainnet in your wallet settings (Phantom, Solflare, etc.)
 
-**Get Devnet SOL**: Use the [Solana Faucet](https://faucet.solana.com) to get free test SOL
-
-**Important**: Ensure both wallet AND server are on the same network (both Devnet or both Mainnet)
+**Important**: Ensure both wallet AND server are on the same network (both devnet or both mainnet)
 
 ## Resources
 
