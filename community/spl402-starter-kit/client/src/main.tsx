@@ -11,10 +11,7 @@ import './index.css'
 function Root() {
   const networkEnv = import.meta.env.VITE_SOLANA_NETWORK || 'devnet'
   const network = networkEnv === 'mainnet-beta' ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet
-  const endpoint = useMemo(
-    () => import.meta.env.VITE_SOLANA_RPC_URL || clusterApiUrl(network),
-    [network]
-  )
+  const endpoint = useMemo(() => import.meta.env.VITE_SOLANA_RPC_URL || clusterApiUrl(network), [network])
 
   const wallets = useMemo(() => [new PhantomWalletAdapter(), new SolflareWalletAdapter()], [])
 

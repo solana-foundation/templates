@@ -178,7 +178,7 @@ Templates maintained by the Solana community
 
 `gh:solana-foundation/templates/community/moneymq-x402`
 
-> Complete x402 demo with MoneyMQ, showing micropayment-protected APIs on Solana working locally with minimal setup
+> Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana
 
 `x402` `moneymq` `payments` `micropayments` `solana` `api-monetization` `kora` `facilitator` `typescript`
 

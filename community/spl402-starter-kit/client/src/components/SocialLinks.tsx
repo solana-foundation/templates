@@ -7,7 +7,7 @@ interface SocialLinksProps {
   textSize?: string
 }
 
-export default function SocialLinks({ textSize = "text-base" }: SocialLinksProps) {
+export default function SocialLinks({ textSize = 'text-base' }: SocialLinksProps) {
   return (
     <div className="flex flex-wrap items-center justify-center gap-6">
       <a

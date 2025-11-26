@@ -18,10 +18,9 @@ app.use(
 
 app.use(express.json())
 
-const NETWORK = process.env.SOLANA_NETWORK as 'mainnet-beta' | 'devnet' || 'devnet'
-const DEFAULT_RPC_URL = NETWORK === 'mainnet-beta'
-  ? 'https://api.mainnet-beta.solana.com'
-  : 'https://api.devnet.solana.com'
+const NETWORK = (process.env.SOLANA_NETWORK as 'mainnet-beta' | 'devnet') || 'devnet'
+const DEFAULT_RPC_URL =
+  NETWORK === 'mainnet-beta' ? 'https://api.mainnet-beta.solana.com' : 'https://api.devnet.solana.com'
 
 const ROUTES = [
   { path: '/api/free-data', price: 0 },
@@ -117,7 +116,7 @@ app.get('/api/enterprise-data', (_req: Request, res: Response) => {
 })
 
 app.listen(PORT, () => {
-  const endpointLines = ROUTES.map(route => {
+  const endpointLines = ROUTES.map((route) => {
     const priceDisplay = route.price === 0 ? 'Free (0 SOL)' : `${route.price} SOL`
     const pathPadded = `GET ${route.path}`.padEnd(30)
     return `║  ${pathPadded} - ${priceDisplay.padEnd(20)} ║`

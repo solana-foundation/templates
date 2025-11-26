@@ -377,7 +377,7 @@
         "usecase": "Payments"
       },
       {
-        "description": "Complete x402 demo with MoneyMQ, showing micropayment-protected APIs on Solana working locally with minimal setup",
+        "description": "Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana",
         "id": "gh:solana-foundation/templates/community/moneymq-x402",
         "image": "community/moneymq-x402/og-image.png",
         "keywords": [
