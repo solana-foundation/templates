@@ -146,11 +146,16 @@ Devnet by default, to switch to mainnet:
 **Server** - Update `.env`:
 
 ```env
-SOLANA_NETWORK=mainnet
+SOLANA_NETWORK=mainnet-beta
 SOLANA_RPC_URL=solana_mainnet_RPC_here
 ```
 
-**Client** - Connect wallet and switch network to Mainnet in your wallet settings (Phantom, Solflare, etc.)
+**Client** - Update `.env`:
+
+```env
+VITE_SOLANA_NETWORK=mainnet-beta
+VITE_SOLANA_RPC_URL=solana_mainnet_RPC_here
+```
 
 **Important**: Ensure both wallet AND server are on the same network (both devnet or both mainnet)
 
