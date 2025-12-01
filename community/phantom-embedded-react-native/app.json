@@ -4,25 +4,28 @@
     "slug": "phantom-embedded-wallet",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/default.png",
     "userInterfaceStyle": "dark",
     "scheme": "phantomwallet",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#1a1a1a"
+      "resizeMode": "cover",
+      "backgroundColor": "#AB9FF2"
     },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.yawei.phantomwallet",
-      "appleTeamId": "837KBXFC63"
+      "appleTeamId": "837KBXFC63",
+      "icon": "./assets/default.png"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#1a1a1a"
+        "foregroundImage": "./assets/default.png",
+        "monochromeImage": "./assets/android-notification-icon.png",
+        "backgroundColor": "#AB9FF2"
       },
-      "package": "com.yawei.phantomwallet"
+      "package": "com.yawei.phantomwallet",
+      "icon": "./assets/default.png"
     },
     "web": {
       "favicon": "./assets/favicon.png"

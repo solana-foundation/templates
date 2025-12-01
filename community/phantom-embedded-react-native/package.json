@@ -66,9 +66,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.28.4",
-    "@phantom/react-native-sdk": "1.0.0-beta.21",
+    "@phantom/react-native-sdk": "1.0.0-beta.22",
     "@solana/web3.js": "^1.95.0",
-    "expo": "~53.0.0",
+    "expo": "~54.0.0",
     "expo-auth-session": "~6.2.1",
     "expo-clipboard": "~7.1.5",
     "expo-router": "~5.1.7",
