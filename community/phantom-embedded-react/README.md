@@ -1,11 +1,11 @@
 # Phantom Embedded Wallet React Starter
 
-A modern, production-ready starter template for building Solana dApps with Phantom's Embedded Wallet SDK.
+A modern, production-ready starter template for building Solana dApps with the [Phantom Connect SDK](https://docs.phantom.com).
 
 ## Features
 
 - ⚡️ **Next.js 16** - Latest App Router with React Server Components
-- 👻 **Phantom SDK** - Integrated Phantom Browser & React SDK
+- 👻 **Phantom Connect SDK** - Integrated wallet with built-in modal UI
 - 🎨 **Tailwind CSS** - Utility-first styling with custom design tokens
 - 🌗 **Dark Mode** - Built-in dark mode support
 - 📱 **Responsive** - Mobile-first responsive design
@@ -14,8 +14,8 @@ A modern, production-ready starter template for building Solana dApps with Phant
 ## Tech Stack
 
 - [Next.js](https://nextjs.org/) - React framework
-- [@phantom/browser-sdk](https://www.npmjs.com/package/@phantom/browser-sdk) - Phantom wallet integration
-- [@phantom/react-sdk](https://www.npmjs.com/package/@phantom/react-sdk) - React hooks for Phantom
+- [@phantom/react-sdk](https://docs.phantom.com) - Phantom Connect SDK for React
+- [@phantom/browser-sdk](https://docs.phantom.com) - Phantom Connect SDK core
 - [@solana/web3.js](https://solana-labs.github.io/solana-web3.js/) - Solana JavaScript API
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
 
@@ -123,6 +123,6 @@ ISC
 
 ## Learn More
 
-- [Phantom Embedded Wallet Docs](https://docs.phantom.app/embedded-wallet)
+- [Phantom Connect SDK Docs](https://docs.phantom.com)
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Solana Web3.js Documentation](https://solana-labs.github.io/solana-web3.js/)

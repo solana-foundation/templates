@@ -23,7 +23,7 @@ export default function Home() {
             <Image src="/phantom-logo.png" alt="Phantom Logo" width={80} height={80} priority />
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-ink">Phantom Embedded Wallet</h1>
-          <p className="text-lg text-muted">Connect your Phantom wallet to get started</p>
+          <p className="text-lg text-muted">Sign in with Google, Apple, or Phantom to get started</p>
         </header>
 
         {/* Main Card */}
@@ -40,11 +40,11 @@ export default function Home() {
               <ul className="space-y-3 text-text-default">
                 <li className="flex items-start gap-3">
                   <span className="text-brand font-bold">1.</span>
-                  <span>Click the "Connect Wallet" button above</span>
+                  <span>Click "Login with Phantom" above</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-brand font-bold">2.</span>
-                  <span>Approve the connection in your Phantom wallet</span>
+                  <span>Choose your sign-in method (Google, Apple, Phantom, or discovered wallets)</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-brand font-bold">3.</span>
@@ -60,12 +60,12 @@ export default function Home() {
           <p>
             Built with{' '}
             <a
-              href="https://phantom.app"
+              href="https://docs.phantom.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-link hover:underline"
             >
-              Phantom SDK
+              Phantom Connect SDK
             </a>
           </p>
         </footer>

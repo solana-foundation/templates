@@ -22,8 +22,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@phantom/browser-sdk": "^1.0.0-beta.18",
-    "@phantom/react-sdk": "^1.0.0-beta.21",
+    "@phantom/browser-sdk": "^1.0.0-beta.22",
+    "@phantom/react-sdk": "^1.0.0-beta.22",
     "@solana/web3.js": "^1.95.0",
     "@tailwindcss/postcss": "^4.1.17",
     "lucide-react": "^0.553.0",

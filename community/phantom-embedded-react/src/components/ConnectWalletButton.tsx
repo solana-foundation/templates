@@ -1,29 +1,41 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import {
-  useConnect,
-  useDisconnect,
-  useIsPhantomLoginAvailable,
-  useIsExtensionInstalled,
-  useAccounts,
-} from '@phantom/react-sdk'
-import ConnectionModal from './ConnectionModal'
+import { useDisconnect, useAccounts, usePhantom, useModal } from '@phantom/react-sdk'
 import PhantomIcon from './icons/PhantomIcon'
 
+/**
+ * ConnectWalletButton - Main wallet connection component
+ *
+ * Phantom Connect SDK (Beta 22+)
+ * @see https://docs.phantom.com
+ *
+ * Uses the SDK's built-in modal for connection:
+ * - useModal() hook controls the built-in connection modal
+ * - Modal handles Google, Apple, Phantom Login, and extension connections
+ * - Theming is configured in ConnectionProvider via theme prop
+ */
 export default function ConnectWalletButton() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [balance, setBalance] = useState<number | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const { connect, isConnecting, error } = useConnect()
+  // SDK built-in modal hook
+  const { open: openModal, isOpened: isModalOpen } = useModal()
+
+  // Connection state hooks
   const { disconnect } = useDisconnect()
-  const { isAvailable: isPhantomAvailable } = useIsPhantomLoginAvailable()
-  const { isInstalled: isExtensionInstalled } = useIsExtensionInstalled()
   const accounts = useAccounts()
 
-  const isConnected = accounts && accounts.length > 0
+  // usePhantom provides isConnected, isLoading state
+  const { isLoading: isSDKLoading, isConnected: phantomConnected } = usePhantom()
+
+  // Check connected state from both accounts and phantom hook
+  const isConnected = (accounts && accounts.length > 0) || phantomConnected
+
+  // Get the first account address safely
+  const primaryAccount = accounts?.[0]
+  const primaryAddress = primaryAccount?.address
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -40,7 +52,7 @@ export default function ConnectWalletButton() {
   // Fetch balance when connected
   useEffect(() => {
     const fetchBalance = async () => {
-      if (isConnected && accounts[0]) {
+      if (isConnected && primaryAddress) {
         try {
           // Using Solana web3.js to fetch balance
           const { Connection, PublicKey } = await import('@solana/web3.js')
@@ -51,7 +63,7 @@ export default function ConnectWalletButton() {
             `https://api.${process.env.NEXT_PUBLIC_SOLANA_NETWORK || 'mainnet-beta'}.solana.com`
 
           const connection = new Connection(rpcUrl)
-          const publicKey = new PublicKey(accounts[0].address)
+          const publicKey = new PublicKey(primaryAddress)
           const balanceInLamports = await connection.getBalance(publicKey)
           setBalance(balanceInLamports / 1e9) // Convert lamports to SOL
         } catch (err) {
@@ -62,17 +74,9 @@ export default function ConnectWalletButton() {
     }
 
     fetchBalance()
-  }, [isConnected, accounts])
+  }, [isConnected, primaryAddress])
 
-  const handleConnect = async (provider: 'google' | 'apple' | 'injected') => {
-    try {
-      await connect({ provider })
-      setIsModalOpen(false)
-    } catch (err) {
-      console.error('Connection error:', err)
-    }
-  }
-
+  // Handle disconnect
   const handleDisconnect = async () => {
     try {
       await disconnect()
@@ -83,10 +87,25 @@ export default function ConnectWalletButton() {
     }
   }
 
+  // Format address for display
   const formatAddress = (address: string) => {
     return `${address.slice(0, 4)}...${address.slice(-4)}`
   }
 
+  // Show loading state while SDK initializes
+  if (isSDKLoading) {
+    return (
+      <button
+        disabled
+        className="flex items-center gap-3 px-6 py-3 bg-phantom/50 text-white rounded-xl font-semibold cursor-wait"
+      >
+        <PhantomIcon className="w-6 h-6 animate-pulse" />
+        <span>Loading...</span>
+      </button>
+    )
+  }
+
+  // Connected state - show address and dropdown
   if (isConnected) {
     return (
       <div className="relative" ref={dropdownRef}>
@@ -97,8 +116,8 @@ export default function ConnectWalletButton() {
           {/* Phantom icon */}
           <PhantomIcon className="w-6 h-6" />
 
-          {/* Address */}
-          <span className="text-sm font-semibold">{formatAddress(accounts[0].address)}</span>
+          {/* Address display */}
+          <span className="text-sm font-semibold">{primaryAddress ? formatAddress(primaryAddress) : 'Connected'}</span>
 
           {/* Chevron */}
           <svg
@@ -122,7 +141,7 @@ export default function ConnectWalletButton() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-muted mb-1">Connected Account</p>
-                  <p className="text-sm font-mono font-semibold text-ink truncate">{accounts[0].address}</p>
+                  <p className="text-sm font-mono font-semibold text-ink truncate">{primaryAddress || 'Unknown'}</p>
                 </div>
               </div>
 
@@ -139,8 +158,9 @@ export default function ConnectWalletButton() {
             <div className="p-2">
               <button
                 onClick={() => {
-                  navigator.clipboard.writeText(accounts[0].address)
-                  // Optional: show toast notification
+                  if (primaryAddress) {
+                    navigator.clipboard.writeText(primaryAddress)
+                  }
                 }}
                 className="w-full flex items-center gap-3 px-3 py-2 text-left text-sm text-ink hover:bg-gray-100 rounded-lg transition-colors"
               >
@@ -176,26 +196,15 @@ export default function ConnectWalletButton() {
     )
   }
 
+  // Disconnected state - show connect button that opens SDK modal
   return (
-    <>
-      <button
-        onClick={() => setIsModalOpen(true)}
-        disabled={isConnecting}
-        className="group flex items-center gap-3 px-6 py-3 bg-phantom text-white rounded-xl font-semibold hover:bg-phantom-dark focus:outline-none focus:ring-2 focus:ring-phantom-light transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-phantom/20 hover:shadow-xl hover:shadow-phantom/30"
-      >
-        <PhantomIcon className="w-6 h-6" />
-        <span>{isConnecting ? 'Connecting...' : 'Login with Phantom'}</span>
-      </button>
-
-      <ConnectionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConnect={handleConnect}
-        isConnecting={isConnecting}
-        isPhantomAvailable={isPhantomAvailable}
-        isExtensionInstalled={isExtensionInstalled}
-        error={error}
-      />
-    </>
+    <button
+      onClick={openModal}
+      disabled={isModalOpen}
+      className="group flex items-center gap-3 px-6 py-3 bg-phantom text-white rounded-xl font-semibold hover:bg-phantom-dark focus:outline-none focus:ring-2 focus:ring-phantom-light transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-phantom/20 hover:shadow-xl hover:shadow-phantom/30"
+    >
+      <PhantomIcon className="w-6 h-6" />
+      <span>Login with Phantom</span>
+    </button>
   )
 }

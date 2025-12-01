@@ -5,7 +5,7 @@ import { ThemeProvider } from '@/provider/ThemeProvider'
 
 export const metadata: Metadata = {
   title: 'Phantom Embedded Wallet',
-  description: 'Phantom Embedded Wallet React Starter',
+  description: 'Built with Phantom Connect SDK - React Starter',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
