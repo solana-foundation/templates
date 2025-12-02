@@ -94,6 +94,14 @@ Solana Mobile Templates
 
 `expo` `mobile-wallet-adapter` `react-native` `solana-web3js`
 
+### [web3js-expo-minimal](mobile/web3js-expo-minimal)
+
+`gh:solana-foundation/templates/mobile/web3js-expo-minimal`
+
+> A minimal template for building a Solana mobile app with Expo and React Native.
+
+`expo` `mobile-wallet-adapter` `react-native` `solana-web3js`
+
 ### [web3js-expo-paper](mobile/web3js-expo-paper)
 
 `gh:solana-foundation/templates/mobile/web3js-expo-paper`
@@ -173,6 +181,22 @@ Templates maintained by the Solana community
 > x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
+
+### [moneymq-x402](community/moneymq-x402)
+
+`gh:solana-foundation/templates/community/moneymq-x402`
+
+> Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana
+
+`x402` `moneymq` `payments` `micropayments` `solana` `api-monetization` `kora` `facilitator` `typescript`
+
+### [solana-chatgpt-kit](community/solana-chatgpt-kit)
+
+`gh:solana-foundation/templates/community/solana-chatgpt-kit`
+
+> ChatGPT app with Solana features - Swaps, transfers, staking and data query via natural language. Browser wallets + x402 payments or private key mode
+
+`solana` `chatgpt` `openai` `mcp` `jupiter` `x402` `payments` `swap` `wallet` `defi` `staking` `nextjs` `typescript` `spl-token` `sns`
 
 ### [supabase-auth](community/supabase-auth)
 
