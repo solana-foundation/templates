@@ -94,6 +94,14 @@ Solana Mobile Templates
 
 `expo` `mobile-wallet-adapter` `react-native` `solana-web3js`
 
+### [web3js-expo-minimal](mobile/web3js-expo-minimal)
+
+`gh:solana-foundation/templates/mobile/web3js-expo-minimal`
+
+> A minimal template for building a Solana mobile app with Expo and React Native.
+
+`expo` `mobile-wallet-adapter` `react-native` `solana-web3js`
+
 ### [web3js-expo-paper](mobile/web3js-expo-paper)
 
 `gh:solana-foundation/templates/mobile/web3js-expo-paper`
