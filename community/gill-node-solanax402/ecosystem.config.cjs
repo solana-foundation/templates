@@ -15,11 +15,8 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: '500M',
-      cwd: '/Users/adity1/Desktop/solana/x402_ts',
+      cwd: process.cwd(),
       node_args: '-r dotenv/config',
-      env: {
-        DOTENV_CONFIG_PATH: '/Users/adity1/Desktop/solana/x402_ts/.env',
-      },
       error_file: './logs/facilitator-error.log',
       out_file: './logs/facilitator-out.log',
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
@@ -33,11 +30,8 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: '500M',
-      cwd: '/Users/adity1/Desktop/solana/x402_ts',
+      cwd: process.cwd(),
       node_args: '-r dotenv/config',
-      env: {
-        DOTENV_CONFIG_PATH: '/Users/adity1/Desktop/solana/x402_ts/.env',
-      },
       error_file: './logs/server-error.log',
       out_file: './logs/server-out.log',
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
@@ -45,4 +39,3 @@ module.exports = {
     },
   ],
 };
-

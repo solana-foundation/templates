@@ -2,7 +2,7 @@
 
 /**
  * TRUE x402 Protocol Test - Instant Finality with Sponsored Transactions
- * 
+ *
  * This test demonstrates TRUE x402 instant finality:
  * 1. Client creates Solana transaction (transfer from client → merchant)
  * 2. Client signs the transaction (authorizes their SOL to move)
@@ -11,7 +11,7 @@
  * 5. Facilitator adds their signature as fee payer (pays gas)
  * 6. Facilitator broadcasts to Solana blockchain
  * 7. INSTANT FINALITY: Client's funds move immediately
- * 
+ *
  * Client's funds are committed instantly (true x402 spec compliance)!
  */
 
@@ -19,14 +19,18 @@ import fs from 'fs';
 import crypto from 'crypto';
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
+import { config } from 'dotenv';
 import { Connection, PublicKey, SystemProgram, Transaction, Keypair } from '@solana/web3.js';
 
-// Configuration
-const SERVER_URL = 'http://localhost:3000';
+// Load environment variables
+config();
+
+// Configuration from environment variables
+const SERVER_URL = process.env.SERVER_URL || 'http://localhost:3000';
 const RESOURCE_URL = '/api/premium-data';
-const FACILITATOR_PUBLIC_KEY = '38dZtt5G8rRTWdokBckLtuWXGb7QG9HSn2sMaJAf1yK3'; // Fee payer
-const MERCHANT_ADDRESS = 'G4EPtLiZgwy4htv2AdgK9A42bxN2Nwug1PJ46d5LjHat'; // Payment recipient
-const RPC_URL = 'https://api.devnet.solana.com';
+const FACILITATOR_PUBLIC_KEY = process.env.FACILITATOR_PUBLIC_KEY || ''; // Fee payer
+const MERCHANT_ADDRESS = process.env.MERCHANT_SOLANA_ADDRESS || ''; // Payment recipient
+const RPC_URL = process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com';
 
 // Load client keypair
 const keypairData = JSON.parse(fs.readFileSync('./test-client-keypair.json', 'utf-8'));
@@ -49,7 +53,7 @@ async function createPaymentWithSponsoredTransaction(amount, recipient, resource
   const nonce = crypto.randomBytes(32).toString('hex');
   const timestamp = Date.now();
   const expiry = timestamp + 3600000; // 1 hour
-  
+
   // 1. Create authorization payload (for nonce verification & replay protection)
   const payload = {
     amount: amount.toString(),
@@ -60,7 +64,7 @@ async function createPaymentWithSponsoredTransaction(amount, recipient, resource
     timestamp: timestamp,
     expiry: expiry,
   };
-  
+
   // 2. Create structured data to sign (for off-chain verification)
   const structuredData = {
     domain: {
@@ -91,7 +95,7 @@ async function createPaymentWithSponsoredTransaction(amount, recipient, resource
       expiry: payload.expiry,
     },
   };
-  
+
   // 3. Sign the structured data (off-chain signature for replay protection)
   console.log('  Client signing authorization payload (Ed25519)...');
   const messageToSign = JSON.stringify(structuredData);
@@ -99,42 +103,44 @@ async function createPaymentWithSponsoredTransaction(amount, recipient, resource
   const authSignature = nacl.sign.detached(messageBytes, clientKeypair.secretKey);
   console.log(' Authorization signed');
   console.log();
-  
+
   // 4. Create actual Solana transaction (TRUE x402 INSTANT FINALITY!)
   console.log(' Client creating Solana transaction...');
   const connection = new Connection(RPC_URL, 'confirmed');
-  
+
   // Get recent blockhash
   const { blockhash } = await connection.getLatestBlockhash('confirmed');
-  
+
   // Create transaction
   const transaction = new Transaction({
     feePayer: new PublicKey(FACILITATOR_PUBLIC_KEY), // Facilitator pays gas!
     recentBlockhash: blockhash,
   });
-  
+
   // Add transfer instruction: Client → Merchant
   transaction.add(
     SystemProgram.transfer({
       fromPubkey: clientKeypair.publicKey, // CLIENT'S SOL WILL MOVE!
-      toPubkey: new PublicKey(recipient),   // Merchant receives
+      toPubkey: new PublicKey(recipient), // Merchant receives
       lamports: Number(amount),
     })
   );
-  
+
   // 5. Client signs the transaction (authorizes their SOL to move)
   console.log('  Client signing transaction (authorizing SOL transfer)...');
   transaction.sign(clientKeypair);
-  
+
   // 6. Serialize the transaction (includes client's signature)
-  const serializedTransaction = transaction.serialize({
-    requireAllSignatures: false, // Facilitator hasn't signed yet
-    verifySignatures: true, // Verify client's signature is valid
-  }).toString('base64');
-  
+  const serializedTransaction = transaction
+    .serialize({
+      requireAllSignatures: false, // Facilitator hasn't signed yet
+      verifySignatures: true, // Verify client's signature is valid
+    })
+    .toString('base64');
+
   console.log(' Transaction signed and serialized');
   console.log();
-  
+
   return {
     payload: payload,
     signature: bs58.encode(authSignature),
@@ -154,25 +160,25 @@ async function accessProtectedResource(paymentRequest) {
   console.log('   3. Verify client signed the transaction ');
   console.log('   4. Facilitator adds signature as fee payer ');
   console.log('   5. Facilitator broadcasts to Solana blockchain ');
-  console.log('   6. CLIENT\'S SOL moves to merchant (instant finality!) ');
+  console.log("   6. CLIENT'S SOL moves to merchant (instant finality!) ");
   console.log('   7. Wait for confirmation ');
   console.log('   8. Grant access to the resource ');
   console.log();
-  console.log('    Client\'s funds committed instantly');
+  console.log("    Client's funds committed instantly");
   console.log();
-  
+
   const response = await fetch(`${SERVER_URL}${RESOURCE_URL}`, {
     method: 'GET',
     headers: {
       'X-Payment': JSON.stringify(paymentRequest),
     },
   });
-  
+
   if (!response.ok) {
     const error = await response.text();
     throw new Error(`Access failed: ${response.status} - ${error}`);
   }
-  
+
   return await response.json();
 }
 
@@ -187,7 +193,7 @@ async function runTest() {
       MERCHANT_ADDRESS, // Merchant address (where payment goes)
       RESOURCE_URL
     );
-    
+
     console.log('Payment Request Created (TRUE x402 Instant Finality):');
     console.log('  Amount: 0.01 SOL (10,000,000 lamports)');
     console.log('  From (client):', clientKeypair.publicKey.toString());
@@ -202,15 +208,15 @@ async function runTest() {
     console.log();
     console.log('='.repeat(70));
     console.log();
-    
+
     // Access protected resource (middleware handles everything)
     const resourceData = await accessProtectedResource(paymentRequest);
-    
+
     console.log(' SUCCESS! Payment processed and access granted!');
     console.log();
     console.log('Response:', JSON.stringify(resourceData, null, 2));
     console.log();
-    
+
     // Extract transaction signature from response
     if (resourceData.data?.payment?.transactionSignature) {
       const txSig = resourceData.data.payment.transactionSignature;
@@ -240,13 +246,13 @@ async function runTest() {
       console.log('     Waited for confirmation');
       console.log();
       console.log('  Result:');
-      console.log('     CLIENT\'S SOL moved to merchant (instant finality!) ');
+      console.log("     CLIENT'S SOL moved to merchant (instant finality!) ");
       console.log('     Facilitator paid gas fee ');
       console.log('     NO debt tracking (on-chain settlement) ');
       console.log('     Protected resource delivered ');
       console.log();
       console.log(' This IS TRUE x402 protocol!');
-      console.log('   Client\'s funds committed instantly on-chain!');
+      console.log("   Client's funds committed instantly on-chain!");
     }
   } catch (error) {
     console.error('\n Test failed:', error.message);
@@ -259,4 +265,3 @@ async function runTest() {
 }
 
 runTest();
-

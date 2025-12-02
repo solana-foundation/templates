@@ -1,9 +1,6 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended"
-  ],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "plugins": ["@typescript-eslint"],
   "parserOptions": {
     "ecmaVersion": 2022,
@@ -20,4 +17,3 @@
     "@typescript-eslint/no-non-null-assertion": "warn"
   }
 }
-

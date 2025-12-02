@@ -3,7 +3,7 @@
  * TypeScript implementation using Gill SDK with Gill template patterns
  */
 
-import express from 'express';
+import express, { type Express } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { getFacilitatorContext } from '../lib/get-facilitator-context.js';
@@ -15,15 +15,16 @@ import {
   getStatsRoute,
   cleanupNoncesRoute,
 } from '../routes/index.js';
+import { REQUEST_BODY_LIMIT, CLEANUP_INTERVAL_MS } from '../lib/constants.js';
 
 // Initialize context
 const context = await getFacilitatorContext();
-const app = express();
+const app: Express = express();
 
 // Setup middleware
 app.use(helmet());
 app.use(cors());
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: REQUEST_BODY_LIMIT }));
 app.use(express.urlencoded({ extended: true }));
 
 // Request logging
@@ -99,7 +100,7 @@ async function start() {
       } catch (error) {
         context.log.error('Cleanup error:', error);
       }
-    }, 60 * 60 * 1000); // Every hour
+    }, CLEANUP_INTERVAL_MS);
 
     // Start server
     app.listen(context.config.port, () => {
@@ -107,7 +108,6 @@ async function start() {
       context.log.info(`Facilitator Public Key: ${context.facilitatorAddress.toString()}`);
       context.log.info(`Solana RPC: ${context.config.solanaRpcUrl}`);
       context.log.info(`Simulation Mode: ${context.config.simulateTransactions}`);
-
     });
   } catch (error) {
     context.log.error('Failed to start Facilitator App:', error);
@@ -129,4 +129,3 @@ process.on('SIGTERM', shutdown);
 start();
 
 export { app, context };
-

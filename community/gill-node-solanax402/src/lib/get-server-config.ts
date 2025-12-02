@@ -46,4 +46,3 @@ export function getServerConfig(): ServerConfig {
     throw error;
   }
 }
-

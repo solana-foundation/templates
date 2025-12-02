@@ -1,6 +1,6 @@
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig, UserConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import viteTsconfigPaths from 'vite-tsconfig-paths'
 import { resolve } from 'node:path'
@@ -19,4 +19,4 @@ export default defineConfig({
   test: {
     globals: true,
   },
-})
+} as UserConfig)
