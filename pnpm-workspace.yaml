@@ -1,4 +1,9 @@
 minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+  - next
+  - '@next/*'
+  - react
+  - react-dom
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@tailwindcss/oxide'
