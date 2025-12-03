@@ -3,12 +3,8 @@
 import Image from 'next/image'
 import ConnectWalletButton from '@/components/ConnectWalletButton'
 import ThemeToggle from '@/components/ThemeToggle'
-import { useAccounts } from '@phantom/react-sdk'
 
 export default function Home() {
-  const accounts = useAccounts()
-  const isConnected = accounts && accounts.length > 0
-
   return (
     <main className="min-h-screen bg-gradient-to-b from-bg-page to-bg-surface p-4 sm:p-8 transition-colors">
       <div className="max-w-4xl mx-auto">

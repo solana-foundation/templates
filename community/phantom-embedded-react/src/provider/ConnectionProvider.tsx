@@ -1,61 +1,64 @@
-'use client'
+'use client';
 
-import { PhantomProvider, darkTheme } from '@phantom/react-sdk'
-import { AddressType } from '@phantom/browser-sdk'
-import { ReactNode } from 'react'
+import { PhantomProvider, darkTheme, AddressType } from "@phantom/react-sdk";
+import { ReactNode } from "react";
 
-interface ConnexionProviderProps {
-  children: ReactNode
+/**
+ * Props for the ConnectionProvider component
+ */
+interface ConnectionProviderProps {
+  children: ReactNode;
 }
 
 /**
  * ConnectionProvider wraps the app with PhantomProvider for wallet connectivity
- *
- * Phantom Connect SDK (Beta 22+)
+ * 
+ * Phantom Connect SDK (Beta 24)
  * @see https://docs.phantom.com
- *
- * Changes in Beta 22:
- * - Removed authOptions (authUrl and redirectUrl are now optional/handled internally)
- * - Added "phantom" provider for Phantom Login authentication
- * - Added theme support with built-in darkTheme and lightTheme
- * - New providers available: "x" (Twitter), "tiktok"
+ * 
+ * Features in Beta 24:
+ * - ConnectButton component for ready-to-use connection UI
+ * - useDiscoveredWallets hook for wallet discovery via Wallet Standard & EIP-6963
+ * - useModal hook controls the built-in connection modal
+ * - Full TypeScript support with proper types
+ * - Automatic wallet detection for injected providers
+ * - Providers: "google", "apple", "phantom", "x", "tiktok", "injected"
  */
-export default function ConnexionProvider({ children }: ConnexionProviderProps) {
+export default function ConnectionProvider({ children }: ConnectionProviderProps) {
   // Debug: Log environment variables (only in development)
   if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
     console.log('🔧 Environment Check:', {
       appId: process.env.NEXT_PUBLIC_PHANTOM_APP_ID ? '✅ Set' : '❌ Missing',
       rpcUrl: process.env.NEXT_PUBLIC_SOLANA_RPC_URL ? '✅ Set' : '❌ Missing',
-    })
+    });
   }
 
   return (
     <PhantomProvider
       config={{
-        // Network support
+        // Network support - Solana blockchain
         addressTypes: [AddressType.solana],
-
         // App ID from Phantom Portal (required for embedded providers)
-        appId: process.env.NEXT_PUBLIC_PHANTOM_APP_ID || '',
-
+        appId: process.env.NEXT_PUBLIC_PHANTOM_APP_ID || "",
         // Authentication providers available to users
-        // Options: "google", "apple", "phantom", "x", "tiktok", "injected"
+        // The modal will automatically detect and display available wallets
         providers: [
-          'google', // Google OAuth
-          'apple', // Apple ID
-          'phantom', // Phantom Login (NEW in beta 22)
-          'injected', // Browser extension
+          "google",     // Google OAuth
+          "apple",      // Apple ID  
+          "phantom",    // Phantom Login
+          "injected",   // Browser extension + discovered wallets via Wallet Standard
         ],
-
         // User wallet connects to existing Phantom ecosystem
-        embeddedWalletType: 'user-wallet',
+        embeddedWalletType: "user-wallet",
       }}
-      // Theme for built-in modal UI
+      // Theme for built-in modal UI (darkTheme or lightTheme available)
       theme={darkTheme}
-      // Optional: App branding for the connection modal
+      // App branding for the connection modal
       appName="Phantom Starter"
+      // App icon displayed in the modal (optional)
+      appIcon="/phantom-logo.png"
     >
       {children}
     </PhantomProvider>
-  )
+  );
 }

@@ -212,20 +212,17 @@ importers:
   community/phantom-embedded-react:
     dependencies:
       '@phantom/browser-sdk':
-        specifier: ^1.0.0-beta.22
-        version: 1.0.0-beta.22(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: ^1.0.0-beta.24
+        version: 1.0.0-beta.24(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
       '@phantom/react-sdk':
-        specifier: ^1.0.0-beta.22
-        version: 1.0.0-beta.22(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(react@19.2.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: ^1.0.0-beta.24
+        version: 1.0.0-beta.24(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.81.4(@babel/core@7.28.4)(@react-native/metro-config@0.81.0(@babel/core@7.28.4)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
       '@solana/web3.js':
         specifier: ^1.95.0
         version: 1.98.4(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@tailwindcss/postcss':
         specifier: ^4.1.17
         version: 4.1.17
-      lucide-react:
-        specifier: ^0.553.0
-        version: 0.553.0(react@19.2.0)
       next:
         specifier: ^16.0.0
         version: 16.0.0(@babel/core@7.28.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -4561,60 +4558,60 @@ packages:
     resolution: {integrity: sha512-IHnV6A+zxU7XwmKFinmYjUcwlyK9+xkG3/s9KcQhI9BjQKycrJ1JRO+FbNYPwZiPKW3je/DR0k7w8/gLa5eaxQ==}
     deprecated: 'The package is now available as "qr": npm install qr'
 
-  '@phantom/api-key-stamper@1.0.0-beta.10':
-    resolution: {integrity: sha512-lMv8ce66/iZW+pW2oyBWwFElRR0H/4X5HYM4PoDy2kpaZzXF3IRbuxAbzgewhGdSWT7Hn5vj1TULgDYCJp+gvQ==}
+  '@phantom/api-key-stamper@1.0.0-beta.12':
+    resolution: {integrity: sha512-2nkCMu/C9cUV1zxySf0fsac+p+m6TIoq8i13z/1K/RdiFi2VikkPDhVFaJuAGcNj7FROwx2vqjMthI4UmDBGnQ==}
 
-  '@phantom/base64url@1.0.0-beta.10':
-    resolution: {integrity: sha512-0iQwIPSpr0rRZLNMrkrkGHQ7yP4i7lWB5jKeG1slG64TXiyPRBVzqx5XjnmONiGGFVtqvXpz+ffXd8lGevEqsQ==}
+  '@phantom/base64url@1.0.0-beta.12':
+    resolution: {integrity: sha512-umw+aCedWhu4eE3cSBwe+OgQJJ5xtdHz3qtHEVEUKhGHwq6aMlJsP5hkd9BrfarlZgt56fgi3TwRJvQps+eCnw==}
 
-  '@phantom/browser-injected-sdk@1.0.0-beta.7':
-    resolution: {integrity: sha512-aQd470/mg3Rw/zVWzx7BWSUO2tFvRnDPA3AiVuMgg+OPjfWHbbKzHCZ1qX7NQpZRcUECjGWD0GEQr0++nkQXpg==}
+  '@phantom/browser-injected-sdk@1.0.0-beta.9':
+    resolution: {integrity: sha512-c+rAvGaMqogHOG0Mngcxxs5tQCM6Bdd4C9zkZGZD5YdPCWT/QYTlzQEy5/r346Kt4TMYT9SwZrLhDHJpLHevNw==}
 
-  '@phantom/browser-sdk@1.0.0-beta.22':
-    resolution: {integrity: sha512-NH+AJ6CML6u7tEzSQR/+4cehedBxQrWpR4RNGxPM25zKsEn1Y990/ksiZHzM7HwonkGa05Bw9mUyftZtJW54ww==}
+  '@phantom/browser-sdk@1.0.0-beta.24':
+    resolution: {integrity: sha512-cKB66+GJYK2yeWopfrf6kRhWvh3Xhlwf4glWyS1kCX+AMaSS+rABdZcDD8+va7B5ps0XeA953aRNKYIGBqGblQ==}
 
-  '@phantom/chain-interfaces@1.0.0-beta.10':
-    resolution: {integrity: sha512-GDSOVWY/YDsWJ5hx48beGSXw2T9Xb9GeGiR5i7IB1NPeE/Cgm7VhsKbRz3dKYm5/ygdWto3tUWTZdbEbnIqmVQ==}
+  '@phantom/chain-interfaces@1.0.0-beta.12':
+    resolution: {integrity: sha512-SOCGcx9r0ZZZniyDoUX5qlFp0TOe8eSLOYUKkijnsWtx5SQXHpHUmbEUpHetqOXQ6F23bpRXb/ujnUFrPbiGgA==}
 
-  '@phantom/client@1.0.0-beta.22':
-    resolution: {integrity: sha512-+584zsOb22DWsn5yrDVklKDXSTiJjijIZZRCwY0RaUkzrDAKbL1Gplt6ml0LFib4a5a+O5gpJH8Lo7hv4arNAg==}
+  '@phantom/client@1.0.0-beta.24':
+    resolution: {integrity: sha512-jn0PY/gRRWmSc0sUCdZkwx5Tny4lxs70KA/D15DtnQ81B00iVfmPGgQAV9LISGqWXCv7++C7aZI6SvlwhLSFkg==}
 
-  '@phantom/constants@1.0.0-beta.10':
-    resolution: {integrity: sha512-2aTvDklNSV4Ft0WB89IQMwbI7sV2QMNf6Od5ufoVMHFLodUhiDKCWDyvd+SdG2VjzfYnmSMuTefwNBfScy3Yww==}
+  '@phantom/constants@1.0.0-beta.12':
+    resolution: {integrity: sha512-oH4p1VC9lfgYfgXFD009VztizPgGUViGo4MobT/PEnfdD9KI98zjXwD1eJ+UKf6miGGU9YeO0yFQcUCChRsMDA==}
 
-  '@phantom/crypto@1.0.0-beta.10':
-    resolution: {integrity: sha512-xzxywvTCViCICUBMqMgd+a7xAlWUMyjFMdp7Mdbs+VUl89tcUajEZ/KpLStMVMSCA20t8XzSOai8kcE1bzcrxA==}
+  '@phantom/crypto@1.0.0-beta.12':
+    resolution: {integrity: sha512-E4ADIQycn9mhxqgZDkbyYz/ihdHku8JMA3Fkgv37+YW/iWCBfrq4JwFzK2EdQJVlCd9SCRt+v4f1LTXsxptAXw==}
 
-  '@phantom/embedded-provider-core@1.0.0-beta.22':
-    resolution: {integrity: sha512-4oXmWv1y2Kar0FGsxQhkechb7GDlvU9U0FBHTpXJU6wUpdrMuWwFWQS1D+NznbT8a6ssMu6EKuDxzfdVAaAPqQ==}
+  '@phantom/embedded-provider-core@1.0.0-beta.24':
+    resolution: {integrity: sha512-uP0jC+HuAUzv8R28fNKrzfzxQ7KDALFPEj7SVwa2BjvDuK2d0kWd71MfK46rSxP8ko/fvVqvwzwxq5d0gYN01g==}
     peerDependencies:
       typescript: '>=4.5.0'
 
-  '@phantom/indexed-db-stamper@1.0.0-beta.3':
-    resolution: {integrity: sha512-k4TpxWYlIP2YkHARTh4umqoyXpTZsIO3gGBOIomRNlJ5ZIh7t6p73XfpHsYP68XaEHZR7UI4L3z6aOuE7CB60g==}
+  '@phantom/indexed-db-stamper@1.0.0-beta.5':
+    resolution: {integrity: sha512-h0tL1PrvyOGCfmyzjS9U4+1gFlyN7PpINDujq9lrG0bulfbahBLnBs+vsZ4Oddde1MfsMql5np7S+bNEsLVmyg==}
 
   '@phantom/openapi-wallet-service@0.1.11':
     resolution: {integrity: sha512-EWu0qpzNjKNuO32tMYoD4Wy5yfsJdJ1OZu1RFBW7BXgFNt34t7oY0EFho5v3OPQ/jFfYDesaf6HG5cB4LYib8Q==}
 
-  '@phantom/parsers@1.0.0-beta.10':
-    resolution: {integrity: sha512-5PmlMnEWGhhe5mPfBc30ujJm1fbrK4WTygXrTFa2ViXp3Uv2N1s4HK+3VdmS21geioBV2ets8DavzbfYv3SnAw==}
+  '@phantom/parsers@1.0.0-beta.12':
+    resolution: {integrity: sha512-ww1HUpMewevG2i7EKQUrVFRC7TnaujuInie8H3dHcy+wYHyokgzOOXdoFBmCaEOuX10PvxtBIfi7vFYflRl4cw==}
 
-  '@phantom/react-sdk@1.0.0-beta.22':
-    resolution: {integrity: sha512-TSQC3aGlVxQweioo+cLB3iB6aHncJFsnhU563BI1R98EnlSiBekTe3z/tXrGLAZLhMCyeSh00z5emOn6FeNTtw==}
+  '@phantom/react-sdk@1.0.0-beta.24':
+    resolution: {integrity: sha512-Okf9Fcar2ppauKTBgIOVfMiSo8ioqadrk6t6H02winn2845G/Rfk2/IG+3JcUCTOlztSoZe94pP1J5P1LUDWHQ==}
     peerDependencies:
       react: '>=19.0.0'
 
-  '@phantom/sdk-types@1.0.0-beta.10':
-    resolution: {integrity: sha512-cUg4yve/+XZY4puGbZg/n+hFUdNVod4gRj1m/n86KOD+rC6OEaIk+lYleCStOn4TiMfcImxPdYVAG8Izrf2vbg==}
+  '@phantom/sdk-types@1.0.0-beta.12':
+    resolution: {integrity: sha512-EP6tqPaZsJAKDXZoY7XRkUmJB6AeVuI19r1o582MgHXKd9IjWhS7+5DOUp6hudR9icJY5KAcKPP1Flo6SD4pDg==}
 
-  '@phantom/utils@1.0.0-beta.22':
-    resolution: {integrity: sha512-UdSRazTV91TYiGme3q8Ka8Nsa5K4owsSCQshFHDROeInhclFKYEqkyCx7gKFTl511+JvAySUpFpQ8LF8j4Pfcg==}
+  '@phantom/utils@1.0.0-beta.24':
+    resolution: {integrity: sha512-TzhS7K2AaSdUD8z5X3vc96+GYTAi5oGKi6tMAcp8KAh+TjippDVkrlNkkYEMo2CdX6VFAofGQVKPNrDEwTdtUA==}
 
-  '@phantom/wallet-sdk-ui@1.0.0-beta.1':
-    resolution: {integrity: sha512-F+yCaF27+nZpbt72wfy4fdXUkicdV2PcdiM0hDDHo1DahCIChn7G2XFkg/FVG17lBaFAn8SHXWf/S7e69fDRRA==}
+  '@phantom/wallet-sdk-ui@1.0.0-beta.3':
+    resolution: {integrity: sha512-GT6UUYSZSfHoXZ+Dxe2jjpfGWXO3OI+psD9QWPkWx1NFRpSgG7NBIeDv9S9eyR8axxov+hxQ5X6bg9k9fJfsyQ==}
     peerDependencies:
       react: '>=19.0.0'
-      react-native: '*'
+      react-native: '>=0.79.0'
       react-native-svg: '>=15.0.0'
     peerDependenciesMeta:
       react-native:
@@ -10361,11 +10358,6 @@ packages:
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  lucide-react@0.553.0:
-    resolution: {integrity: sha512-BRgX5zrWmNy/lkVAe0dXBgd7XQdZ3HTf+Hwe3c9WK6dqgnj9h+hxV+MDncM88xDWlCq27+TKvHGE70ViODNILw==}
-    peerDependencies:
-      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
   magic-string@0.30.19:
     resolution: {integrity: sha512-2N21sPY9Ws53PZvsEpVtNuSW+ScYbQdp4b9qUaL+9QkHUrGFKo56Lg9Emg5s9V/qrtNBmiR01sYhUOwu3H+VOw==}
 
@@ -15511,11 +15503,11 @@ snapshots:
 
   '@paulmillr/qr@0.2.1': {}
 
-  '@phantom/api-key-stamper@1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
+  '@phantom/api-key-stamper@1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@phantom/base64url': 1.0.0-beta.10
-      '@phantom/crypto': 1.0.0-beta.10
-      '@phantom/sdk-types': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/base64url': 1.0.0-beta.12
+      '@phantom/crypto': 1.0.0-beta.12
+      '@phantom/sdk-types': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
       axios: 1.13.1
       bs58: 6.0.0
       buffer: 6.0.3
@@ -15526,12 +15518,12 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@phantom/base64url@1.0.0-beta.10': {}
+  '@phantom/base64url@1.0.0-beta.12': {}
 
-  '@phantom/browser-injected-sdk@1.0.0-beta.7(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
+  '@phantom/browser-injected-sdk@1.0.0-beta.9(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@phantom/constants': 1.0.0-beta.10
-      '@phantom/sdk-types': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/constants': 1.0.0-beta.12
+      '@phantom/sdk-types': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -15539,17 +15531,17 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@phantom/browser-sdk@1.0.0-beta.22(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@phantom/browser-sdk@1.0.0-beta.24(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
-      '@phantom/base64url': 1.0.0-beta.10
-      '@phantom/browser-injected-sdk': 1.0.0-beta.7(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/chain-interfaces': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/client': 1.0.0-beta.22(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/constants': 1.0.0-beta.10
-      '@phantom/embedded-provider-core': 1.0.0-beta.22(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/indexed-db-stamper': 1.0.0-beta.3(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/parsers': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/sdk-types': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/base64url': 1.0.0-beta.12
+      '@phantom/browser-injected-sdk': 1.0.0-beta.9(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/chain-interfaces': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/client': 1.0.0-beta.24(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/constants': 1.0.0-beta.12
+      '@phantom/embedded-provider-core': 1.0.0-beta.24(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/indexed-db-stamper': 1.0.0-beta.5(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/parsers': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/sdk-types': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
       axios: 1.13.1
       bs58: 6.0.0
       buffer: 6.0.3
@@ -15567,11 +15559,11 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@phantom/chain-interfaces@1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@phantom/chain-interfaces@1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
-      '@phantom/constants': 1.0.0-beta.10
-      '@phantom/parsers': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/sdk-types': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/constants': 1.0.0-beta.12
+      '@phantom/parsers': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/sdk-types': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - '@gql.tada/svelte-support'
       - '@gql.tada/vue-support'
@@ -15583,15 +15575,15 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@phantom/client@1.0.0-beta.22(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
+  '@phantom/client@1.0.0-beta.24(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@phantom/api-key-stamper': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/base64url': 1.0.0-beta.10
-      '@phantom/constants': 1.0.0-beta.10
-      '@phantom/crypto': 1.0.0-beta.10
+      '@phantom/api-key-stamper': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/base64url': 1.0.0-beta.12
+      '@phantom/constants': 1.0.0-beta.12
+      '@phantom/crypto': 1.0.0-beta.12
       '@phantom/openapi-wallet-service': 0.1.11
-      '@phantom/sdk-types': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/utils': 1.0.0-beta.22
+      '@phantom/sdk-types': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/utils': 1.0.0-beta.24
       axios: 1.13.1
       bs58: 6.0.0
       buffer: 6.0.3
@@ -15602,24 +15594,24 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@phantom/constants@1.0.0-beta.10': {}
+  '@phantom/constants@1.0.0-beta.12': {}
 
-  '@phantom/crypto@1.0.0-beta.10':
+  '@phantom/crypto@1.0.0-beta.12':
     dependencies:
       bs58: 5.0.0
       buffer: 6.0.3
       tweetnacl: 1.0.3
 
-  '@phantom/embedded-provider-core@1.0.0-beta.22(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@phantom/embedded-provider-core@1.0.0-beta.24(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
-      '@phantom/api-key-stamper': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/base64url': 1.0.0-beta.10
-      '@phantom/chain-interfaces': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/client': 1.0.0-beta.22(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/constants': 1.0.0-beta.10
-      '@phantom/parsers': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/sdk-types': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/utils': 1.0.0-beta.22
+      '@phantom/api-key-stamper': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/base64url': 1.0.0-beta.12
+      '@phantom/chain-interfaces': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/client': 1.0.0-beta.24(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/constants': 1.0.0-beta.12
+      '@phantom/parsers': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/sdk-types': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/utils': 1.0.0-beta.24
       bs58: 6.0.0
       buffer: 6.0.3
       eventemitter3: 5.0.1
@@ -15634,12 +15626,12 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@phantom/indexed-db-stamper@1.0.0-beta.3(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@phantom/indexed-db-stamper@1.0.0-beta.5(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
-      '@phantom/base64url': 1.0.0-beta.10
-      '@phantom/crypto': 1.0.0-beta.10
-      '@phantom/embedded-provider-core': 1.0.0-beta.22(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/sdk-types': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/base64url': 1.0.0-beta.12
+      '@phantom/crypto': 1.0.0-beta.12
+      '@phantom/embedded-provider-core': 1.0.0-beta.24(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/sdk-types': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
       bs58: 6.0.0
       buffer: 6.0.3
     transitivePeerDependencies:
@@ -15659,12 +15651,12 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@phantom/parsers@1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@phantom/parsers@1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
-      '@phantom/base64url': 1.0.0-beta.10
-      '@phantom/constants': 1.0.0-beta.10
-      '@phantom/sdk-types': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/utils': 1.0.0-beta.22
+      '@phantom/base64url': 1.0.0-beta.12
+      '@phantom/constants': 1.0.0-beta.12
+      '@phantom/sdk-types': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/utils': 1.0.0-beta.24
       '@solana/transactions': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/web3.js': 1.98.4(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
       bs58: 6.0.0
@@ -15685,12 +15677,12 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@phantom/react-sdk@1.0.0-beta.22(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(react@19.2.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@phantom/react-sdk@1.0.0-beta.24(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.81.4(@babel/core@7.28.4)(@react-native/metro-config@0.81.0(@babel/core@7.28.4)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
-      '@phantom/browser-sdk': 1.0.0-beta.22(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/chain-interfaces': 1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/constants': 1.0.0-beta.10
-      '@phantom/wallet-sdk-ui': 1.0.0-beta.1(react@19.2.0)
+      '@phantom/browser-sdk': 1.0.0-beta.24(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/chain-interfaces': 1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/constants': 1.0.0-beta.12
+      '@phantom/wallet-sdk-ui': 1.0.0-beta.3(react-native@0.81.4(@babel/core@7.28.4)(@react-native/metro-config@0.81.0(@babel/core@7.28.4)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)
       react: 19.2.0
     transitivePeerDependencies:
       - '@gql.tada/svelte-support'
@@ -15705,7 +15697,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@phantom/sdk-types@1.0.0-beta.10(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
+  '@phantom/sdk-types@1.0.0-beta.12(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@phantom/openapi-wallet-service': 0.1.11
       '@solana/web3.js': 1.98.4(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
@@ -15717,11 +15709,13 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@phantom/utils@1.0.0-beta.22': {}
+  '@phantom/utils@1.0.0-beta.24': {}
 
-  '@phantom/wallet-sdk-ui@1.0.0-beta.1(react@19.2.0)':
+  '@phantom/wallet-sdk-ui@1.0.0-beta.3(react-native@0.81.4(@babel/core@7.28.4)(@react-native/metro-config@0.81.0(@babel/core@7.28.4)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)':
     dependencies:
       react: 19.2.0
+    optionalDependencies:
+      react-native: 0.81.4(@babel/core@7.28.4)(@react-native/metro-config@0.81.0(@babel/core@7.28.4)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
@@ -24680,10 +24674,6 @@ snapshots:
       react: 19.1.1
 
   lucide-react@0.544.0(react@19.2.0):
-    dependencies:
-      react: 19.2.0
-
-  lucide-react@0.553.0(react@19.2.0):
     dependencies:
       react: 19.2.0
 
