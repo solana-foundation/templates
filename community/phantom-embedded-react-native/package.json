@@ -75,7 +75,7 @@
     "expo-router": "~5.1.7",
     "expo-secure-store": "~14.2.4",
     "expo-web-browser": "~14.2.0",
-    "react": "19.0.0",
+    "react": "19.2.1",
     "react-native": "0.79.6",
     "react-native-get-random-values": "~1.11.0",
     "react-native-safe-area-context": "5.4.0",
