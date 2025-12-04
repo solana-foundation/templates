@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native'
-import { useAccounts, useDisconnect } from '@phantom/react-native-sdk'
+import { useAccounts, useDisconnect, usePhantom } from '@phantom/react-native-sdk'
 import { useRouter } from 'expo-router'
 import { getBalance } from '@/lib/solana'
 import { truncateAddress, copyToClipboard } from '@/lib/utils'
@@ -9,10 +9,12 @@ import { colors } from '@/lib/theme'
 /**
  * WalletInfo component - Dashboard for connected wallet
  * Displays Solana wallet address, SOL balance, and logout functionality
+ * Updated for SDK v1.0.0-beta.26 with modal support
  */
 export function WalletInfo() {
   const { addresses, isConnected } = useAccounts()
   const { disconnect, isDisconnecting } = useDisconnect()
+  const { modal } = usePhantom()
   const router = useRouter()
   const [balance, setBalance] = useState<number | null>(null)
   const [isLoadingBalance, setIsLoadingBalance] = useState(false)
@@ -82,6 +84,14 @@ export function WalletInfo() {
         <Text style={styles.title}>Dashboard</Text>
         <Text style={styles.subtitle}>Embedded Phantom Wallet</Text>
 
+        {/* Account Settings Button - Opens SDK Modal */}
+        <TouchableOpacity
+          style={styles.manageButton}
+          onPress={() => modal.open()}
+        >
+          <Text style={styles.manageButtonText}>Account Settings</Text>
+        </TouchableOpacity>
+
         <View style={styles.infoRow}>
           <Text style={styles.label}>Wallet Address</Text>
           <TouchableOpacity onPress={handleCopy} style={styles.addressContainer}>
@@ -147,7 +157,19 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 14,
     color: colors.gray400,
-    marginBottom: 24,
+    marginBottom: 16,
+  },
+  manageButton: {
+    marginBottom: 16,
+    backgroundColor: colors.brand,
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  manageButtonText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
   },
   infoRow: {
     paddingVertical: 16,
