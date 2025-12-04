@@ -7,6 +7,7 @@ import {
   usePhantom,
   useModal,
   useDiscoveredWallets,
+  useSolana,
 } from "@phantom/react-sdk";
 import { Connection, PublicKey } from "@solana/web3.js";
 import PhantomIcon from "./icons/PhantomIcon";
@@ -23,12 +24,13 @@ interface WalletAccount {
 /**
  * ConnectWalletButton - Main wallet connection component
  * 
- * Phantom Connect SDK (Beta 24)
+ * Phantom Connect SDK (Beta 26)
  * @see https://docs.phantom.com
  * 
  * Uses the SDK's built-in modal for connection:
  * - useModal() hook controls the built-in connection modal
  * - useDiscoveredWallets() detects all available wallets via Wallet Standard & EIP-6963
+ * - useSolana() hook provides Solana-specific operations (signMessage, signTransaction, etc.)
  * - Modal handles Google, Apple, Phantom Login, and discovered wallet connections
  * - Theming is configured in ConnectionProvider via theme prop
  */
@@ -51,6 +53,10 @@ export default function ConnectWalletButton() {
   // Wallet discovery hook - detects all available wallets (runs in background)
   // Note: Don't block UI on this - SDK handles wallet display in modal automatically
   const { wallets: discoveredWallets } = useDiscoveredWallets();
+
+  // Solana-specific operations hook (Beta 26)
+  // Provides signMessage, signTransaction, signAndSendTransaction, etc.
+  const solana = useSolana();
 
   // Check connected state from both accounts and phantom hook
   const isConnected = (accounts && accounts.length > 0) || phantomConnected;
