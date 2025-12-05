@@ -1,11 +1,11 @@
-import { address } from 'gill'
-import { useSolana } from '@/components/solana/use-solana'
+'use client'
+import { useWalletSession } from '@solana/react-hooks'
 import { AccountUiBalanceCheck } from './account-ui-balance-check'
 
 export function AccountUiChecker() {
-  const { account } = useSolana()
-  if (!account) {
+  const wallet = useWalletSession()
+  if (!wallet) {
     return null
   }
-  return <AccountUiBalanceCheck address={address(account.address)} />
+  return <AccountUiBalanceCheck address={wallet.account.address.toString()} />
 }

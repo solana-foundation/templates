@@ -1,16 +1,16 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import { useSolana } from '@/components/solana/use-solana'
+import { useWalletSession } from '@solana/react-hooks'
 import { WalletDropdown } from '@/components/wallet-dropdown'
 
 export default function AccountFeatureIndex() {
-  const { account } = useSolana()
+  const account = useWalletSession()
   const router = useRouter()
 
   useEffect(() => {
     if (account) {
-      router.push(`/account/${account.address.toString()}`)
+      router.push(`/account/${account.account.address.toString()}`)
     }
   }, [account, router])
 
