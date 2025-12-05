@@ -1,9 +1,10 @@
+'use client'
 import { useAuth } from '@/components/auth/auth-provider'
-import { useWalletUi } from '@wallet-ui/react'
+import { useWalletConnection } from '@solana/react-hooks'
 
 export const useCombinedSignOut = () => {
   const { signOut } = useAuth()
-  const { disconnect } = useWalletUi()
+  const { disconnect } = useWalletConnection()
 
   const handleSignOut = async () => {
     try {
@@ -11,13 +12,13 @@ export const useCombinedSignOut = () => {
       await signOut()
 
       // Then disconnect the wallet
-      disconnect()
+      await disconnect()
     } catch (error) {
       console.error('Error during combined sign out:', error)
 
       // Still try to disconnect wallet even if signOut failed
       try {
-        disconnect()
+        await disconnect()
       } catch (walletError) {
         console.error('Error disconnecting wallet:', walletError)
       }

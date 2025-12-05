@@ -5,7 +5,7 @@ import { Toaster } from './ui/sonner'
 import { AppHeader } from '@/components/app-header'
 import React from 'react'
 import { AppFooter } from '@/components/app-footer'
-import { ClusterUiChecker } from '@/features/cluster/ui/cluster-ui-checker'
+import { ClusterUiChecker } from '@/features/cluster/cluster-ui-checker'
 
 import { AccountUiChecker } from '@/features/account/ui/account-ui-checker'
 

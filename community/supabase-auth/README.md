@@ -8,9 +8,8 @@ The template uses Supabase's managed PostgreSQL database, so there's no local da
 
 - **Supabase Authentication** with Solana wallet integration via Web3 auth
 - **[Zod](https://zod.dev)** for environment variable validation (T3 Stack style)
-- **[TanStack Query](https://tanstack.com/query)** for API state management and caching
 - **[Tailwind CSS](https://tailwindcss.com)** and **[Shadcn UI](https://ui.shadcn.com)** for styling
-- **[Wallet UI](https://registry.wallet-ui.dev)** components for Solana wallet interactions
+- **[@solana/client](https://github.com/solana-foundation/framework-kit/tree/main/packages/client)** and **[@solana/react-hooks](https://github.com/solana-foundation/framework-kit/tree/main/packages/react-hooks)** for Solana wallet and RPC functionality
 - **Protected Routes** with authentication middleware
 - **[TypeScript](https://www.typescriptlang.org)** throughout for type safety
 
@@ -119,7 +118,7 @@ These are prefixed with `NEXT_PUBLIC_` because they're used in client-side code.
 
 ## Wallet Connection
 
-The template uses the Wallet UI library to manage wallet connections. Here's how it works:
+The template uses @solana/react-hooks to manage wallet connections. Here's how it works:
 
 1. **Select a wallet**: Click the wallet dropdown in the header (shows "Connect Wallet" if nothing is connected)
 2. **Choose your wallet**: Select Phantom, Solflare, or another supported wallet
@@ -243,13 +242,11 @@ This template uses:
 
 - [Supabase](https://supabase.com) for authentication and database
 - [Next.js](https://nextjs.org) as the React framework
-- [Gill](https://gill.site/) for Solana SDK functionality
-- [Wallet UI](https://registry.wallet-ui.dev) for Solana wallet components
-- [TanStack Query](https://tanstack.com/query) for data fetching
+- [@solana/client](https://github.com/solana-foundation/framework-kit/tree/main/packages/client) and [@solana/react-hooks](https://github.com/solana-foundation/framework-kit/tree/main/packages/react-hooks) for Solana wallet and RPC functionality
 - [Shadcn UI](https://ui.shadcn.com) for component primitives
 
 ## License
 
-Based on the Gill Supabase Template by Guillaume Bibeau and contributors.
+MIT License
 
 Curated and refined by [Opeyemi Bangkok](https://www.github.com/resourcefulmind) for improved developer onboarding

@@ -1,35 +1,38 @@
-import { address, Address } from 'gill'
+'use client'
+
 import { useState } from 'react'
-import { UiWalletAccount } from '@wallet-ui/react'
+import { lamportsFromSol, toAddress } from '@solana/client'
+import { useSolTransfer } from '@solana/react-hooks'
 import { AppModal } from '@/components/app-modal'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { useTransferSolMutation } from '../data-access/use-transfer-sol-mutation'
 
-export function AccountUiModalSend(props: { account: UiWalletAccount; address: Address }) {
-  const mutation = useTransferSolMutation({ account: props.account, address: props.address })
+export function AccountUiModalSend({ address }: { address: string }) {
+  const transfer = useSolTransfer()
   const [destination, setDestination] = useState('')
   const [amount, setAmount] = useState('1')
 
-  if (!props.address) {
+  if (!address) {
     return <div>Wallet not connected</div>
   }
 
   return (
     <AppModal
       title="Send"
-      submitDisabled={!destination || !amount || mutation.isPending}
+      submitDisabled={!destination || !amount || transfer.isSending}
       submitLabel="Send"
       submit={async () => {
-        await mutation.mutateAsync({
-          destination: address(destination),
-          amount: parseFloat(amount),
-        })
+        const target = destination.trim()
+        const parsedAmount = Number(amount)
+        if (!target || Number.isNaN(parsedAmount)) return
+        await transfer
+          .send({ destination: toAddress(target), amount: lamportsFromSol(parsedAmount) })
+          .catch((error) => console.error(error))
       }}
     >
       <Label htmlFor="destination">Destination</Label>
       <Input
-        disabled={mutation.isPending}
+        disabled={transfer.isSending}
         id="destination"
         onChange={(e) => setDestination(e.target.value)}
         placeholder="Destination"
@@ -38,7 +41,7 @@ export function AccountUiModalSend(props: { account: UiWalletAccount; address: A
       />
       <Label htmlFor="amount">Amount</Label>
       <Input
-        disabled={mutation.isPending}
+        disabled={transfer.isSending}
         id="amount"
         min="1"
         onChange={(e) => setAmount(e.target.value)}
