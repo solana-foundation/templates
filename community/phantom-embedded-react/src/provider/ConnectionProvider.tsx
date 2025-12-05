@@ -14,7 +14,7 @@ interface ConnectionProviderProps {
  * ConnectionProvider wraps the app with PhantomProvider for wallet connectivity
  * 
  * Phantom Connect SDK (Beta 26)
- * @see https://docs.phantom.com
+ * @see https://docs.phantom.com/sdks/react-sdk
  * 
  * Features in Beta 26:
  * - ConnectButton component for ready-to-use connection UI
@@ -52,6 +52,14 @@ export default function ConnectionProvider({ children }: ConnectionProviderProps
         ],
         // User wallet connects to existing Phantom ecosystem
         embeddedWalletType: "user-wallet",
+        // OAuth redirect configuration (required for Google/Apple login)
+        authOptions: {
+          redirectUrl: typeof window !== 'undefined' 
+            ? `${window.location.origin}/auth/callback`
+            : process.env.NEXT_PUBLIC_APP_URL 
+              ? `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`
+              : "http://localhost:3000/auth/callback",
+        },
       }}
       // Theme for built-in modal UI (darkTheme or lightTheme available)
       theme={darkTheme}
