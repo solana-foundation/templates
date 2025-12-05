@@ -1,0 +1,53 @@
+{
+  "name": "privy-auth",
+  "displayName": "Privy Auth",
+  "description": "Authenticate Solana wallets with Privy",
+  "usecase": "Auth",
+  "keywords": [
+    "privy",
+    "authentication",
+    "solana"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Set up Privy authentication:",
+      "1. Create an account at https://privy.io",
+      "2. Create a new app in the Privy Dashboard (https://dashboard.privy.io)",
+      "3. Copy .env.example to .env.local and add your Privy App ID",
+      "4. Configure auth providers in the Privy Dashboard (Google, Twitter, Discord, etc.)",
+      "5. Start the app: +{pm} run dev",
+      "",
+      "For detailed setup instructions, see README.md"
+    ]
+  },
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@privy-io/react-auth": "^3.8.0",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@solana-program/memo": "^0.10.0",
+    "@solana/kit": "^5.0.0",
+    "@solana/web3.js": "^1.98.4",
+    "class-variance-authority": "^0.7.1",
+    "lucide-react": "^0.554.0",
+    "next": "16.0.3",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.3",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
