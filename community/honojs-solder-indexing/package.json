@@ -43,5 +43,24 @@
     "drizzle-kit": "^0.31.5",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3"
+  },
+  "create-solana-dapp": {
+    "instructions": [
+      "First, install dependencies:",
+      "+{pm} install",
+      "Then build the project:",
+      "+{pm} build",
+      "Start the development server:",
+      "+{pm} dev"
+    ],
+    "rename": {
+      "project-name": {
+        "to": "{{name}}",
+        "paths": [
+          "src",
+          "README.md"
+        ]
+      }
+    }
   }
 }
