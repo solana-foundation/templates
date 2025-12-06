@@ -182,6 +182,14 @@ Templates maintained by the Solana community
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
 
+### [honojs-solder-indexing](community/honojs-solder-indexing)
+
+`gh:solana-foundation/templates/community/honojs-solder-indexing`
+
+> This started provides a working HonoJS backend server with Solder Event Indexing on the Solana Memo Program
+
+`solana` `honojs` `backend` `solder` `indexing` `memo program` `event indexing` `typescript` `starter`
+
 ### [moneymq-x402](community/moneymq-x402)
 
 `gh:solana-foundation/templates/community/moneymq-x402`

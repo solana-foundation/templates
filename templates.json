@@ -392,6 +392,26 @@
         "usecase": "Payments"
       },
       {
+        "description": "This started provides a working HonoJS backend server with Solder Event Indexing on the Solana Memo Program",
+        "id": "gh:solana-foundation/templates/community/honojs-solder-indexing",
+        "image": "community/honojs-solder-indexing/og-image.png",
+        "keywords": [
+          "solana",
+          "honojs",
+          "backend",
+          "solder",
+          "indexing",
+          "memo program",
+          "event indexing",
+          "typescript",
+          "starter"
+        ],
+        "name": "honojs-solder-indexing",
+        "path": "community/honojs-solder-indexing",
+        "displayName": "HonoJS Backend with Solder Indexing (Memo Program)",
+        "usecase": "Starter"
+      },
+      {
         "description": "Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana",
         "id": "gh:solana-foundation/templates/community/moneymq-x402",
         "image": "community/moneymq-x402/og-image.png",
