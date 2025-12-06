@@ -6,6 +6,7 @@
   "community/supabase-auth",
   "community/x402-template",
   "community/zk-compression-airdrop",
+  "gill/gill-express-mcp-server",
   "gill/gill-next-tailwind",
   "gill/gill-next-tailwind-basic",
   "gill/gill-next-tailwind-counter",

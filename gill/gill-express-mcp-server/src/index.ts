@@ -112,4 +112,3 @@ app.listen(port, host, () => {
   context.log.info(`🤖 Endpoint: ${solanaRpcUrl}`)
   context.log.info(`🤖 Signer: ${context.signer.address}\n`)
 })
- 
