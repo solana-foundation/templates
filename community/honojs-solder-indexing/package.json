@@ -1,0 +1,37 @@
+{
+  "name": "honojs-solder-indexing",
+  "displayName": "HonoJS Backend with Solder Indexing (Memo Program)",
+  "description": "This started provides a working HonoJS backend server with Solder Event Indexing on the Solana Memo Program",
+  "usecase": "Starter",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "generate": "drizzle-kit generate --config ./drizzle.config.ts",
+    "push": "drizzle-kit push --config ./drizzle.config.ts",
+    "studio": "drizzle-kit studio --config ./drizzle.config.ts",
+    "ci:migrate": "solder-cli ci-migrate",
+    "fetch-idl": "solder-cli fetch-idl",
+    "idl-to-ts": "solder-cli idl-to-ts"
+  },
+  "dependencies": {
+    "@project-serum/anchor": "^0.26.0",
+    "@coral-xyz/anchor": "^0.32.1",
+    "@hono/node-server": "^1.19.4",
+    "@solder-build/core": "^0.2.0",
+    "solder-cli": "^0.2.0",
+    "@solana/web3.js": "^1.95.2",
+    "bn": "^1.0.5",
+    "drizzle-orm": "^0.44.6",
+    "hono": "^4.9.8",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "dotenv": "^17.2.3",
+    "drizzle-kit": "^0.31.5",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3"
+  }
+}
