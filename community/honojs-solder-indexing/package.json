@@ -3,7 +3,11 @@
   "displayName": "HonoJS Backend with Solder Indexing (Memo Program)",
   "description": "This started provides a working HonoJS backend server with Solder Event Indexing on the Solana Memo Program",
   "usecase": "Starter",
-  "type": "module",
+  "keywords": [
+    "solana",
+    "relevant",
+    "keywords"
+  ],
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
