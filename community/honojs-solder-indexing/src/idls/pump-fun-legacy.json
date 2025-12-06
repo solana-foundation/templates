@@ -4,9 +4,7 @@
   "instructions": [
     {
       "name": "initialize",
-      "docs": [
-        "Creates the global state."
-      ],
+      "docs": ["Creates the global state."],
       "accounts": [
         {
           "name": "global",
@@ -28,9 +26,7 @@
     },
     {
       "name": "setParams",
-      "docs": [
-        "Sets the global state parameters."
-      ],
+      "docs": ["Sets the global state parameters."],
       "accounts": [
         {
           "name": "global",
@@ -87,9 +83,7 @@
     },
     {
       "name": "create",
-      "docs": [
-        "Creates a new coin and bonding curve."
-      ],
+      "docs": ["Creates a new coin and bonding curve."],
       "accounts": [
         {
           "name": "mint",
@@ -179,9 +173,7 @@
     },
     {
       "name": "buy",
-      "docs": [
-        "Buys tokens from a bonding curve."
-      ],
+      "docs": ["Buys tokens from a bonding curve."],
       "accounts": [
         {
           "name": "global",
@@ -257,9 +249,7 @@
     },
     {
       "name": "sell",
-      "docs": [
-        "Sells tokens into a bonding curve."
-      ],
+      "docs": ["Sells tokens into a bonding curve."],
       "accounts": [
         {
           "name": "global",
@@ -335,9 +325,7 @@
     },
     {
       "name": "withdraw",
-      "docs": [
-        "Allows the admin to withdraw liquidity for a migration once the bonding curve completes"
-      ],
+      "docs": ["Allows the admin to withdraw liquidity for a migration once the bonding curve completes"],
       "accounts": [
         {
           "name": "global",

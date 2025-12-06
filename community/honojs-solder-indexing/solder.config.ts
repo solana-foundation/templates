@@ -1,11 +1,11 @@
 type SolderConfig = {
   db: {
-    connectionString: string;
-  };
-};
+    connectionString: string
+  }
+}
 
 export const solderConfig: SolderConfig = {
   db: {
-    connectionString: process.env.DATABASE_URL ?? "",
+    connectionString: process.env.DATABASE_URL ?? '',
   },
-};
+}
