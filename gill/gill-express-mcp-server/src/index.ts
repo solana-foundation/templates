@@ -7,8 +7,10 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 
 import { getMcpServerConfig } from './lib/get-mcp-config.js';
 import { getMcpTools } from './lib/get-mcp-tools.js';
+import { getMcpContext } from './lib/get-mcp-context.js';
 
-const { port, host, ...mcpConfig } = getMcpServerConfig();
+const { port, host, solanaRpcUrl, ...mcpConfig } = getMcpServerConfig();
+const context = await getMcpContext()
 
 const app = express();
 app.use(express.json());
@@ -36,18 +38,23 @@ async function createMcpServer() {
     for (const t of tools) {
         server.registerTool(
             t.name,
-            // @ts-expect-error - Known type incompatibility with Zod schema definition
+            // @ts-expect-error ts(2345)
             t.config,
-            async (args: unknown) => {
-                const result = await t.callback(args);
-                return {
-                    content: result.content.map(item => ({
-                        ...item,
-                        type: "text" as const,
-                        text: item.text ?? String(item.data ?? "")
-                    }))
-
-                };
+            // @ts-expect-error ts(7006)
+            async (args) => {
+                try {
+                    const result = await t.callback(args);
+                    return {
+                        content: result.content.map(item => ({
+                            ...item,
+                            type: "text" as const,
+                            text: item.text ?? String(item.data ?? "")
+                        }))
+                    };
+                } catch (err) {
+                    context.log.error(`Error executing tool ${t.name}:`, err);
+                    throw err;
+                }
             }
         );
     }
@@ -57,7 +64,7 @@ async function createMcpServer() {
 
 
 app.post("/mcp", async (req: Request, res: Response) => {
-    console.info('\n Received POST MCP request');
+    context.log.info('Received POST MCP request\n');
 
     try {
         const mcpServer = await createMcpServer();
@@ -68,7 +75,7 @@ app.post("/mcp", async (req: Request, res: Response) => {
         });
 
         res.on('close', () => {
-            console.info('POST MCP request closed');
+            context.log.info('POST MCP request closed');
             transport.close();
             mcpServer.close();
         });
@@ -76,7 +83,7 @@ app.post("/mcp", async (req: Request, res: Response) => {
         await mcpServer.connect(transport);
         await transport.handleRequest(req, res, req.body);
     } catch (error) {
-        console.error('\n Error handling POST MCP request:', String(error));
+        context.log.error('Error handling POST MCP request:', String(error));
         if (!res.headersSent) {
             res.status(500).json({
                 jsonrpc: '2.0',
@@ -91,7 +98,7 @@ app.post("/mcp", async (req: Request, res: Response) => {
 });
 
 app.get('/mcp', async (req: Request, res: Response) => {
-    console.info('\n Received GET MCP request');
+    context.log.info('Received GET MCP request\n');
 
     try {
         const mcpServer = await createMcpServer();
@@ -102,7 +109,7 @@ app.get('/mcp', async (req: Request, res: Response) => {
         });
 
         res.on('close', () => {
-            console.info('GET MCP request closed');
+            context.log.info('GET MCP request closed');
             transport.close();
             mcpServer.close();
         });
@@ -110,7 +117,7 @@ app.get('/mcp', async (req: Request, res: Response) => {
         await mcpServer.connect(transport);
         await transport.handleRequest(req, res, req.body);
     } catch (error) {
-        console.error('\n Error handling GET MCP request:', String(error));
+        context.log.error('Error handling GET MCP request:', String(error));
         if (!res.headersSent) {
             res.status(500).json({
                 jsonrpc: '2.0',
@@ -125,7 +132,7 @@ app.get('/mcp', async (req: Request, res: Response) => {
 });
 
 app.delete('/mcp', async (req: Request, res: Response) => {
-    console.info('\n Received DELETE MCP request');
+    context.log.info('Received DELETE MCP request\n');
     res.writeHead(405).end(JSON.stringify({
         jsonrpc: "2.0",
         error: {
@@ -139,5 +146,9 @@ app.delete('/mcp', async (req: Request, res: Response) => {
 app.get("/health", (_req, res) => res.status(200).send("ok"));
 
 app.listen(port, host, () => {
-    console.info(`\n MCP Stateless Streamable HTTP listening on http://${host}:${port}`);
+    context.log.info(`🤖 MCP Stateless Streamable HTTP listening on http://${host}:${port}`);
+    context.log.info(`🤖 MCP Server Name: ${mcpConfig.name}`);
+    context.log.info(`🤖 MCP Server Version: ${mcpConfig.version}`);
+    context.log.info(`🤖 Endpoint: ${solanaRpcUrl}`)
+    context.log.info(`🤖 Signer: ${context.signer.address}\n`)
 });
