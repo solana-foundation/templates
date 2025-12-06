@@ -29,7 +29,7 @@ export function getMcpConfig(): McpConfig {
   }
 
   config = McpConfigSchema.parse({
-    host: process.env.HOST ?? '127.0.0.1',
+    host: process.env.HOST ?? '0.0.0.0',
     port: process.env.PORT ?? 3000,
     name: process.env.NAME ?? 'gill-express-mcp-server',
     version: process.env.VERSION ?? '1.0.0',

@@ -22,9 +22,9 @@ export async function createMcpServer() {
   for (const t of tools) {
     server.registerTool(
       t.name,
-      // @ts-expect-error ts(2345)
+      // @ts-ignore - Type compatibility issue with MCP SDK
       t.config,
-      // @ts-expect-error ts(7006)
+      // @ts-ignore - Args type will be inferred at runtime
       async (args) => {
         try {
           const result = await t.callback(args)
