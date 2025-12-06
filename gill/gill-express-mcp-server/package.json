@@ -1,7 +1,42 @@
 {
   "name": "gill-express-mcp-server",
+  "displayName": "Gill Express MCP Server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Express-based MCP server template for Solana development using Gill SDK",
+  "usecase": "Starter",
+  "keywords": [
+    "solana",
+    "mcp",
+    "model-context-protocol",
+    "gill",
+    "express",
+    "typescript",
+    "server",
+    "ai-tools"
+  ],
+  "create-solana-dapp": {
+    "rename": {
+      "gill-express-mcp-server": {
+        "to": "{{name}}",
+        "paths": [
+          "src"
+        ]
+      }
+    },
+    "instructions": [
+      "To set up the .env file, run this:",
+      "+{pm} run setup-env",
+      "Add your PRIVATE_KEY and SOLANA_RPC_URL to the .env file",
+      "To start the development server, run this:",
+      "+{pm} run dev",
+      "To build the project, run this:",
+      "+{pm} run build",
+      "To build the Docker image, run this:",
+      "+{pm} run docker:build",
+      "To run the Docker image, run this:",
+      "+{pm} run docker:run"
+    ]
+  },
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
@@ -12,10 +47,10 @@
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
     "lint": "eslint .",
+    "setup-env": "shx test -e .env || shx cp .env.example .env",
     "start": "node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
   "author": "",
   "license": "MIT",
   "packageManager": "pnpm@10.14.0",
@@ -36,6 +71,7 @@
     "esrun": "3.2.30",
     "globals": "16.4.0",
     "prettier": "3.7.4",
+    "shx": "0.4.0",
     "ts-node": "10.9.2",
     "tsup": "8.5.1",
     "typescript": "5.9.3",
