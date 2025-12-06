@@ -111,14 +111,14 @@ The containerized server will be accessible at `http://localhost:3000`.
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | Server port | `3000` |
-| `HOST` | Server host | `0.0.0.0` |
-| `NAME` | MCP server name | `gill-express-mcp-server` |
-| `VERSION` | MCP server version | `1.0.0` |
-| `PRIVATE_KEY` | Base58 encoded private key (required) | - |
-| `SOLANA_RPC_URL` | Solana RPC endpoint URL | `https://api.devnet.solana.com` |
+| Variable         | Description                           | Default                         |
+| ---------------- | ------------------------------------- | ------------------------------- |
+| `PORT`           | Server port                           | `3000`                          |
+| `HOST`           | Server host                           | `0.0.0.0`                       |
+| `NAME`           | MCP server name                       | `gill-express-mcp-server`       |
+| `VERSION`        | MCP server version                    | `1.0.0`                         |
+| `PRIVATE_KEY`    | Base58 encoded private key (required) | -                               |
+| `SOLANA_RPC_URL` | Solana RPC endpoint URL               | `https://api.devnet.solana.com` |
 
 ## API Endpoints
 
@@ -166,15 +166,15 @@ Configure your MCP client (like Claude Desktop) to connect to this server:
 
 ## Development Commands
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start development server with watch mode |
-| `pnpm build` | Build the project |
-| `pnpm start` | Start production server |
-| `pnpm lint` | Run ESLint |
-| `pnpm fmt` | Format code with Prettier |
-| `pnpm fmt:check` | Check code formatting |
-| `pnpm setup-env` | Copy `.env.example` to `.env` |
+| Command          | Description                              |
+| ---------------- | ---------------------------------------- |
+| `pnpm dev`       | Start development server with watch mode |
+| `pnpm build`     | Build the project                        |
+| `pnpm start`     | Start production server                  |
+| `pnpm lint`      | Run ESLint                               |
+| `pnpm fmt`       | Format code with Prettier                |
+| `pnpm fmt:check` | Check code formatting                    |
+| `pnpm setup-env` | Copy `.env.example` to `.env`            |
 
 ## Security Considerations
 
