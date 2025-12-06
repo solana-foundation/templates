@@ -5,6 +5,25 @@
     "path": "gill",
     "templates": [
       {
+        "description": "Express-based MCP server template for Solana development using Gill SDK",
+        "id": "gh:solana-foundation/templates/gill/gill-express-mcp-server",
+        "image": "gill/gill-express-mcp-server/og-image.png",
+        "keywords": [
+          "solana",
+          "mcp",
+          "model-context-protocol",
+          "gill",
+          "express",
+          "typescript",
+          "server",
+          "ai-tools"
+        ],
+        "name": "gill-express-mcp-server",
+        "path": "gill/gill-express-mcp-server",
+        "displayName": "Gill Express MCP Server",
+        "usecase": "Starter"
+      },
+      {
         "description": "Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
         "id": "gh:solana-foundation/templates/gill/gill-next-tailwind",
         "image": "gill/gill-next-tailwind/og-image.png",

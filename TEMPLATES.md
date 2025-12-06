@@ -2,6 +2,14 @@
 
 Gill Templates (based on @solana/kit)
 
+### [gill-express-mcp-server](gill/gill-express-mcp-server)
+
+`gh:solana-foundation/templates/gill/gill-express-mcp-server`
+
+> Express-based MCP server template for Solana development using Gill SDK
+
+`solana` `mcp` `model-context-protocol` `gill` `express` `typescript` `server` `ai-tools`
+
 ### [gill-next-tailwind](gill/gill-next-tailwind)
 
 `gh:solana-foundation/templates/gill/gill-next-tailwind`
