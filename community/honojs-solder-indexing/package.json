@@ -5,8 +5,14 @@
   "usecase": "Starter",
   "keywords": [
     "solana",
-    "relevant",
-    "keywords"
+    "honojs",
+    "backend",
+    "solder",
+    "indexing",
+    "memo program",
+    "event indexing",
+    "typescript",
+    "starter"
   ],
   "scripts": {
     "dev": "tsx watch src/index.ts",
