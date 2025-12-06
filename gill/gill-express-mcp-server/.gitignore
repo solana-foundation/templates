@@ -63,3 +63,7 @@ temp/
 # If you have protocol or schema outputs, ignore them here:
 generated/
 schemas/
+
+# Keypair files
+
+keypair-*.json
