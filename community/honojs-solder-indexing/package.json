@@ -48,8 +48,7 @@
     "instructions": [
       "First, install dependencies:",
       "+{pm} install",
-      "Then build the project:",
-      "+{pm} build",
+      "Fill in your config in .env",
       "Start the development server:",
       "+{pm} dev"
     ],
