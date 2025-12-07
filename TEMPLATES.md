@@ -186,7 +186,7 @@ Templates maintained by the Solana community
 
 `gh:solana-foundation/templates/community/honojs-solder-indexing`
 
-> This started provides a working HonoJS backend server with Solder Event Indexing on the Solana Memo Program
+> This started provides a working HonoJS backend server with Solder Event Indexing on the Solana Memo Program, using pump.fun trades as example
 
 `solana` `honojs` `backend` `solder` `indexing` `memo program` `event indexing` `typescript` `starter`
 

@@ -392,7 +392,7 @@
         "usecase": "Payments"
       },
       {
-        "description": "This started provides a working HonoJS backend server with Solder Event Indexing on the Solana Memo Program",
+        "description": "This started provides a working HonoJS backend server with Solder Event Indexing on the Solana Memo Program, using pump.fun trades as example",
         "id": "gh:solana-foundation/templates/community/honojs-solder-indexing",
         "image": "community/honojs-solder-indexing/og-image.png",
         "keywords": [

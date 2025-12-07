@@ -1,7 +1,7 @@
 {
   "name": "honojs-solder-indexing",
   "displayName": "HonoJS Backend with Solder Indexing (Memo Program)",
-  "description": "This started provides a working HonoJS backend server with Solder Event Indexing on the Solana Memo Program",
+  "description": "This started provides a working HonoJS backend server with Solder Event Indexing on the Solana Memo Program, using pump.fun trades as example",
   "usecase": "Starter",
   "keywords": [
     "solana",
