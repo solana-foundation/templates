@@ -1,0 +1,40 @@
+[package]
+name = "{{name}}"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1.48", features = ["full"] }
+async-trait = "0.1.89"
+
+# Serialization
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.145"
+
+# Environment and configuration
+dotenv = "0.15"
+
+# Error handling
+anyhow = "1.0.100"
+thiserror = "2.0.17"
+
+# Solana
+solana-sdk = "3.0.0"
+solana-client = "3.1.1"
+spl-token = "6.0"
+spl-associated-token-account = "6.0"
+bincode = {version = "2.0.1", features = ["serde"]}
+
+# Encoding/Decoding
+base64 = "0.22.1"
+
+# Date/Time
+chrono = "0.4.42"
+
+# Logging
+log = "0.4.28"
+env_logger = "0.11.8"
+
+# Framework-specific dependencies
+{{FRAMEWORK_DEPS}}
