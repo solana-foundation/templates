@@ -74,7 +74,7 @@ function WalletDropdown() {
   const displayLabel = connected
     ? wallet?.account
       ? ellipsify(wallet.account.address.toString())
-      : wallet?.connector.name ?? 'Wallet'
+      : (wallet?.connector.name ?? 'Wallet')
     : 'Select Wallet'
 
   return (

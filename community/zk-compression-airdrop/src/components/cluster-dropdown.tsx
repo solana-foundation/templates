@@ -28,12 +28,19 @@ export function ClusterDropdown() {
           onValueChange={async (clusterId) => {
             const next = CLUSTERS.find((item) => item.id === clusterId)
             if (!next) return
-            await client.actions.setCluster(next.endpoint, next.websocket ? { websocketEndpoint: next.websocket } : undefined)
+            await client.actions.setCluster(
+              next.endpoint,
+              next.websocket ? { websocketEndpoint: next.websocket } : undefined,
+            )
           }}
         >
           {CLUSTERS.map((cluster) => {
             return (
-              <DropdownMenuRadioItem key={cluster.id} value={cluster.id} disabled={clusterState.status.status === 'connecting'}>
+              <DropdownMenuRadioItem
+                key={cluster.id}
+                value={cluster.id}
+                disabled={clusterState.status.status === 'connecting'}
+              >
                 {cluster.label}
               </DropdownMenuRadioItem>
             )

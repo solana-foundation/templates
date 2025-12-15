@@ -65,9 +65,7 @@ export default function WalletLogin() {
         <CardContent>
           <div className="space-y-4">
             <div className="space-y-2">
-              <p className="text-sm text-green-600">
-                Wallet: {session.account.address.toString().slice(0, 8)}...
-              </p>
+              <p className="text-sm text-green-600">Wallet: {session.account.address.toString().slice(0, 8)}...</p>
               <Button onClick={() => router.push('/account')} className="w-full">
                 View Account Details
               </Button>

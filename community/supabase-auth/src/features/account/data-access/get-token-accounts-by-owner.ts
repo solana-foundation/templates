@@ -6,7 +6,11 @@ export async function getTokenAccountsByOwner(
   { address, programId }: { address: string; programId: string },
 ) {
   return await client.runtime.rpc
-    .getTokenAccountsByOwner(toAddress(address), { programId: toAddress(programId) }, { commitment: 'confirmed', encoding: 'jsonParsed' })
+    .getTokenAccountsByOwner(
+      toAddress(address),
+      { programId: toAddress(programId) },
+      { commitment: 'confirmed', encoding: 'jsonParsed' },
+    )
     .send()
     .then((res) => res.value ?? [])
 }

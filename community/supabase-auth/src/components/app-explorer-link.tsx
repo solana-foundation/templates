@@ -38,7 +38,12 @@ export function AppExplorerLink({ className, label = '', ...link }: ExplorerLink
   const href = buildExplorerUrl({ ...link, cluster: { id: cluster.id, endpoint: cluster.endpoint } })
 
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={className ? className : `link font-mono inline-flex gap-1`}>
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className ? className : `link font-mono inline-flex gap-1`}
+    >
       {label}
       <ArrowUpRightFromSquare size={12} />
     </a>

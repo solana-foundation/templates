@@ -1,7 +1,13 @@
 'use client'
 
 import * as React from 'react'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { cn, ellipsify } from '@/lib/utils'
@@ -29,7 +35,12 @@ function WalletDropdownItem({
   disabled?: boolean
 }) {
   return (
-    <DropdownMenuItem className="cursor-pointer" key={connector.id} disabled={disabled} onClick={() => onSelect(connector.id)}>
+    <DropdownMenuItem
+      className="cursor-pointer"
+      key={connector.id}
+      disabled={disabled}
+      onClick={() => onSelect(connector.id)}
+    >
       <WalletAvatar icon={connector.icon} label={connector.name} />
       {connector.name}
     </DropdownMenuItem>
@@ -75,7 +86,7 @@ function WalletDropdown() {
   const displayLabel = connected
     ? wallet?.account
       ? ellipsify(wallet.account.address.toString())
-      : wallet?.connector.name ?? 'Wallet'
+      : (wallet?.connector.name ?? 'Wallet')
     : 'Select Wallet'
 
   return (

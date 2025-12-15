@@ -35,10 +35,21 @@ function buildExplorerUrl({
 export function AppExplorerLink({ className, label = '', address, block, transaction }: ExplorerLinkProps) {
   const clusterState = useClusterState()
   const cluster = resolveCluster(clusterState.endpoint)
-  const href = buildExplorerUrl({ label, address, block, transaction, cluster: { id: cluster.id, endpoint: cluster.endpoint } })
+  const href = buildExplorerUrl({
+    label,
+    address,
+    block,
+    transaction,
+    cluster: { id: cluster.id, endpoint: cluster.endpoint },
+  })
 
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={className ? className : `link font-mono inline-flex gap-1`}>
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className ? className : `link font-mono inline-flex gap-1`}
+    >
       {label}
       <ArrowUpRightFromSquare size={12} />
     </a>
