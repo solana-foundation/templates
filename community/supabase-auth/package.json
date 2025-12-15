@@ -15,7 +15,8 @@
   "keywords": [
     "supabase",
     "authentication",
-    "solana"
+    "solana",
+    "framework-kit"
   ],
   "create-solana-dapp": {
     "instructions": [

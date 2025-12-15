@@ -1,5 +1,7 @@
 {
   "name": "zk-compression-airdrop",
+  "displayName": "ZK Compression Airdrop",
+  "usecase": "Airdrop",
   "scripts": {
     "build": "next build",
     "ci": "npm run build && npm run lint && npm run format:check",
