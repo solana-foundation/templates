@@ -1,18 +1,14 @@
-import { ReactNode } from 'react'
-import { createSolanaDevnet, createSolanaLocalnet, createWalletUiConfig, WalletUi } from '@wallet-ui/react'
-import { WalletUiGillProvider } from '@wallet-ui/react-gill'
-import { solanaMobileWalletAdapter } from './solana-mobile-wallet-adapter'
+'use client'
 
-const config = createWalletUiConfig({
-  clusters: [createSolanaDevnet(), createSolanaLocalnet()],
+import { ReactNode } from 'react'
+import { SolanaProvider as BaseSolanaProvider } from '@solana/react-hooks'
+import { autoDiscover, createClient } from '@solana/client'
+
+const client = createClient({
+  endpoint: 'https://api.devnet.solana.com',
+  walletConnectors: autoDiscover(),
 })
 
-solanaMobileWalletAdapter({ clusters: config.clusters })
-
 export function SolanaProvider({ children }: { children: ReactNode }) {
-  return (
-    <WalletUi config={config}>
-      <WalletUiGillProvider>{children}</WalletUiGillProvider>
-    </WalletUi>
-  )
+  return <BaseSolanaProvider client={client}>{children}</BaseSolanaProvider>
 }
