@@ -1,4 +1,4 @@
-import { Address } from 'gill'
+import { type Address } from '@solana/kit'
 
 interface MerkleTreeNode {
   claimant: number[] // PublicKey as byte array

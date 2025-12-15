@@ -1,10 +1,10 @@
-## Solana Merkle Airdrop Distributor (Gill + Codama + Anchor)
+## Solana Merkle Airdrop Distributor (Codama + Anchor)
 
-A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree. Only the 32‑byte Merkle root is stored on-chain. The project uses Anchor for the on-chain program, Codama for a generated TypeScript client, and the modern Solana Kit ("Gill") for transactions. This README focuses on how the program works and how to use it through the provided scripts.
+A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree. Only the 32‑byte Merkle root is stored on-chain. The project uses Anchor for the on-chain program, Codama for a generated TypeScript client, and the @solana/kit for transactions. This README focuses on how the program works and how to use it through the provided scripts.
 
 ### Table of Contents
 
-- [Solana Merkle Airdrop Distributor (Gill + Codama + Anchor)](#solana-merkle-airdrop-distributor-gill--codama--anchor)
+- [Solana Merkle Airdrop Distributor (Codama + Anchor)](#solana-merkle-airdrop-distributor-codama--anchor)
   - [Table of Contents](#table-of-contents)
 - [Prerequisites](#prerequisites)
   - [Quick Installation (Recommended)](#quick-installation-recommended)
@@ -206,7 +206,7 @@ solana balance
 ### Quick Setup
 
 ```bash
-pnpm create solana-dapp@latest -t gh:solana-foundation/templates/community/gill-jito-airdrop
+pnpm create solana-dapp@latest -t gh:solana-foundation/templates/community/merkle-airdrop
 ```
 
 ```bash
@@ -361,13 +361,13 @@ Safeguards:
 
 ### Program Interactions
 
-Below are concise TypeScript examples using the generated Codama client. These snippets assume the scripts have already generated and wired the client paths. Use Solana Kit ("Gill") to create and send transactions.
+Below are concise TypeScript examples using the generated Codama client. These snippets assume the scripts have already generated and wired the client paths. Use @solana/kit to create and send transactions.
 
 Initialize airdrop:
 
 ```ts
 import { getInitializeAirdropInstruction } from './anchor/generated/clients/ts/instructions/initializeAirdrop'
-import { address } from 'gill' // Gill/Solana Kit address helpers
+import { address } from '@solana/kit' // Solana Kit address helpers
 // import your client, RPC, and wallet abstractions from your app’s runtime
 
 const initIx = getInitializeAirdropInstruction({
@@ -385,7 +385,7 @@ Claim airdrop:
 
 ```ts
 import { getClaimAirdropInstruction } from './anchor/generated/clients/ts/instructions/claimAirdrop'
-import { address } from 'gill'
+import { address } from '@solana/kit'
 
 const proofBytes = proofHexArray.map((h) => new Uint8Array(Buffer.from(h.slice(2), 'hex')))
 
@@ -502,10 +502,10 @@ The template and generated client target these versions for consistent behavior 
 
 ---
 
-## 🎓 Key Technologies
+## Key Technologies
 
-- **[Gill](https://github.com/decalLabs/gill)**: Modern Solana JavaScript SDK
-- **[@solana/kit](https://github.com/anza-xyz/kit)**
+- **[@solana/kit](https://github.com/anza-xyz/kit)**: Modern Solana JavaScript SDK
+- **[@solana/react-hooks](https://www.npmjs.com/package/@solana/react-hooks)**: React hooks for Solana
 - **[Codama](https://github.com/codama-idl/codama)**: Automatic client generation
 - **[Anchor Framework](https://www.anchor-lang.com/)**: Solana program development
 - **[Vitest](https://vitest.dev/)**: Fast unit testing framework

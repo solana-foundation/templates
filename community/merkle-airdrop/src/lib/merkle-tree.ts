@@ -1,5 +1,5 @@
 import { keccak_256 } from 'js-sha3'
-import { Address } from 'gill'
+import { type Address } from '@solana/kit'
 import bs58 from 'bs58'
 import { Recipient } from '../../types'
 import { RECIPIENTS_DATA, RecipientsFile } from './recipients'

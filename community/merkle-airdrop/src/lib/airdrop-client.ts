@@ -4,12 +4,21 @@
  */
 
 import {
-  createSolanaClient,
+  createSolanaRpc,
+  createSolanaRpcSubscriptions,
   getProgramDerivedAddress,
   address,
-  createTransaction,
+  createTransactionMessage,
+  setTransactionMessageFeePayer,
+  setTransactionMessageLifetimeUsingBlockhash,
+  appendTransactionMessageInstruction,
+  compileTransaction,
+  signTransaction,
+  getSignatureFromTransaction,
   createKeyPairSignerFromBytes,
-} from 'gill'
+  sendAndConfirmTransactionFactory,
+  pipe,
+} from '@solana/kit'
 import bs58 from 'bs58'
 import { generateProofForRecipient } from './merkle-tree'
 import { serializeClaimInstructionData, ACCOUNT_ROLES, PROGRAM_ADDRESSES } from './airdrop-instructions'
@@ -26,21 +35,30 @@ export interface ClaimResult {
   recipient: string
 }
 
-interface SolanaClientInstance {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  rpc: any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  sendAndConfirmTransaction: any
+const NETWORK_CONFIG: Record<string, { http: string; ws: string }> = {
+  devnet: {
+    http: 'https://api.devnet.solana.com',
+    ws: 'wss://api.devnet.solana.com',
+  },
+  testnet: {
+    http: 'https://api.testnet.solana.com',
+    ws: 'wss://api.testnet.solana.com',
+  },
+  mainnet: {
+    http: 'https://api.mainnet-beta.solana.com',
+    ws: 'wss://api.mainnet-beta.solana.com',
+  },
 }
 
-function createClientInstance(network: string): SolanaClientInstance {
-  const client = createSolanaClient({
-    urlOrMoniker: network,
-  })
+function createClientInstance(network: string) {
+  const config = NETWORK_CONFIG[network] || NETWORK_CONFIG.devnet
+  const rpc = createSolanaRpc(config.http)
+  const rpcSubscriptions = createSolanaRpcSubscriptions(config.ws)
+  const sendAndConfirmTransaction = sendAndConfirmTransactionFactory({ rpc, rpcSubscriptions })
 
   return {
-    rpc: client.rpc,
-    sendAndConfirmTransaction: client.sendAndConfirmTransaction,
+    rpc,
+    sendAndConfirmTransaction,
   }
 }
 
@@ -113,7 +131,8 @@ export async function claimAirdrop(config: AirdropClaimConfig, privateKey: strin
   }
 }
 
-async function validateClaim(clientInstance: SolanaClientInstance, signerAddress: string): Promise<void> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function validateClaim(clientInstance: any, signerAddress: string): Promise<void> {
   const balance = await clientInstance.rpc.getBalance(address(signerAddress)).send()
   const balanceLamports = Number(balance.value)
 
@@ -131,7 +150,8 @@ async function validateClaim(clientInstance: SolanaClientInstance, signerAddress
 }
 
 async function sendClaimTransaction(
-  clientInstance: SolanaClientInstance,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  clientInstance: any,
   params: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     signer: any
@@ -153,24 +173,29 @@ async function sendClaimTransaction(
 
   const { value: latestBlockhash } = await clientInstance.rpc.getLatestBlockhash().send()
 
-  const transaction = createTransaction({
-    version: 'legacy',
-    feePayer: signer,
-    instructions: [
-      {
-        programAddress,
-        accounts: [
-          { address: address(airdropStatePda), role: ACCOUNT_ROLES.WRITABLE },
-          { address: address(userClaimPda), role: ACCOUNT_ROLES.WRITABLE },
-          { address: signer.address, role: ACCOUNT_ROLES.WRITABLE_SIGNER },
-          { address: address(PROGRAM_ADDRESSES.SYSTEM_PROGRAM), role: ACCOUNT_ROLES.READONLY },
-        ],
-        data: instructionData,
-      },
+  const instruction = {
+    programAddress,
+    accounts: [
+      { address: address(airdropStatePda), role: ACCOUNT_ROLES.WRITABLE },
+      { address: address(userClaimPda), role: ACCOUNT_ROLES.WRITABLE },
+      { address: signer.address, role: ACCOUNT_ROLES.WRITABLE_SIGNER },
+      { address: address(PROGRAM_ADDRESSES.SYSTEM_PROGRAM), role: ACCOUNT_ROLES.READONLY },
     ],
-    latestBlockhash,
-  })
+    data: instructionData,
+  }
 
-  const signature = await clientInstance.sendAndConfirmTransaction(transaction)
+  const transactionMessage = pipe(
+    createTransactionMessage({ version: 0 }),
+    (tx) => setTransactionMessageFeePayer(signer.address, tx),
+    (tx) => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, tx),
+    (tx) => appendTransactionMessageInstruction(instruction, tx),
+  )
+
+  const compiledTransaction = compileTransaction(transactionMessage)
+  const signedTransaction = await signTransaction([signer.keyPair], compiledTransaction)
+
+  await clientInstance.sendAndConfirmTransaction(signedTransaction, { commitment: 'confirmed' })
+
+  const signature = getSignatureFromTransaction(signedTransaction)
   return signature
 }
