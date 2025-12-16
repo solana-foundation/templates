@@ -1,7 +1,9 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  env: {
+    SOLANA_RPC_URL: process.env.SOLANA_RPC_URL,
+  },
 }
 
 export default nextConfig

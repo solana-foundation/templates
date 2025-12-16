@@ -1,23 +1,43 @@
-import { getExplorerLink, GetExplorerLinkArgs } from 'gill'
-import { getSolanaClusterMoniker } from '@wallet-ui/react-gill'
-import { useSolana } from '@/components/solana/use-solana'
+import { ClusterMoniker } from '@solana/client'
 import { ArrowUpRightFromSquare } from 'lucide-react'
 
-export function AppExplorerLink({
-  className,
-  label = '',
-  ...link
-}: GetExplorerLinkArgs & {
-  className?: string
+type PathType = 'address' | 'tx' | 'block'
+
+interface ExplorerLinkProps {
+  path: string
+  type: PathType
   label: string
-}) {
-  const { cluster } = useSolana()
+  cluster?: ClusterMoniker
+  className?: string
+}
+
+function getExplorerUrl(path: string, type: PathType, cluster: ClusterMoniker): string {
+  const baseUrl = 'https://explorer.solana.com'
+  const clusterParam = cluster === 'mainnet-beta' ? '' : `?cluster=${cluster}`
+  
+  return `${baseUrl}/${type}/${path}${clusterParam}`
+}
+
+function getCluster(): ClusterMoniker {
+  return (process.env.NEXT_PUBLIC_SOLANA_CLUSTER || 'devnet') as ClusterMoniker
+}
+
+export function AppExplorerLink({
+  path,
+  type,
+  label,
+  cluster,
+  className,
+}: ExplorerLinkProps) {
+  const activeCluster = cluster || getCluster()
+  const url = getExplorerUrl(path, type, activeCluster)
+  
   return (
     <a
-      href={getExplorerLink({ ...link, cluster: getSolanaClusterMoniker(cluster.id) })}
+      href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className={className ? className : `link font-mono inline-flex gap-1`}
+      className={className || 'link font-mono inline-flex gap-1'}
     >
       {label}
       <ArrowUpRightFromSquare size={12} />

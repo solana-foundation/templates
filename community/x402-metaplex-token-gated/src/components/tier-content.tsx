@@ -7,9 +7,9 @@ import { useRouter } from 'next/navigation'
 import type { TierType, TierConfig } from '@/lib/types'
 
 function TierPageContent({ tier, tierConfig }: { tier: TierType; tierConfig: TierConfig }) {
-  const { account, mintNFT } = useSolana()
+  const { publicKey, mintNFT } = useSolana()
   const router = useRouter()
-  const { checking, membership, error: verifyError } = useNFTVerification(account?.address, tier)
+  const { checking, membership, error: verifyError } = useNFTVerification(publicKey, tier)
 
   const [loading, setLoading] = useState(false)
   const [loadingMessage, setLoadingMessage] = useState<string>('')
@@ -27,7 +27,7 @@ function TierPageContent({ tier, tierConfig }: { tier: TierType; tierConfig: Tie
   }, [membership?.hasExpired, tier, router])
 
   const handleMint = async () => {
-    if (!account?.address) {
+    if (!publicKey) {
       setError('Please connect your wallet first')
       return
     }
@@ -65,7 +65,7 @@ function TierPageContent({ tier, tierConfig }: { tier: TierType; tierConfig: Tie
           Get {tierConfig.duration} days of exclusive access for {tierConfig.price}
         </p>
 
-        {!account ? (
+        {!publicKey ? (
           <p className="text-muted-foreground">Please connect your wallet to mint your membership NFT</p>
         ) : checking ? (
           <div className="p-4 bg-card rounded-lg border">
@@ -93,7 +93,7 @@ function TierPageContent({ tier, tierConfig }: { tier: TierType; tierConfig: Tie
           <div className="space-y-4">
             <div className="p-4 bg-card rounded-lg border">
               <p className="text-sm text-muted-foreground">Wallet</p>
-              <p className="font-mono">{account.address}</p>
+              <p className="font-mono">{publicKey}</p>
             </div>
 
             <button

@@ -17,7 +17,7 @@ type MembershipStatus = {
   nft?: NFTData
 }
 
-export function useNFTVerification(walletAddress: string | undefined, tier?: string) {
+export function useNFTVerification(walletAddress: string | null, tier?: string) {
   const [checking, setChecking] = useState(true)
   const [nfts, setNfts] = useState<NFTData[]>([])
   const [error, setError] = useState<string | null>(null)

@@ -8,9 +8,9 @@ import type { TierType, TierConfig } from '@/lib/types'
 import { formatDate, getDaysRemaining } from '@/lib/utils'
 
 export function MemberContent({ tier, tierConfig }: { tier: TierType; tierConfig: TierConfig }) {
-  const { account, connected } = useSolana()
+  const { publicKey, connected } = useSolana()
   const router = useRouter()
-  const { checking, membership } = useNFTVerification(account?.address, tier)
+  const { checking, membership } = useNFTVerification(publicKey, tier)
 
   useEffect(() => {
     if (!checking && membership) {

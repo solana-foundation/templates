@@ -11,9 +11,9 @@ import { Badge } from '@/components/ui/badge'
 import { formatDate, getDaysUntilExpiration } from '@/lib/utils'
 
 function RenewContent({ tier, tierConfig }: { tier: TierType; tierConfig: TierConfig }) {
-  const { account, renewNFT } = useSolana()
+  const { publicKey, renewNFT } = useSolana()
   const router = useRouter()
-  const { checking, membership, nfts, error: verifyError } = useNFTVerification(account?.address, tier)
+  const { checking, membership, nfts, error: verifyError } = useNFTVerification(publicKey, tier)
 
   const [loading, setLoading] = useState(false)
   const [loadingMessage, setLoadingMessage] = useState<string>('')
@@ -25,7 +25,7 @@ function RenewContent({ tier, tierConfig }: { tier: TierType; tierConfig: TierCo
   const availableUpgrades = TIER_ORDER.slice(currentTierIndex + 1)
 
   const handleRenew = async () => {
-    if (!account?.address || !membership?.nft) {
+    if (!publicKey || !membership?.nft) {
       setError('No membership found to renew')
       return
     }
@@ -60,7 +60,7 @@ function RenewContent({ tier, tierConfig }: { tier: TierType; tierConfig: TierCo
         <h1 className="text-3xl font-bold mb-2">Renew or Upgrade</h1>
         <p className="text-muted-foreground mb-8">Extend your membership or upgrade to a higher tier</p>
 
-        {!account ? (
+        {!publicKey ? (
           <Card className="p-6">
             <p className="text-muted-foreground">Please connect your wallet to manage your membership</p>
           </Card>
