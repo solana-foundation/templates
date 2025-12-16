@@ -14,7 +14,7 @@ interface ExplorerLinkProps {
 function getExplorerUrl(path: string, type: PathType, cluster: ClusterMoniker): string {
   const baseUrl = 'https://explorer.solana.com'
   const clusterParam = cluster === 'mainnet-beta' ? '' : `?cluster=${cluster}`
-  
+
   return `${baseUrl}/${type}/${path}${clusterParam}`
 }
 
@@ -22,23 +22,12 @@ function getCluster(): ClusterMoniker {
   return (process.env.NEXT_PUBLIC_SOLANA_CLUSTER || 'devnet') as ClusterMoniker
 }
 
-export function AppExplorerLink({
-  path,
-  type,
-  label,
-  cluster,
-  className,
-}: ExplorerLinkProps) {
+export function AppExplorerLink({ path, type, label, cluster, className }: ExplorerLinkProps) {
   const activeCluster = cluster || getCluster()
   const url = getExplorerUrl(path, type, activeCluster)
-  
+
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={className || 'link font-mono inline-flex gap-1'}
-    >
+    <a href={url} target="_blank" rel="noopener noreferrer" className={className || 'link font-mono inline-flex gap-1'}>
       {label}
       <ArrowUpRightFromSquare size={12} />
     </a>
