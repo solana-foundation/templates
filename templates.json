@@ -358,22 +358,6 @@
     "path": "community",
     "templates": [
       {
-        "description": "A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree",
-        "id": "gh:solana-foundation/templates/community/gill-jito-airdrop",
-        "image": "community/gill-jito-airdrop/og-image.png",
-        "keywords": [
-          "nextjs",
-          "react",
-          "tailwind",
-          "typescript",
-          "wallet-ui"
-        ],
-        "name": "gill-jito-airdrop",
-        "path": "community/gill-jito-airdrop",
-        "displayName": "Merkletree Airdrop",
-        "usecase": "Airdrop"
-      },
-      {
         "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK",
         "id": "gh:solana-foundation/templates/community/gill-node-solanax402",
         "image": "community/gill-node-solanax402/og-image.png",
@@ -390,6 +374,22 @@
         "path": "community/gill-node-solanax402",
         "displayName": "x402 Express Server",
         "usecase": "Payments"
+      },
+      {
+        "description": "A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree",
+        "id": "gh:solana-foundation/templates/community/merkle-airdrop",
+        "image": "community/merkle-airdrop/og-image.png",
+        "keywords": [
+          "nextjs",
+          "react",
+          "tailwind",
+          "typescript",
+          "framework-kit"
+        ],
+        "name": "merkle-airdrop",
+        "path": "community/merkle-airdrop",
+        "displayName": "Merkle Airdrop",
+        "usecase": "Airdrop"
       },
       {
         "description": "Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana",
@@ -444,7 +444,8 @@
         "keywords": [
           "supabase",
           "authentication",
-          "solana"
+          "solana",
+          "framework-kit"
         ],
         "name": "supabase-auth",
         "path": "community/supabase-auth",
@@ -468,25 +469,26 @@
         "usecase": "Payments"
       },
       {
-        "description": "ZK-Compression based airdrop app built with Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
+        "description": "ZK-Compression based airdrop app built with Next.js, Tailwind, and @solana/react-hooks",
         "id": "gh:solana-foundation/templates/community/zk-compression-airdrop",
         "image": "community/zk-compression-airdrop/og-image.png",
         "keywords": [
-          "gill",
           "minimal",
           "nextjs",
           "react",
           "solana-kit",
           "tailwind",
           "typescript",
-          "wallet-ui",
           "zk-compression",
           "airdrop",
           "zero-knowledge",
-          "zk"
+          "zk",
+          "framework-kit"
         ],
         "name": "zk-compression-airdrop",
-        "path": "community/zk-compression-airdrop"
+        "path": "community/zk-compression-airdrop",
+        "displayName": "ZK Compression Airdrop",
+        "usecase": "Airdrop"
       }
     ]
   }

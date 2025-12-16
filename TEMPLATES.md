@@ -166,14 +166,6 @@ Templates using @solana/web3.js (legacy)
 
 Templates maintained by the Solana community
 
-### [gill-jito-airdrop](community/gill-jito-airdrop)
-
-`gh:solana-foundation/templates/community/gill-jito-airdrop`
-
-> A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree
-
-`nextjs` `react` `tailwind` `typescript` `wallet-ui`
-
 ### [gill-node-solanax402](community/gill-node-solanax402)
 
 `gh:solana-foundation/templates/community/gill-node-solanax402`
@@ -181,6 +173,14 @@ Templates maintained by the Solana community
 > x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
+
+### [merkle-airdrop](community/merkle-airdrop)
+
+`gh:solana-foundation/templates/community/merkle-airdrop`
+
+> A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree
+
+`nextjs` `react` `tailwind` `typescript` `framework-kit`
 
 ### [moneymq-x402](community/moneymq-x402)
 
@@ -204,7 +204,7 @@ Templates maintained by the Solana community
 
 > Authenticate Solana wallets with Supabase
 
-`supabase` `authentication` `solana`
+`supabase` `authentication` `solana` `framework-kit`
 
 ### [x402-template](community/x402-template)
 
@@ -218,6 +218,6 @@ Templates maintained by the Solana community
 
 `gh:solana-foundation/templates/community/zk-compression-airdrop`
 
-> ZK-Compression based airdrop app built with Next.js, Tailwind, gill (based on @solana/kit), Wallet UI
+> ZK-Compression based airdrop app built with Next.js, Tailwind, and @solana/react-hooks
 
-`gill` `minimal` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui` `zk-compression` `airdrop` `zero-knowledge` `zk`
+`minimal` `nextjs` `react` `solana-kit` `tailwind` `typescript` `zk-compression` `airdrop` `zero-knowledge` `zk` `framework-kit`
