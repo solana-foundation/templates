@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import type { TierType, TierConfig } from '@/lib/types'
 import { formatDate, getDaysRemaining } from '@/lib/utils'
+import Link from 'next/link'
 
 export function MemberContent({ tier, tierConfig }: { tier: TierType; tierConfig: TierConfig }) {
   const { publicKey, connected } = useSolana()
@@ -73,7 +74,7 @@ export function MemberContent({ tier, tierConfig }: { tier: TierType; tierConfig
                 <span className="text-green-600 font-medium">Active</span>
               </p>
               {membership.nft?.expiresAt && (
-                <>
+                <div className="mb-3 space-y-1">
                   <p>
                     <span className="text-muted-foreground">Expires:</span> {formatDate(membership.nft.expiresAt)}
                   </p>
@@ -81,8 +82,14 @@ export function MemberContent({ tier, tierConfig }: { tier: TierType; tierConfig
                     <span className="text-muted-foreground">Time remaining:</span>{' '}
                     {getDaysRemaining(membership.nft.expiresAt)}
                   </p>
-                </>
+                </div>
               )}
+              <Link
+                className="bg-primary text-center text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 duration-300"
+                href={`/renew/${tier}`}
+              >
+                Renew your membership NFT
+              </Link>
             </div>
           </div>
 
