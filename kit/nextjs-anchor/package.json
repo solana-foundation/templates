@@ -32,7 +32,6 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "next lint",
-    "postinstall": "npm run setup",
     "setup": "npm run anchor-build && npm run codama:js",
     "start": "next start"
   },

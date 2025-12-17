@@ -33,7 +33,6 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
-    "postinstall": "npm run setup",
     "preview": "vite preview",
     "setup": "npm run anchor-build && npm run codama:js"
   },
