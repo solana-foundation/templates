@@ -81,7 +81,7 @@ Open http://localhost:3000
 ## Membership Tiers
 
 | Tier   | Duration | Price |
-|--------|----------|-------|
+| ------ | -------- | ----- |
 | Bronze | 30 days  | $0.01 |
 | Silver | 60 days  | $0.02 |
 | Gold   | 90 days  | $0.03 |

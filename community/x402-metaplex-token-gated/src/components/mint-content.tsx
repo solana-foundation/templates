@@ -146,4 +146,3 @@ export function MintContent({ tier }: MintContentProps) {
     </div>
   )
 }
-
