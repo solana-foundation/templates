@@ -11,7 +11,7 @@ import {
 import {
   getAssociatedTokenAddress,
   createTransferCheckedInstruction,
-  createAssociatedTokenAccountInstruction
+  createAssociatedTokenAccountInstruction,
 } from '@solana/spl-token'
 import { getWallet, getConnection } from '../utils/wallet'
 import { getCurrentNetwork } from '../utils/network'
@@ -232,24 +232,24 @@ export class PaidAPI extends BaseAPI {
       log('info', 'Recipient ATA does not exist. Adding creation instruction (sender pays ~0.002 SOL fee)')
       instructions.push(
         createAssociatedTokenAccountInstruction(
-          wallet.publicKey,  // payer (sender pays the ATA creation fee)
-          toTokenAccount,    // ATA address
-          receiverPubkey,    // owner (payment recipient wallet)
-          usdcMint          // USDC mint
-        )
+          wallet.publicKey, // payer (sender pays the ATA creation fee)
+          toTokenAccount, // ATA address
+          receiverPubkey, // owner (payment recipient wallet)
+          usdcMint, // USDC mint
+        ),
       )
     }
 
     // Add the USDC transfer instruction
     instructions.push(
       createTransferCheckedInstruction(
-        fromTokenAccount,    // from (sender's USDC account)
-        usdcMint,           // mint
-        toTokenAccount,     // to (receiver's USDC account)
-        wallet.publicKey,   // owner (sender)
-        amount,             // amount in smallest units
-        6                   // decimals for USDC
-      )
+        fromTokenAccount, // from (sender's USDC account)
+        usdcMint, // mint
+        toTokenAccount, // to (receiver's USDC account)
+        wallet.publicKey, // owner (sender)
+        amount, // amount in smallest units
+        6, // decimals for USDC
+      ),
     )
 
     // Get latest blockhash RIGHT before creating transaction (minimize time window)

@@ -35,7 +35,7 @@ ${colors.dim}                           Solana x402 Payment Protocol - Rust Temp
 var projectName = process.argv[2]
 
 if (!projectName) {
-  projectName = "x402-solana-backend"
+  projectName = 'x402-solana-backend'
 }
 
 const targetDir = path.join(process.cwd(), projectName)
