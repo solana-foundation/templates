@@ -5,7 +5,7 @@
     "path": "kit",
     "templates": [
       {
-        "description": "Next.js, Tailwind, @solana/react-hooks",
+        "description": "Next.js starter for Solana dapps",
         "id": "gh:solana-foundation/templates/kit/nextjs",
         "keywords": [
           "kit",
@@ -19,7 +19,7 @@
         "path": "kit/nextjs"
       },
       {
-        "description": "Next.js, Tailwind, @solana/react-hooks, Anchor vault program",
+        "description": "Next.js starter with Anchor program",
         "id": "gh:solana-foundation/templates/kit/nextjs-anchor",
         "keywords": [
           "anchor",
@@ -34,7 +34,7 @@
         "path": "kit/nextjs-anchor"
       },
       {
-        "description": "React + Vite, Tailwind, @solana/react-hooks",
+        "description": "React + Vite starter for Solana dapps",
         "id": "gh:solana-foundation/templates/kit/vite",
         "keywords": [
           "kit",
@@ -48,7 +48,7 @@
         "path": "kit/vite"
       },
       {
-        "description": "React + Vite, Tailwind, @solana/react-hooks, Anchor vault program",
+        "description": "React + Vite starter with Anchor program",
         "id": "gh:solana-foundation/templates/kit/vite-anchor",
         "keywords": [
           "anchor",
