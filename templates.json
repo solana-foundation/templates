@@ -1,5 +1,55 @@
 [
   {
+    "description": "Kit Templates (using @solana/kit)",
+    "name": "Kit",
+    "path": "kit",
+    "templates": [
+      {
+        "description": "Next.js, Tailwind, @solana/react-hooks",
+        "id": "gh:solana-foundation/templates/kit/nextjs",
+        "keywords": [
+          "kit",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "nextjs",
+        "path": "kit/nextjs"
+      },
+      {
+        "description": "Next.js, Tailwind, @solana/react-hooks, Anchor vault program",
+        "id": "gh:solana-foundation/templates/kit/nextjs-anchor",
+        "keywords": [
+          "anchor",
+          "kit",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "nextjs-anchor",
+        "path": "kit/nextjs-anchor"
+      },
+      {
+        "description": "React + Vite, Tailwind, @solana/react-hooks",
+        "id": "gh:solana-foundation/templates/kit/vite",
+        "keywords": [
+          "kit",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript",
+          "vite"
+        ],
+        "name": "vite",
+        "path": "kit/vite"
+      }
+    ]
+  },
+  {
     "description": "Gill Templates (based on @solana/kit)",
     "name": "Gill",
     "path": "gill",
@@ -7,70 +57,149 @@
       {
         "description": "Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
         "id": "gh:solana-foundation/templates/gill/gill-next-tailwind",
-        "keywords": ["gill", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
+        "keywords": [
+          "gill",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript",
+          "wallet-ui"
+        ],
         "name": "gill-next-tailwind",
         "path": "gill/gill-next-tailwind"
       },
       {
         "description": "Next.js, Tailwind, basic Anchor example, gill (based on @solana/kit), Wallet UI",
         "id": "gh:solana-foundation/templates/gill/gill-next-tailwind-basic",
-        "keywords": ["anchor-basic", "gill", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
+        "keywords": [
+          "anchor-basic",
+          "gill",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript",
+          "wallet-ui"
+        ],
         "name": "gill-next-tailwind-basic",
         "path": "gill/gill-next-tailwind-basic"
       },
       {
         "description": "Next.js, Tailwind, Anchor Counter example, gill (based on @solana/kit), Wallet UI",
         "id": "gh:solana-foundation/templates/gill/gill-next-tailwind-counter",
-        "keywords": ["anchor-counter", "gill", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
+        "keywords": [
+          "anchor-counter",
+          "gill",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript",
+          "wallet-ui"
+        ],
         "name": "gill-next-tailwind-counter",
         "path": "gill/gill-next-tailwind-counter"
       },
       {
         "description": "Minimal Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
         "id": "gh:solana-foundation/templates/gill/gill-next-tailwind-minimal",
-        "keywords": ["gill", "minimal", "nextjs", "react", "solana-kit", "tailwind", "typescript", "wallet-ui"],
+        "keywords": [
+          "gill",
+          "minimal",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript",
+          "wallet-ui"
+        ],
         "name": "gill-next-tailwind-minimal",
         "path": "gill/gill-next-tailwind-minimal"
       },
       {
         "description": "Node.js Express API with gill (based on @solana/kit)",
         "id": "gh:solana-foundation/templates/gill/gill-node-express",
-        "keywords": ["express", "gill", "node", "solana-kit"],
+        "keywords": [
+          "express",
+          "gill",
+          "node",
+          "solana-kit"
+        ],
         "name": "gill-node-express",
         "path": "gill/gill-node-express"
       },
       {
         "description": "Node.js script with gill (based on @solana/kit)",
         "id": "gh:solana-foundation/templates/gill/gill-node-script",
-        "keywords": ["gill", "node", "solana-kit"],
+        "keywords": [
+          "gill",
+          "node",
+          "solana-kit"
+        ],
         "name": "gill-node-script",
         "path": "gill/gill-node-script"
       },
       {
         "description": "React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI",
         "id": "gh:solana-foundation/templates/gill/gill-react-vite-tailwind",
-        "keywords": ["gill", "react", "solana-kit", "tailwind", "typescript", "vite", "wallet-ui"],
+        "keywords": [
+          "gill",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript",
+          "vite",
+          "wallet-ui"
+        ],
         "name": "gill-react-vite-tailwind",
         "path": "gill/gill-react-vite-tailwind"
       },
       {
         "description": "React+Vite, Tailwind, gill (based on @solana/kit), basic Anchor example, Wallet UI",
         "id": "gh:solana-foundation/templates/gill/gill-react-vite-tailwind-basic",
-        "keywords": ["anchor-basic", "gill", "react", "solana-kit", "tailwind", "typescript", "vite", "wallet-ui"],
+        "keywords": [
+          "anchor-basic",
+          "gill",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript",
+          "vite",
+          "wallet-ui"
+        ],
         "name": "gill-react-vite-tailwind-basic",
         "path": "gill/gill-react-vite-tailwind-basic"
       },
       {
         "description": "React+Vite, Tailwind, gill (based on @solana/kit), Anchor Counter example, Wallet UI",
         "id": "gh:solana-foundation/templates/gill/gill-react-vite-tailwind-counter",
-        "keywords": ["anchor-counter", "gill", "react", "solana-kit", "tailwind", "typescript", "vite", "wallet-ui"],
+        "keywords": [
+          "anchor-counter",
+          "gill",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript",
+          "vite",
+          "wallet-ui"
+        ],
         "name": "gill-react-vite-tailwind-counter",
         "path": "gill/gill-react-vite-tailwind-counter"
       },
       {
         "description": "Minimal React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI",
         "id": "gh:solana-foundation/templates/gill/gill-react-vite-tailwind-minimal",
-        "keywords": ["gill", "minimal", "react", "solana-kit", "tailwind", "typescript", "vite", "wallet-ui"],
+        "keywords": [
+          "gill",
+          "minimal",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript",
+          "vite",
+          "wallet-ui"
+        ],
         "name": "gill-react-vite-tailwind-minimal",
         "path": "gill/gill-react-vite-tailwind-minimal"
       }
@@ -84,14 +213,25 @@
       {
         "description": "A template for building a Solana mobile app with Expo and React Native.",
         "id": "gh:solana-foundation/templates/mobile/web3js-expo",
-        "keywords": ["expo", "mobile-wallet-adapter", "react-native", "solana-web3js"],
+        "keywords": [
+          "expo",
+          "mobile-wallet-adapter",
+          "react-native",
+          "solana-web3js"
+        ],
         "name": "web3js-expo",
         "path": "mobile/web3js-expo"
       },
       {
         "description": "A template for building a Solana mobile app with Expo and React Native Paper.",
         "id": "gh:solana-foundation/templates/mobile/web3js-expo-paper",
-        "keywords": ["expo", "mobile-wallet-adapter", "react-native", "react-native-paper", "solana-web3js"],
+        "keywords": [
+          "expo",
+          "mobile-wallet-adapter",
+          "react-native",
+          "react-native-paper",
+          "solana-web3js"
+        ],
         "name": "web3js-expo-paper",
         "path": "mobile/web3js-expo-paper"
       }
@@ -105,35 +245,73 @@
       {
         "description": "Next.js, Tailwind, @solana/web3.js, Wallet Adapter",
         "id": "gh:solana-foundation/templates/web3js/web3js-next-tailwind",
-        "keywords": ["nextjs", "react", "solana-web3js", "tailwind", "typescript", "wallet-adapter"],
+        "keywords": [
+          "nextjs",
+          "react",
+          "solana-web3js",
+          "tailwind",
+          "typescript",
+          "wallet-adapter"
+        ],
         "name": "web3js-next-tailwind",
         "path": "web3js/web3js-next-tailwind"
       },
       {
         "description": "Next.js, Tailwind, @solana/web3.js, Wallet Adapter, basic Anchor program",
         "id": "gh:solana-foundation/templates/web3js/web3js-next-tailwind-basic",
-        "keywords": ["anchor-basic", "nextjs", "react", "solana-web3js", "tailwind", "typescript", "wallet-adapter"],
+        "keywords": [
+          "anchor-basic",
+          "nextjs",
+          "react",
+          "solana-web3js",
+          "tailwind",
+          "typescript",
+          "wallet-adapter"
+        ],
         "name": "web3js-next-tailwind-basic",
         "path": "web3js/web3js-next-tailwind-basic"
       },
       {
         "description": "Next.js, Tailwind, @solana/web3.js, Wallet Adapter, Anchor Counter program",
         "id": "gh:solana-foundation/templates/web3js/web3js-next-tailwind-counter",
-        "keywords": ["anchor-counter", "nextjs", "react", "solana-web3js", "tailwind", "typescript", "wallet-adapter"],
+        "keywords": [
+          "anchor-counter",
+          "nextjs",
+          "react",
+          "solana-web3js",
+          "tailwind",
+          "typescript",
+          "wallet-adapter"
+        ],
         "name": "web3js-next-tailwind-counter",
         "path": "web3js/web3js-next-tailwind-counter"
       },
       {
         "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter",
         "id": "gh:solana-foundation/templates/web3js/web3js-react-vite-tailwind",
-        "keywords": ["react", "solana-web3js", "tailwind", "typescript", "vite", "wallet-adapter"],
+        "keywords": [
+          "react",
+          "solana-web3js",
+          "tailwind",
+          "typescript",
+          "vite",
+          "wallet-adapter"
+        ],
         "name": "web3js-react-vite-tailwind",
         "path": "web3js/web3js-react-vite-tailwind"
       },
       {
         "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter, basic Anchor program",
         "id": "gh:solana-foundation/templates/web3js/web3js-react-vite-tailwind-basic",
-        "keywords": ["anchor-basic", "react", "solana-web3js", "tailwind", "typescript", "vite", "wallet-adapter"],
+        "keywords": [
+          "anchor-basic",
+          "react",
+          "solana-web3js",
+          "tailwind",
+          "typescript",
+          "vite",
+          "wallet-adapter"
+        ],
         "name": "web3js-react-vite-tailwind-basic",
         "path": "web3js/web3js-react-vite-tailwind-basic"
       },
@@ -163,14 +341,28 @@
       {
         "description": "A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree",
         "id": "gh:solana-foundation/templates/community/gill-jito-airdrop",
-        "keywords": ["nextjs", "react", "tailwind", "typescript", "wallet-ui"],
+        "keywords": [
+          "nextjs",
+          "react",
+          "tailwind",
+          "typescript",
+          "wallet-ui"
+        ],
         "name": "gill-jito-airdrop",
         "path": "community/gill-jito-airdrop"
       },
       {
         "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK",
         "id": "gh:solana-foundation/templates/community/gill-node-solanax402",
-        "keywords": ["solana", "x402", "payment", "protocol", "blockchain", "typescript", "gill"],
+        "keywords": [
+          "solana",
+          "x402",
+          "payment",
+          "protocol",
+          "blockchain",
+          "typescript",
+          "gill"
+        ],
         "name": "x402-solana-protocol",
         "path": "community/gill-node-solanax402"
       }

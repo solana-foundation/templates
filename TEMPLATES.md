@@ -1,3 +1,31 @@
+# Kit
+
+Kit Templates (using @solana/kit)
+
+### [nextjs](kit/nextjs)
+
+`gh:solana-foundation/templates/kit/nextjs`
+
+> Next.js, Tailwind, @solana/react-hooks
+
+`kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
+
+### [nextjs-anchor](kit/nextjs-anchor)
+
+`gh:solana-foundation/templates/kit/nextjs-anchor`
+
+> Next.js, Tailwind, @solana/react-hooks, Anchor vault program
+
+`anchor` `kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
+
+### [vite](kit/vite)
+
+`gh:solana-foundation/templates/kit/vite`
+
+> React + Vite, Tailwind, @solana/react-hooks
+
+`kit` `react` `solana-kit` `tailwind` `typescript` `vite`
+
 # Gill
 
 Gill Templates (based on @solana/kit)

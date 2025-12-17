@@ -11,4 +11,5 @@ onlyBuiltDependencies:
 packages:
   - community/*
   - gill/*
+  - kit/*
   - web3js/*
