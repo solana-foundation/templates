@@ -2,17 +2,17 @@
 
 import { WalletDropdown } from '@/components/wallet-dropdown'
 import { WalletDisconnect } from '@/components/wallet-disconnect'
-import { useSolana } from '@/components/solana/use-solana'
-import { ellipsify } from '@wallet-ui/react'
+import { useWalletSession } from '@solana/react-hooks'
+import { ellipsify } from '@/lib/utils'
 
 export function WalletInfo() {
-  const { account } = useSolana()
+  const wallet = useWalletSession()
 
   return (
     <div className="flex flex-col gap-2 items-end">
-      {account ? (
+      {wallet?.account ? (
         <>
-          <div className="text-sm text-muted-foreground">{ellipsify(account.address)}</div>
+          <div className="text-sm text-muted-foreground">{ellipsify(wallet.account.address.toString())}</div>
           <WalletDisconnect />
         </>
       ) : (

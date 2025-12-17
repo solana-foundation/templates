@@ -1,19 +1,22 @@
-import { Address } from 'gill'
+'use client'
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
-import { useSolana } from '@/components/solana/use-solana'
+import { useClusterState, useWalletSession } from '@solana/react-hooks'
+import { resolveCluster } from '@/components/solana/clusters'
 import { AccountUiModalAirdrop } from './account-ui-modal-airdrop'
 import { AccountUiModalReceive } from './account-ui-modal-receive'
 import { AccountUiModalSend } from './account-ui-modal-send'
 
-export function AccountUiButtons({ address }: { address: Address }) {
-  const { account, cluster } = useSolana()
+export function AccountUiButtons({ address }: { address: string }) {
+  const wallet = useWalletSession()
+  const clusterState = useClusterState()
+  const cluster = resolveCluster(clusterState.endpoint)
 
-  return account ? (
+  return wallet ? (
     <div>
       <div className="space-x-2">
-        {cluster.id === 'solana:mainnet' ? null : <AccountUiModalAirdrop address={address} />}
+        {cluster.id === 'mainnet-beta' ? null : <AccountUiModalAirdrop address={address} />}
         <ErrorBoundary errorComponent={() => null}>
-          <AccountUiModalSend account={account} address={address} />
+          <AccountUiModalSend address={address} />
         </ErrorBoundary>
         <AccountUiModalReceive address={address} />
       </div>

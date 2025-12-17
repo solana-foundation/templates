@@ -1,6 +1,6 @@
 {
-  "name": "gill-jito-airdrop",
-  "displayName": "Merkletree Airdrop",
+  "name": "merkle-airdrop",
+  "displayName": "Merkle Airdrop",
   "description": "A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree",
   "usecase": "Airdrop",
   "keywords": [
@@ -8,7 +8,7 @@
     "react",
     "tailwind",
     "typescript",
-    "wallet-ui"
+    "framework-kit"
   ],
   "create-solana-dapp": {
     "instructions": [
@@ -42,16 +42,14 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@solana/kit": "^2.3.0",
-    "@tanstack/react-query": "^5.85.5",
-    "@wallet-ui/react": "1.1.1",
-    "@wallet-ui/tailwind": "1.1.1",
+    "@solana/client": "^1.1.0",
+    "@solana/kit": "^5.0.0",
+    "@solana/react-hooks": "^1.1.0",
     "bs58": "^6.0.0",
     "clsx": "^2.1.1",
     "codama": "^1.3.3",
-    "gill": "0.10.2",
     "js-sha3": "^0.9.3",
-    "next": "15.5.9",
+    "next": "16.0.7",
     "next-themes": "^0.4.6",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
@@ -70,7 +68,7 @@
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "eslint": "^9.33.0",
-    "eslint-config-next": "15.5.9",
+    "eslint-config-next": "16.0.7",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.1.12",
     "ts-node": "^10.9.2",

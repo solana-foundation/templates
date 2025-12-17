@@ -12,3 +12,7 @@ packages:
   - community/*
   - gill/*
   - web3js/*
+minimumReleaseAgeExclude:
+  - '@solana/client'
+  - '@solana/react-hooks'
+  - '@solana/kit'

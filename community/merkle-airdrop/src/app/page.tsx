@@ -1,5 +1,5 @@
 import { ClaimButton } from '@/components/claim-button'
-import { WalletButton } from '@/components/solana/solana-provider'
+import { WalletButton } from '@/components/wallet-button'
 
 export default function Home() {
   return (

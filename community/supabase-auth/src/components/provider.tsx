@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { SolanaProvider as BaseSolanaProvider } from '@solana/react-hooks'
+import { SolanaProvider } from '@solana/react-hooks'
 import { autoDiscover, createClient } from '@solana/client'
 
 const client = createClient({
@@ -9,6 +9,6 @@ const client = createClient({
   walletConnectors: autoDiscover(),
 })
 
-export function SolanaProvider({ children }: { children: ReactNode }) {
-  return <BaseSolanaProvider client={client}>{children}</BaseSolanaProvider>
+export function Provider({ children }: { children: ReactNode }) {
+  return <SolanaProvider client={client}>{children}</SolanaProvider>
 }

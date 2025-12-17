@@ -1,4 +1,5 @@
-import { Address } from 'gill'
+'use client'
+
 import { RefreshCw } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { ellipsify } from '@/lib/utils'
@@ -7,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { AppExplorerLink } from '@/components/app-explorer-link'
 import { useGetSignaturesQuery } from '../data-access/use-get-signatures-query'
 
-export function AccountUiTransactions({ address }: { address: Address }) {
+export function AccountUiTransactions({ address }: { address: string }) {
   const query = useGetSignaturesQuery({ address })
   const [showAll, setShowAll] = useState(false)
 
@@ -24,14 +25,14 @@ export function AccountUiTransactions({ address }: { address: Address }) {
           {query.isLoading ? (
             <span className="loading loading-spinner"></span>
           ) : (
-            <Button variant="outline" onClick={() => query.refetch()}>
+            <Button variant="outline" onClick={() => query.refetch().catch((err) => console.error(err))}>
               <RefreshCw size={16} />
             </Button>
           )}
         </div>
       </div>
-      {query.isError && <pre className="alert alert-error">Error: {query.error?.message.toString()}</pre>}
-      {query.isSuccess && (
+      {query.isError && <pre className="alert alert-error">Error: {String(query.error)}</pre>}
+      {query.data && (
         <div>
           {query.data.length === 0 ? (
             <div>No transactions found.</div>
@@ -54,7 +55,9 @@ export function AccountUiTransactions({ address }: { address: Address }) {
                     <TableCell className="font-mono text-right">
                       <AppExplorerLink block={item.slot.toString()} label={item.slot.toString()} />
                     </TableCell>
-                    <TableCell>{new Date(Number(item.blockTime ?? '0') * 1000).toISOString()}</TableCell>
+                    <TableCell>
+                      {item.blockTime ? new Date(Number(item.blockTime) * 1000).toISOString() : '—'}
+                    </TableCell>
                     <TableCell className="text-right">
                       {item.err ? (
                         <span className="text-red-500">Failed</span>
