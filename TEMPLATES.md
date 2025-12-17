@@ -206,6 +206,14 @@ Templates maintained by the Solana community
 
 `supabase` `authentication` `solana`
 
+### [x402-solana-rust](community/x402-solana-rust)
+
+`gh:solana-foundation/templates/community/x402-solana-rust`
+
+> x402 payment server template for Solana with Rust
+
+`solana` `x402` `rust` `payments` `api` `axum` `actix` `rocket`
+
 ### [x402-template](community/x402-template)
 
 `gh:solana-foundation/templates/community/x402-template`
