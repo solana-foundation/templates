@@ -71,7 +71,23 @@ const frameworkPrompt = `${colors.bright}Choose your framework:${colors.reset}
 
 ${colors.bright}${colors.cyan}→${colors.reset} Selection ${colors.dim}(1-3)${colors.reset}: `
 
-rl.question(frameworkPrompt, (answer) => {
+let timeoutId = null
+let intervalId = null
+let answered = false
+let timeRemaining = 15
+
+const setupProject = (answer) => {
+  if (answered) return
+  answered = true
+
+  if (timeoutId) {
+    clearTimeout(timeoutId)
+  }
+
+  if (intervalId) {
+    clearInterval(intervalId)
+  }
+
   const frameworks = {
     1: 'axum',
     2: 'actix',
@@ -236,4 +252,35 @@ rl.question(frameworkPrompt, (answer) => {
   }
 
   rl.close()
+}
+
+// Set up 15-second timeout
+timeoutId = setTimeout(() => {
+  if (!answered) {
+    // Clear timer line
+    process.stdout.write('\x1b[1A\x1b[2K')
+    console.log(`${colors.dim}No selection made, defaulting to Axum...${colors.reset}\n`)
+    rl.close()
+    setupProject('1')
+  }
+}, 15000)
+
+rl.question(frameworkPrompt, (answer) => {
+  // Clear timer line on answer
+  if (!answered) {
+    process.stdout.write('\x1b[1A\x1b[2K\x1b[1A')
+  }
+  setupProject(answer)
 })
+
+// Display countdown timer on a new line after the prompt
+console.log(`${colors.dim}[Auto-selecting Axum in ${timeRemaining}s]${colors.reset}`)
+
+// Update timer every second
+intervalId = setInterval(() => {
+  timeRemaining--
+  if (timeRemaining >= 0 && !answered) {
+    // Move cursor up, clear line, print updated timer
+    process.stdout.write(`\x1b[1A\x1b[2K${colors.dim}[Auto-selecting Axum in ${timeRemaining}s]${colors.reset}\n`)
+  }
+}, 1000)
