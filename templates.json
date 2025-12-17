@@ -35,7 +35,7 @@
       },
       {
         "description": "React + Vite starter for Solana dapps",
-        "id": "gh:solana-foundation/templates/kit/vite",
+        "id": "gh:solana-foundation/templates/kit/react-vite",
         "keywords": [
           "kit",
           "react",
@@ -44,12 +44,12 @@
           "typescript",
           "vite"
         ],
-        "name": "vite",
-        "path": "kit/vite"
+        "name": "react-vite",
+        "path": "kit/react-vite"
       },
       {
         "description": "React + Vite starter with Anchor program",
-        "id": "gh:solana-foundation/templates/kit/vite-anchor",
+        "id": "gh:solana-foundation/templates/kit/react-vite-anchor",
         "keywords": [
           "anchor",
           "kit",
@@ -59,8 +59,8 @@
           "typescript",
           "vite"
         ],
-        "name": "vite-anchor",
-        "path": "kit/vite-anchor"
+        "name": "react-vite-anchor",
+        "path": "kit/react-vite-anchor"
       }
     ]
   },
