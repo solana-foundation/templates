@@ -32,14 +32,10 @@ ${colors.reset}
 ${colors.dim}                           Solana x402 Payment Protocol - Rust Template${colors.reset}
 `
 
-const projectName = process.argv[2]
+var projectName = process.argv[2]
 
 if (!projectName) {
-  console.error(`${colors.red}[ERROR]${colors.reset} Please specify a project name:`)
-  console.log(
-    `${colors.dim}        npx github:crypto-priest/x402-solana-rust ${colors.bright}my-project${colors.reset}\n`,
-  )
-  process.exit(1)
+  projectName = "x402-solana-backend"
 }
 
 const targetDir = path.join(process.cwd(), projectName)
