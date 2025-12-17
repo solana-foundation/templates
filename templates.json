@@ -46,6 +46,21 @@
         ],
         "name": "vite",
         "path": "kit/vite"
+      },
+      {
+        "description": "React + Vite, Tailwind, @solana/react-hooks, Anchor vault program",
+        "id": "gh:solana-foundation/templates/kit/vite-anchor",
+        "keywords": [
+          "anchor",
+          "kit",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript",
+          "vite"
+        ],
+        "name": "vite-anchor",
+        "path": "kit/vite-anchor"
       }
     ]
   },
