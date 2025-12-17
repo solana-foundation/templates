@@ -40,9 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# generated code (regenerated on install)
-/app/generated/
-
 # anchor build artifacts
 /anchor/.anchor/
 /anchor/target/

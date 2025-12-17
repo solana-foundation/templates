@@ -23,9 +23,6 @@ lerna-debug.log*
 # OS
 .DS_Store
 
-# Generated code
-/src/generated/
-
 # Anchor build artifacts
 /anchor/.anchor/
 /anchor/target/
