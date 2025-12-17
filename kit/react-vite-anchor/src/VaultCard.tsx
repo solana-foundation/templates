@@ -191,7 +191,7 @@ export function VaultCard() {
             }
             className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {isSending ? "Depositing..." : "Deposit"}
+            {isSending ? "Confirming..." : "Deposit"}
           </button>
         </div>
         {vaultLamports > 0n && (
@@ -207,7 +207,7 @@ export function VaultCard() {
         disabled={isSending || vaultLamports === 0n}
         className="w-full rounded-lg border border-border-low bg-card px-4 py-2.5 text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
       >
-        {isSending ? "Withdrawing..." : "Withdraw All"}
+        {isSending ? "Confirming..." : "Withdraw All"}
       </button>
 
       {/* Status */}
