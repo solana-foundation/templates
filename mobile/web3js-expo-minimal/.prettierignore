@@ -1,0 +1,8 @@
+# Add files here to ignore them from prettier formatting
+/.expo
+/android
+/coverage
+/dist
+/ios
+/tmp
+pnpm-lock.yaml

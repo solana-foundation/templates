@@ -122,6 +122,14 @@ Solana Mobile Templates
 
 `expo` `mobile-wallet-adapter` `react-native` `solana-web3js`
 
+### [web3js-expo-minimal](mobile/web3js-expo-minimal)
+
+`gh:solana-foundation/templates/mobile/web3js-expo-minimal`
+
+> A minimal template for building a Solana mobile app with Expo and React Native.
+
+`expo` `mobile-wallet-adapter` `react-native` `solana-web3js`
+
 ### [web3js-expo-paper](mobile/web3js-expo-paper)
 
 `gh:solana-foundation/templates/mobile/web3js-expo-paper`
@@ -186,18 +194,66 @@ Templates using @solana/web3.js (legacy)
 
 Templates maintained by the Solana community
 
-### [gill-jito-airdrop](community/gill-jito-airdrop)
-
-`gh:solana-foundation/templates/community/gill-jito-airdrop`
-
-> A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree
-
-`nextjs` `react` `tailwind` `typescript` `wallet-ui`
-
-### [x402-solana-protocol](community/x402-solana-protocol)
+### [gill-node-solanax402](community/gill-node-solanax402)
 
 `gh:solana-foundation/templates/community/gill-node-solanax402`
 
 > x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
+
+### [merkle-airdrop](community/merkle-airdrop)
+
+`gh:solana-foundation/templates/community/merkle-airdrop`
+
+> A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree
+
+`nextjs` `react` `tailwind` `typescript` `framework-kit`
+
+### [moneymq-x402](community/moneymq-x402)
+
+`gh:solana-foundation/templates/community/moneymq-x402`
+
+> Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana
+
+`x402` `moneymq` `payments` `micropayments` `solana` `api-monetization` `kora` `facilitator` `typescript`
+
+### [solana-chatgpt-kit](community/solana-chatgpt-kit)
+
+`gh:solana-foundation/templates/community/solana-chatgpt-kit`
+
+> ChatGPT app with Solana features - Swaps, transfers, staking and data query via natural language. Browser wallets + x402 payments or private key mode
+
+`solana` `chatgpt` `openai` `mcp` `jupiter` `x402` `payments` `swap` `wallet` `defi` `staking` `nextjs` `typescript` `spl-token` `sns`
+
+### [supabase-auth](community/supabase-auth)
+
+`gh:solana-foundation/templates/community/supabase-auth`
+
+> Authenticate Solana wallets with Supabase
+
+`supabase` `authentication` `solana` `framework-kit`
+
+### [x402-solana-rust](community/x402-solana-rust)
+
+`gh:solana-foundation/templates/community/x402-solana-rust`
+
+> x402 payment server template for Solana with Rust
+
+`solana` `x402` `rust` `payments` `api` `axum` `actix` `rocket`
+
+### [x402-template](community/x402-template)
+
+`gh:solana-foundation/templates/community/x402-template`
+
+> Next.js Solana starter with X402 payment protocol integration
+
+`solana` `nextjs` `x402` `template` `starter`
+
+### [zk-compression-airdrop](community/zk-compression-airdrop)
+
+`gh:solana-foundation/templates/community/zk-compression-airdrop`
+
+> ZK-Compression based airdrop app built with Next.js, Tailwind, and @solana/react-hooks
+
+`minimal` `nextjs` `react` `solana-kit` `tailwind` `typescript` `zk-compression` `airdrop` `zero-knowledge` `zk` `framework-kit`

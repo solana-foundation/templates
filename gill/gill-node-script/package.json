@@ -1,6 +1,8 @@
 {
   "name": "gill-node-script",
+  "displayName": "Node Server",
   "description": "Node.js script with gill (based on @solana/kit)",
+  "usecase": "Backend",
   "keywords": [
     "gill",
     "node",

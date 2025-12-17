@@ -1,0 +1,58 @@
+name: Validate Templates
+
+on:
+  pull_request:
+    paths:
+      - 'community/**/package.json'
+      - 'gill/**/package.json'
+      - 'mobile/**/package.json'
+      - 'web3js/**/package.json'
+      - 'scripts/**'
+      - 'package.json'
+      - '.github/workflows/validate-templates.yml'
+      - '.github/workflows/templates.json'
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Template Metadata
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.5.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint template structure
+        run: pnpm lint
+
+      - name: Generate metadata
+        run: pnpm generate
+
+      - name: Validate generated output
+        run: pnpm validate
+
+      - name: Check for uncommitted changes
+        run: |
+          if ! git diff --exit-code templates.json TEMPLATES.md .github/workflows/templates.json; then
+            echo "Error: Generated files have uncommitted changes"
+            echo "Please run 'pnpm generate' and commit the changes"
+            exit 1
+          fi

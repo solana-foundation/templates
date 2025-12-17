@@ -87,6 +87,10 @@ x402_ts/
 
 ## Quick Start
 
+### Prerequisites
+
+Make sure you are using Node 22+ so that node_sqlite3, needed for the facilitator, is configured correctly.
+
 ### 1. Install Dependencies
 
 ```bash
@@ -101,6 +105,7 @@ cp env.example .env
 ```
 
 Required environment variables:
+
 - `FACILITATOR_PRIVATE_KEY` - Facilitator's private key (base58)
 - `SOLANA_RPC_URL` - Solana RPC endpoint (default: devnet)
 - `SIMULATE_TRANSACTIONS` - Set to `false` for real blockchain transactions
@@ -238,12 +243,14 @@ GET /api/tier/:tier
 ### Facilitator Endpoints
 
 **Health Check**
+
 ```
 GET /health
 Response: { success: true, data: { status: "healthy", ... } }
 ```
 
 **Verify Payment**
+
 ```
 POST /verify
 Body: { paymentRequest: "serialized_payment_request" }
@@ -251,6 +258,7 @@ Response: { success: true, data: { verified: true, ... } }
 ```
 
 **Settle Payment**
+
 ```
 POST /settle
 Body: { paymentRequest: "serialized_payment_request" }
@@ -258,39 +266,44 @@ Response: { success: true, data: { transactionSignature: "...", ... } }
 ```
 
 **Get Nonce Status**
+
 ```
 GET /nonce/:nonce
 Response: { success: true, data: { nonce: "...", usedAt: ..., ... } }
 ```
 
 **Get Statistics**
+
 ```
 GET /stats
-Response: { 
-  success: true, 
-  data: { 
-    totalNonces: 25, 
-    usedNonces: 25, 
-    activeNonces: 0 
-  } 
+Response: {
+  success: true,
+  data: {
+    totalNonces: 25,
+    usedNonces: 25,
+    activeNonces: 0
+  }
 }
 ```
 
 ### Server Endpoints
 
 **Health Check**
+
 ```
 GET /health
 Response: { success: true, data: { status: "healthy", facilitator: {...} } }
 ```
 
 **Public Endpoint**
+
 ```
 GET /public
 Response: { success: true, data: { message: "No payment required" } }
 ```
 
 **Protected Endpoint**
+
 ```
 GET /api/premium-data
 Headers: { X-Payment: "serialized_payment_request" }
@@ -370,19 +383,23 @@ The `ecosystem.config.cjs` file configures PM2 process management:
 ### Common Issues
 
 **Apps won't start**
+
 - Check `.env` file exists and has valid `FACILITATOR_PRIVATE_KEY`
 - Ensure ports 3000 and 3001 are available
 - Check PM2 logs: `npm run logs`
 
 **Tests fail with "insufficient SOL"**
+
 - Fund test client wallet: `solana airdrop 1 <address> --url devnet`
 - Check `SIMULATE_TRANSACTIONS=false` in `.env`
 
 **Replay attack test succeeds twice**
+
 - Restart facilitator to reset nonce database
 - Check facilitator logs for nonce verification
 
 **Transaction fails on-chain**
+
 - Ensure facilitator has SOL for gas fees
 - Check Solana devnet is operational
 - Verify RPC endpoint is accessible
@@ -416,6 +433,7 @@ This implementation follows the Gill Node Express template patterns and addresse
 ## Credits
 
 Built with:
+
 - [Gill SDK](https://www.gillsdk.com/) - Solana TypeScript SDK
 - [@solana/web3.js](https://github.com/solana-labs/solana-web3.js) - Solana JavaScript API
 - [Express.js](https://expressjs.com/) - Web framework

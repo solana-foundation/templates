@@ -1,5 +1,7 @@
 {
   "name": "web3js-react-vite-tailwind",
+  "displayName": "Web3js Boilerplate (Vite)",
+  "usecase": "Legacy",
   "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter",
   "keywords": [
     "react",
@@ -38,8 +40,8 @@
     "jotai": "^2.14.0",
     "lucide-react": "^0.544.0",
     "next-themes": "^0.4.6",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
     "react-router": "^7.9.1",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
@@ -59,7 +61,7 @@
     "prettier": "^3.6.2",
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.44.0",
-    "vite": "^7.1.6",
+    "vite": "^7.1.11",
     "vite-plugin-node-polyfills": "^0.24.0",
     "vite-tsconfig-paths": "^5.1.4"
   },
