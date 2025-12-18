@@ -148,8 +148,16 @@ const setupProject = (answer) => {
 
     fs.writeFileSync(path.join(targetDir, 'Cargo.toml'), cargoToml)
 
+    // Copy framework-specific README with project name
+    const frameworkReadme = path.join(frameworkDir, 'README.md')
+    if (fs.existsSync(frameworkReadme)) {
+      const readmeContent = fs.readFileSync(frameworkReadme, 'utf8')
+      const customizedReadme = readmeContent.replace(/\{\{name\}\}/g, projectName)
+      fs.writeFileSync(path.join(targetDir, 'README.md'), customizedReadme)
+    }
+
     // Copy other root files
-    const rootFiles = ['.env.example', '.gitignore', 'README.md', 'LICENSE']
+    const rootFiles = ['.env.example', '.gitignore', 'LICENSE']
     rootFiles.forEach((file) => {
       const srcFile = path.join(templateDir, file)
       if (fs.existsSync(srcFile)) {
@@ -271,6 +279,7 @@ const setupProject = (answer) => {
         'package-lock.json',
         'node_modules',
         'Cargo.toml.template',
+        'og-image.png',
       ]
 
       filesToRemove.forEach((file) => {
