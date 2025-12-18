@@ -1,5 +1,74 @@
 [
   {
+    "description": "Kit Templates (using @solana/kit)",
+    "name": "Kit",
+    "path": "kit",
+    "templates": [
+      {
+        "description": "Next.js, Tailwind, @solana/react-hooks",
+        "id": "gh:solana-foundation/templates/kit/nextjs",
+        "image": "kit/nextjs/og-image.png",
+        "keywords": [
+          "kit",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "nextjs",
+        "path": "kit/nextjs"
+      },
+      {
+        "description": "Next.js, Tailwind, @solana/react-hooks, Anchor vault program",
+        "id": "gh:solana-foundation/templates/kit/nextjs-anchor",
+        "image": "kit/nextjs-anchor/og-image.png",
+        "keywords": [
+          "anchor",
+          "kit",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "nextjs-anchor",
+        "path": "kit/nextjs-anchor"
+      },
+      {
+        "description": "React + Vite, Tailwind, @solana/react-hooks",
+        "id": "gh:solana-foundation/templates/kit/react-vite",
+        "image": "kit/react-vite/og-image.png",
+        "keywords": [
+          "kit",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript",
+          "vite"
+        ],
+        "name": "react-vite",
+        "path": "kit/react-vite"
+      },
+      {
+        "description": "React + Vite, Tailwind, @solana/react-hooks, Anchor vault program",
+        "id": "gh:solana-foundation/templates/kit/react-vite-anchor",
+        "image": "kit/react-vite-anchor/og-image.png",
+        "keywords": [
+          "anchor",
+          "kit",
+          "react",
+          "solana-kit",
+          "tailwind",
+          "typescript",
+          "vite"
+        ],
+        "name": "react-vite-anchor",
+        "path": "kit/react-vite-anchor"
+      }
+    ]
+  },
+  {
     "description": "Gill Templates (based on @solana/kit)",
     "name": "Gill",
     "path": "gill",

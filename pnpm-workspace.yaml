@@ -11,6 +11,7 @@ onlyBuiltDependencies:
 packages:
   - community/*
   - gill/*
+  - kit/*
   - web3js/*
 minimumReleaseAgeExclude:
   - '@solana/client'
