@@ -18,13 +18,21 @@ Kit Templates (using @solana/kit)
 
 `anchor` `kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
 
-### [vite](kit/vite)
+### [react-vite](kit/react-vite)
 
-`gh:solana-foundation/templates/kit/vite`
+`gh:solana-foundation/templates/kit/react-vite`
 
 > React + Vite, Tailwind, @solana/react-hooks
 
 `kit` `react` `solana-kit` `tailwind` `typescript` `vite`
+
+### [react-vite-anchor](kit/react-vite-anchor)
+
+`gh:solana-foundation/templates/kit/react-vite-anchor`
+
+> React + Vite, Tailwind, @solana/react-hooks, Anchor vault program
+
+`anchor` `kit` `react` `solana-kit` `tailwind` `typescript` `vite`
 
 # Gill
 

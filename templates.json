@@ -5,8 +5,9 @@
     "path": "kit",
     "templates": [
       {
-        "description": "Next.js starter for Solana dapps",
+        "description": "Next.js, Tailwind, @solana/react-hooks",
         "id": "gh:solana-foundation/templates/kit/nextjs",
+        "image": "kit/nextjs/og-image.png",
         "keywords": [
           "kit",
           "nextjs",
@@ -16,13 +17,12 @@
           "typescript"
         ],
         "name": "nextjs",
-        "path": "kit/nextjs",
-        "displayName": "Kit Next.js",
-        "usecase": "Starter"
+        "path": "kit/nextjs"
       },
       {
-        "description": "Next.js starter with Anchor program",
+        "description": "Next.js, Tailwind, @solana/react-hooks, Anchor vault program",
         "id": "gh:solana-foundation/templates/kit/nextjs-anchor",
+        "image": "kit/nextjs-anchor/og-image.png",
         "keywords": [
           "anchor",
           "kit",
@@ -33,13 +33,12 @@
           "typescript"
         ],
         "name": "nextjs-anchor",
-        "path": "kit/nextjs-anchor",
-        "displayName": "Kit Next.js + Anchor",
-        "usecase": "Starter"
+        "path": "kit/nextjs-anchor"
       },
       {
-        "description": "React + Vite starter for Solana dapps",
+        "description": "React + Vite, Tailwind, @solana/react-hooks",
         "id": "gh:solana-foundation/templates/kit/react-vite",
+        "image": "kit/react-vite/og-image.png",
         "keywords": [
           "kit",
           "react",
@@ -49,13 +48,12 @@
           "vite"
         ],
         "name": "react-vite",
-        "path": "kit/react-vite",
-        "displayName": "Kit Vite",
-        "usecase": "Starter"
+        "path": "kit/react-vite"
       },
       {
-        "description": "React + Vite starter with Anchor program",
+        "description": "React + Vite, Tailwind, @solana/react-hooks, Anchor vault program",
         "id": "gh:solana-foundation/templates/kit/react-vite-anchor",
+        "image": "kit/react-vite-anchor/og-image.png",
         "keywords": [
           "anchor",
           "kit",
@@ -66,9 +64,7 @@
           "vite"
         ],
         "name": "react-vite-anchor",
-        "path": "kit/react-vite-anchor",
-        "displayName": "Kit Vite + Anchor",
-        "usecase": "Starter"
+        "path": "kit/react-vite-anchor"
       }
     ]
   },
