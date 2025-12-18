@@ -47,6 +47,7 @@ Server starts on `http://localhost:3000`
 ### Test
 
 **Web UI:**
+
 ```bash
 cd frontend
 npm install
@@ -58,6 +59,7 @@ npm run dev
 Visit `http://localhost:5173`
 
 **Manual:**
+
 ```bash
 curl http://localhost:3000/api/health
 curl http://localhost:3000/api/free
@@ -66,18 +68,20 @@ curl http://localhost:3000/api/paid
 
 ## API Endpoints
 
-| Endpoint      | Method | Payment Required | Description                     |
-| ------------- | ------ | ---------------- | ------------------------------- |
-| `/api/health` | GET    | No               | Health check and server info    |
-| `/api/free`   | GET    | No               | Free access endpoint            |
-| `/api/paid`   | GET    | Yes (USDC)       | Protected content (demo)        |
+| Endpoint      | Method | Payment Required | Description                  |
+| ------------- | ------ | ---------------- | ---------------------------- |
+| `/api/health` | GET    | No               | Health check and server info |
+| `/api/free`   | GET    | No               | Free access endpoint         |
+| `/api/paid`   | GET    | Yes (USDC)       | Protected content (demo)     |
 
 ## Configuration
 
 ### Required
+
 - `RECEIVER_WALLET_ADDRESS` - Your Solana wallet
 
 ### Optional
+
 - `SOLANA_NETWORK` - `solana-devnet` or `solana-mainnet` (default: devnet)
 - `SOLANA_RPC_URL` - RPC endpoint
 - `USDC_MINT_ADDRESS` - USDC token address
