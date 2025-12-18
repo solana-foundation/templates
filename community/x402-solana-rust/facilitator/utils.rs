@@ -13,6 +13,7 @@ use crate::shared::{
     error::X402Error,
     types::PaymentRequirements,
 };
+use spl_token::solana_program::pubkey::Pubkey as SplPubkey;
 
 /// Decode base64 transaction and deserialize from bincode
 pub fn decode_transaction(encoded: &str) -> Result<VersionedTransaction, X402Error> {
@@ -44,7 +45,7 @@ pub fn validate_payment_transaction(
     }
 
     // Locate SPL Token Program instruction
-    let spl_token_program = spl_token::id();
+    let spl_token_program = Pubkey::new_from_array(spl_token::id().to_bytes());
 
     let token_ix = transaction.message.instructions()
         .iter()
@@ -94,11 +95,18 @@ pub fn validate_payment_transaction(
     let usdc_mint = Pubkey::from_str(&requirements.asset)
         .map_err(|_| "Invalid USDC mint address in requirements".to_string())?;
 
+    // Convert to spl_token Pubkey type
+    let receiver_wallet_spl = SplPubkey::new_from_array(receiver_wallet.to_bytes());
+    let usdc_mint_spl = SplPubkey::new_from_array(usdc_mint.to_bytes());
+    
     // Derive the expected Associated Token Account (ATA) for the receiver
-    let expected_ata = spl_associated_token_account::get_associated_token_address(
-        &receiver_wallet,
-        &usdc_mint,
+    let expected_ata_spl = spl_associated_token_account::get_associated_token_address(
+        &receiver_wallet_spl,
+        &usdc_mint_spl,
     );
+
+    // Convert back to solana_sdk Pubkey for comparison
+    let expected_ata = Pubkey::new_from_array(expected_ata_spl.to_bytes());
 
     // Extract destination account from instruction
     // For Transfer (discriminator 3): destination is at account index 1
