@@ -51,8 +51,9 @@ export type WithdrawInstruction<
   TProgram extends string = typeof VAULT_PROGRAM_ADDRESS,
   TAccountSigner extends string | AccountMeta<string> = string,
   TAccountVault extends string | AccountMeta<string> = string,
-  TAccountSystemProgram extends string | AccountMeta<string> =
-    "11111111111111111111111111111111",
+  TAccountSystemProgram extends
+    | string
+    | AccountMeta<string> = "11111111111111111111111111111111",
   TRemainingAccounts extends readonly AccountMeta<string>[] = [],
 > = Instruction<TProgram> &
   InstructionWithData<ReadonlyUint8Array> &
@@ -79,7 +80,7 @@ export type WithdrawInstructionDataArgs = {};
 export function getWithdrawInstructionDataEncoder(): FixedSizeEncoder<WithdrawInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([["discriminator", fixEncoderSize(getBytesEncoder(), 8)]]),
-    (value) => ({ ...value, discriminator: WITHDRAW_DISCRIMINATOR }),
+    (value) => ({ ...value, discriminator: WITHDRAW_DISCRIMINATOR })
   );
 }
 
@@ -95,7 +96,7 @@ export function getWithdrawInstructionDataCodec(): FixedSizeCodec<
 > {
   return combineCodec(
     getWithdrawInstructionDataEncoder(),
-    getWithdrawInstructionDataDecoder(),
+    getWithdrawInstructionDataDecoder()
   );
 }
 
@@ -120,7 +121,7 @@ export async function getWithdrawInstructionAsync<
     TAccountVault,
     TAccountSystemProgram
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress }
 ): Promise<
   WithdrawInstruction<
     TProgramAddress,
@@ -192,7 +193,7 @@ export function getWithdrawInstruction<
   TProgramAddress extends Address = typeof VAULT_PROGRAM_ADDRESS,
 >(
   input: WithdrawInput<TAccountSigner, TAccountVault, TAccountSystemProgram>,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress }
 ): WithdrawInstruction<
   TProgramAddress,
   TAccountSigner,
@@ -255,7 +256,7 @@ export function parseWithdrawInstruction<
 >(
   instruction: Instruction<TProgram> &
     InstructionWithAccounts<TAccountMetas> &
-    InstructionWithData<ReadonlyUint8Array>,
+    InstructionWithData<ReadonlyUint8Array>
 ): ParsedWithdrawInstruction<TProgram, TAccountMetas> {
   if (instruction.accounts.length < 3) {
     // TODO: Coded error.

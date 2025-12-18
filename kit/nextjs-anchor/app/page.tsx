@@ -125,9 +125,9 @@ export default function Home() {
                     {status === "connecting"
                       ? "Connecting…"
                       : status === "connected" &&
-                        wallet?.connector.id === connector.id
-                      ? "Active"
-                      : "Tap to connect"}
+                          wallet?.connector.id === connector.id
+                        ? "Active"
+                        : "Tap to connect"}
                   </span>
                 </span>
                 <span

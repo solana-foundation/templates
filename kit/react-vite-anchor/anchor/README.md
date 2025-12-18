@@ -32,6 +32,7 @@ solana address -k target/deploy/vault-keypair.json
 ### 3. Update the program ID
 
 Update the program ID in these files:
+
 - `anchor/Anchor.toml` - Update `vault = "..."` under `[programs.devnet]`
 - `anchor/programs/vault/src/lib.rs` - Update `declare_id!("...")`
 
@@ -60,6 +61,7 @@ This updates the generated client code in `src/generated/vault/` with your new p
 ## Program Overview
 
 The vault program allows users to:
+
 - **Deposit**: Send SOL to a personal vault PDA (Program Derived Address)
 - **Withdraw**: Retrieve all SOL from your vault
 

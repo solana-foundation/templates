@@ -76,7 +76,9 @@ export function VaultCard() {
           { address: vaultAddress, role: 1 }, // Writable (1 = writable)
           { address: SYSTEM_PROGRAM_ADDRESS, role: 0 }, // Readonly (0 = readonly)
         ],
-        data: getDepositInstructionDataEncoder().encode({ amount: depositAmount }),
+        data: getDepositInstructionDataEncoder().encode({
+          amount: depositAmount,
+        }),
       };
 
       setTxStatus("Awaiting signature...");
@@ -189,7 +191,10 @@ export function VaultCard() {
           <button
             onClick={handleDeposit}
             disabled={
-              isSending || !amount || parseFloat(amount) <= 0 || vaultLamports > 0n
+              isSending ||
+              !amount ||
+              parseFloat(amount) <= 0 ||
+              vaultLamports > 0n
             }
             className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
           >

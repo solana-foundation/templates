@@ -24,13 +24,13 @@ Open [http://localhost:5173](http://localhost:5173), connect your wallet, and in
 
 ## Stack
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | React 19, Vite, TypeScript |
-| Styling | Tailwind CSS v4 |
-| Solana Client | `@solana/client`, `@solana/react-hooks` |
-| Program Client | Codama-generated, `@solana/kit` |
-| Program | Anchor (Rust) |
+| Layer          | Technology                              |
+| -------------- | --------------------------------------- |
+| Frontend       | React 19, Vite, TypeScript              |
+| Styling        | Tailwind CSS v4                         |
+| Solana Client  | `@solana/client`, `@solana/react-hooks` |
+| Program Client | Codama-generated, `@solana/kit`         |
+| Program        | Anchor (Rust)                           |
 
 ## Project Structure
 
@@ -59,17 +59,20 @@ The included vault program is already deployed to devnet. To deploy your own:
 ### Steps
 
 1. **Configure Solana CLI for devnet**
+
    ```bash
    solana config set --url devnet
    ```
 
 2. **Create a wallet (if needed) and fund it**
+
    ```bash
    solana-keygen new
    solana airdrop 2
    ```
 
 3. **Build and deploy the program**
+
    ```bash
    cd anchor
    anchor build
