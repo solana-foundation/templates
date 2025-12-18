@@ -27,7 +27,7 @@
     "dev": "next dev",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint": "next lint",
+    "lint": "eslint",
     "start": "next start"
   },
   "dependencies": {

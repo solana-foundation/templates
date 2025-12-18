@@ -31,7 +31,7 @@
     "dev": "next dev",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint": "next lint",
+    "lint": "eslint",
     "setup": "npm run anchor-build && npm run codama:js",
     "start": "next start"
   },
