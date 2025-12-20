@@ -1,23 +1,37 @@
-import { Address } from 'gill'
+'use client'
+
+import { useState } from 'react'
+import { toAddress } from '@solana/client'
+import { useBalance, useClusterState, useSolanaClient } from '@solana/react-hooks'
 import { AppAlert } from '@/components/app-alert'
 import { Button } from '@/components/ui/button'
-import { useSolana } from '@/components/solana/use-solana'
-import { useRequestAirdropMutation } from '../data-access/use-request-airdrop-mutation'
-import { useGetBalanceQuery } from '../data-access/use-get-balance-query'
+import { resolveCluster } from '@/components/solana/clusters'
 
-export function AccountUiBalanceCheck({ address }: { address: Address }) {
-  const { cluster } = useSolana()
-  const mutation = useRequestAirdropMutation({ address })
-  const query = useGetBalanceQuery({ address })
+export function AccountUiBalanceCheck({ address }: { address: string }) {
+  const clusterState = useClusterState()
+  const cluster = resolveCluster(clusterState.endpoint)
+  const client = useSolanaClient()
+  const balance = useBalance(address ? toAddress(address) : undefined, { watch: true })
+  const [isPending, setIsPending] = useState(false)
 
-  if (query.isLoading) {
+  if (balance.fetching) {
     return null
   }
-  if (query.isError || !query.data?.value) {
+  if (balance.error || balance.lamports == null) {
     return (
       <AppAlert
         action={
-          <Button variant="outline" onClick={() => mutation.mutateAsync(1).catch((err) => console.log(err))}>
+          <Button
+            variant="outline"
+            disabled={isPending}
+            onClick={async () => {
+              setIsPending(true)
+              await client.actions
+                .requestAirdrop(toAddress(address), BigInt(1_000_000_000))
+                .catch((err) => console.log(err))
+                .finally(() => setIsPending(false))
+            }}
+          >
             Request Airdrop
           </Button>
         }

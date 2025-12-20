@@ -28,6 +28,11 @@
   "repokit": {
     "groups": [
       {
+        "description": "Kit Templates (using @solana/kit)",
+        "name": "Kit",
+        "path": "kit"
+      },
+      {
         "description": "Gill Templates (based on @solana/kit)",
         "name": "Gill",
         "path": "gill"
