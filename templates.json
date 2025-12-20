@@ -489,10 +489,6 @@
         "path": "community/zk-compression-airdrop"
       }
     ]
-<<<<<<< HEAD
-  }
-]
-=======
   },
   {
     "description": "Lazorkit Templates maintained by the Lazor Community",
@@ -502,7 +498,7 @@
       {
         "description": "Next.js, Tailwind, Lazorkit-sdk, Wallet UI",
         "id": "gh:solana-foundation/templates/lazorkit/lazorkit-demo-next",
-        "image": "gill/gill-next-tailwind/og-image.png",
+        "image": "lazorkit/lazorkit-demo-next/og-image.png",
         "keywords": [
           "biometrics",
           "nextjs",
@@ -520,7 +516,7 @@
       {
         "description": "React+Vite, Tailwind, Lazorkit-sdk, Wallet UI",
         "id": "gh:solana-foundation/templates/lazorkit/lazorkit-starter-vite",
-        "image": "gill/gill-react-vite-tailwind/og-image.png",
+        "image": "lazorkit/lazorkit-starter-vite/og-image.png",
         "keywords": [
           "biometrics",
           "react",
@@ -538,7 +534,7 @@
       {
         "description": "ReactNative+Expo, Lazorkit-sdk, Wallet UI",
         "id": "gh:solana-foundation/templates/lazorkit/lazorkit-starter-expo",
-        "image": "gill/gill-react-vite-tailwind/og-image.png",
+        "image": "lazorkit/lazorkit-starter-expo/og-image.png",
         "keywords": [
           "biometrics",
           "mobile",
@@ -555,4 +551,3 @@
     ]
   }
 ]
->>>>>>> fd30932 (chore: created new template lazorkit for te solana ecosystem)
