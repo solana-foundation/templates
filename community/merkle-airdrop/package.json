@@ -1,0 +1,79 @@
+{
+  "name": "merkle-airdrop",
+  "displayName": "Merkle Airdrop",
+  "description": "A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree",
+  "usecase": "Airdrop",
+  "keywords": [
+    "nextjs",
+    "react",
+    "tailwind",
+    "typescript",
+    "framework-kit"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Generates the necessary TypeScript types and client code from the Solana program:",
+      "+{pm} codama:generate",
+      "Then set up the program:",
+      "+{pm} airdrop:setup",
+      "Initialize the on-chain airdrop state:",
+      "+{pm} airdrop:init",
+      "Run the app:",
+      "+{pm} dev"
+    ]
+  },
+  "scripts": {
+    "build": "next build",
+    "airdrop:setup": "cd anchor && npx ts-node scripts/index.ts setup",
+    "airdrop:init": "cd anchor && npx ts-node scripts/index.ts initialize",
+    "airdrop:extract": "cd anchor && npx ts-node scripts/extract-wallet.ts --list",
+    "codama:generate": "cd anchor && anchor build && npx ts-node codama.config.ts",
+    "test": "cd anchor && vitest run tests/solana-distributor-comprehensive.test.ts",
+    "test:watch": "cd anchor && vitest tests/solana-distributor-comprehensive.test.ts",
+    "ci": "npm run build && npm run lint && npm run format:check",
+    "dev": "next dev --turbopack",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint",
+    "start": "next start",
+    "type-check": "tsc --noEmit",
+    "type-check:node": "tsc --project tsconfig.node.json --noEmit"
+  },
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@solana/client": "^1.1.0",
+    "@solana/kit": "^5.0.0",
+    "@solana/react-hooks": "^1.1.0",
+    "bs58": "^6.0.0",
+    "clsx": "^2.1.1",
+    "codama": "^1.3.3",
+    "js-sha3": "^0.9.3",
+    "next": "16.0.10",
+    "next-themes": "^0.4.6",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "tailwind-merge": "^3.3.1",
+    "tw-animate-css": "^1.3.7"
+  },
+  "devDependencies": {
+    "@codama/cli": "^1.3.1",
+    "@codama/nodes-from-anchor": "^1.2.5",
+    "@codama/renderers": "^1.0.31",
+    "@codama/visitors-core": "^1.3.3",
+    "@eslint/eslintrc": "^3.3.1",
+    "@tailwindcss/postcss": "^4.1.12",
+    "@types/bn.js": "^5.2.0",
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "eslint": "^9.33.0",
+    "eslint-config-next": "16.0.10",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4.1.12",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4",
+    "ws": "^8.18.3"
+  }
+}

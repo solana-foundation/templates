@@ -1,0 +1,57 @@
+{
+  "name": "react-vite",
+  "description": "React + Vite, Tailwind, @solana/react-hooks",
+  "keywords": [
+    "kit",
+    "react",
+    "solana-kit",
+    "tailwind",
+    "typescript",
+    "vite"
+  ],
+  "create-solana-dapp": {
+    "rename": {
+      "scaffold": {
+        "to": "{{name}}",
+        "paths": [
+          "src"
+        ]
+      }
+    }
+  },
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -b && vite build",
+    "ci": "npm run build && npm run lint && npm run format:check",
+    "dev": "vite",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@solana/client": "^1.0.0-rc.2",
+    "@solana/react-hooks": "^1.0.0-rc.3",
+    "@tailwindcss/vite": "^4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwindcss": "^4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.0.3",
+    "eslint": "^9",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5",
+    "typescript-eslint": "^8.44.0",
+    "vite": "^7.1.6"
+  }
+}
