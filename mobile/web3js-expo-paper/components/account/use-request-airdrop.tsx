@@ -1,10 +1,10 @@
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
-import { useConnection } from '@/components/solana/solana-provider'
 import { useMutation } from '@tanstack/react-query'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { useGetBalanceInvalidate } from './use-get-balance'
 
 export function useRequestAirdrop({ address }: { address: PublicKey }) {
-  const connection = useConnection()
+  const { connection } = useMobileWallet()
   const invalidateBalance = useGetBalanceInvalidate({ address })
 
   return useMutation({

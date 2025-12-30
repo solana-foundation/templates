@@ -1,7 +1,6 @@
 import { createContext, type PropsWithChildren, use, useMemo } from 'react'
-import { useMobileWallet } from '@/components/solana/use-mobile-wallet'
+import { Account, useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { AppConfig } from '@/constants/app-config'
-import { Account, useAuthorization } from '@/components/solana/use-authorization'
 import { useMutation } from '@tanstack/react-query'
 
 export interface AuthState {
@@ -34,8 +33,7 @@ function useSignInMutation() {
 }
 
 export function AuthProvider({ children }: PropsWithChildren) {
-  const { disconnect } = useMobileWallet()
-  const { accounts, isLoading } = useAuthorization()
+  const { accounts, disconnect, isLoading } = useMobileWallet()
   const signInMutation = useSignInMutation()
 
   const value: AuthState = useMemo(
