@@ -234,6 +234,14 @@ Templates maintained by the Solana community
 
 `solana` `chatgpt` `openai` `mcp` `jupiter` `x402` `payments` `swap` `wallet` `defi` `staking` `nextjs` `typescript` `spl-token` `sns`
 
+### [solana-pay-store](community/solana-pay-store)
+
+`gh:solana-foundation/templates/community/solana-pay-store`
+
+> Minimal Next.js, Tailwind, @solana/kit, framework-kit, solana-pay
+
+`minimal` `nextjs` `react` `@solana/web3.js` `framework-kit` `solana-pay` `tailwind` `typescript`
+
 ### [supabase-auth](community/supabase-auth)
 
 `gh:solana-foundation/templates/community/supabase-auth`

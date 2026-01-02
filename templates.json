@@ -507,6 +507,25 @@
         "usecase": "Starter"
       },
       {
+        "description": "Minimal Next.js, Tailwind, @solana/kit, framework-kit, solana-pay",
+        "id": "gh:solana-foundation/templates/community/solana-pay-store",
+        "image": "community/solana-pay-store/og-image.png",
+        "keywords": [
+          "minimal",
+          "nextjs",
+          "react",
+          "@solana/web3.js",
+          "framework-kit",
+          "solana-pay",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "solana-pay-store",
+        "path": "community/solana-pay-store",
+        "displayName": "Minimal Boilerplate",
+        "usecase": "Starter"
+      },
+      {
         "description": "Authenticate Solana wallets with Supabase",
         "id": "gh:solana-foundation/templates/community/supabase-auth",
         "image": "community/supabase-auth/og-image.png",
