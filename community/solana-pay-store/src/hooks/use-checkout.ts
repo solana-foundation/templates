@@ -1,11 +1,10 @@
 'use client'
 
 import { useCallback, useState, useEffect, useRef } from 'react'
-import { Connection } from '@solana/web3.js'
-import { findReference } from '@solana/pay'
+import { useSolanaClient } from '@solana/react-hooks'
+import { toAddress } from '@solana/client'
 import type { PaymentRequest } from '@/lib/solana-pay/types'
 import { createPaymentRequest, generatePaymentQR } from '@/lib/solana-pay'
-import { RPC_ENDPOINT } from '@/lib/solana-pay/constants'
 
 interface UseCheckoutOptions {
   label?: string
@@ -27,6 +26,7 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
     onPaymentFound,
   } = options
 
+  const client = useSolanaClient()
   const [isOpen, setIsOpen] = useState(false)
   const [amount, setAmount] = useState<number>(0)
 
@@ -38,7 +38,6 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
   const [signature, setSignature] = useState<string | null>(null)
   const [paymentMemo, setPaymentMemo] = useState<string | null>(null)
   const [isSearching, setIsSearching] = useState(false)
-  const [connection] = useState(() => new Connection(RPC_ENDPOINT, 'confirmed'))
 
   const onPaymentFoundRef = useRef(onPaymentFound)
 
@@ -86,7 +85,7 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
 
   useEffect(() => {
     const reference = paymentRequest?.reference
-    const enabled = isOpen && !!paymentRequest
+    const enabled = isOpen && !!paymentRequest && !!client
 
     if (!enabled || !reference || signature) {
       return
@@ -96,16 +95,27 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
     let cancelled = false
 
     const searchForPayment = async () => {
+      // Convert PublicKey to Address for @solana/client
+      const referenceAddress = toAddress(reference.toBase58())
+
       while (!cancelled) {
         try {
-          const signatureInfo = await findReference(connection, reference, {
-            finality: 'confirmed',
-          })
+          // Re-implement findReference logic using @solana/client
+          const signatures = await client.runtime.rpc.getSignaturesForAddress(referenceAddress, { limit: 1 }).send()
+
+          if (!signatures || signatures.length === 0) {
+            if (!cancelled) {
+              await new Promise((resolve) => setTimeout(resolve, 2000))
+            }
+            continue
+          }
 
           if (cancelled) return
 
-          const sig = signatureInfo.signature
-          const extractedMemo = signatureInfo.memo
+          // Get the oldest signature (last in array)
+          const oldest = signatures[signatures.length - 1]
+          const sig = oldest.signature
+          const extractedMemo = oldest.memo || null
 
           setSignature(sig)
           setPaymentMemo(extractedMemo)
@@ -114,7 +124,7 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
           onPaymentFoundRef.current?.(sig, extractedMemo || undefined)
           return
         } catch (error) {
-          if ((error as Error)?.message?.includes('not found') || (error as Error).name === 'FindReferenceError') {
+          if ((error as Error)?.message?.includes('not found')) {
             if (!cancelled) {
               await new Promise((resolve) => setTimeout(resolve, 2000))
             }
@@ -133,7 +143,7 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
     return () => {
       cancelled = true
     }
-  }, [isOpen, paymentRequest, signature, connection])
+  }, [isOpen, paymentRequest, signature, client])
 
   const openCheckout = useCallback(
     (checkoutAmount: number) => {

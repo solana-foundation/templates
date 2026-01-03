@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { Connection, PublicKey } from '@solana/web3.js'
+import { useSolanaClient } from '@solana/react-hooks'
+import { toAddress } from '@solana/client'
 import { useSolana } from '@/components/solana/use-solana'
-import { RPC_ENDPOINT } from '@/lib/solana-pay/constants'
 import { products } from '@/store/data'
 
 export interface Purchase {
@@ -41,12 +41,12 @@ function calculateAmount(items: Purchase['items']) {
 
 export function usePurchaseHistory() {
   const { publicKey: address } = useSolana()
-  const [connection] = useState(() => new Connection(RPC_ENDPOINT, 'confirmed'))
+  const client = useSolanaClient()
   const [purchases, setPurchases] = useState<Purchase[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
   const fetchPurchases = useCallback(async () => {
-    if (!address) {
+    if (!address || !client) {
       setPurchases([])
       return
     }
@@ -54,21 +54,21 @@ export function usePurchaseHistory() {
     setIsLoading(true)
 
     try {
-      const publicKey = new PublicKey(address)
-      const signatures = await connection.getSignaturesForAddress(publicKey, { limit: 10 })
+      const addressObj = toAddress(address)
+      const signatures = await client.runtime.rpc.getSignaturesForAddress(addressObj, { limit: 10 }).send()
 
-      const purchaseList = signatures
+      const purchaseList: Purchase[] = (signatures ?? [])
         .filter((sig) => sig.memo?.includes('Order #') && !sig.err)
         .map((sig) => {
           const parsed = parseMemo(sig.memo!)
           if (!parsed) return null
 
           return {
-            signature: sig.signature,
+            signature: String(sig.signature),
             orderId: parsed.orderId,
             items: parsed.items,
             amount: calculateAmount(parsed.items),
-            timestamp: sig.blockTime || Date.now() / 1000,
+            timestamp: Number(sig.blockTime) || Date.now() / 1000,
           }
         })
         .filter((p): p is Purchase => p !== null)
@@ -81,7 +81,7 @@ export function usePurchaseHistory() {
     } finally {
       setIsLoading(false)
     }
-  }, [address, connection])
+  }, [address, client])
 
   useEffect(() => {
     fetchPurchases()
