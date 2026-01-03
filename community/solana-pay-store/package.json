@@ -32,7 +32,6 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@solana-mobile/wallet-standard-mobile": "^0.4.1",
     "@solana/client": "^1.2.0",
-    "@solana/kit": "^5.1.0",
     "@solana/pay": "^0.2.6",
     "@solana/react-hooks": "^1.1.5",
     "@solana/spl-token": "^0.4.14",
