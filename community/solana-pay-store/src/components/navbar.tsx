@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { ShoppingCart, Receipt } from 'lucide-react'
 import { ThemeSelect } from '@/components/theme-select'
 import { Button } from '@/components/ui/button'
