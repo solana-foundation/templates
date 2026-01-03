@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { PaymentQRDisplay } from './payment-qr-display'
 import { PaymentStatusBadge } from './payment-status-badge'
 import { PaymentDetails } from './payment-details'
+// TODO: Migrate to Address from @solana/client when @solana/pay adds support for it.
+// Currently using PublicKey type to match PaymentRequest interface from @solana/pay.
 import type { PublicKey } from '@solana/web3.js'
 import type { PaymentStatus } from '@/lib/solana-pay/types'
 import type { CartItem } from '@/store/types/cart'

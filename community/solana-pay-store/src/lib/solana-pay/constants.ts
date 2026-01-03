@@ -1,3 +1,5 @@
+// TODO: Migrate to @solana/client when @solana/pay adds support for it.
+// Currently using @solana/web3.js for compatibility with @solana/pay's encodeURL function.
 import { PublicKey } from '@solana/web3.js'
 
 export const MERCHANT_WALLET = new PublicKey(

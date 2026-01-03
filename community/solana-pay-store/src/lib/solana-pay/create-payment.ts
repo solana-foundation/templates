@@ -1,4 +1,6 @@
 import { encodeURL, createQR } from '@solana/pay'
+// TODO: Migrate to @solana/client when @solana/pay adds support for it.
+// Currently using Keypair from @solana/web3.js because encodeURL expects PublicKey objects.
 import { Keypair } from '@solana/web3.js'
 import BigNumber from 'bignumber.js'
 import type { PaymentRequest } from './types'
