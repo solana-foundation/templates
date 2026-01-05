@@ -1,3 +1,39 @@
+# Kit
+
+Kit Templates (using @solana/kit)
+
+### [nextjs](kit/nextjs)
+
+`gh:solana-foundation/templates/kit/nextjs`
+
+> Next.js, Tailwind, @solana/react-hooks
+
+`kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
+
+### [nextjs-anchor](kit/nextjs-anchor)
+
+`gh:solana-foundation/templates/kit/nextjs-anchor`
+
+> Next.js, Tailwind, @solana/react-hooks, Anchor vault program
+
+`anchor` `kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
+
+### [react-vite](kit/react-vite)
+
+`gh:solana-foundation/templates/kit/react-vite`
+
+> React + Vite, Tailwind, @solana/react-hooks
+
+`kit` `react` `solana-kit` `tailwind` `typescript` `vite`
+
+### [react-vite-anchor](kit/react-vite-anchor)
+
+`gh:solana-foundation/templates/kit/react-vite-anchor`
+
+> React + Vite, Tailwind, @solana/react-hooks, Anchor vault program
+
+`anchor` `kit` `react` `solana-kit` `tailwind` `typescript` `vite`
+
 # Gill
 
 Gill Templates (based on @solana/kit)
@@ -166,14 +202,6 @@ Templates using @solana/web3.js (legacy)
 
 Templates maintained by the Solana community
 
-### [gill-jito-airdrop](community/gill-jito-airdrop)
-
-`gh:solana-foundation/templates/community/gill-jito-airdrop`
-
-> A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree
-
-`nextjs` `react` `tailwind` `typescript` `wallet-ui`
-
 ### [gill-node-solanax402](community/gill-node-solanax402)
 
 `gh:solana-foundation/templates/community/gill-node-solanax402`
@@ -189,6 +217,14 @@ Templates maintained by the Solana community
 > This started provides a working HonoJS backend server with Solder Event Indexing on the Solana Memo Program, using pump.fun trades as example
 
 `solana` `honojs` `backend` `solder` `indexing` `memo program` `event indexing` `typescript` `starter`
+
+### [merkle-airdrop](community/merkle-airdrop)
+
+`gh:solana-foundation/templates/community/merkle-airdrop`
+
+> A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree
+
+`nextjs` `react` `tailwind` `typescript` `framework-kit`
 
 ### [moneymq-x402](community/moneymq-x402)
 
@@ -212,7 +248,15 @@ Templates maintained by the Solana community
 
 > Authenticate Solana wallets with Supabase
 
-`supabase` `authentication` `solana`
+`supabase` `authentication` `solana` `framework-kit`
+
+### [x402-solana-rust](community/x402-solana-rust)
+
+`gh:solana-foundation/templates/community/x402-solana-rust`
+
+> x402 payment server template for Solana with Rust
+
+`solana` `x402` `rust` `payments` `api` `axum` `actix` `rocket`
 
 ### [x402-template](community/x402-template)
 
@@ -226,6 +270,6 @@ Templates maintained by the Solana community
 
 `gh:solana-foundation/templates/community/zk-compression-airdrop`
 
-> ZK-Compression based airdrop app built with Next.js, Tailwind, gill (based on @solana/kit), Wallet UI
+> ZK-Compression based airdrop app built with Next.js, Tailwind, and @solana/react-hooks
 
-`gill` `minimal` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui` `zk-compression` `airdrop` `zero-knowledge` `zk`
+`minimal` `nextjs` `react` `solana-kit` `tailwind` `typescript` `zk-compression` `airdrop` `zero-knowledge` `zk` `framework-kit`

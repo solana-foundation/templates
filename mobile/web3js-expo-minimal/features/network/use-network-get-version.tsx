@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
-import { useMobileWalletAdapter } from '@wallet-ui/react-native-web3js'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 
 export function useNetworkGetVersion() {
-  const { clusterId, connection } = useMobileWalletAdapter()
+  const { chain, connection } = useMobileWallet()
   return useQuery({
-    queryKey: ['getVersion', clusterId],
+    queryKey: ['getVersion', chain],
     queryFn: () =>
       connection.getVersion().then((version) => ({ core: version['solana-core'], features: version['feature-set'] })),
   })

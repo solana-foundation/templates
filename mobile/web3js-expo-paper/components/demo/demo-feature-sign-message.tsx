@@ -5,12 +5,12 @@ import { ActivityIndicator, Button, Snackbar, TextInput } from 'react-native-pap
 import { View } from 'react-native'
 import React, { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
-import { useWalletUi } from '@/components/solana/use-wallet-ui'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { ellipsify } from '@/utils/ellipsify'
 import { useAppTheme } from '@/components/app-theme'
 
 function useSignMessage({ address }: { address: PublicKey }) {
-  const { signMessage } = useWalletUi()
+  const { signMessage } = useMobileWallet()
   return useMutation({
     mutationFn: async (input: { message: string }) => {
       return signMessage(new TextEncoder().encode(input.message)).then((signature) => signature.toString())

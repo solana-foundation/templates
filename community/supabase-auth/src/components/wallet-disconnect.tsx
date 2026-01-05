@@ -1,13 +1,13 @@
 'use client'
 
 import * as React from 'react'
-import { useWalletUi } from '@wallet-ui/react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/components/auth/auth-provider'
 import { useRouter } from 'next/navigation'
+import { useWalletConnection } from '@solana/react-hooks'
 
 function WalletDisconnect(props: React.ComponentProps<typeof Button>) {
-  const { connected, disconnect } = useWalletUi()
+  const { connected, disconnect } = useWalletConnection()
   const { signOut } = useAuth()
   const router = useRouter()
 
@@ -28,7 +28,7 @@ function WalletDisconnect(props: React.ComponentProps<typeof Button>) {
       }
 
       // Then disconnect the wallet
-      disconnect()
+      await disconnect()
 
       // Force redirect to home page
       router.replace('/')
@@ -47,7 +47,7 @@ function WalletDisconnect(props: React.ComponentProps<typeof Button>) {
       }
 
       // Still try to disconnect wallet
-      disconnect()
+      await disconnect()
 
       // Force redirect
       router.replace('/')
