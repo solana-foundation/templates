@@ -1,0 +1,60 @@
+{
+  "name": "drift-hello-world",
+  "displayName": "Drift Hello World",
+  "description": "Next.js + Tailwind template showing basic Drift Protocol integration",
+  "usecase": "DeFi",
+  "keywords": [
+    "drift",
+    "defi",
+    "perps",
+    "nextjs",
+    "tailwind",
+    "typescript",
+    "solana",
+    "wallet-adapter"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Install dependencies:",
+      "+{pm} install",
+      "Start the development server:",
+      "+{pm} dev"
+    ]
+  },
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "ci": "npm run build && npm run lint && npm run format:check",
+    "dev": "next dev --webpack",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@drift-labs/sdk": "^2.104.0",
+    "@solana/wallet-adapter-base": "0.9.27",
+    "@solana/wallet-adapter-react": "0.15.39",
+    "@solana/wallet-adapter-react-ui": "0.9.39",
+    "@solana/wallet-adapter-wallets": "0.19.37",
+    "@solana/web3.js": "^1.98.4",
+    "next": "16.0.10",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/node": "^24.5.2",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "eslint": "^9.35.0",
+    "eslint-config-next": "16.0.10",
+    "pino-pretty": "^10.3.1",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2"
+  }
+}
