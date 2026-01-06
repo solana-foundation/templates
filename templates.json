@@ -445,6 +445,25 @@
         "usecase": "Payments"
       },
       {
+        "description": "Next.js + Tailwind template showing basic Drift Protocol integration",
+        "id": "gh:solana-foundation/templates/community/drift-hello-world",
+        "image": "community/drift-hello-world/og-image.png",
+        "keywords": [
+          "drift",
+          "defi",
+          "perps",
+          "nextjs",
+          "tailwind",
+          "typescript",
+          "solana",
+          "wallet-adapter"
+        ],
+        "name": "drift-hello-world",
+        "path": "community/drift-hello-world",
+        "displayName": "Drift Hello World",
+        "usecase": "DeFi"
+      },
+      {
         "description": "A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree",
         "id": "gh:solana-foundation/templates/community/merkle-airdrop",
         "image": "community/merkle-airdrop/og-image.png",

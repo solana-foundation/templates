@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+:root {
+  --background: oklch(0.986 0.01 92);
+  --foreground: oklch(0.16 0.02 235);
+  --border-strong: oklch(0.83 0.03 210);
+  --border-low: oklch(0.92 0.02 210);
+  --accent: oklch(0.55 0.21 215);
+  --accent-strong: oklch(0.45 0.23 215);
+  --muted: oklch(0.47 0.03 250);
+  --card: oklch(0.99 0.01 90);
+  --card-foreground: oklch(0.16 0.02 235);
+  --glow: oklch(0.93 0.08 190);
+  --radius: 18px;
+  --font-sans: var(--font-space-grotesk), system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.16 0.02 240);
+    --foreground: oklch(0.97 0.01 95);
+    --border-strong: oklch(1 0 0 / 0.2);
+    --border-low: oklch(1 0 0 / 0.08);
+    --accent: oklch(0.78 0.15 205);
+    --accent-strong: oklch(0.74 0.18 205);
+    --muted: oklch(0.7 0.02 250);
+    --card: oklch(0.2 0.01 230);
+    --card-foreground: oklch(0.97 0.01 95);
+    --glow: oklch(0.4 0.11 200);
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-border: var(--border-strong);
+  --color-border-strong: var(--border-strong);
+  --color-border-low: var(--border-low);
+  --color-primary: var(--accent);
+  --color-primary-strong: var(--accent-strong);
+  --color-muted: var(--muted);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-glow: var(--glow);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --radius-lg: var(--radius);
+}
+
+@keyframes float-in {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-transparent;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+    color-scheme: light dark;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(
+        circle at 20% 10%,
+        color-mix(in oklab, var(--color-glow) 40%, transparent) 0%,
+        transparent 55%
+      ),
+      radial-gradient(
+        circle at 90% 20%,
+        color-mix(in oklab, var(--color-primary) 35%, transparent) 0%,
+        transparent 50%
+      ),
+      linear-gradient(
+        145deg,
+        color-mix(in oklab, var(--color-background) 92%, #ffffff),
+        color-mix(in oklab, var(--color-background) 75%, #c9f5ff)
+      );
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-card/80 backdrop-blur border border-border-low shadow-[0_15px_60px_rgba(15,23,42,0.12)];
+  }
+
+  .section-title {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+
+  .mono-label {
+    @apply font-mono text-xs uppercase tracking-[0.2em] text-muted;
+  }
+
+  .fade-in {
+    animation: float-in 0.7s ease forwards;
+  }
+}
