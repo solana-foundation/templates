@@ -210,6 +210,14 @@ Templates maintained by the Solana community
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
 
+### [drift-hello-world](community/drift-hello-world)
+
+`gh:solana-foundation/templates/community/drift-hello-world`
+
+> Next.js + Tailwind template showing basic Drift Protocol integration
+
+`drift` `defi` `perps` `nextjs` `tailwind` `typescript` `solana` `wallet-adapter`
+
 ### [merkle-airdrop](community/merkle-airdrop)
 
 `gh:solana-foundation/templates/community/merkle-airdrop`
