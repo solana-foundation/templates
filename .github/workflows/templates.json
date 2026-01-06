@@ -5,6 +5,7 @@
   "community/solana-chatgpt-kit",
   "community/solana-pay-store",
   "community/supabase-auth",
+  "community/x402-metaplex-token-gated",
   "community/x402-solana-rust",
   "community/x402-template",
   "community/zk-compression-airdrop",

@@ -258,6 +258,14 @@ Templates maintained by the Solana community
 
 `solana` `x402` `rust` `payments` `api` `axum` `actix` `rocket`
 
+### [token-gated-dapp](community/x402-metaplex-token-gated)
+
+`gh:solana-foundation/templates/community/x402-metaplex-token-gated`
+
+> Educational Next.js template demonstrating Solana NFT-based token-gating with tiered memberships, expiration tracking, renewals, and x402 payment integration
+
+`solana` `nft` `token-gating` `membership` `metaplex-core` `wallet-authentication` `nextjs` `typescript` `gill` `wallet-ui` `x402` `web3`
+
 ### [x402-template](community/x402-template)
 
 `gh:solana-foundation/templates/community/x402-template`

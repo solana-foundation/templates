@@ -541,6 +541,29 @@
         "usecase": "Auth"
       },
       {
+        "description": "Educational Next.js template demonstrating Solana NFT-based token-gating with tiered memberships, expiration tracking, renewals, and x402 payment integration",
+        "id": "gh:solana-foundation/templates/community/x402-metaplex-token-gated",
+        "image": "community/x402-metaplex-token-gated/og-image.png",
+        "keywords": [
+          "solana",
+          "nft",
+          "token-gating",
+          "membership",
+          "metaplex-core",
+          "wallet-authentication",
+          "nextjs",
+          "typescript",
+          "gill",
+          "wallet-ui",
+          "x402",
+          "web3"
+        ],
+        "name": "token-gated-dapp",
+        "path": "community/x402-metaplex-token-gated",
+        "displayName": "Token-Gated Membership DApp",
+        "usecase": "NFT Membership System"
+      },
+      {
         "description": "x402 payment server template for Solana with Rust",
         "id": "gh:solana-foundation/templates/community/x402-solana-rust",
         "image": "community/x402-solana-rust/og-image.png",
