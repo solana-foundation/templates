@@ -34,11 +34,11 @@ function StatusBadge({ status }: { status: HeadlessPaymentStatus }) {
   }
 
   const { label, variant } = config[status]
-  const showSpinner = status === 'generating' || status === 'verifying'
+  const isLoading = status === 'generating' || status === 'verifying'
 
   return (
     <Badge variant={variant} className="gap-1 shrink-0">
-      {showSpinner && <Loader2 className="h-3 w-3 animate-spin" />}
+      {isLoading && <Loader2 className="h-3 w-3 animate-spin" />}
       {status === 'confirmed' && <CheckCircle2 className="h-3 w-3" />}
       {status === 'failed' && <XCircle className="h-3 w-3" />}
       {label}
@@ -46,6 +46,10 @@ function StatusBadge({ status }: { status: HeadlessPaymentStatus }) {
   )
 }
 
+/**
+ * Checkout dialog for Solana payments.
+ * Displays QR code, payment status, and verification results.
+ */
 export function HeadlessCheckoutDialog({
   isOpen,
   onClose,
@@ -55,7 +59,6 @@ export function HeadlessCheckoutDialog({
   paymentRequest,
   signature,
   error,
-  verificationResult,
 }: HeadlessCheckoutDialogProps) {
   const isConfirmed = status === 'confirmed'
   const isPending = status === 'pending'

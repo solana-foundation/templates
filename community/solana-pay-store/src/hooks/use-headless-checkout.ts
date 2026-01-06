@@ -13,8 +13,15 @@ import type { CartItem } from '@/store/types/cart'
 
 const MERCHANT_WALLET = process.env.NEXT_PUBLIC_MERCHANT_WALLET || '11111111111111111111111111111111'
 const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
-const AMOUNT_DECIMALS = 1_000_000_000
-const USDC_DECIMALS = 1_000_000
+
+/**
+ * Commerce Kit's createSolanaPayRequest expects amounts in 9 decimals (like SOL lamports),
+ * but USDC only has 6 decimals. The library internally divides by 10^9 when encoding the URL,
+ * so we multiply by 10^9 here to get the correct final amount.
+ */
+const SOLANA_PAY_AMOUNT_MULTIPLIER = 1_000_000_000
+const USDC_MINOR_UNITS = 1_000_000
+const POLLING_INTERVAL_MS = 2000
 
 export type HeadlessPaymentStatus = 'idle' | 'generating' | 'pending' | 'verifying' | 'confirmed' | 'failed'
 
@@ -27,7 +34,7 @@ export interface HeadlessPaymentRequest {
   splToken?: string
 }
 
-export interface HeadlessProduct {
+interface Product {
   id: string
   name: string
   price: number
@@ -44,9 +51,89 @@ interface UseHeadlessCheckoutOptions {
   onPaymentVerified?: (result: { verified: boolean; signature?: string; error?: string }) => void
 }
 
+async function generatePaymentReference() {
+  const keyPair = await generateKeyPair()
+  return getAddressFromPublicKey(keyPair.publicKey)
+}
+
+async function createPaymentRequest(
+  products: Product[],
+  totalAmount: number,
+  reference: string,
+  options: { label: string; message: string; memo?: string; qrSize: number },
+) {
+  const isCart = products.length > 1
+
+  const commerceRequest = isCart
+    ? createCartRequest(MERCHANT_WALLET, products, {
+        currency: 'USDC',
+        memo: options.memo,
+        label: options.label,
+        message: options.message,
+      })
+    : createBuyNowRequest(MERCHANT_WALLET, products[0], {
+        memo: options.memo,
+        label: options.label,
+        message: options.message,
+      })
+
+  const { url, qr } = await createSolanaPayRequest(
+    {
+      recipient: address(MERCHANT_WALLET),
+      amount: BigInt(Math.round(totalAmount * SOLANA_PAY_AMOUNT_MULTIPLIER)),
+      splToken: address(USDC_MINT),
+      reference: address(reference),
+      label: commerceRequest.label,
+      message: commerceRequest.message,
+      memo: commerceRequest.memo,
+    },
+    { size: options.qrSize, background: 'white', color: 'black' },
+  )
+
+  return {
+    url,
+    qr,
+    reference,
+    amount: totalAmount,
+    recipient: MERCHANT_WALLET,
+    splToken: USDC_MINT,
+  }
+}
+
+function cartItemsToProducts(items: CartItem[]): Product[] {
+  return items.map((item) => ({
+    id: item.product.id,
+    name: `${item.product.name} (${item.size}, ${item.color})`,
+    price: item.price * item.quantity,
+    quantity: item.quantity,
+    currency: 'USDC',
+  }))
+}
+
+function calculateCartTotal(items: CartItem[]): number {
+  return items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+}
+
 /**
- * Headless checkout hook using @solana-commerce/headless with @solana/client.
- * Uses @solana/kit for key generation instead of @solana/web3.js.
+ * React hook for headless Solana payments using Commerce Kit.
+ *
+ * Manages the complete payment flow:
+ * 1. Generates a Solana Pay QR code with a unique reference
+ * 2. Polls the blockchain for transactions to that reference
+ * 3. Verifies the payment amount and recipient on-chain
+ *
+ * @example
+ * ```tsx
+ * const checkout = useHeadlessCheckout({
+ *   label: 'My Store',
+ *   onPaymentVerified: (result) => {
+ *     if (result.verified) clearCart()
+ *   }
+ * })
+ *
+ * checkout.openCheckout(9.99)
+ * checkout.openCartCheckout(cartItems, 'Order #123')
+ * ```
  */
 export function useHeadlessCheckout(options: UseHeadlessCheckoutOptions = {}) {
   const {
@@ -61,7 +148,7 @@ export function useHeadlessCheckout(options: UseHeadlessCheckoutOptions = {}) {
   const client = useSolanaClient()
 
   const [isOpen, setIsOpen] = useState(false)
-  const [amount, setAmount] = useState<number>(0)
+  const [amount, setAmount] = useState(0)
   const [status, setStatus] = useState<HeadlessPaymentStatus>('idle')
   const [paymentRequest, setPaymentRequest] = useState<HeadlessPaymentRequest | null>(null)
   const [signature, setSignature] = useState<string | null>(null)
@@ -72,134 +159,34 @@ export function useHeadlessCheckout(options: UseHeadlessCheckoutOptions = {}) {
     error?: string
   } | null>(null)
 
-  const onPaymentFoundRef = useRef(onPaymentFound)
-  const onPaymentVerifiedRef = useRef(onPaymentVerified)
-
+  const callbacksRef = useRef({ onPaymentFound, onPaymentVerified })
   useEffect(() => {
-    onPaymentFoundRef.current = onPaymentFound
-    onPaymentVerifiedRef.current = onPaymentVerified
+    callbacksRef.current = { onPaymentFound, onPaymentVerified }
   }, [onPaymentFound, onPaymentVerified])
 
-  /**
-   * Creates a payment request for a single amount using createBuyNowRequest.
-   */
-  const createPayment = useCallback(
-    async (paymentAmount: number, paymentLabel?: string, paymentMessage?: string, paymentMemo?: string) => {
+  const createPaymentForProducts = useCallback(
+    async (products: Product[], totalAmount: number, paymentMemo?: string) => {
       setStatus('generating')
       setError(null)
 
       try {
-        const referenceKeyPair = await generateKeyPair()
-        const referenceAddress = await getAddressFromPublicKey(referenceKeyPair.publicKey)
-
-        const product = {
-          id: 'product',
-          name: paymentLabel || label,
-          price: paymentAmount,
-          currency: 'USDC',
-        }
-
-        const commerceRequest = createBuyNowRequest(MERCHANT_WALLET, product, {
+        const reference = await generatePaymentReference()
+        const request = await createPaymentRequest(products, totalAmount, reference, {
+          label,
+          message,
           memo: paymentMemo || memo,
-          label: paymentLabel || label,
-          message: paymentMessage || message,
+          qrSize,
         })
-
-        const { url, qr } = await createSolanaPayRequest(
-          {
-            recipient: address(MERCHANT_WALLET),
-            amount: BigInt(Math.round(paymentAmount * AMOUNT_DECIMALS)),
-            splToken: address(USDC_MINT),
-            reference: referenceAddress,
-            label: commerceRequest.label,
-            message: commerceRequest.message,
-            memo: commerceRequest.memo,
-          },
-          { size: qrSize, background: 'white', color: 'black' },
-        )
-
-        const request: HeadlessPaymentRequest = {
-          url,
-          qr,
-          reference: referenceAddress,
-          amount: paymentAmount,
-          recipient: MERCHANT_WALLET,
-          splToken: USDC_MINT,
-        }
-
-        setPaymentRequest(request)
-        setStatus('pending')
-        return request
-      } catch (err) {
-        const error = err instanceof Error ? err : new Error('Failed to create payment')
-        setError(error)
-        setStatus('failed')
-        throw error
-      }
-    },
-    [label, message, memo, qrSize],
-  )
-
-  /**
-   * Creates a payment request for cart items using createCartRequest.
-   */
-  const createCartPayment = useCallback(
-    async (items: CartItem[], paymentLabel?: string, paymentMessage?: string, paymentMemo?: string) => {
-      setStatus('generating')
-      setError(null)
-
-      try {
-        const referenceKeyPair = await generateKeyPair()
-        const referenceAddress = await getAddressFromPublicKey(referenceKeyPair.publicKey)
-
-        const products: HeadlessProduct[] = items.map((item) => ({
-          id: item.product.id,
-          name: `${item.product.name} (${item.size}, ${item.color})`,
-          price: item.price * item.quantity,
-          quantity: item.quantity,
-          currency: 'USDC',
-        }))
-
-        const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-
-        const commerceRequest = createCartRequest(MERCHANT_WALLET, products, {
-          currency: 'USDC',
-          memo: paymentMemo || memo,
-          label: paymentLabel || label,
-          message: paymentMessage || message,
-        })
-
-        const { url, qr } = await createSolanaPayRequest(
-          {
-            recipient: address(MERCHANT_WALLET),
-            amount: BigInt(Math.round(totalAmount * AMOUNT_DECIMALS)),
-            splToken: address(USDC_MINT),
-            reference: referenceAddress,
-            label: commerceRequest.label,
-            message: commerceRequest.message,
-            memo: commerceRequest.memo,
-          },
-          { size: qrSize, background: 'white', color: 'black' },
-        )
-
-        const request: HeadlessPaymentRequest = {
-          url,
-          qr,
-          reference: referenceAddress,
-          amount: totalAmount,
-          recipient: MERCHANT_WALLET,
-          splToken: USDC_MINT,
-        }
 
         setPaymentRequest(request)
         setAmount(totalAmount)
         setStatus('pending')
         return request
       } catch (err) {
-        const error = err instanceof Error ? err : new Error('Failed to create cart payment')
-        setError(error)
+        const paymentError = err instanceof Error ? err : new Error('Failed to create payment')
+        setError(paymentError)
         setStatus('failed')
-        throw error
+        throw paymentError
       }
     },
     [label, message, memo, qrSize],
@@ -207,66 +194,58 @@ export function useHeadlessCheckout(options: UseHeadlessCheckoutOptions = {}) {
 
   useEffect(() => {
     const reference = paymentRequest?.reference
-    const shouldPoll = isOpen && !!paymentRequest && !!client && status === 'pending' && !signature
+    const shouldPoll = isOpen && paymentRequest && client && status === 'pending' && !signature
 
     if (!shouldPoll || !reference) return
 
     let cancelled = false
 
-    const pollForPayment = async () => {
+    const poll = async () => {
       const referenceAddr = address(reference)
 
       while (!cancelled) {
         try {
-          const signatures = await client.runtime.rpc.getSignaturesForAddress(referenceAddr, { limit: 1 }).send()
+          const results = await client.runtime.rpc.getSignaturesForAddress(referenceAddr, { limit: 1 }).send()
 
-          if (!signatures?.length) {
-            if (!cancelled) await new Promise((resolve) => setTimeout(resolve, 2000))
+          if (!results?.length) {
+            await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS))
             continue
           }
 
           if (cancelled) return
 
-          const sig = signatures[signatures.length - 1].signature
-          setSignature(sig)
-          onPaymentFoundRef.current?.(sig)
+          const foundSignature = results[results.length - 1].signature
+          setSignature(foundSignature)
+          callbacksRef.current.onPaymentFound?.(foundSignature)
           setStatus('verifying')
 
-          try {
-            const result = await verifyPayment(
-              client.runtime.rpc as unknown as Parameters<typeof verifyPayment>[0],
-              sig,
-              Math.round(paymentRequest!.amount * USDC_DECIMALS),
-              MERCHANT_WALLET,
-              USDC_MINT,
-            )
+          // Type cast needed: @solana/client omits `rentEpoch` from account types,
+          // while Commerce Kit (gill) expects it. They're runtime compatible.
+          const result = await verifyPayment(
+            client.runtime.rpc as unknown as Parameters<typeof verifyPayment>[0],
+            foundSignature,
+            Math.round(paymentRequest!.amount * USDC_MINOR_UNITS),
+            MERCHANT_WALLET,
+            USDC_MINT,
+          )
 
-            setVerificationResult(result)
-            setStatus(result.verified ? 'confirmed' : 'failed')
-            onPaymentVerifiedRef.current?.(result)
-          } catch (verifyError) {
-            console.error('Verification error:', verifyError)
-            setVerificationResult({
-              verified: false,
-              signature: sig,
-              error: verifyError instanceof Error ? verifyError.message : 'Verification failed',
-            })
-            setStatus('failed')
-          }
-
+          setVerificationResult(result)
+          setStatus(result.verified ? 'confirmed' : 'failed')
+          callbacksRef.current.onPaymentVerified?.(result)
           return
-        } catch (error) {
-          if ((error as Error)?.message?.includes('not found')) {
-            if (!cancelled) await new Promise((resolve) => setTimeout(resolve, 2000))
+        } catch (err) {
+          const isNotFound = (err as Error)?.message?.includes('not found')
+          if (isNotFound && !cancelled) {
+            await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS))
             continue
           }
-          console.error('Error polling for payment:', error)
+          if (!isNotFound) console.error('Payment polling error:', err)
           return
         }
       }
     }
 
-    pollForPayment()
+    poll()
     return () => {
       cancelled = true
     }
@@ -274,22 +253,21 @@ export function useHeadlessCheckout(options: UseHeadlessCheckoutOptions = {}) {
 
   const openCheckout = useCallback(
     async (checkoutAmount: number) => {
-      setAmount(checkoutAmount)
       setIsOpen(true)
-      await createPayment(checkoutAmount, label, message, memo)
+      const product: Product = { id: 'product', name: label, price: checkoutAmount, currency: 'USDC' }
+      await createPaymentForProducts([product], checkoutAmount)
     },
-    [createPayment, label, message, memo],
+    [createPaymentForProducts, label],
   )
 
-  /**
-   * Opens checkout with cart items.
-   */
   const openCartCheckout = useCallback(
     async (items: CartItem[], checkoutMemo?: string) => {
       setIsOpen(true)
-      await createCartPayment(items, label, message, checkoutMemo || memo)
+      const products = cartItemsToProducts(items)
+      const total = calculateCartTotal(items)
+      await createPaymentForProducts(products, total, checkoutMemo)
     },
-    [createCartPayment, label, message, memo],
+    [createPaymentForProducts],
   )
 
   const closeCheckout = useCallback(() => {
@@ -300,14 +278,6 @@ export function useHeadlessCheckout(options: UseHeadlessCheckoutOptions = {}) {
     setStatus('idle')
     setVerificationResult(null)
     setAmount(0)
-  }, [])
-
-  const reset = useCallback(() => {
-    setPaymentRequest(null)
-    setSignature(null)
-    setError(null)
-    setStatus('idle')
-    setVerificationResult(null)
   }, [])
 
   return {
@@ -327,8 +297,5 @@ export function useHeadlessCheckout(options: UseHeadlessCheckoutOptions = {}) {
     openCheckout,
     openCartCheckout,
     closeCheckout,
-    createPayment,
-    createCartPayment,
-    reset,
   }
 }

@@ -1,99 +1,127 @@
-# Solana Pay Store
+# Solana Commerce Kit Store
 
-A Next.js e-commerce template demonstrating how to accept cryptocurrency payments using Solana Pay.
+A Next.js e-commerce template demonstrating USDC payments on Solana using the Commerce Kit.
 
 ## How It Works
 
-This application implements a complete payment flow using Solana Pay:
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐     ┌──────────────┐
+│  Add items  │ ──▶ │  Generate QR │ ──▶ │  Scan & Pay │ ──▶ │   Verified   │
+│  to cart    │     │  with unique │     │  with any   │     │   on-chain   │
+│             │     │  reference   │     │  Solana     │     │              │
+└─────────────┘     └──────────────┘     │  wallet     │     └──────────────┘
+                                         └─────────────┘
+```
 
-1. **Browse Products** - Users view products and add items to their cart
-2. **Checkout** - Cart items are converted to a Solana Pay payment request
-3. **QR Code Generation** - A payment URL is encoded as a QR code
-4. **Wallet Scan** - Users scan the QR with any Solana wallet app
-5. **Transaction** - The wallet sends USDC to your merchant address
-6. **Verification** - The app monitors the blockchain and confirms the payment
-7. **Purchase History** - Completed transactions are stored locally for reference
-
-All payments are made in USDC (a USD-pegged stablecoin) directly to your wallet. No intermediaries, no payment processors.
-
-## Features
-
-- Product catalog with shopping cart
-- Solana Pay integration for USDC payments
-- QR code generation for mobile wallets
-- Real-time transaction verification
-- Purchase history tracking
-- Full TypeScript implementation
+1. **Cart** - User adds products to their shopping cart
+2. **Checkout** - App generates a Solana Pay QR code with a unique reference address
+3. **Payment** - User scans the QR with any Solana wallet and sends USDC
+4. **Verification** - App polls the blockchain, finds the transaction by reference, and verifies the amount
 
 ## Quick Start
 
-### 1. Install Dependencies
+### 1. Install
 
 ```bash
 pnpm install
 ```
 
-### 2. Configure Environment
+### 2. Configure
 
-Create a `.env.local` file:
+Create `.env.local`:
 
 ```bash
-# Your merchant wallet address (where payments will be received)
-NEXT_PUBLIC_MERCHANT_WALLET=YourSolanaWalletPublicKeyHere
-
-# Solana RPC endpoint (use mainnet-beta for production)
+NEXT_PUBLIC_MERCHANT_WALLET=<your-solana-wallet-address>
 NEXT_PUBLIC_RPC_URL=https://api.mainnet-beta.solana.com
-
-# Base URL for API endpoints
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
 
-**Important:** This implementation is designed for mainnet-beta. While the code includes devnet configuration for reference, Solana Pay transaction verification may not function reliably on devnet due to network inconsistencies and SPL token availability. For production use, configure your environment for mainnet-beta with real USDC.
-
-### 3. Start Development Server
+### 3. Run
 
 ```bash
 pnpm dev
 ```
 
-Open http://localhost:3000 to view the store.
+Open [http://localhost:3000](http://localhost:3000)
+
+## Solana Integration
+
+### Key Files
+
+| File                                                   | Purpose                                                  |
+| ------------------------------------------------------ | -------------------------------------------------------- |
+| `src/hooks/use-headless-checkout.ts`                   | Main payment hook - QR generation, polling, verification |
+| `src/components/checkout/headless-checkout-dialog.tsx` | Payment UI component                                     |
+| `src/store/components/cart-drawer.tsx`                 | Cart with checkout integration                           |
+
+### Payment Flow (useHeadlessCheckout)
+
+```typescript
+// 1. Generate a unique reference keypair
+const referenceKeyPair = await generateKeyPair()
+const reference = await getAddressFromPublicKey(referenceKeyPair.publicKey)
+
+// 2. Create Solana Pay request with QR code
+const { url, qr } = await createSolanaPayRequest({
+  recipient: address(MERCHANT_WALLET),
+  amount: BigInt(amountInMinorUnits),
+  splToken: address(USDC_MINT),
+  reference: reference, // This is how we track the payment
+})
+
+// 3. Poll for transactions containing our reference
+const signatures = await rpc.getSignaturesForAddress(reference).send()
+
+// 4. Verify the payment on-chain
+const result = await verifyPayment(rpc, signature, expectedAmount, recipient, mint)
+```
+
+### Dependencies
+
+| Package                     | Purpose                                  |
+| --------------------------- | ---------------------------------------- |
+| `@solana-commerce/headless` | Payment requests, QR codes, verification |
+| `@solana/kit`               | Key generation, address utilities        |
+| `@solana/client`            | RPC client for blockchain queries        |
+| `@solana/react-hooks`       | React hooks for Solana client            |
+
+### Why These Packages?
+
+This template uses `@solana/kit` (the new Solana JavaScript SDK) instead of `@solana/web3.js`. Benefits:
+
+- **Smaller bundle** - Tree-shakeable, only import what you need
+- **Type-safe** - Better TypeScript support
+- **Modern** - Uses native BigInt, no polyfills needed
 
 ## Project Structure
 
 ```
-/src/
-├── lib/solana-pay/          # Payment URL generation and verification
-├── hooks/                    # React hooks for checkout and purchase history
-├── components/checkout/      # Checkout dialog, QR display, payment status
-├── store/                    # Product catalog, cart management, UI
-└── app/                      # Next.js app router pages
+src/
+├── hooks/
+│   ├── use-headless-checkout.ts  # Payment flow hook
+│   └── use-purchase-history.ts   # Transaction history
+├── components/
+│   ├── checkout/
+│   │   └── headless-checkout-dialog.tsx  # Payment dialog
+│   └── solana/
+│       └── use-solana.tsx        # Wallet state hook
+├── store/
+│   ├── components/               # Product grid, cart drawer
+│   ├── hooks/                    # Cart, product selection
+│   └── providers/                # Cart context
+└── app/
+    ├── page.tsx                  # Store home
+    └── test-headless/            # Payment test page
 ```
 
-## Tech Stack
+## Testing
 
-- Next.js 15 - React framework with App Router
-- Solana Pay - Decentralized payment protocol
-- @solana/web3.js - Solana blockchain SDK
-- Tailwind CSS - Utility-first styling
-- Shadcn UI - Accessible component library
-- TypeScript - Type-safe development
-
-## Key Concepts
-
-**Solana Pay** creates a standardized URL format that wallets can parse to initiate transactions. The URL contains:
-
-- Recipient address (your merchant wallet)
-- Amount (in USDC)
-- Reference (unique transaction identifier)
-- Label and memo (for user context)
-
-The app generates these URLs, displays them as QR codes, and monitors the blockchain for transactions matching the reference ID.
+Visit `/test-headless` to test payments without adding items to cart. You can test with small amounts ($0.01 USDC).
 
 ## Resources
 
-- [Solana Pay Docs](https://docs.solanapay.com/)
-- [Solana Web3.js](https://solana.com/docs/clients/javascript)
-- [Next.js Documentation](https://nextjs.org/docs)
+- [Solana Commerce Kit Docs](https://launch.solana.com/docs/commerce-kit)
+- [Solana Pay Specification](https://docs.solanapay.com)
+- [@solana/kit Documentation](https://github.com/solana-labs/solana-web3.js)
 
 ## License
 
