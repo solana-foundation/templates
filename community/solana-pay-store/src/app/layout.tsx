@@ -4,7 +4,6 @@ import { AppProviders } from '@/components/app-providers'
 import { CartProvider } from '@/store/providers/cart-provider'
 import { Navbar } from '@/components/navbar'
 import { Toaster } from 'sonner'
-import React from 'react'
 
 export const metadata: Metadata = {
   title: 'Solana Pay Store',
