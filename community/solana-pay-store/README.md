@@ -109,13 +109,8 @@ src/
 │   ├── hooks/                    # Cart, product selection
 │   └── providers/                # Cart context
 └── app/
-    ├── page.tsx                  # Store home
-    └── test-headless/            # Payment test page
+    └── page.tsx                  # Store home
 ```
-
-## Testing
-
-Visit `/test-headless` to test payments without adding items to cart. You can test with small amounts ($0.01 USDC).
 
 ## Resources
 
