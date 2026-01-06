@@ -1,6 +1,7 @@
 'use client'
 
 import { ThemeProvider } from '@/components/theme-provider'
+import { DialogProvider } from '@solana-commerce/kit'
 import { SolanaClientConfig } from '@solana/client'
 import { SolanaProvider } from '@solana/react-hooks'
 
@@ -13,7 +14,9 @@ const defaultConfig: SolanaClientConfig = {
 export function AppProviders({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-      <SolanaProvider config={defaultConfig}>{children}</SolanaProvider>
+      <SolanaProvider config={defaultConfig}>
+        <DialogProvider>{children}</DialogProvider>
+      </SolanaProvider>
     </ThemeProvider>
   )
 }

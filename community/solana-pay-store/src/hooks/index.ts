@@ -1,2 +1,2 @@
-export * from './use-checkout'
+export * from './use-headless-checkout'
 export * from './use-purchase-history'

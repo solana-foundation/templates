@@ -3,8 +3,8 @@
 import { useCart } from '@/store/providers/cart-provider'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
-import { CheckoutDialog } from '@/components/checkout'
-import { useCheckout } from '@/hooks'
+import { HeadlessCheckoutDialog } from '@/components/checkout'
+import { useHeadlessCheckout } from '@/hooks'
 import Image from 'next/image'
 import { Trash2, Minus, Plus, CheckCircleIcon } from 'lucide-react'
 import { toast } from 'sonner'
@@ -18,20 +18,16 @@ interface CartDrawerProps {
 export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart()
 
-  const cartTotalInUSDC = cart.total
-
-  // Generate compact memo with product IDs: "Order #12345678: id:size:color:qty,id:size:color:qty"
   const generateOrderMemo = () => {
     const orderId = Date.now().toString().slice(-8)
     const items = cart.items.map((item) => `${item.product.id}:${item.size}:${item.color}:${item.quantity}`).join(',')
     return `Order #${orderId}: ${items}`
   }
 
-  const checkout = useCheckout({
+  const checkout = useHeadlessCheckout({
     label: 'Solana Pay Store',
     message: `Thanks for your purchase of ${cart.itemCount} item${cart.itemCount !== 1 ? 's' : ''}!`,
-    memo: generateOrderMemo(),
-    onPaymentFound: (signature, memo) => {
+    onPaymentFound: (signature) => {
       toast.success('Payment confirmed!', {
         description: <AppExplorerLink path={signature} type="tx" label="View Transaction" />,
         icon: <CheckCircleIcon className="w-4 h-4" />,
@@ -39,8 +35,12 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     },
   })
 
+  const handleCheckout = () => {
+    checkout.openCartCheckout(cart.items, generateOrderMemo())
+  }
+
   const handleCheckoutClose = () => {
-    if (checkout.paymentFound) {
+    if (checkout.isConfirmed) {
       clearCart()
     }
     checkout.closeCheckout()
@@ -78,7 +78,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-sm line-clamp-1">{item.product.name}</h3>
                       <p className="text-xs text-muted-foreground">
-                        Size: {item.size} • Color: {item.color}
+                        Size: {item.size} | Color: {item.color}
                       </p>
                       <p className="font-bold text-sm mt-1">${item.price.toFixed(2)}</p>
 
@@ -122,34 +122,33 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                   <span className="text-lg font-semibold">Total:</span>
                   <div className="text-right">
                     <div className="text-2xl font-bold">${cart.total.toFixed(2)}</div>
-                    <div className="text-sm text-muted-foreground">{cartTotalInUSDC.toFixed(2)} USDC</div>
+                    <div className="text-sm text-muted-foreground">{cart.total.toFixed(2)} USDC</div>
                   </div>
                 </div>
               </div>
               <Button
                 className="w-full"
                 size="lg"
-                onClick={() => checkout.openCheckout(cartTotalInUSDC)}
-                disabled={cart.items.length === 0}
+                onClick={handleCheckout}
+                disabled={
+                  cart.items.length === 0 || checkout.isGenerating || checkout.isPending || checkout.isVerifying
+                }
               >
-                Pay with USDC
+                {checkout.isGenerating ? 'Generating...' : 'Pay with USDC'}
               </Button>
-              <p className="text-xs text-center text-muted-foreground">Using Solana Pay on Mainnet</p>
+              <p className="text-xs text-center text-muted-foreground">Powered by Solana Commerce Kit</p>
             </div>
 
-            <CheckoutDialog
+            <HeadlessCheckoutDialog
               isOpen={checkout.isOpen}
               onClose={handleCheckoutClose}
               amount={checkout.amount}
               items={cart.items}
+              status={checkout.status}
               paymentRequest={checkout.paymentRequest}
-              qrCode={checkout.qrCode}
               signature={checkout.signature}
-              memo={checkout.memo}
-              isSearching={checkout.isSearching}
-              paymentFound={checkout.paymentFound}
-              isGenerating={checkout.isGenerating}
               error={checkout.error}
+              verificationResult={checkout.verificationResult}
             />
           </div>
         )}
