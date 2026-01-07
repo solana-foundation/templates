@@ -33,11 +33,6 @@
         "path": "kit"
       },
       {
-        "description": "Gill Templates (based on @solana/kit)",
-        "name": "Gill",
-        "path": "gill"
-      },
-      {
         "description": "Solana Mobile Templates",
         "path": "mobile",
         "name": "Solana Mobile"

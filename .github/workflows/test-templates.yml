@@ -65,7 +65,7 @@ jobs:
             fi
 
             # Extract template paths from changed files (excluding community)
-            AFFECTED_TEMPLATES=$(echo "$CHANGED_FILES" | grep -E '^(gill|mobile|web3js)/' | cut -d'/' -f1-2 | sort -u || true)
+            AFFECTED_TEMPLATES=$(echo "$CHANGED_FILES" | grep -E '^(kit|mobile|web3js)/' | cut -d'/' -f1-2 | sort -u || true)
 
             if [[ -z "$AFFECTED_TEMPLATES" ]]; then
               echo "No template files changed, skipping template tests"

@@ -10,7 +10,6 @@ onlyBuiltDependencies:
   - utf-8-validate
 packages:
   - community/*
-  - gill/*
   - kit/*
   - web3js/*
 minimumReleaseAgeExclude:
