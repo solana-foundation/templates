@@ -99,15 +99,7 @@ export function ProductDrawer({ isOpen, onClose, product }: ProductDrawerProps) 
                 ))}
               </div>
             </div>
-            {variations.isSelectionComplete && (
-              <div className="text-sm">
-                {variations.stockAvailable > 0 ? (
-                  <p className="text-green-500">{variations.stockAvailable} in stock</p>
-                ) : (
-                  <p className="text-red-500">Out of stock</p>
-                )}
-              </div>
-            )}
+
             <Button
               className="w-full cursor-pointer bg-foreground/80 text-background hover:bg-foreground/90"
               disabled={!variations.canAddToCart}

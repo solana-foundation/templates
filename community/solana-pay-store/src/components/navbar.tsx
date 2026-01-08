@@ -1,18 +1,17 @@
 'use client'
 
 import Link from 'next/link'
-import { ShoppingCart, Receipt } from 'lucide-react'
+import { ShoppingCart } from 'lucide-react'
 import { ThemeSelect } from '@/components/theme-select'
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/store/providers/cart-provider'
 import { useDrawer } from '@/store/hooks/use-drawer'
-import { CartDrawer, PurchasesDrawer } from '@/store/components'
+import { CartDrawer } from '@/store/components'
 import { WalletUI } from './wallet-ui'
 
 export function Navbar() {
   const { cart } = useCart()
   const cartDrawer = useDrawer()
-  const purchasesDrawer = useDrawer()
 
   return (
     <>
@@ -24,10 +23,6 @@ export function Navbar() {
             </Link>
 
             <div className="flex items-center gap-2 md:gap-4">
-              <Button variant="outline" size="icon" onClick={purchasesDrawer.open} title="Purchase History">
-                <Receipt className="h-5 w-5" />
-                <span className="sr-only">Purchase history</span>
-              </Button>
               <Button
                 variant="outline"
                 size="icon"
@@ -51,7 +46,6 @@ export function Navbar() {
       </nav>
 
       <CartDrawer isOpen={cartDrawer.isOpen} onClose={cartDrawer.close} />
-      <PurchasesDrawer isOpen={purchasesDrawer.isOpen} onClose={purchasesDrawer.close} />
     </>
   )
 }

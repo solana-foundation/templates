@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { useConnectWallet, useWallet, useDisconnectWallet } from '@solana/react-hooks'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { ellipsify } from '@/lib/utils'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 
@@ -18,10 +18,24 @@ export function WalletUI() {
   const disconnectWallet = useDisconnectWallet()
   const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const isConnected = wallet.status === 'connected'
 
   const address = isConnected ? wallet.session.account.address.toString() : null
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setOpen(false)
+      }
+    }
+
+    if (open) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [open])
 
   async function handleConnect(connectorId: string) {
     setError(null)
@@ -42,11 +56,11 @@ export function WalletUI() {
   }
 
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <Button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="cursor-pointer bg-foreground text-white shadow-md hover:bg-vibrant-red/80 transition-colors duration-300 min-w-[160px]"
+        className="cursor-pointer bg-foreground text-neutral-100 dark:text-neutral-800 shadow-md hover:bg-vibrant-red/80 transition-colors duration-300 min-w-[160px]"
       >
         {address ? (
           <span className="font-mono max-w-[12ch] truncate">{ellipsify(address)}</span>
@@ -57,12 +71,14 @@ export function WalletUI() {
       </Button>
 
       {open ? (
-        <div className="absolute right-0 z-10 mt-2 w-full min-w-[240px] rounded-lg border border-gray-200 bg-white shadow-lg">
+        <div className="absolute right-0 z-10 mt-2 w-full min-w-[240px] rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-lg">
           {isConnected ? (
             <div className="space-y-2 p-2">
-              <div className="rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2">
-                <p className="text-xs font-medium text-neutral-500 mb-1">Connected</p>
-                <p className="font-mono text-sm text-neutral-900 max-w-[18ch] truncate">{ellipsify(address ?? '')}</p>
+              <div className="rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 px-3 py-2">
+                <p className="text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1">Connected</p>
+                <p className="font-mono text-sm text-neutral-900 dark:text-neutral-100 max-w-[18ch] truncate">
+                  {ellipsify(address ?? '')}
+                </p>
               </div>
               <Button
                 type="button"
@@ -74,8 +90,8 @@ export function WalletUI() {
               </Button>
             </div>
           ) : (
-            <div className=" pb-2">
-              <p className="text-xs font-medium text-neutral-500 px-3 py-2">Choose Wallet</p>
+            <div className="pb-2">
+              <p className="text-xs font-medium text-foreground px-3 py-2">Choose Wallet</p>
               <div className="space-y-1.5">
                 {CONNECTORS.map((connector) => (
                   <Button
@@ -83,7 +99,7 @@ export function WalletUI() {
                     type="button"
                     onClick={() => void handleConnect(connector.id)}
                     variant="outline"
-                    className="cursor-pointer shadow-none border-0 w-full justify-between hover:bg-neutral-50"
+                    className="cursor-pointer shadow-none border-0 w-full justify-between hover:bg-neutral-50 dark:hover:bg-neutral-800"
                   >
                     <span>{connector.label.toLowerCase()}</span>
                     <span className="text-xs text-neutral-400">→</span>
