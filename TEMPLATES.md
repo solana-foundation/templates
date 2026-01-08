@@ -154,9 +154,9 @@ Templates maintained by the Solana community
 
 `gh:solana-foundation/templates/community/solana-pay-store`
 
-> Minimal Next.js, Tailwind, @solana/kit, framework-kit, solana-pay
+> Next.js store template using @solana-commerce/headless and @solana/kit
 
-`minimal` `nextjs` `react` `@solana/web3.js` `framework-kit` `solana-pay` `tailwind` `typescript`
+`nextjs` `react` `@solana/kit` `@solana-commerce/headless` `solana-pay` `tailwind` `typescript`
 
 ### [supabase-auth](community/supabase-auth)
 
@@ -173,14 +173,6 @@ Templates maintained by the Solana community
 > x402 payment server template for Solana with Rust
 
 `solana` `x402` `rust` `payments` `api` `axum` `actix` `rocket`
-
-### [token-gated-dapp](community/x402-metaplex-token-gated)
-
-`gh:solana-foundation/templates/community/x402-metaplex-token-gated`
-
-> Educational Next.js template demonstrating Solana NFT-based token-gating with tiered memberships, expiration tracking, renewals, and x402 payment integration
-
-`solana` `nft` `token-gating` `membership` `metaplex-core` `wallet-authentication` `nextjs` `typescript` `gill` `wallet-ui` `x402` `web3`
 
 ### [x402-template](community/x402-template)
 

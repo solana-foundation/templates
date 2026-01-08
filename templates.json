@@ -321,22 +321,21 @@
         "usecase": "Starter"
       },
       {
-        "description": "Minimal Next.js, Tailwind, @solana/kit, framework-kit, solana-pay",
+        "description": "Next.js store template using @solana-commerce/headless and @solana/kit",
         "id": "gh:solana-foundation/templates/community/solana-pay-store",
         "image": "community/solana-pay-store/og-image.png",
         "keywords": [
-          "minimal",
           "nextjs",
           "react",
-          "@solana/web3.js",
-          "framework-kit",
+          "@solana/kit",
+          "@solana-commerce/headless",
           "solana-pay",
           "tailwind",
           "typescript"
         ],
         "name": "solana-pay-store",
         "path": "community/solana-pay-store",
-        "displayName": "Minimal Boilerplate",
+        "displayName": "Solana Commerce Kit Store",
         "usecase": "Starter"
       },
       {
@@ -353,29 +352,6 @@
         "path": "community/supabase-auth",
         "displayName": "Supabase Auth",
         "usecase": "Auth"
-      },
-      {
-        "description": "Educational Next.js template demonstrating Solana NFT-based token-gating with tiered memberships, expiration tracking, renewals, and x402 payment integration",
-        "id": "gh:solana-foundation/templates/community/x402-metaplex-token-gated",
-        "image": "community/x402-metaplex-token-gated/og-image.png",
-        "keywords": [
-          "solana",
-          "nft",
-          "token-gating",
-          "membership",
-          "metaplex-core",
-          "wallet-authentication",
-          "nextjs",
-          "typescript",
-          "gill",
-          "wallet-ui",
-          "x402",
-          "web3"
-        ],
-        "name": "token-gated-dapp",
-        "path": "community/x402-metaplex-token-gated",
-        "displayName": "Token-Gated Membership DApp",
-        "usecase": "NFT Membership System"
       },
       {
         "description": "x402 payment server template for Solana with Rust",
