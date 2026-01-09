@@ -17,7 +17,7 @@ no-log-ix-name = []
 idl-build = ["anchor-lang/idl-build"]
 
 [dependencies]
-anchor-lang = "0.30"
+anchor-lang = ">=0.31"
 
 [dev-dependencies]
 litesvm = "0.6.1"
