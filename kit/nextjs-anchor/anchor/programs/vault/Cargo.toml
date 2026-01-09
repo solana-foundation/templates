@@ -20,5 +20,5 @@ idl-build = ["anchor-lang/idl-build"]
 anchor-lang = "0.32.1"
 
 [dev-dependencies]
-litesvm = "0.8.1"
+litesvm = "=0.7.1"
 solana-sdk = "2.3"
