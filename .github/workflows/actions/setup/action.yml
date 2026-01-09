@@ -14,21 +14,9 @@ runs:
     - name: Setup Anchor
       uses: metadaoproject/setup-anchor@v3.4
       with:
-        anchor-version: '0.31.2'
+        anchor-version: '0.30.1'
         solana-cli-version: '2.0.21'
         node-version: ${{ inputs.node-version }}
-
-    - name: Force reinstall correct Anchor CLI version
-      run: |
-        # Clear npm cache to avoid corrupted packages
-        npm cache clean --force
-        # Uninstall any existing anchor-cli
-        npm uninstall -g @coral-xyz/anchor-cli || true
-        # Reinstall fresh from npm
-        npm install -g @coral-xyz/anchor-cli@0.31.2 --force
-        echo "Installed Anchor CLI version:"
-        anchor --version
-      shell: bash
 
     - name: Checkout repository
       uses: actions/checkout@v4
