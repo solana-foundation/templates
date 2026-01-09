@@ -18,6 +18,14 @@ runs:
         solana-cli-version: '2.0.21'
         node-version: ${{ inputs.node-version }}
 
+    - name: Force reinstall correct Anchor CLI version
+      run: |
+        npm uninstall -g @coral-xyz/anchor-cli || true
+        npm install -g @coral-xyz/anchor-cli@0.31.2
+        echo "Installed Anchor CLI version:"
+        anchor --version
+      shell: bash
+
     - name: Checkout repository
       uses: actions/checkout@v4
 
