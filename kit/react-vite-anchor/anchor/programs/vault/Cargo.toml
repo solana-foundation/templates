@@ -21,4 +21,4 @@ anchor-lang = ">=0.31"
 
 [dev-dependencies]
 litesvm = "0.9"
-solana-sdk = "2.2"
+solana-sdk = ">=2.2"
