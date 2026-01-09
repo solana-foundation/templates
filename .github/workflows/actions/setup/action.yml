@@ -20,8 +20,12 @@ runs:
 
     - name: Force reinstall correct Anchor CLI version
       run: |
+        # Clear npm cache to avoid corrupted packages
+        npm cache clean --force
+        # Uninstall any existing anchor-cli
         npm uninstall -g @coral-xyz/anchor-cli || true
-        npm install -g @coral-xyz/anchor-cli@0.31.2
+        # Reinstall fresh from npm
+        npm install -g @coral-xyz/anchor-cli@0.31.2 --force
         echo "Installed Anchor CLI version:"
         anchor --version
       shell: bash
