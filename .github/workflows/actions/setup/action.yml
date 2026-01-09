@@ -11,6 +11,12 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Update Rust toolchain
+      run: |
+        rustup update stable
+        rustup default stable
+      shell: bash
+
     - name: Setup Anchor
       uses: metadaoproject/setup-anchor@v3.4
       with:
