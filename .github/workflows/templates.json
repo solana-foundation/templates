@@ -3,6 +3,7 @@
   "community/merkle-airdrop",
   "community/moneymq-x402",
   "community/phantom-embedded-js",
+  "community/phantom-embedded-react",
   "community/solana-chatgpt-kit",
   "community/supabase-auth",
   "community/x402-solana-rust",
