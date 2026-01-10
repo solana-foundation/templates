@@ -1,14 +1,14 @@
-import { PublicKey } from '@solana/web3.js'
-import { useConnection } from '@/components/solana/solana-provider'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { PublicKey } from '@solana/web3.js'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 
 export function useGetTokenAccountsQueryKey({ address, endpoint }: { address: PublicKey; endpoint: string }) {
   return ['get-token-accounts', { endpoint, address }]
 }
 
 export function useGetTokenAccounts({ address }: { address: PublicKey }) {
-  const connection = useConnection()
+  const { connection } = useMobileWallet()
   const queryKey = useGetTokenAccountsQueryKey({ address, endpoint: connection.rpcEndpoint })
 
   return useQuery({
@@ -28,7 +28,7 @@ export function useGetTokenAccounts({ address }: { address: PublicKey }) {
 }
 
 export function useGetTokenAccountsInvalidate({ address }: { address: PublicKey }) {
-  const connection = useConnection()
+  const { connection } = useMobileWallet()
   const queryKey = useGetTokenAccountsQueryKey({ address, endpoint: connection.rpcEndpoint })
   const client = useQueryClient()
 

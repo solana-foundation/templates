@@ -73,6 +73,7 @@ VITE_SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
 3. Add your App ID to `.env` file
 
 **Best Practices**:
+
 - Always whitelist both your development and production domain URLs
 - Keep your App ID secure and never commit `.env` to version control
 
@@ -107,12 +108,12 @@ phantom-embedded-js/
 The Phantom SDK doesn't provide balance queries. This template uses `@solana/web3.js` to query the Solana blockchain directly:
 
 ```typescript
-import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js'
 
-const connection = new Connection(rpcUrl, 'confirmed');
-const publicKey = new PublicKey(address);
-const lamports = await connection.getBalance(publicKey);
-const sol = lamports / LAMPORTS_PER_SOL;
+const connection = new Connection(rpcUrl, 'confirmed')
+const publicKey = new PublicKey(address)
+const lamports = await connection.getBalance(publicKey)
+const sol = lamports / LAMPORTS_PER_SOL
 ```
 
 ## Customization
@@ -123,25 +124,25 @@ Customize colors and theme in `src/styles.css`:
 
 ```css
 :root {
-  --phantom-purple: #AB9FF2;
-  --bg-page: #FAFAFA;
-  --text-primary: #1A1A1A;
+  --phantom-purple: #ab9ff2;
+  --bg-page: #fafafa;
+  --text-primary: #1a1a1a;
 }
 
-[data-theme="dark"] {
-  --bg-page: #1A1A1A;
-  --text-primary: #FFFFFF;
+[data-theme='dark'] {
+  --bg-page: #1a1a1a;
+  --text-primary: #ffffff;
 }
 ```
 
 ### Environment Variables
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `VITE_PHANTOM_APP_ID` | Yes | - | App ID from Phantom Portal |
-| `VITE_REDIRECT_URL` | Yes | - | OAuth redirect URL (must be whitelisted in Phantom Portal) |
-| `VITE_PHANTOM_AUTH_URL` | No | `https://connect.phantom.app` | Phantom Connect URL |
-| `VITE_SOLANA_RPC_URL` | No | `https://api.mainnet-beta.solana.com` | Solana RPC endpoint (defaults to mainnet) |
+| Variable                | Required | Default                               | Description                                                |
+| ----------------------- | -------- | ------------------------------------- | ---------------------------------------------------------- |
+| `VITE_PHANTOM_APP_ID`   | Yes      | -                                     | App ID from Phantom Portal                                 |
+| `VITE_REDIRECT_URL`     | Yes      | -                                     | OAuth redirect URL (must be whitelisted in Phantom Portal) |
+| `VITE_PHANTOM_AUTH_URL` | No       | `https://connect.phantom.app`         | Phantom Connect URL                                        |
+| `VITE_SOLANA_RPC_URL`   | No       | `https://api.mainnet-beta.solana.com` | Solana RPC endpoint (defaults to mainnet)                  |
 
 ## Troubleshooting
 
@@ -152,6 +153,7 @@ Create a `.env` file with your Phantom App ID from [phantom.com/portal](https://
 ### Authentication Fails
 
 Ensure your redirect URL is whitelisted in Phantom Portal. The URL must match exactly:
+
 - For development: `http://localhost:5173/`
 - For production: Your domain URL (e.g., `https://yourdomain.com/`)
 - Whitelist both development and production URLs
@@ -162,16 +164,19 @@ Ensure your redirect URL is whitelisted in Phantom Portal. The URL must match ex
 **Wrong RPC URL**: Make sure you're using a Solana RPC endpoint, not Phantom API.
 
 **Correct (Mainnet):**
+
 ```env
 VITE_SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
 ```
 
 **Wrong:**
+
 ```env
 VITE_SOLANA_RPC_URL=https://api.phantom.app  # Don't use this!
 ```
 
-**Recommended RPC Providers** (better reliability than public endpoints): 
+**Recommended RPC Providers** (better reliability than public endpoints):
+
 - [Helius](https://helius.dev)
 - [Alchemy](https://www.alchemy.com/solana)
 - [QuickNode](https://www.quicknode.com/chains/sol)
@@ -187,6 +192,7 @@ pnpm preview
 ```
 
 **Deployment Checklist:**
+
 - Update `VITE_REDIRECT_URL` to your production domain URL
 - Whitelist production URL in Phantom Portal (e.g., `https://yourdomain.com/`)
 - Use a reliable Solana RPC endpoint (Helius, Alchemy, or QuickNode recommended)
@@ -207,4 +213,3 @@ pnpm preview
 **Need help?** Visit [docs.phantom.com](https://docs.phantom.com) for documentation and support.
 
 **Found a bug?** Contact Phantom support at [docs.phantom.com](https://docs.phantom.com).
-

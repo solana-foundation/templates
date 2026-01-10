@@ -1,9 +1,9 @@
 import { PublicKey } from '@solana/web3.js'
-import { useConnection } from '@/components/solana/solana-provider'
 import { useQuery } from '@tanstack/react-query'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 
 export function useGetTokenAccountBalance({ address }: { address: PublicKey }) {
-  const connection = useConnection()
+  const { connection } = useMobileWallet()
 
   return useQuery({
     queryKey: ['get-token-account-balance', { endpoint: connection.rpcEndpoint, account: address.toString() }],

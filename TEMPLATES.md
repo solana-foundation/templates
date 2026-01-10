@@ -1,86 +1,38 @@
-# Gill
+# Kit
 
-Gill Templates (based on @solana/kit)
+Kit Templates (using @solana/kit)
 
-### [gill-next-tailwind](gill/gill-next-tailwind)
+### [nextjs](kit/nextjs)
 
-`gh:solana-foundation/templates/gill/gill-next-tailwind`
+`gh:solana-foundation/templates/kit/nextjs`
 
-> Next.js, Tailwind, gill (based on @solana/kit), Wallet UI
+> Next.js, Tailwind, @solana/react-hooks
 
-`gill` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui`
+`kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
 
-### [gill-next-tailwind-basic](gill/gill-next-tailwind-basic)
+### [nextjs-anchor](kit/nextjs-anchor)
 
-`gh:solana-foundation/templates/gill/gill-next-tailwind-basic`
+`gh:solana-foundation/templates/kit/nextjs-anchor`
 
-> Next.js, Tailwind, basic Anchor example, gill (based on @solana/kit), Wallet UI
+> Next.js, Tailwind, @solana/react-hooks, Anchor vault program
 
-`anchor-basic` `gill` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui`
+`anchor` `kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
 
-### [gill-next-tailwind-counter](gill/gill-next-tailwind-counter)
+### [react-vite](kit/react-vite)
 
-`gh:solana-foundation/templates/gill/gill-next-tailwind-counter`
+`gh:solana-foundation/templates/kit/react-vite`
 
-> Next.js, Tailwind, Anchor Counter example, gill (based on @solana/kit), Wallet UI
+> React + Vite, Tailwind, @solana/react-hooks
 
-`anchor-counter` `gill` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui`
+`kit` `react` `solana-kit` `tailwind` `typescript` `vite`
 
-### [gill-next-tailwind-minimal](gill/gill-next-tailwind-minimal)
+### [react-vite-anchor](kit/react-vite-anchor)
 
-`gh:solana-foundation/templates/gill/gill-next-tailwind-minimal`
+`gh:solana-foundation/templates/kit/react-vite-anchor`
 
-> Minimal Next.js, Tailwind, gill (based on @solana/kit), Wallet UI
+> React + Vite, Tailwind, @solana/react-hooks, Anchor vault program
 
-`gill` `minimal` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui`
-
-### [gill-node-express](gill/gill-node-express)
-
-`gh:solana-foundation/templates/gill/gill-node-express`
-
-> Node.js Express API with gill (based on @solana/kit)
-
-`express` `gill` `node` `solana-kit`
-
-### [gill-node-script](gill/gill-node-script)
-
-`gh:solana-foundation/templates/gill/gill-node-script`
-
-> Node.js script with gill (based on @solana/kit)
-
-`gill` `node` `solana-kit`
-
-### [gill-react-vite-tailwind](gill/gill-react-vite-tailwind)
-
-`gh:solana-foundation/templates/gill/gill-react-vite-tailwind`
-
-> React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI
-
-`gill` `react` `solana-kit` `tailwind` `typescript` `vite` `wallet-ui`
-
-### [gill-react-vite-tailwind-basic](gill/gill-react-vite-tailwind-basic)
-
-`gh:solana-foundation/templates/gill/gill-react-vite-tailwind-basic`
-
-> React+Vite, Tailwind, gill (based on @solana/kit), basic Anchor example, Wallet UI
-
-`anchor-basic` `gill` `react` `solana-kit` `tailwind` `typescript` `vite` `wallet-ui`
-
-### [gill-react-vite-tailwind-counter](gill/gill-react-vite-tailwind-counter)
-
-`gh:solana-foundation/templates/gill/gill-react-vite-tailwind-counter`
-
-> React+Vite, Tailwind, gill (based on @solana/kit), Anchor Counter example, Wallet UI
-
-`anchor-counter` `gill` `react` `solana-kit` `tailwind` `typescript` `vite` `wallet-ui`
-
-### [gill-react-vite-tailwind-minimal](gill/gill-react-vite-tailwind-minimal)
-
-`gh:solana-foundation/templates/gill/gill-react-vite-tailwind-minimal`
-
-> Minimal React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI
-
-`gill` `minimal` `react` `solana-kit` `tailwind` `typescript` `vite` `wallet-ui`
+`anchor` `kit` `react` `solana-kit` `tailwind` `typescript` `vite`
 
 # Solana Mobile
 
@@ -91,6 +43,14 @@ Solana Mobile Templates
 `gh:solana-foundation/templates/mobile/web3js-expo`
 
 > A template for building a Solana mobile app with Expo and React Native.
+
+`expo` `mobile-wallet-adapter` `react-native` `solana-web3js`
+
+### [web3js-expo-minimal](mobile/web3js-expo-minimal)
+
+`gh:solana-foundation/templates/mobile/web3js-expo-minimal`
+
+> A minimal template for building a Solana mobile app with Expo and React Native.
 
 `expo` `mobile-wallet-adapter` `react-native` `solana-web3js`
 
@@ -158,14 +118,6 @@ Templates using @solana/web3.js (legacy)
 
 Templates maintained by the Solana community
 
-### [gill-jito-airdrop](community/gill-jito-airdrop)
-
-`gh:solana-foundation/templates/community/gill-jito-airdrop`
-
-> A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree
-
-`nextjs` `react` `tailwind` `typescript` `wallet-ui`
-
 ### [gill-node-solanax402](community/gill-node-solanax402)
 
 `gh:solana-foundation/templates/community/gill-node-solanax402`
@@ -173,6 +125,22 @@ Templates maintained by the Solana community
 > x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
+
+### [merkle-airdrop](community/merkle-airdrop)
+
+`gh:solana-foundation/templates/community/merkle-airdrop`
+
+> A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree
+
+`nextjs` `react` `tailwind` `typescript` `framework-kit`
+
+### [moneymq-x402](community/moneymq-x402)
+
+`gh:solana-foundation/templates/community/moneymq-x402`
+
+> Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana
+
+`x402` `moneymq` `payments` `micropayments` `solana` `api-monetization` `kora` `facilitator` `typescript`
 
 ### [phantom-embedded-js](community/phantom-embedded-js)
 
@@ -182,13 +150,29 @@ Templates maintained by the Solana community
 
 `solana` `phantom` `wallet` `embedded-wallet` `javascript` `typescript` `vite` `oauth` `social-login`
 
+### [solana-chatgpt-kit](community/solana-chatgpt-kit)
+
+`gh:solana-foundation/templates/community/solana-chatgpt-kit`
+
+> ChatGPT app with Solana features - Swaps, transfers, staking and data query via natural language. Browser wallets + x402 payments or private key mode
+
+`solana` `chatgpt` `openai` `mcp` `jupiter` `x402` `payments` `swap` `wallet` `defi` `staking` `nextjs` `typescript` `spl-token` `sns`
+
 ### [supabase-auth](community/supabase-auth)
 
 `gh:solana-foundation/templates/community/supabase-auth`
 
 > Authenticate Solana wallets with Supabase
 
-`supabase` `authentication` `solana`
+`supabase` `authentication` `solana` `framework-kit`
+
+### [x402-solana-rust](community/x402-solana-rust)
+
+`gh:solana-foundation/templates/community/x402-solana-rust`
+
+> x402 payment server template for Solana with Rust
+
+`solana` `x402` `rust` `payments` `api` `axum` `actix` `rocket`
 
 ### [x402-template](community/x402-template)
 
@@ -202,6 +186,6 @@ Templates maintained by the Solana community
 
 `gh:solana-foundation/templates/community/zk-compression-airdrop`
 
-> ZK-Compression based airdrop app built with Next.js, Tailwind, gill (based on @solana/kit), Wallet UI
+> ZK-Compression based airdrop app built with Next.js, Tailwind, and @solana/react-hooks
 
-`gill` `minimal` `nextjs` `react` `solana-kit` `tailwind` `typescript` `wallet-ui` `zk-compression` `airdrop` `zero-knowledge` `zk`
+`minimal` `nextjs` `react` `solana-kit` `tailwind` `typescript` `zk-compression` `airdrop` `zero-knowledge` `zk` `framework-kit`

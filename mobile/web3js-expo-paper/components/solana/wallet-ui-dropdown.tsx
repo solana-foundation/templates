@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Linking } from 'react-native'
 import Clipboard from '@react-native-clipboard/clipboard'
-import { useWalletUi } from '@/components/solana/use-wallet-ui'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { ellipsify } from '@/utils/ellipsify'
 import { useCluster } from '@/components/cluster/cluster-provider'
 import { Button, ButtonProps, Menu } from 'react-native-paper'
@@ -23,20 +23,20 @@ function BaseButton({
 }
 
 export function WalletUiConnectButton({ label = 'Connect', then }: { label?: string; then?: () => void }) {
-  const { connect } = useWalletUi()
+  const { connect } = useMobileWallet()
 
   return <BaseButton icon="wallet" label={label} onPress={() => connect().then(() => then?.())} />
 }
 
 export function WalletUiDisconnectButton({ label = 'Disconnect', then }: { label?: string; then?: () => void }) {
-  const { disconnect } = useWalletUi()
+  const { disconnect } = useMobileWallet()
 
   return <BaseButton icon="wallet" label={label} onPress={() => disconnect().then(() => then?.())} />
 }
 
 export function WalletUiDropdown() {
   const { getExplorerUrl } = useCluster()
-  const { account, disconnect } = useWalletUi()
+  const { account, disconnect } = useMobileWallet()
   const [isOpen, setIsOpen] = useState(false)
 
   if (!account) {

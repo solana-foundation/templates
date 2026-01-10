@@ -5,7 +5,7 @@ import { AirdropProgressDisplay } from './airdrop-ui-progress'
 import { AirdropControls } from './airdrop-ui-controls'
 import { AirdropAlerts } from './airdrop-ui-alerts'
 import { useAirdrop } from '@/features/airdrop/data-access/use-airdrop'
-import { useSolana } from '@/components/solana/use-solana'
+import { useWalletSession } from '@solana/react-hooks'
 import type { AirdropConfig, AirdropData } from '@/features/airdrop/data-access/airdrop-types'
 
 interface AirdropExecutorProps {
@@ -14,11 +14,11 @@ interface AirdropExecutorProps {
 }
 
 export function AirdropExecutor({ config, airdropData }: AirdropExecutorProps) {
-  const { account } = useSolana()
+  const wallet = useWalletSession()
   const { executeAirdrop, progress, isExecuting, error } = useAirdrop()
 
-  const hasWallet = !!account
-  const isAuthorized = account?.address === config.authority
+  const hasWallet = !!wallet?.account
+  const isAuthorized = wallet?.account?.address.toString() === config.authority
 
   const handleExecute = async (batchSize: number) => {
     await executeAirdrop(config, airdropData, batchSize)

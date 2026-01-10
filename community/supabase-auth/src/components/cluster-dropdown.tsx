@@ -1,7 +1,6 @@
 'use client'
 
 import * as React from 'react'
-import { SolanaClusterId, useWalletUi, useWalletUiCluster } from '@wallet-ui/react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -10,10 +9,13 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useClusterState, useSolanaClient } from '@solana/react-hooks'
+import { CLUSTERS, resolveCluster } from '@/components/solana/clusters'
 
 export function ClusterDropdown() {
-  const { cluster } = useWalletUi()
-  const { clusters, setCluster } = useWalletUiCluster()
+  const clusterState = useClusterState()
+  const client = useSolanaClient()
+  const cluster = resolveCluster(clusterState.endpoint)
 
   return (
     <DropdownMenu>
@@ -21,10 +23,24 @@ export function ClusterDropdown() {
         <Button variant="outline">{cluster.label}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuRadioGroup value={cluster.id} onValueChange={(cluster) => setCluster(cluster as SolanaClusterId)}>
-          {clusters.map((cluster) => {
+        <DropdownMenuRadioGroup
+          value={cluster.id}
+          onValueChange={async (clusterId) => {
+            const next = CLUSTERS.find((item) => item.id === clusterId)
+            if (!next) return
+            await client.actions.setCluster(
+              next.endpoint,
+              next.websocket ? { websocketEndpoint: next.websocket } : undefined,
+            )
+          }}
+        >
+          {CLUSTERS.map((cluster) => {
             return (
-              <DropdownMenuRadioItem key={cluster.id} value={cluster.id}>
+              <DropdownMenuRadioItem
+                key={cluster.id}
+                value={cluster.id}
+                disabled={clusterState.status.status === 'connecting'}
+              >
                 {cluster.label}
               </DropdownMenuRadioItem>
             )

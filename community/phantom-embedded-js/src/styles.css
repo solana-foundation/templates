@@ -8,37 +8,37 @@
    =============================================== */
 :root {
   /* Phantom Brand Colors */
-  --phantom-purple: #AB9FF2;
-  --phantom-purple-dark: #9485D8;
-  --phantom-purple-light: #C5BBF8;
-  
+  --phantom-purple: #ab9ff2;
+  --phantom-purple-dark: #9485d8;
+  --phantom-purple-light: #c5bbf8;
+
   /* Light Theme Colors (Default) */
-  --bg-page: #FAFAFA;
-  --bg-surface: #FFFFFF;
-  --bg-hover: #F5F5F5;
-  --border-color: #E0E0E0;
-  
+  --bg-page: #fafafa;
+  --bg-surface: #ffffff;
+  --bg-hover: #f5f5f5;
+  --border-color: #e0e0e0;
+
   /* Text Colors for Light Theme */
-  --text-primary: #1A1A1A;
+  --text-primary: #1a1a1a;
   --text-secondary: #666666;
   --text-muted: #999999;
-  
+
   /* Semantic Colors */
-  --success: #4CAF50;
-  --error: #FF5252;
-  --warning: #FFA726;
-  --info: #29B6F6;
+  --success: #4caf50;
+  --error: #ff5252;
+  --warning: #ffa726;
+  --info: #29b6f6;
 }
 
 /* Dark Theme */
-[data-theme="dark"] {
-  --bg-page: #1A1A1A;
-  --bg-surface: #2A2A2A;
+[data-theme='dark'] {
+  --bg-page: #1a1a1a;
+  --bg-surface: #2a2a2a;
   --bg-hover: #333333;
-  --border-color: #3A3A3A;
-  
-  --text-primary: #FFFFFF;
-  --text-secondary: #B0B0B0;
+  --border-color: #3a3a3a;
+
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
   --text-muted: #808080;
 }
 
@@ -50,12 +50,12 @@
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
   --spacing-xxl: 3rem;
-  
+
   /* Border Radius */
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
-  
+
   /* Transitions */
   --transition-fast: 0.15s ease;
   --transition-normal: 0.3s ease;
@@ -74,9 +74,9 @@
 html,
 body {
   height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -86,7 +86,9 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   font-size: 16px;
-  transition: background-color var(--transition-normal), color var(--transition-normal);
+  transition:
+    background-color var(--transition-normal),
+    color var(--transition-normal);
 }
 
 /* ===============================================
@@ -224,11 +226,14 @@ footer {
   max-width: 500px;
   width: 100%;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transition: transform var(--transition-normal), box-shadow var(--transition-normal), background-color var(--transition-normal);
+  transition:
+    transform var(--transition-normal),
+    box-shadow var(--transition-normal),
+    background-color var(--transition-normal);
 }
 
-[data-theme="dark"] .connect-card,
-[data-theme="dark"] .account-card {
+[data-theme='dark'] .connect-card,
+[data-theme='dark'] .account-card {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
@@ -271,7 +276,8 @@ footer {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -338,7 +344,7 @@ footer {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="dark"] .provider-btn:hover {
+[data-theme='dark'] .provider-btn:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
@@ -356,7 +362,7 @@ footer {
 }
 
 .google-btn:hover {
-  border-color: #4285F4;
+  border-color: #4285f4;
   box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
 }
 
@@ -552,7 +558,9 @@ button {
   padding: var(--spacing-md) var(--spacing-lg);
   border-radius: var(--radius-md);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s;
+  animation:
+    slideIn 0.3s ease,
+    slideOut 0.3s ease 2.7s;
   z-index: 1000;
 }
 
@@ -595,7 +603,7 @@ button {
   backdrop-filter: blur(4px);
 }
 
-[data-theme="dark"] .loading-overlay {
+[data-theme='dark'] .loading-overlay {
   background: rgba(26, 26, 26, 0.95);
 }
 
@@ -630,9 +638,15 @@ button {
 }
 
 @keyframes ellipsis {
-  0% { content: '.'; }
-  33% { content: '..'; }
-  66% { content: '...'; }
+  0% {
+    content: '.';
+  }
+  33% {
+    content: '..';
+  }
+  66% {
+    content: '...';
+  }
 }
 
 /* ===============================================
@@ -670,7 +684,7 @@ button {
   .header-content h1 {
     font-size: 1.5rem;
   }
-  
+
   .subtitle {
     font-size: 0.875rem;
   }
@@ -683,13 +697,13 @@ button {
   .footer-links .separator {
     display: none;
   }
-  
+
   .connect-card,
   .account-card {
     padding: var(--spacing-xl);
     margin: var(--spacing-md);
   }
-  
+
   .connect-card h2,
   .account-card h2,
   .demo-title {
@@ -699,21 +713,21 @@ button {
   .description {
     font-size: 0.875rem;
   }
-  
+
   .phantom-logo {
     width: 60px;
     height: 60px;
   }
-  
+
   main {
     padding: var(--spacing-md);
   }
-  
+
   .address-text,
   .balance-text {
     font-size: 1rem;
   }
-  
+
   .success-message {
     top: var(--spacing-md);
     right: var(--spacing-md);
@@ -725,17 +739,17 @@ button {
   .header-content h1 {
     font-size: 1.25rem;
   }
-  
+
   .connect-card,
   .account-card {
     padding: var(--spacing-lg);
   }
-  
+
   .address-text,
   .balance-text {
     font-size: 0.875rem;
   }
-  
+
   .icon-btn {
     min-width: 36px;
     min-height: 36px;
@@ -855,7 +869,7 @@ button {
   padding: 0.875rem 1.5rem;
   font-size: 1rem;
   font-weight: 500;
-  color: #FFFFFF;
+  color: #ffffff;
   background: var(--phantom-purple);
   border: none;
   border-radius: var(--radius-md);
@@ -898,13 +912,21 @@ button {
 }
 
 @keyframes shake {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
-  10%, 30%, 50%, 70%, 90% {
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
     transform: translateX(-5px);
   }
-  20%, 40%, 60%, 80% {
+  20%,
+  40%,
+  60%,
+  80% {
     transform: translateX(5px);
   }
 }
@@ -914,19 +936,18 @@ button {
   .auth-state-card {
     padding: var(--spacing-xl);
   }
-  
+
   .auth-state-card h2 {
     font-size: 1.5rem;
   }
-  
+
   .auth-message {
     font-size: 0.9375rem;
   }
-  
+
   .success-icon svg,
   .error-icon svg {
     width: 48px;
     height: 48px;
   }
 }
-
