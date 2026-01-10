@@ -335,6 +335,27 @@
         "usecase": "Starter"
       },
       {
+        "description": "A minimal Expo starter template for integrating Phantom's embedded user wallets on Solana for mobile apps",
+        "id": "gh:solana-foundation/templates/community/phantom-embedded-react-native",
+        "image": "community/phantom-embedded-react-native/og-image.png",
+        "keywords": [
+          "solana",
+          "phantom",
+          "wallet",
+          "embedded-wallet",
+          "react-native",
+          "expo",
+          "mobile",
+          "typescript",
+          "oauth",
+          "authentication"
+        ],
+        "name": "phantom-embedded-react-native-starter",
+        "path": "community/phantom-embedded-react-native",
+        "displayName": "Phantom Embedded React Native Starter",
+        "usecase": "Mobile"
+      },
+      {
         "description": "ChatGPT app with Solana features - Swaps, transfers, staking and data query via natural language. Browser wallets + x402 payments or private key mode",
         "id": "gh:solana-foundation/templates/community/solana-chatgpt-kit",
         "image": "community/solana-chatgpt-kit/og-image.png",

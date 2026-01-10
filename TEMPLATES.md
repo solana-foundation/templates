@@ -158,6 +158,14 @@ Templates maintained by the Solana community
 
 `solana` `phantom` `embedded-wallet` `nextjs` `react` `typescript` `tailwind` `web3` `authentication`
 
+### [phantom-embedded-react-native-starter](community/phantom-embedded-react-native)
+
+`gh:solana-foundation/templates/community/phantom-embedded-react-native`
+
+> A minimal Expo starter template for integrating Phantom's embedded user wallets on Solana for mobile apps
+
+`solana` `phantom` `wallet` `embedded-wallet` `react-native` `expo` `mobile` `typescript` `oauth` `authentication`
+
 ### [solana-chatgpt-kit](community/solana-chatgpt-kit)
 
 `gh:solana-foundation/templates/community/solana-chatgpt-kit`

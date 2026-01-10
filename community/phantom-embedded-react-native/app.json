@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "Phantom Embedded Wallet",
+    "slug": "phantom-embedded-wallet",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/default.png",
+    "userInterfaceStyle": "dark",
+    "scheme": "phantomwallet",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#AB9FF2"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yawei.phantomwallet",
+      "appleTeamId": "837KBXFC63",
+      "icon": "./assets/default.png"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/default.png",
+        "monochromeImage": "./assets/android-notification-icon.png",
+        "backgroundColor": "#AB9FF2"
+      },
+      "package": "com.yawei.phantomwallet",
+      "icon": "./assets/default.png"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": ["expo-router", "expo-secure-store", "expo-web-browser"]
+  }
+}
