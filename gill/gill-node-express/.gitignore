@@ -1,6 +1,0 @@
-.env
-/tmp
-node_modules
-dist
-keypair-*.json
-dist

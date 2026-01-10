@@ -1,0 +1,22 @@
+{
+  "name": "x402-demo-client",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "tsx src/index.ts"
+  },
+  "keywords": [],
+  "author": "Solana Foundation",
+  "license": "MIT",
+  "packageManager": "pnpm@10.12.3",
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "gill": "^0.11.0",
+    "x402-fetch": "^0.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.13",
+    "tsx": "^4.20.5",
+    "typescript": "^5.8.3"
+  }
+}

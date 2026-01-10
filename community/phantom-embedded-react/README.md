@@ -151,18 +151,18 @@ The `/auth/callback` page handles OAuth flow automatically. The `PhantomProvider
 processes the callback parameters when the page loads:
 
 ```javascript
-import { usePhantom } from "@phantom/react-sdk";
+import { usePhantom } from '@phantom/react-sdk'
 
 function AuthCallbackPage() {
-  const { isConnected, isLoading, connectError } = usePhantom();
+  const { isConnected, isLoading, connectError } = usePhantom()
 
   // Redirect once connected
   useEffect(() => {
-    if (isConnected) router.push("/");
-  }, [isConnected]);
+    if (isConnected) router.push('/')
+  }, [isConnected])
 
-  if (connectError) return <ErrorUI />;
-  return <LoadingUI />;
+  if (connectError) return <ErrorUI />
+  return <LoadingUI />
 }
 ```
 
@@ -171,21 +171,21 @@ function AuthCallbackPage() {
 For embedded wallets (Google/Apple OAuth), use `signAndSendTransaction`:
 
 ```javascript
-import { useSolana } from "@phantom/react-sdk";
+import { useSolana } from '@phantom/react-sdk'
 
 function MyComponent() {
-  const { solana, isAvailable } = useSolana();
+  const { solana, isAvailable } = useSolana()
 
   const handleTransaction = async (transaction) => {
     // Always check availability before calling
     if (!isAvailable || !solana?.signAndSendTransaction) {
-      console.error("Solana provider not available");
-      return;
+      console.error('Solana provider not available')
+      return
     }
 
-    const result = await solana.signAndSendTransaction(transaction);
-    console.log("TX hash:", result.hash);
-  };
+    const result = await solana.signAndSendTransaction(transaction)
+    console.log('TX hash:', result.hash)
+  }
 }
 ```
 
@@ -201,11 +201,11 @@ function MyComponent() {
 
 ## Environment Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `NEXT_PUBLIC_PHANTOM_APP_ID` | App ID from Phantom Portal | Yes (for OAuth) |
-| `NEXT_PUBLIC_SOLANA_RPC_URL` | Custom Solana RPC URL | No |
-| `NEXT_PUBLIC_APP_URL` | Your app's URL (for OAuth callback) | No |
+| Variable                     | Description                         | Required        |
+| ---------------------------- | ----------------------------------- | --------------- |
+| `NEXT_PUBLIC_PHANTOM_APP_ID` | App ID from Phantom Portal          | Yes (for OAuth) |
+| `NEXT_PUBLIC_SOLANA_RPC_URL` | Custom Solana RPC URL               | No              |
+| `NEXT_PUBLIC_APP_URL`        | Your app's URL (for OAuth callback) | No              |
 
 See `.env.example` for the template.
 

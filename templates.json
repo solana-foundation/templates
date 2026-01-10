@@ -1,187 +1,70 @@
 [
   {
-    "description": "Gill Templates (based on @solana/kit)",
-    "name": "Gill",
-    "path": "gill",
+    "description": "Kit Templates (using @solana/kit)",
+    "name": "Kit",
+    "path": "kit",
     "templates": [
       {
-        "description": "Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
-        "id": "gh:solana-foundation/templates/gill/gill-next-tailwind",
-        "image": "gill/gill-next-tailwind/og-image.png",
+        "description": "Next.js, Tailwind, @solana/react-hooks",
+        "id": "gh:solana-foundation/templates/kit/nextjs",
+        "image": "kit/nextjs/og-image.png",
         "keywords": [
-          "gill",
+          "kit",
           "nextjs",
           "react",
           "solana-kit",
           "tailwind",
-          "typescript",
-          "wallet-ui"
+          "typescript"
         ],
-        "name": "gill-next-tailwind",
-        "path": "gill/gill-next-tailwind",
-        "displayName": "Gill Boilerplate",
-        "usecase": "Starter"
+        "name": "nextjs",
+        "path": "kit/nextjs"
       },
       {
-        "description": "Next.js, Tailwind, basic Anchor example, gill (based on @solana/kit), Wallet UI",
-        "id": "gh:solana-foundation/templates/gill/gill-next-tailwind-basic",
-        "image": "gill/gill-next-tailwind-basic/og-image.png",
+        "description": "Next.js, Tailwind, @solana/react-hooks, Anchor vault program",
+        "id": "gh:solana-foundation/templates/kit/nextjs-anchor",
+        "image": "kit/nextjs-anchor/og-image.png",
         "keywords": [
-          "anchor-basic",
-          "gill",
+          "anchor",
+          "kit",
           "nextjs",
           "react",
           "solana-kit",
           "tailwind",
-          "typescript",
-          "wallet-ui"
+          "typescript"
         ],
-        "name": "gill-next-tailwind-basic",
-        "path": "gill/gill-next-tailwind-basic",
-        "displayName": "Fullstack Boilerplate",
-        "usecase": "Starter"
+        "name": "nextjs-anchor",
+        "path": "kit/nextjs-anchor"
       },
       {
-        "description": "Next.js, Tailwind, Anchor Counter example, gill (based on @solana/kit), Wallet UI",
-        "id": "gh:solana-foundation/templates/gill/gill-next-tailwind-counter",
-        "image": "gill/gill-next-tailwind-counter/og-image.png",
+        "description": "React + Vite, Tailwind, @solana/react-hooks",
+        "id": "gh:solana-foundation/templates/kit/react-vite",
+        "image": "kit/react-vite/og-image.png",
         "keywords": [
-          "anchor-counter",
-          "gill",
-          "nextjs",
+          "kit",
           "react",
           "solana-kit",
           "tailwind",
           "typescript",
-          "wallet-ui"
+          "vite"
         ],
-        "name": "gill-next-tailwind-counter",
-        "path": "gill/gill-next-tailwind-counter",
-        "displayName": "Fullstack Counter Boilerplate",
-        "usecase": "Starter"
+        "name": "react-vite",
+        "path": "kit/react-vite"
       },
       {
-        "description": "Minimal Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
-        "id": "gh:solana-foundation/templates/gill/gill-next-tailwind-minimal",
-        "image": "gill/gill-next-tailwind-minimal/og-image.png",
+        "description": "React + Vite, Tailwind, @solana/react-hooks, Anchor vault program",
+        "id": "gh:solana-foundation/templates/kit/react-vite-anchor",
+        "image": "kit/react-vite-anchor/og-image.png",
         "keywords": [
-          "gill",
-          "minimal",
-          "nextjs",
+          "anchor",
+          "kit",
           "react",
           "solana-kit",
           "tailwind",
           "typescript",
-          "wallet-ui"
+          "vite"
         ],
-        "name": "gill-next-tailwind-minimal",
-        "path": "gill/gill-next-tailwind-minimal",
-        "displayName": "Minimal Boilerplate",
-        "usecase": "Starter"
-      },
-      {
-        "description": "Node.js Express API with gill (based on @solana/kit)",
-        "id": "gh:solana-foundation/templates/gill/gill-node-express",
-        "image": "gill/gill-node-express/og-image.png",
-        "keywords": [
-          "express",
-          "gill",
-          "node",
-          "solana-kit"
-        ],
-        "name": "gill-node-express",
-        "path": "gill/gill-node-express",
-        "displayName": "Express Server",
-        "usecase": "Backend"
-      },
-      {
-        "description": "Node.js script with gill (based on @solana/kit)",
-        "id": "gh:solana-foundation/templates/gill/gill-node-script",
-        "image": "gill/gill-node-script/og-image.png",
-        "keywords": [
-          "gill",
-          "node",
-          "solana-kit"
-        ],
-        "name": "gill-node-script",
-        "path": "gill/gill-node-script",
-        "displayName": "Node Server",
-        "usecase": "Backend"
-      },
-      {
-        "description": "React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI",
-        "id": "gh:solana-foundation/templates/gill/gill-react-vite-tailwind",
-        "image": "gill/gill-react-vite-tailwind/og-image.png",
-        "keywords": [
-          "gill",
-          "react",
-          "solana-kit",
-          "tailwind",
-          "typescript",
-          "vite",
-          "wallet-ui"
-        ],
-        "name": "gill-react-vite-tailwind",
-        "path": "gill/gill-react-vite-tailwind",
-        "displayName": "Vite Boilerplate",
-        "usecase": "Starter"
-      },
-      {
-        "description": "React+Vite, Tailwind, gill (based on @solana/kit), basic Anchor example, Wallet UI",
-        "id": "gh:solana-foundation/templates/gill/gill-react-vite-tailwind-basic",
-        "image": "gill/gill-react-vite-tailwind-basic/og-image.png",
-        "keywords": [
-          "anchor-basic",
-          "gill",
-          "react",
-          "solana-kit",
-          "tailwind",
-          "typescript",
-          "vite",
-          "wallet-ui"
-        ],
-        "name": "gill-react-vite-tailwind-basic",
-        "path": "gill/gill-react-vite-tailwind-basic",
-        "displayName": "Vite Fullstack Boilerplate",
-        "usecase": "Starter"
-      },
-      {
-        "description": "React+Vite, Tailwind, gill (based on @solana/kit), Anchor Counter example, Wallet UI",
-        "id": "gh:solana-foundation/templates/gill/gill-react-vite-tailwind-counter",
-        "image": "gill/gill-react-vite-tailwind-counter/og-image.png",
-        "keywords": [
-          "anchor-counter",
-          "gill",
-          "react",
-          "solana-kit",
-          "tailwind",
-          "typescript",
-          "vite",
-          "wallet-ui"
-        ],
-        "name": "gill-react-vite-tailwind-counter",
-        "path": "gill/gill-react-vite-tailwind-counter",
-        "displayName": "Vite Counter Boilerplate",
-        "usecase": "Starter"
-      },
-      {
-        "description": "Minimal React+Vite, Tailwind, gill (based on @solana/kit), Wallet UI",
-        "id": "gh:solana-foundation/templates/gill/gill-react-vite-tailwind-minimal",
-        "image": "gill/gill-react-vite-tailwind-minimal/og-image.png",
-        "keywords": [
-          "gill",
-          "minimal",
-          "react",
-          "solana-kit",
-          "tailwind",
-          "typescript",
-          "vite",
-          "wallet-ui"
-        ],
-        "name": "gill-react-vite-tailwind-minimal",
-        "path": "gill/gill-react-vite-tailwind-minimal",
-        "displayName": "Vite Minimal Boilerplate",
-        "usecase": "Starter"
+        "name": "react-vite-anchor",
+        "path": "kit/react-vite-anchor"
       }
     ]
   },
@@ -203,6 +86,21 @@
         "name": "web3js-expo",
         "path": "mobile/web3js-expo",
         "displayName": "Mobile Expo Boilerplate",
+        "usecase": "Mobile"
+      },
+      {
+        "description": "A minimal template for building a Solana mobile app with Expo and React Native.",
+        "id": "gh:solana-foundation/templates/mobile/web3js-expo-minimal",
+        "image": "mobile/web3js-expo-minimal/og-image.png",
+        "keywords": [
+          "expo",
+          "mobile-wallet-adapter",
+          "react-native",
+          "solana-web3js"
+        ],
+        "name": "web3js-expo-minimal",
+        "path": "mobile/web3js-expo-minimal",
+        "displayName": "Minimal Mobile Expo example",
         "usecase": "Mobile"
       },
       {
@@ -343,22 +241,6 @@
     "path": "community",
     "templates": [
       {
-        "description": "A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree",
-        "id": "gh:solana-foundation/templates/community/gill-jito-airdrop",
-        "image": "community/gill-jito-airdrop/og-image.png",
-        "keywords": [
-          "nextjs",
-          "react",
-          "tailwind",
-          "typescript",
-          "wallet-ui"
-        ],
-        "name": "gill-jito-airdrop",
-        "path": "community/gill-jito-airdrop",
-        "displayName": "Merkletree Airdrop",
-        "usecase": "Airdrop"
-      },
-      {
         "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK",
         "id": "gh:solana-foundation/templates/community/gill-node-solanax402",
         "image": "community/gill-node-solanax402/og-image.png",
@@ -375,6 +257,62 @@
         "path": "community/gill-node-solanax402",
         "displayName": "x402 Express Server",
         "usecase": "Payments"
+      },
+      {
+        "description": "A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree",
+        "id": "gh:solana-foundation/templates/community/merkle-airdrop",
+        "image": "community/merkle-airdrop/og-image.png",
+        "keywords": [
+          "nextjs",
+          "react",
+          "tailwind",
+          "typescript",
+          "framework-kit"
+        ],
+        "name": "merkle-airdrop",
+        "path": "community/merkle-airdrop",
+        "displayName": "Merkle Airdrop",
+        "usecase": "Airdrop"
+      },
+      {
+        "description": "Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana",
+        "id": "gh:solana-foundation/templates/community/moneymq-x402",
+        "image": "community/moneymq-x402/og-image.png",
+        "keywords": [
+          "x402",
+          "moneymq",
+          "payments",
+          "micropayments",
+          "solana",
+          "api-monetization",
+          "kora",
+          "facilitator",
+          "typescript"
+        ],
+        "name": "moneymq-x402",
+        "path": "community/moneymq-x402",
+        "displayName": "MoneyMQ x402 Demo",
+        "usecase": "Payments"
+      },
+      {
+        "description": "Vite + vanilla JavaScript template for integrating Phantom's embedded user wallets on Solana",
+        "id": "gh:solana-foundation/templates/community/phantom-embedded-js",
+        "image": "community/phantom-embedded-js/og-image.png",
+        "keywords": [
+          "solana",
+          "phantom",
+          "wallet",
+          "embedded-wallet",
+          "javascript",
+          "typescript",
+          "vite",
+          "oauth",
+          "social-login"
+        ],
+        "name": "phantom-embedded-js",
+        "path": "community/phantom-embedded-js",
+        "displayName": "Phantom Embedded JS",
+        "usecase": "Wallet"
       },
       {
         "description": "Next.js template with Phantom Embedded Wallet SDK for seamless Web3 authentication",
@@ -397,18 +335,64 @@
         "usecase": "Starter"
       },
       {
+        "description": "ChatGPT app with Solana features - Swaps, transfers, staking and data query via natural language. Browser wallets + x402 payments or private key mode",
+        "id": "gh:solana-foundation/templates/community/solana-chatgpt-kit",
+        "image": "community/solana-chatgpt-kit/og-image.png",
+        "keywords": [
+          "solana",
+          "chatgpt",
+          "openai",
+          "mcp",
+          "jupiter",
+          "x402",
+          "payments",
+          "swap",
+          "wallet",
+          "defi",
+          "staking",
+          "nextjs",
+          "typescript",
+          "spl-token",
+          "sns"
+        ],
+        "name": "solana-chatgpt-kit",
+        "path": "community/solana-chatgpt-kit",
+        "displayName": "Solana ChatGPT Kit",
+        "usecase": "Starter"
+      },
+      {
         "description": "Authenticate Solana wallets with Supabase",
         "id": "gh:solana-foundation/templates/community/supabase-auth",
         "image": "community/supabase-auth/og-image.png",
         "keywords": [
           "supabase",
           "authentication",
-          "solana"
+          "solana",
+          "framework-kit"
         ],
         "name": "supabase-auth",
         "path": "community/supabase-auth",
         "displayName": "Supabase Auth",
         "usecase": "Auth"
+      },
+      {
+        "description": "x402 payment server template for Solana with Rust",
+        "id": "gh:solana-foundation/templates/community/x402-solana-rust",
+        "image": "community/x402-solana-rust/og-image.png",
+        "keywords": [
+          "solana",
+          "x402",
+          "rust",
+          "payments",
+          "api",
+          "axum",
+          "actix",
+          "rocket"
+        ],
+        "name": "x402-solana-rust",
+        "path": "community/x402-solana-rust",
+        "displayName": "x402 Solana Rust",
+        "usecase": "Payments"
       },
       {
         "description": "Next.js Solana starter with X402 payment protocol integration",
@@ -427,25 +411,26 @@
         "usecase": "Payments"
       },
       {
-        "description": "ZK-Compression based airdrop app built with Next.js, Tailwind, gill (based on @solana/kit), Wallet UI",
+        "description": "ZK-Compression based airdrop app built with Next.js, Tailwind, and @solana/react-hooks",
         "id": "gh:solana-foundation/templates/community/zk-compression-airdrop",
         "image": "community/zk-compression-airdrop/og-image.png",
         "keywords": [
-          "gill",
           "minimal",
           "nextjs",
           "react",
           "solana-kit",
           "tailwind",
           "typescript",
-          "wallet-ui",
           "zk-compression",
           "airdrop",
           "zero-knowledge",
-          "zk"
+          "zk",
+          "framework-kit"
         ],
         "name": "zk-compression-airdrop",
-        "path": "community/zk-compression-airdrop"
+        "path": "community/zk-compression-airdrop",
+        "displayName": "ZK Compression Airdrop",
+        "usecase": "Airdrop"
       }
     ]
   }

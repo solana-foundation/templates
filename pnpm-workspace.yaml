@@ -4,6 +4,9 @@ minimumReleaseAgeExclude:
   - '@next/*'
   - react
   - react-dom
+  - '@solana/client'
+  - '@solana/react-hooks'
+  - '@solana/kit'
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@tailwindcss/oxide'
@@ -15,5 +18,5 @@ onlyBuiltDependencies:
   - utf-8-validate
 packages:
   - community/*
-  - gill/*
+  - kit/*
   - web3js/*

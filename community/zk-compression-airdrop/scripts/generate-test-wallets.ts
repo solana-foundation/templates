@@ -1,5 +1,5 @@
 import { Keypair } from '@solana/web3.js'
-import { address, type Address } from 'gill'
+import { address, type Address } from '@solana/kit'
 import bs58 from 'bs58'
 import fs from 'fs'
 import path from 'path'

@@ -1,12 +1,12 @@
 import { AppView } from '@/components/app-view'
 import { AppText } from '@/components/app-text'
 import { DemoFeatureSignMessage } from './demo-feature-sign-message'
-import { useWalletUi } from '@/components/solana/use-wallet-ui'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { PublicKey } from '@solana/web3.js'
 import * as React from 'react'
 
 export function DemoFeature() {
-  const { account } = useWalletUi()
+  const { account } = useMobileWallet()
   return (
     <AppView>
       <AppText type="subtitle">Demo page</AppText>

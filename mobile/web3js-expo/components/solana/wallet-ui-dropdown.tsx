@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { Linking, StyleSheet } from 'react-native'
 import Clipboard from '@react-native-clipboard/clipboard'
-import { useWalletUi } from '@/components/solana/use-wallet-ui'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { ellipsify } from '@/utils/ellipsify'
 import { UiIconSymbol } from '@/components/ui/ui-icon-symbol'
 import { useCluster } from '@/components/cluster/cluster-provider'
@@ -12,7 +12,7 @@ import { useWalletUiTheme } from '@/components/solana/use-wallet-ui-theme'
 
 function useDropdownItems() {
   const { getExplorerUrl } = useCluster()
-  const { account, disconnect } = useWalletUi()
+  const { account, disconnect } = useMobileWallet()
   if (!account) {
     return []
   }
@@ -33,7 +33,7 @@ function useDropdownItems() {
 }
 
 export function WalletUiDropdown() {
-  const { account } = useWalletUi()
+  const { account } = useMobileWallet()
   const { backgroundColor, borderColor, textColor } = useWalletUiTheme()
 
   const items = useDropdownItems()

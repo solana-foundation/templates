@@ -1,8 +1,8 @@
-import { IdentifierString } from '@wallet-standard/core'
+import { SolanaClusterId } from '@wallet-ui/react-native-web3js'
 import { ClusterNetwork } from '@/components/cluster/cluster-network'
 
 export interface Cluster {
-  id: IdentifierString
+  id: SolanaClusterId
   name: string
   endpoint: string
   network: ClusterNetwork

@@ -1,21 +1,21 @@
-'use client';
+'use client'
 
-import { PhantomProvider, darkTheme, AddressType } from "@phantom/react-sdk";
-import { ReactNode } from "react";
+import { PhantomProvider, darkTheme, AddressType } from '@phantom/react-sdk'
+import { ReactNode } from 'react'
 
 /**
  * Props for the ConnectionProvider component
  */
 interface ConnectionProviderProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 /**
  * ConnectionProvider wraps the app with PhantomProvider for wallet connectivity
- * 
+ *
  * Phantom Connect SDK (Beta 26)
  * @see https://docs.phantom.com/sdks/react-sdk
- * 
+ *
  * Features in Beta 26:
  * - ConnectButton component for ready-to-use connection UI
  * - useDiscoveredWallets hook for wallet discovery via Wallet Standard & EIP-6963
@@ -32,7 +32,7 @@ export default function ConnectionProvider({ children }: ConnectionProviderProps
     console.log('🔧 Environment Check:', {
       appId: process.env.NEXT_PUBLIC_PHANTOM_APP_ID ? '✅ Set' : '❌ Missing',
       rpcUrl: process.env.NEXT_PUBLIC_SOLANA_RPC_URL ? '✅ Set' : '❌ Missing',
-    });
+    })
   }
 
   return (
@@ -41,24 +41,25 @@ export default function ConnectionProvider({ children }: ConnectionProviderProps
         // Network support - Solana blockchain
         addressTypes: [AddressType.solana],
         // App ID from Phantom Portal (required for embedded providers)
-        appId: process.env.NEXT_PUBLIC_PHANTOM_APP_ID || "",
+        appId: process.env.NEXT_PUBLIC_PHANTOM_APP_ID || '',
         // Authentication providers available to users
         // The modal will automatically detect and display available wallets
         providers: [
-          "google",     // Google OAuth
-          "apple",      // Apple ID  
-          "phantom",    // Phantom Login
-          "injected",   // Browser extension + discovered wallets via Wallet Standard
+          'google', // Google OAuth
+          'apple', // Apple ID
+          'phantom', // Phantom Login
+          'injected', // Browser extension + discovered wallets via Wallet Standard
         ],
         // User wallet connects to existing Phantom ecosystem
-        embeddedWalletType: "user-wallet",
+        embeddedWalletType: 'user-wallet',
         // OAuth redirect configuration (required for Google/Apple login)
         authOptions: {
-          redirectUrl: typeof window !== 'undefined' 
-            ? `${window.location.origin}/auth/callback`
-            : process.env.NEXT_PUBLIC_APP_URL 
-              ? `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`
-              : "http://localhost:3000/auth/callback",
+          redirectUrl:
+            typeof window !== 'undefined'
+              ? `${window.location.origin}/auth/callback`
+              : process.env.NEXT_PUBLIC_APP_URL
+                ? `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`
+                : 'http://localhost:3000/auth/callback',
         },
       }}
       // Theme for built-in modal UI (darkTheme or lightTheme available)
@@ -70,5 +71,5 @@ export default function ConnectionProvider({ children }: ConnectionProviderProps
     >
       {children}
     </PhantomProvider>
-  );
+  )
 }
