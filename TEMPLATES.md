@@ -150,6 +150,14 @@ Templates maintained by the Solana community
 
 `solana` `chatgpt` `openai` `mcp` `jupiter` `x402` `payments` `swap` `wallet` `defi` `staking` `nextjs` `typescript` `spl-token` `sns`
 
+### [solana-pay-store](community/solana-pay-store)
+
+`gh:solana-foundation/templates/community/solana-pay-store`
+
+> Next.js store template using @solana-commerce/headless and @solana/kit
+
+`nextjs` `react` `@solana/kit` `@solana-commerce/headless` `solana-pay` `tailwind` `typescript`
+
 ### [supabase-auth](community/supabase-auth)
 
 `gh:solana-foundation/templates/community/supabase-auth`
