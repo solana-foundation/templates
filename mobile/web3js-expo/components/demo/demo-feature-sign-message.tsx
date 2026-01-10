@@ -7,11 +7,11 @@ import React, { useState } from 'react'
 import { Button } from '@react-navigation/elements'
 import { useThemeColor } from '@/hooks/use-theme-color'
 import { useMutation } from '@tanstack/react-query'
-import { useWalletUi } from '@/components/solana/use-wallet-ui'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { ellipsify } from '@/utils/ellipsify'
 
 function useSignMessage({ address }: { address: PublicKey }) {
-  const { signMessage } = useWalletUi()
+  const { signMessage } = useMobileWallet()
   return useMutation({
     mutationFn: async (input: { message: string }) => {
       return signMessage(new TextEncoder().encode(input.message)).then((signature) => signature.toString())

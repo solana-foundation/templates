@@ -29,12 +29,14 @@ npx expo-optimize
 ```
 
 Or use an online tool like:
+
 - [App Icon Generator](https://www.appicon.co/)
 - [Expo Icon Generator](https://icon.kitchen/)
 
 ## Phantom Branding
 
 When creating assets:
+
 - Use Phantom's brand color: `#ab9ff2`
 - Download official logo from: [Phantom Press Kit](https://phantom.app/press)
 - Follow brand guidelines for proper logo usage
@@ -46,5 +48,3 @@ When creating assets:
 - Use transparent backgrounds for app icons
 - Splash screen should have `#1a1a1a` background to match app theme
 - Test icons on both iOS and Android devices
-
-

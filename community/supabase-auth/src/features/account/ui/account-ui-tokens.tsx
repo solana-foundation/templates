@@ -1,17 +1,16 @@
-import { Address } from 'gill'
+'use client'
+
 import { RefreshCw } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { ellipsify } from '@/lib/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { AppExplorerLink } from '@/components/app-explorer-link'
 import { useGetTokenAccountsQuery } from '../data-access/use-get-token-accounts-query'
 
-export function AccountUiTokens({ address }: { address: Address }) {
+export function AccountUiTokens({ address }: { address: string }) {
   const [showAll, setShowAll] = useState(false)
   const query = useGetTokenAccountsQuery({ address })
-  const client = useQueryClient()
   const items = useMemo(() => {
     if (showAll) return query.data
     return query.data?.slice(0, 5)
@@ -26,25 +25,17 @@ export function AccountUiTokens({ address }: { address: Address }) {
             {query.isLoading ? (
               <span className="loading loading-spinner"></span>
             ) : (
-              <Button
-                variant="outline"
-                onClick={async () => {
-                  await query.refetch()
-                  await client.invalidateQueries({
-                    queryKey: ['getTokenAccountBalance'],
-                  })
-                }}
-              >
+              <Button variant="outline" onClick={() => query.refetch().catch((err) => console.error(err))}>
                 <RefreshCw size={16} />
               </Button>
             )}
           </div>
         </div>
       </div>
-      {query.isError && <pre className="alert alert-error">Error: {query.error?.message.toString()}</pre>}
+      {query.isError && <pre className="alert alert-error">Error: {String(query.error)}</pre>}
       {query.isSuccess && (
         <div>
-          {query.data.length === 0 ? (
+          {query.data && query.data.length === 0 ? (
             <div>No token accounts found.</div>
           ) : (
             <Table>

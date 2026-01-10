@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react'
 import { PublicKey, Keypair } from '@solana/web3.js'
 import BN from 'bn.js'
 import bs58 from 'bs58'
-import { useSolana } from '@/components/solana/use-solana'
+import { useWalletSession } from '@solana/react-hooks'
 import { mintTo } from '@lightprotocol/compressed-token'
 import { parseRecipients, calculateBatches, createRpcConnection } from './airdrop-utils'
 import type { AirdropData, AirdropConfig, AirdropProgress } from './airdrop-types'
@@ -17,7 +17,8 @@ interface UseAirdropReturn {
 }
 
 export function useAirdrop(): UseAirdropReturn {
-  const { account } = useSolana()
+  const wallet = useWalletSession()
+  const account = wallet?.account
   const [progress, setProgress] = useState<AirdropProgress | null>(null)
   const [isExecuting, setIsExecuting] = useState(false)
   const [error, setError] = useState<string | null>(null)

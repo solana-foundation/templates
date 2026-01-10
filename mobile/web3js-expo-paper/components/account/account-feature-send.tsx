@@ -1,17 +1,17 @@
 import { AppView } from '@/components/app-view'
 import { AppText } from '@/components/app-text'
 import { PublicKey } from '@solana/web3.js'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { View } from 'react-native'
 import { ActivityIndicator, Button, TextInput } from 'react-native-paper'
 import React, { useState } from 'react'
-import { useWalletUi } from '../solana/use-wallet-ui'
 import { useRequestAirdrop } from '@/components/account/use-request-airdrop'
 import { useTransferSol } from '@/components/account/use-transfer-sol'
 import { useAppTheme } from '@/components/app-theme'
 
 export function AccountFeatureSend({ address }: { address: PublicKey }) {
   const { spacing } = useAppTheme()
-  const { account } = useWalletUi()
+  const { account } = useMobileWallet()
   const requestAirdrop = useRequestAirdrop({ address: account?.publicKey as PublicKey })
   const transferSol = useTransferSol({ address })
   const [destinationAddress, setDestinationAddress] = useState('')

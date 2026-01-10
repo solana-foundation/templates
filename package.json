@@ -28,9 +28,9 @@
   "repokit": {
     "groups": [
       {
-        "description": "Gill Templates (based on @solana/kit)",
-        "name": "Gill",
-        "path": "gill"
+        "description": "Kit Templates (using @solana/kit)",
+        "name": "Kit",
+        "path": "kit"
       },
       {
         "description": "Solana Mobile Templates",

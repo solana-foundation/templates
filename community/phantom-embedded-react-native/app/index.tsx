@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native';
-import { ConnectButton } from '@/components/ConnectButton';
-import { colors } from '@/lib/theme';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native'
+import { ConnectButton } from '@/components/ConnectButton'
+import { colors } from '@/lib/theme'
 
 /**
  * Home screen - displays welcome message and connect button
@@ -12,27 +12,23 @@ export default function HomeScreen() {
    * Opens the Phantom documentation in the browser
    */
   const openDocs = () => {
-    Linking.openURL('https://docs.phantom.app');
-  };
+    Linking.openURL('https://docs.phantom.app')
+  }
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require('@/assets/default.png')}
-        style={styles.logo}
-        resizeMode="contain"
-      />
+      <Image source={require('@/assets/default.png')} style={styles.logo} resizeMode="contain" />
       <Text style={styles.title}>Phantom Embedded Wallet</Text>
       <Text style={styles.subtitle}>
-        Starter kit for integrating the Phantom React Native SDK with embedded wallets.
-        Authenticate to create or connect your Phantom wallet and view balances instantly.
+        Starter kit for integrating the Phantom React Native SDK with embedded wallets. Authenticate to create or
+        connect your Phantom wallet and view balances instantly.
       </Text>
       <ConnectButton />
       <TouchableOpacity style={styles.linkButton} onPress={openDocs}>
         <Text style={styles.linkText}>View Documentation →</Text>
       </TouchableOpacity>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -71,4 +67,4 @@ const styles = StyleSheet.create({
     color: colors.brand,
     fontWeight: '600',
   },
-});
+})

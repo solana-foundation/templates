@@ -85,10 +85,7 @@ export function WalletInfo() {
         <Text style={styles.subtitle}>Embedded Phantom Wallet</Text>
 
         {/* Account Settings Button - Opens SDK Modal */}
-        <TouchableOpacity
-          style={styles.manageButton}
-          onPress={() => modal.open()}
-        >
+        <TouchableOpacity style={styles.manageButton} onPress={() => modal.open()}>
           <Text style={styles.manageButtonText}>Account Settings</Text>
         </TouchableOpacity>
 
