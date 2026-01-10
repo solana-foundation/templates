@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Vite + vanilla JavaScript template for integrating Phantom's embedded user wallets on Solana",
   "displayName": "Phantom Embedded JS",
-  "usecase": "Wallet",
+  "usecase": "Auth",
   "keywords": [
     "solana",
     "phantom",
