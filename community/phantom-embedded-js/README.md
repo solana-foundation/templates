@@ -205,7 +205,7 @@ pnpm preview
 
 - [Phantom Browser SDK Docs](https://docs.phantom.com/sdks/browser-sdk) - Official SDK documentation
 - [Phantom Developer Portal](https://phantom.com/portal) - Get your App ID
-- [Solana Web3.js Docs](https://solana-labs.github.io/solana-web3.js/) - Solana JavaScript SDK
+- [Solana Web3.js Docs](https://github.com/solana-foundation/solana-web3.js) - Solana JavaScript SDK
 - [Solana Cookbook](https://solanacookbook.com/) - Development recipes
 
 ## Support
