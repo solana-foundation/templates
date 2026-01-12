@@ -17,7 +17,7 @@ A modern, production-ready starter template for building Solana dApps with the [
 - [Next.js](https://nextjs.org/) - React framework
 - [@phantom/react-sdk](https://docs.phantom.com/sdks/react-sdk) - Phantom Connect SDK for React
 - [@phantom/browser-sdk](https://docs.phantom.com/sdks/browser-sdk) - Phantom Connect SDK core
-- [@solana/web3.js](https://solana-labs.github.io/solana-web3.js/) - Solana JavaScript API
+- [@solana/web3.js](https://github.com/solana-foundation/solana-web3.js) - Solana JavaScript API
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
 
 ## Getting Started
