@@ -1,10 +1,11 @@
 /**
- * Facilitator Context - Gill template pattern
+ * Facilitator Context - Modern @solana/kit pattern
  * Centralized dependency injection for the facilitator
  */
 
-import { createKeyPairSignerFromBytes } from 'gill';
-import type { Address, KeyPairSigner } from 'gill';
+import { createKeyPairSignerFromBytes } from '@solana/kit';
+import type { KeyPairSigner } from '@solana/signers';
+import type { Address } from '@solana/addresses';
 import bs58 from 'bs58';
 import { SolanaUtils } from './solana-utils.js';
 import { NonceDatabase } from './nonce-database.js';

@@ -3,7 +3,7 @@
   "displayName": "x402 Express Server",
   "usecase": "Payments",
   "version": "1.0.0",
-  "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK",
+  "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit",
   "main": "dist/facilitator/index.js",
   "type": "module",
   "engines": {
@@ -47,18 +47,18 @@
     "payment",
     "protocol",
     "blockchain",
-    "typescript",
-    "gill"
+    "typescript"
   ],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@solana/web3.js": "^1.87.6",
+    "@solana/client": "^1.1.0",
+    "@solana/kit": "^5.0.0",
     "bs58": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "gill": "^0.11.0",
+    "gill": "^0.14.0",
     "helmet": "^7.1.0",
     "sqlite3": "^5.1.7",
     "tweetnacl": "^1.0.3",
