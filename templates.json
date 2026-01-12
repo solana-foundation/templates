@@ -241,20 +241,19 @@
     "path": "community",
     "templates": [
       {
-        "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK",
-        "id": "gh:solana-foundation/templates/community/gill-node-solanax402",
-        "image": "community/gill-node-solanax402/og-image.png",
+        "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit",
+        "id": "gh:solana-foundation/templates/community/kit-node-solanax402",
+        "image": "community/kit-node-solanax402/og-image.png",
         "keywords": [
           "solana",
           "x402",
           "payment",
           "protocol",
           "blockchain",
-          "typescript",
-          "gill"
+          "typescript"
         ],
-        "name": "gill-node-solanax402",
-        "path": "community/gill-node-solanax402",
+        "name": "kit-node-solanax402",
+        "path": "community/kit-node-solanax402",
         "displayName": "x402 Express Server",
         "usecase": "Payments"
       },
@@ -312,7 +311,7 @@
         "name": "phantom-embedded-js",
         "path": "community/phantom-embedded-js",
         "displayName": "Phantom Embedded JS",
-        "usecase": "Auth"
+        "usecase": "Wallet"
       },
       {
         "description": "Next.js template with Phantom Embedded Wallet SDK for seamless Web3 authentication",
