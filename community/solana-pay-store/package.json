@@ -38,6 +38,7 @@
     "@solana/react-hooks": "^1.1.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.24.12",
     "jotai": "^2.14.0",
     "lucide-react": "^0.544.0",
     "next": "^16.1.1",

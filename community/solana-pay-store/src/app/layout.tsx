@@ -4,6 +4,7 @@ import { AppProviders } from '@/components/app-providers'
 import { CartProvider } from '@/store/providers/cart-provider'
 import { Navbar } from '@/components/navbar'
 import { Toaster } from 'sonner'
+import NoiseBackground from '@/components/noise-background'
 
 export const metadata: Metadata = {
   title: 'Solana Pay Store',
@@ -14,10 +15,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`antialiased`}>
+        <NoiseBackground />
         <AppProviders>
           <CartProvider>
             <Navbar />
-            <main className="min-h-screen">{children}</main>
+            <main className="">{children}</main>
             <Toaster />
           </CartProvider>
         </AppProviders>
