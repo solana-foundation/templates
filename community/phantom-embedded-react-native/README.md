@@ -2,8 +2,6 @@
 
 A minimal Expo starter template for integrating Phantom's embedded user wallets on Solana for mobile apps.
 
-![Phantom Embedded Wallet](https://phantom.app/img/logo.svg)
-
 ## ✨ Features
 
 - 🔐 **Phantom Connect Authentication** - Secure OAuth-based wallet connection
@@ -51,8 +49,8 @@ Edit `.env` and add your Phantom App ID:
 
 ```env
 EXPO_PUBLIC_PHANTOM_APP_ID=your-app-id-here
-EXPO_PUBLIC_APP_SCHEME=phantomwallet
-EXPO_PUBLIC_SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
+EXPO_PUBLIC_APP_SCHEME=your-app-scheme
+EXPO_PUBLIC_SOLANA_RPC_URL=your-prefered-rpc
 ```
 
 ### 3. Get Your Phantom App ID
@@ -362,7 +360,7 @@ const short = truncateAddress('5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp...', 4)
 - [Phantom React Native SDK Docs](https://docs.phantom.com/sdks/react-native-sdk)
 - [Expo Development Builds](https://docs.expo.dev/develop/development-builds/introduction/)
 - [Expo Router Docs](https://docs.expo.dev/router/introduction/)
-- [Solana Web3.js Docs](https://solana-labs.github.io/solana-web3.js/)
+- [Solana Web3.js Docs](https://github.com/solana-foundation/solana-web3.js)
 
 ## 💬 Support
 
