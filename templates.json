@@ -312,7 +312,7 @@
         "name": "phantom-embedded-js",
         "path": "community/phantom-embedded-js",
         "displayName": "Phantom Embedded JS",
-        "usecase": "Wallet"
+        "usecase": "Auth"
       },
       {
         "description": "Next.js template with Phantom Embedded Wallet SDK for seamless Web3 authentication",
