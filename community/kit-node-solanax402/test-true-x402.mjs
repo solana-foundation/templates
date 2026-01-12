@@ -32,7 +32,7 @@ import {
   address,
   lamports,
 } from '@solana/kit';
-import { getTransferSolInstruction } from 'gill/programs';
+import { getTransferSolInstruction } from '@solana-program/system';
 
 // Load environment variables
 config();
