@@ -142,6 +142,30 @@ Templates maintained by the Solana community
 
 `x402` `moneymq` `payments` `micropayments` `solana` `api-monetization` `kora` `facilitator` `typescript`
 
+### [phantom-embedded-js](community/phantom-embedded-js)
+
+`gh:solana-foundation/templates/community/phantom-embedded-js`
+
+> Vite + vanilla JavaScript template for integrating Phantom's embedded user wallets on Solana
+
+`solana` `phantom` `wallet` `embedded-wallet` `javascript` `typescript` `vite` `oauth` `social-login`
+
+### [phantom-embedded-react](community/phantom-embedded-react)
+
+`gh:solana-foundation/templates/community/phantom-embedded-react`
+
+> Next.js template with Phantom Embedded Wallet SDK for seamless Web3 authentication
+
+`solana` `phantom` `embedded-wallet` `nextjs` `react` `typescript` `tailwind` `web3` `authentication`
+
+### [phantom-embedded-react-native-starter](community/phantom-embedded-react-native)
+
+`gh:solana-foundation/templates/community/phantom-embedded-react-native`
+
+> A minimal Expo starter template for integrating Phantom's embedded user wallets on Solana for mobile apps
+
+`solana` `phantom` `wallet` `embedded-wallet` `react-native` `expo` `mobile` `typescript` `oauth` `authentication`
+
 ### [solana-chatgpt-kit](community/solana-chatgpt-kit)
 
 `gh:solana-foundation/templates/community/solana-chatgpt-kit`

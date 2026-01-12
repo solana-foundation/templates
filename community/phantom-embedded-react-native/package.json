@@ -1,0 +1,92 @@
+{
+  "name": "phantom-embedded-react-native-starter",
+  "version": "1.0.0",
+  "description": "A minimal Expo starter template for integrating Phantom's embedded user wallets on Solana for mobile apps",
+  "displayName": "Phantom Embedded React Native Starter",
+  "usecase": "Mobile",
+  "keywords": [
+    "solana",
+    "phantom",
+    "wallet",
+    "embedded-wallet",
+    "react-native",
+    "expo",
+    "mobile",
+    "typescript",
+    "oauth",
+    "authentication"
+  ],
+  "author": "Phantom",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phantom/phantom-embedded-react-native-starter"
+  },
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "prebuild": "expo prebuild"
+  },
+  "create-solana-dapp": {
+    "instructions": [
+      "🎉 Your Phantom Embedded React Native starter is ready!",
+      "",
+      "📋 Next steps:",
+      "+1. Copy .env.example to .env and add your Phantom App ID",
+      "+2. Get your App ID at https://phantom.app/developer",
+      "+3. Read the docs at https://docs.phantom.com/sdks/react-native-sdk",
+      "",
+      "🚀 Start developing:",
+      "+{pm} start",
+      "",
+      "⚠️ Important: You need a development build to test:",
+      "+{pm} run android  # or {pm} run ios",
+      "",
+      "📚 Learn more:",
+      "- React Native SDK Docs: https://docs.phantom.com/sdks/react-native-sdk",
+      "- Expo Development Builds: https://docs.expo.dev/develop/development-builds/introduction/",
+      "- Get Support: https://discord.gg/phantom"
+    ],
+    "rename": {
+      "phantom-embedded-react-native-starter": {
+        "to": "{{name}}",
+        "paths": [
+          "app",
+          "components",
+          "lib",
+          "package.json",
+          "README.md",
+          "app.json"
+        ]
+      }
+    }
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.28.4",
+    "@expo/vector-icons": "^15.0.3",
+    "@phantom/react-native-sdk": "1.0.0-beta.26",
+    "@solana/web3.js": "^1.95.0",
+    "expo": "~54.0.0",
+    "expo-auth-session": "~6.2.1",
+    "expo-clipboard": "~7.1.5",
+    "expo-router": "~5.1.7",
+    "expo-secure-store": "~14.2.4",
+    "expo-web-browser": "~14.2.0",
+    "react": "19.2.1",
+    "react-native": "0.79.6",
+    "react-native-get-random-values": "~1.11.0",
+    "react-native-safe-area-context": "5.4.0",
+    "react-native-screens": "~4.11.1",
+    "react-native-svg": "15.12.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "@types/node": "^24.10.0",
+    "@types/react": "~19.0.14",
+    "typescript": "~5.8.3"
+  },
+  "packageManager": "pnpm@10.20.0"
+}
