@@ -118,6 +118,14 @@ Templates using @solana/web3.js (legacy)
 
 Templates maintained by the Solana community
 
+### [commerce-kit-store](community/commerce-kit-store)
+
+`gh:solana-foundation/templates/community/commerce-kit-store`
+
+> Next.js store template using @solana-commerce/headless and @solana/kit
+
+`nextjs` `react` `@solana/kit` `@solana-commerce/headless` `solana-pay` `tailwind` `typescript`
+
 ### [kit-node-solanax402](community/kit-node-solanax402)
 
 `gh:solana-foundation/templates/community/kit-node-solanax402`
@@ -173,14 +181,6 @@ Templates maintained by the Solana community
 > ChatGPT app with Solana features - Swaps, transfers, staking and data query via natural language. Browser wallets + x402 payments or private key mode
 
 `solana` `chatgpt` `openai` `mcp` `jupiter` `x402` `payments` `swap` `wallet` `defi` `staking` `nextjs` `typescript` `spl-token` `sns`
-
-### [solana-pay-store](community/solana-pay-store)
-
-`gh:solana-foundation/templates/community/solana-pay-store`
-
-> Next.js store template using @solana-commerce/headless and @solana/kit
-
-`nextjs` `react` `@solana/kit` `@solana-commerce/headless` `solana-pay` `tailwind` `typescript`
 
 ### [supabase-auth](community/supabase-auth)
 
