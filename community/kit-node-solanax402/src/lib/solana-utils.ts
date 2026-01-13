@@ -1,10 +1,22 @@
 /**
- * Solana utilities using Gill SDK
+ * Solana utilities using @solana/kit
  * Handles Solana operations, signatures, and transactions
  */
 
-import { createSolanaRpc, createSolanaRpcSubscriptions, address } from 'gill';
-import type { Address } from 'gill';
+import {
+  createSolanaRpc,
+  createSolanaRpcSubscriptions,
+  createKeyPairSignerFromBytes,
+  signTransaction,
+  sendTransactionWithoutConfirmingFactory,
+  getSignatureFromTransaction,
+  assertIsTransactionWithinSizeLimit,
+  getBase64Codec,
+} from '@solana/kit';
+import type { Rpc, RpcSubscriptions, SolanaRpcApi, SolanaRpcSubscriptionsApi } from '@solana/kit';
+import { getTransactionDecoder } from '@solana/transactions';
+import { address } from '@solana/addresses';
+import type { Address } from '@solana/addresses';
 import { SignatureVerificationError } from '../errors/index.js';
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
@@ -38,15 +50,15 @@ export interface X402SOLPaymentTransactionParams {
 }
 
 export class SolanaUtils {
-  private rpc: ReturnType<typeof createSolanaRpc>;
-  private rpcSubscriptions?: ReturnType<typeof createSolanaRpcSubscriptions>;
-  private rpcUrl: string;
+  private rpc: Rpc<SolanaRpcApi>;
+  private rpcSubscriptions?: RpcSubscriptions<SolanaRpcSubscriptionsApi>;
 
   constructor(config: SolanaUtilsConfig) {
-    this.rpcUrl = config.rpcEndpoint;
-    this.rpc = createSolanaRpc(config.rpcEndpoint);
+    this.rpc = createSolanaRpc(config.rpcEndpoint) as Rpc<SolanaRpcApi>;
     if (config.rpcSubscriptionsEndpoint) {
-      this.rpcSubscriptions = createSolanaRpcSubscriptions(config.rpcSubscriptionsEndpoint);
+      this.rpcSubscriptions = createSolanaRpcSubscriptions(
+        config.rpcSubscriptionsEndpoint
+      ) as RpcSubscriptions<SolanaRpcSubscriptionsApi>;
     }
   }
 
@@ -56,8 +68,8 @@ export class SolanaUtils {
   async getSOLBalance(publicKey: string): Promise<bigint> {
     try {
       const addr = address(publicKey);
-      const balance = await this.rpc.getBalance(addr).send();
-      return balance.value;
+      const response = await this.rpc.getBalance(addr).send();
+      return response.value;
     } catch (error) {
       console.error('Error getting SOL balance:', error);
       return BigInt(0);
@@ -180,7 +192,7 @@ export class SolanaUtils {
    * Client signs the transaction, facilitator adds signature as fee payer.
    * This achieves instant on-chain settlement with NO debt tracking.
    * @param facilitatorPrivateKey - Facilitator private key in base58 format
-   * @param serializedTransaction - Base64-encoded transaction signed by client
+   * @param serializedTransaction - Base64-encoded serialized transaction signed by client
    * @returns Transaction signature
    */
   async submitSponsoredTransaction(facilitatorPrivateKey: string, serializedTransaction: string): Promise<string> {
@@ -190,24 +202,21 @@ export class SolanaUtils {
       console.log('  Facilitator will add signature as fee payer (pays gas)');
       console.log();
 
-      // Import @solana/web3.js for transaction handling
-      const { Connection, Transaction, Keypair } = await import('@solana/web3.js');
-
-      const connection = new Connection(this.rpcUrl, 'confirmed');
-
-      // Create Keypair from private key
+      // Create facilitator keypair signer
       const secretKey = bs58.decode(facilitatorPrivateKey);
-      const facilitatorKeypair = Keypair.fromSecretKey(secretKey);
+      const facilitatorSigner = await createKeyPairSignerFromBytes(secretKey);
 
-      console.log('  Facilitator (fee payer):', facilitatorKeypair.publicKey.toString());
+      console.log('  Facilitator (fee payer):', facilitatorSigner.address);
+
+      const base64Codec = getBase64Codec();
+      const transactionBytes = base64Codec.encode(serializedTransaction);
 
       // Deserialize the transaction
-      const transactionBuffer = Buffer.from(serializedTransaction, 'base64');
-      const transaction = Transaction.from(transactionBuffer);
+      const transactionDecoder = getTransactionDecoder();
+      const transaction = transactionDecoder.decode(transactionBytes);
 
       console.log('  Transaction details:');
-      console.log('     - Instructions:', transaction.instructions.length);
-      console.log('     - Client signature:', transaction.signatures[0] ? 'Present' : 'Missing');
+      console.log('     - Signatures:', transaction.signatures ? Object.keys(transaction.signatures).length : 0);
       console.log();
       console.log('  How TRUE x402 works:');
       console.log('     - Client signs: Authorizes their SOL to move');
@@ -216,23 +225,23 @@ export class SolanaUtils {
       console.log("     - Client's funds -> Merchant (instant settlement)");
       console.log();
 
-      console.log('  Facilitator signing as fee payer and sending to Solana devnet...');
+      console.log('  Facilitator signing as fee payer...');
 
       // Add facilitator's signature (fee payer) to the already client-signed transaction
-      transaction.partialSign(facilitatorKeypair);
+      const signedTransaction = await signTransaction([facilitatorSigner], transaction);
 
       console.log('  Both signatures present (client + facilitator)');
       console.log('  Sending to Solana network...');
 
-      // Send the transaction (all signatures are already in place)
-      const rawTransaction = transaction.serialize();
-      const signature = await connection.sendRawTransaction(rawTransaction, {
-        skipPreflight: false,
-        preflightCommitment: 'confirmed',
-      });
+      assertIsTransactionWithinSizeLimit(signedTransaction);
+
+      const signature = getSignatureFromTransaction(signedTransaction);
+
+      const sendTx = sendTransactionWithoutConfirmingFactory({ rpc: this.rpc });
+      await sendTx(signedTransaction, { commitment: 'confirmed' });
 
       // Wait for confirmation
-      await connection.confirmTransaction(signature, 'confirmed');
+      await this.waitForConfirmation(signature);
 
       console.log('  ATOMIC SETTLEMENT COMPLETE!');
       console.log('     Signature:', signature);
@@ -247,5 +256,30 @@ export class SolanaUtils {
         `Failed to submit sponsored transaction: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
+  }
+
+  /**
+   * Wait for transaction confirmation by polling getSignatureStatuses
+   */
+  private async waitForConfirmation(signature: string, maxRetries = 30, intervalMs = 1000): Promise<void> {
+    for (let i = 0; i < maxRetries; i++) {
+      const response = await this.rpc
+        .getSignatureStatuses([signature as Parameters<SolanaRpcApi['getSignatureStatuses']>[0][0]])
+        .send();
+      const status = response.value[0];
+
+      if (status !== null) {
+        if (status.err) {
+          throw new Error(`Transaction failed: ${JSON.stringify(status.err)}`);
+        }
+        if (status.confirmationStatus === 'confirmed' || status.confirmationStatus === 'finalized') {
+          return;
+        }
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, intervalMs));
+    }
+
+    throw new Error(`Transaction confirmation timeout after ${maxRetries * intervalMs}ms`);
   }
 }

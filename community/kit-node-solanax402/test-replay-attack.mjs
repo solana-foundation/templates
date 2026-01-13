@@ -12,7 +12,19 @@ import crypto from 'crypto';
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
 import { config } from 'dotenv';
-import { Connection, PublicKey, SystemProgram, Transaction, Keypair } from '@solana/web3.js';
+import {
+  createSolanaRpc,
+  createKeyPairSignerFromBytes,
+  createTransactionMessage,
+  setTransactionMessageFeePayer,
+  setTransactionMessageLifetimeUsingBlockhash,
+  appendTransactionMessageInstruction,
+  signTransaction,
+  getBase64EncodedWireTransaction,
+  address,
+  lamports,
+} from '@solana/kit';
+import { getTransferSolInstruction } from '@solana-program/system';
 
 // Load environment variables
 config();
@@ -24,10 +36,13 @@ const FACILITATOR_PUBLIC_KEY = process.env.FACILITATOR_PUBLIC_KEY || '';
 const MERCHANT_ADDRESS = process.env.MERCHANT_SOLANA_ADDRESS || '';
 const RPC_URL = process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com';
 
+// Create RPC client
+const rpc = createSolanaRpc(RPC_URL);
+
 // Load client keypair
 const keypairData = JSON.parse(fs.readFileSync('./test-client-keypair.json', 'utf-8'));
 const secretKeyBytes = bs58.decode(keypairData.secretKey);
-const clientKeypair = Keypair.fromSecretKey(secretKeyBytes);
+const clientSigner = await createKeyPairSignerFromBytes(secretKeyBytes);
 
 console.log(' Replay Attack Test\n');
 console.log('='.repeat(70));
@@ -82,38 +97,35 @@ async function createPaymentRequest(nonce) {
 
   const messageToSign = JSON.stringify(structuredData);
   const messageBytes = Buffer.from(messageToSign, 'utf-8');
-  const authSignature = nacl.sign.detached(messageBytes, clientKeypair.secretKey);
+  const secretKey = bs58.decode(keypairData.secretKey);
+  const authSignature = nacl.sign.detached(messageBytes, secretKey);
 
-  // Create Solana transaction
-  const connection = new Connection(RPC_URL, 'confirmed');
-  const { blockhash } = await connection.getLatestBlockhash('confirmed');
+  // Create Solana transaction using @solana/kit
+  const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();
 
-  const transaction = new Transaction({
-    feePayer: new PublicKey(FACILITATOR_PUBLIC_KEY),
-    recentBlockhash: blockhash,
+  // Create transfer instruction
+  const transferInstruction = getTransferSolInstruction({
+    source: clientSigner.address,
+    destination: address(MERCHANT_ADDRESS),
+    amount: lamports(BigInt(10000000)),
   });
 
-  transaction.add(
-    SystemProgram.transfer({
-      fromPubkey: clientKeypair.publicKey,
-      toPubkey: new PublicKey(MERCHANT_ADDRESS),
-      lamports: 10000000,
-    })
-  );
+  // Create transaction message
+  let transactionMessage = createTransactionMessage({ version: 0 });
+  transactionMessage = setTransactionMessageFeePayer(address(FACILITATOR_PUBLIC_KEY), transactionMessage);
+  transactionMessage = setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, transactionMessage);
+  transactionMessage = appendTransactionMessageInstruction(transferInstruction, transactionMessage);
 
-  transaction.sign(clientKeypair);
+  // Sign the transaction
+  const signedTransaction = await signTransaction([clientSigner], transactionMessage);
 
-  const serializedTransaction = transaction
-    .serialize({
-      requireAllSignatures: false,
-      verifySignatures: true,
-    })
-    .toString('base64');
+  // Serialize the transaction
+  const serializedTransaction = getBase64EncodedWireTransaction(signedTransaction);
 
   return {
     payload: payload,
     signature: bs58.encode(authSignature),
-    clientPublicKey: clientKeypair.publicKey.toString(),
+    clientPublicKey: clientSigner.address,
     signedTransaction: serializedTransaction,
   };
 }

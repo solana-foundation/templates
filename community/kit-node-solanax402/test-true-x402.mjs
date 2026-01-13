@@ -20,7 +20,19 @@ import crypto from 'crypto';
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
 import { config } from 'dotenv';
-import { Connection, PublicKey, SystemProgram, Transaction, Keypair } from '@solana/web3.js';
+import {
+  createSolanaRpc,
+  createKeyPairSignerFromBytes,
+  createTransactionMessage,
+  setTransactionMessageFeePayer,
+  setTransactionMessageLifetimeUsingBlockhash,
+  appendTransactionMessageInstruction,
+  signTransaction,
+  getBase64EncodedWireTransaction,
+  address,
+  lamports,
+} from '@solana/kit';
+import { getTransferSolInstruction } from '@solana-program/system';
 
 // Load environment variables
 config();
@@ -32,13 +44,16 @@ const FACILITATOR_PUBLIC_KEY = process.env.FACILITATOR_PUBLIC_KEY || ''; // Fee 
 const MERCHANT_ADDRESS = process.env.MERCHANT_SOLANA_ADDRESS || ''; // Payment recipient
 const RPC_URL = process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com';
 
+// Create RPC client
+const rpc = createSolanaRpc(RPC_URL);
+
 // Load client keypair
 const keypairData = JSON.parse(fs.readFileSync('./test-client-keypair.json', 'utf-8'));
 const secretKeyBytes = bs58.decode(keypairData.secretKey);
-const clientKeypair = Keypair.fromSecretKey(secretKeyBytes);
+const clientSigner = await createKeyPairSignerFromBytes(secretKeyBytes);
 
 console.log(' Loaded client keypair');
-console.log(' Client Public Key:', clientKeypair.publicKey.toString());
+console.log(' Client Public Key:', clientSigner.address);
 console.log();
 
 console.log(' Starting TRUE x402 Protocol Test (Instant Finality)\n');
@@ -100,43 +115,42 @@ async function createPaymentWithSponsoredTransaction(amount, recipient, resource
   console.log('  Client signing authorization payload (Ed25519)...');
   const messageToSign = JSON.stringify(structuredData);
   const messageBytes = Buffer.from(messageToSign, 'utf-8');
-  const authSignature = nacl.sign.detached(messageBytes, clientKeypair.secretKey);
+  const secretKey = bs58.decode(keypairData.secretKey);
+  const authSignature = nacl.sign.detached(messageBytes, secretKey);
   console.log(' Authorization signed');
   console.log();
 
   // 4. Create actual Solana transaction (TRUE x402 INSTANT FINALITY!)
   console.log(' Client creating Solana transaction...');
-  const connection = new Connection(RPC_URL, 'confirmed');
 
   // Get recent blockhash
-  const { blockhash } = await connection.getLatestBlockhash('confirmed');
+  const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();
 
-  // Create transaction
-  const transaction = new Transaction({
-    feePayer: new PublicKey(FACILITATOR_PUBLIC_KEY), // Facilitator pays gas!
-    recentBlockhash: blockhash,
+  // Create transfer instruction: Client → Merchant
+  const transferInstruction = getTransferSolInstruction({
+    source: clientSigner.address,
+    destination: address(recipient),
+    amount: lamports(BigInt(amount)),
   });
 
-  // Add transfer instruction: Client → Merchant
-  transaction.add(
-    SystemProgram.transfer({
-      fromPubkey: clientKeypair.publicKey, // CLIENT'S SOL WILL MOVE!
-      toPubkey: new PublicKey(recipient), // Merchant receives
-      lamports: Number(amount),
-    })
-  );
+  // Create transaction message
+  let transactionMessage = createTransactionMessage({ version: 0 });
+
+  // Set fee payer (facilitator will pay gas)
+  transactionMessage = setTransactionMessageFeePayer(address(FACILITATOR_PUBLIC_KEY), transactionMessage);
+
+  // Set lifetime (blockhash)
+  transactionMessage = setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, transactionMessage);
+
+  // Add transfer instruction
+  transactionMessage = appendTransactionMessageInstruction(transferInstruction, transactionMessage);
 
   // 5. Client signs the transaction (authorizes their SOL to move)
   console.log('  Client signing transaction (authorizing SOL transfer)...');
-  transaction.sign(clientKeypair);
+  const signedTransaction = await signTransaction([clientSigner], transactionMessage);
 
   // 6. Serialize the transaction (includes client's signature)
-  const serializedTransaction = transaction
-    .serialize({
-      requireAllSignatures: false, // Facilitator hasn't signed yet
-      verifySignatures: true, // Verify client's signature is valid
-    })
-    .toString('base64');
+  const serializedTransaction = getBase64EncodedWireTransaction(signedTransaction);
 
   console.log(' Transaction signed and serialized');
   console.log();
@@ -144,7 +158,7 @@ async function createPaymentWithSponsoredTransaction(amount, recipient, resource
   return {
     payload: payload,
     signature: bs58.encode(authSignature),
-    clientPublicKey: clientKeypair.publicKey.toString(),
+    clientPublicKey: clientSigner.address,
     signedTransaction: serializedTransaction, // THIS TRIGGERS SPONSORED TX = INSTANT FINALITY!
   };
 }
@@ -196,7 +210,7 @@ async function runTest() {
 
     console.log('Payment Request Created (TRUE x402 Instant Finality):');
     console.log('  Amount: 0.01 SOL (10,000,000 lamports)');
-    console.log('  From (client):', clientKeypair.publicKey.toString());
+    console.log('  From (client):', clientSigner.address);
     console.log('  To (merchant):', MERCHANT_ADDRESS);
     console.log('  Fee Payer (facilitator):', FACILITATOR_PUBLIC_KEY);
     console.log('  Nonce:', paymentRequest.payload.nonce.substring(0, 16) + '...');
