@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import Image from "next/image";
+import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 export default function BouncingImage({
   src,
@@ -11,12 +11,12 @@ export default function BouncingImage({
   animate = { y: [0, -10, 0] },
   duration = 4,
 }: {
-  src: string;
-  className: string;
-  width?: number;
-  height?: number;
-  animate?: { y: number[]; x?: number[] };
-  duration?: number;
+  src: string
+  className: string
+  width?: number
+  height?: number
+  animate?: { y: number[]; x?: number[] }
+  duration?: number
 }) {
   return (
     <motion.div
@@ -24,11 +24,11 @@ export default function BouncingImage({
       animate={animate}
       transition={{
         duration: duration,
-        ease: "easeInOut",
+        ease: 'easeInOut',
         repeat: Number.POSITIVE_INFINITY,
       }}
     >
       <Image src={src} alt="logo" width={width} height={height} />
     </motion.div>
-  );
+  )
 }
