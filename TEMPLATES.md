@@ -118,13 +118,13 @@ Templates using @solana/web3.js (legacy)
 
 Templates maintained by the Solana community
 
-### [gill-node-solanax402](community/gill-node-solanax402)
+### [kit-node-solanax402](community/kit-node-solanax402)
 
-`gh:solana-foundation/templates/community/gill-node-solanax402`
+`gh:solana-foundation/templates/community/kit-node-solanax402`
 
-> x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK
+> x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit
 
-`solana` `x402` `payment` `protocol` `blockchain` `typescript` `gill`
+`solana` `x402` `payment` `protocol` `blockchain` `typescript`
 
 ### [merkle-airdrop](community/merkle-airdrop)
 
@@ -141,6 +141,30 @@ Templates maintained by the Solana community
 > Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana
 
 `x402` `moneymq` `payments` `micropayments` `solana` `api-monetization` `kora` `facilitator` `typescript`
+
+### [phantom-embedded-js](community/phantom-embedded-js)
+
+`gh:solana-foundation/templates/community/phantom-embedded-js`
+
+> Vite + vanilla JavaScript template for integrating Phantom's embedded user wallets on Solana
+
+`solana` `phantom` `wallet` `embedded-wallet` `javascript` `typescript` `vite` `oauth` `social-login`
+
+### [phantom-embedded-react](community/phantom-embedded-react)
+
+`gh:solana-foundation/templates/community/phantom-embedded-react`
+
+> Next.js template with Phantom Embedded Wallet SDK for seamless Web3 authentication
+
+`solana` `phantom` `embedded-wallet` `nextjs` `react` `typescript` `tailwind` `web3` `authentication`
+
+### [phantom-embedded-react-native-starter](community/phantom-embedded-react-native)
+
+`gh:solana-foundation/templates/community/phantom-embedded-react-native`
+
+> A minimal Expo starter template for integrating Phantom's embedded user wallets on Solana for mobile apps
+
+`solana` `phantom` `wallet` `embedded-wallet` `react-native` `expo` `mobile` `typescript` `oauth` `authentication`
 
 ### [solana-chatgpt-kit](community/solana-chatgpt-kit)
 

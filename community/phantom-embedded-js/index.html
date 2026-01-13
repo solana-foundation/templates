@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phantom Embedded Wallet Demo</title>
+    <meta name="description" content="Connect your Phantom wallet and view your Solana account" />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Header -->
+      <header>
+        <div class="header-content">
+          <h1>Phantom Embedded Wallet Starter</h1>
+          <p class="subtitle">A minimal vanilla JavaScript template for building with Phantom Browser SDK</p>
+        </div>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path
+              d="M12 18c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6zm0-10c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4zM13 3h-2v3h2V3zm0 15h-2v3h2v-3zM6 11H3v2h3v-2zm15 0h-3v2h3v-2zM7.05 6.05L5.64 4.64 4.22 6.05l1.41 1.41 1.42-1.41zM18.36 17.36l-1.41-1.41-1.41 1.41 1.41 1.41 1.41-1.41zM17.36 5.64l1.41 1.41 1.41-1.41-1.41-1.41-1.41 1.41zM6.05 16.95l1.41 1.41 1.41-1.41-1.41-1.41-1.41 1.41z"
+            />
+          </svg>
+          <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display: none">
+            <path
+              d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"
+            />
+          </svg>
+        </button>
+      </header>
+
+      <!-- Main Content -->
+      <main>
+        <!-- Connection Section -->
+        <div id="connect-section" class="connect-section">
+          <div class="connect-card">
+            <div class="logo-container">
+              <img src="/Phantom_SVG_Icon.svg" alt="Phantom Logo" class="phantom-logo" width="80" height="80" />
+            </div>
+            <p class="description">
+              This starter template demonstrates Phantom Connect authentication with social login. Connect your wallet
+              to view your Solana account balance and address.
+            </p>
+            <p class="provider-label">Choose your sign-in method:</p>
+
+            <div class="connect-buttons">
+              <button id="connect-google-btn" class="provider-btn google-btn">
+                <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    fill="#4285F4"
+                    d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"
+                  />
+                </svg>
+                <span>Continue with Google</span>
+              </button>
+
+              <button id="connect-apple-btn" class="provider-btn apple-btn">
+                <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                  <path
+                    d="M14.94 13.52c-.24.54-.51 1.05-.81 1.52-.42.66-.76 1.12-1.03 1.38-.42.41-.87.62-1.35.63-.35 0-.76-.1-1.25-.3-.48-.2-.93-.3-1.33-.3-.43 0-.89.1-1.38.3-.49.21-.89.31-1.19.33-.46.03-.93-.18-1.39-.63-.3-.29-.66-.76-1.09-1.42-.47-.71-.85-1.53-1.15-2.47-.32-1.01-.48-1.99-.48-2.93 0-1.09.23-2.02.7-2.81.37-.62.86-1.11 1.48-1.47.62-.36 1.29-.54 2.01-.55.39 0 .91.12 1.55.36.64.23 1.05.35 1.23.35.14 0 .61-.14 1.42-.42.76-.26 1.41-.37 1.93-.33 1.43.12 2.5.69 3.22 1.73-1.28.77-1.91 1.85-1.89 3.24.02 1.08.4 1.98 1.14 2.69.34.33.71.58 1.13.76-.09.26-.19.51-.29.76zm-2.91-13.39c0 .85-.31 1.64-.93 2.38-.74.87-1.64 1.38-2.62 1.3-.01-.11-.02-.22-.02-.34 0-.81.35-1.68 1-2.4.32-.37.73-.67 1.23-.91.49-.23.96-.36 1.4-.4.01.12.01.24.01.37z"
+                  />
+                </svg>
+                <span>Continue with Apple</span>
+              </button>
+            </div>
+
+            <p id="error-message" class="error hidden"></p>
+          </div>
+        </div>
+
+        <!-- Account Section (hidden by default) -->
+        <div id="account-section" class="account-section hidden">
+          <div class="account-card">
+            <h2>Your Account</h2>
+
+            <!-- Wallet Address -->
+            <div class="info-section">
+              <label class="info-label">Wallet Address</label>
+              <div class="info-content address-row">
+                <span id="address" class="address-text"></span>
+                <button id="copy-btn" class="icon-btn" title="Copy address" aria-label="Copy address to clipboard">
+                  Copy
+                </button>
+              </div>
+            </div>
+
+            <!-- Balance -->
+            <div class="info-section">
+              <label class="info-label">Balance</label>
+              <div class="info-content balance-row">
+                <span id="balance" class="balance-text">Loading...</span>
+                <button id="refresh-btn" class="icon-btn" title="Refresh balance" aria-label="Refresh balance">
+                  Refresh
+                </button>
+              </div>
+            </div>
+
+            <!-- Disconnect Button -->
+            <div class="actions">
+              <button id="disconnect-btn" class="secondary-btn">Log out</button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer>
+        <div class="footer-content">
+          <p class="footer-title">Getting Started with This Template</p>
+          <p class="footer-description">
+            This is a minimal starter template built with vanilla JavaScript and Vite. Customize the UI, add features,
+            and build your Solana dApp with embedded wallet support.
+          </p>
+          <div class="footer-links">
+            <a href="https://docs.phantom.com/sdks/browser-sdk" target="_blank" rel="noopener noreferrer">
+              SDK Documentation
+            </a>
+            <span class="separator">•</span>
+            <a href="https://phantom.com/portal" target="_blank" rel="noopener noreferrer"> Get App ID </a>
+          </div>
+        </div>
+      </footer>
+
+      <!-- Loading Overlay -->
+      <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-content">
+          <div class="spinner"></div>
+          <p>Connecting...</p>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

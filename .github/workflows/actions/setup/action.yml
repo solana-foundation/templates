@@ -11,11 +11,57 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Setup Anchor
-      uses: metadaoproject/setup-anchor@v3.1
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Cache Cargo and AVM
+      uses: actions/cache@v4
       with:
-        anchor-version: '0.30.1'
-        solana-cli-version: '2.0.21'
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          ~/.avm/
+        key: ${{ runner.os }}-cargo-avm-0.32.1
+
+    - name: Install AVM
+      run: |
+        if ! command -v avm &> /dev/null; then
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
+        fi
+      shell: bash
+
+    - name: Install Anchor via AVM
+      run: |
+        avm install 0.32.1
+        avm use 0.32.1
+        echo "$HOME/.avm/bin" >> $GITHUB_PATH
+      shell: bash
+
+    - name: Cache Solana CLI
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/solana/
+          ~/.local/share/solana/
+        key: solana-cli-${{ runner.os }}-2.3.0
+
+    - name: Install Solana CLI
+      run: |
+        sh -c "$(curl -sSfL https://release.anza.xyz/v2.3.0/install)"
+        echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+      shell: bash
+
+    - name: Verify installations
+      run: |
+        anchor --version
+        solana --version
+      shell: bash
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
         node-version: ${{ inputs.node-version }}
 
     - name: Checkout repository
@@ -26,11 +72,6 @@ runs:
         git config --global user.email "ci-bot@example.com"
         git config --global user.name "CI Bot"
       shell: bash
-
-    - name: Install Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ inputs.node-version }}
 
     - name: Install package manager
       if: ${{  inputs.package-manager != 'npm' }}

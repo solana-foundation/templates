@@ -1,7 +1,10 @@
 [
-  "community/gill-node-solanax402",
+  "community/kit-node-solanax402",
   "community/merkle-airdrop",
   "community/moneymq-x402",
+  "community/phantom-embedded-js",
+  "community/phantom-embedded-react",
+  "community/phantom-embedded-react-native",
   "community/solana-chatgpt-kit",
   "community/solana-pay-store",
   "community/supabase-auth",

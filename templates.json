@@ -241,20 +241,19 @@
     "path": "community",
     "templates": [
       {
-        "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and Gill SDK",
-        "id": "gh:solana-foundation/templates/community/gill-node-solanax402",
-        "image": "community/gill-node-solanax402/og-image.png",
+        "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit",
+        "id": "gh:solana-foundation/templates/community/kit-node-solanax402",
+        "image": "community/kit-node-solanax402/og-image.png",
         "keywords": [
           "solana",
           "x402",
           "payment",
           "protocol",
           "blockchain",
-          "typescript",
-          "gill"
+          "typescript"
         ],
-        "name": "gill-node-solanax402",
-        "path": "community/gill-node-solanax402",
+        "name": "kit-node-solanax402",
+        "path": "community/kit-node-solanax402",
         "displayName": "x402 Express Server",
         "usecase": "Payments"
       },
@@ -293,6 +292,67 @@
         "path": "community/moneymq-x402",
         "displayName": "MoneyMQ x402 Demo",
         "usecase": "Payments"
+      },
+      {
+        "description": "Vite + vanilla JavaScript template for integrating Phantom's embedded user wallets on Solana",
+        "id": "gh:solana-foundation/templates/community/phantom-embedded-js",
+        "image": "community/phantom-embedded-js/og-image.png",
+        "keywords": [
+          "solana",
+          "phantom",
+          "wallet",
+          "embedded-wallet",
+          "javascript",
+          "typescript",
+          "vite",
+          "oauth",
+          "social-login"
+        ],
+        "name": "phantom-embedded-js",
+        "path": "community/phantom-embedded-js",
+        "displayName": "Phantom Embedded JS",
+        "usecase": "Auth"
+      },
+      {
+        "description": "Next.js template with Phantom Embedded Wallet SDK for seamless Web3 authentication",
+        "id": "gh:solana-foundation/templates/community/phantom-embedded-react",
+        "image": "community/phantom-embedded-react/og-image.png",
+        "keywords": [
+          "solana",
+          "phantom",
+          "embedded-wallet",
+          "nextjs",
+          "react",
+          "typescript",
+          "tailwind",
+          "web3",
+          "authentication"
+        ],
+        "name": "phantom-embedded-react",
+        "path": "community/phantom-embedded-react",
+        "displayName": "Phantom Embedded Wallet",
+        "usecase": "Starter"
+      },
+      {
+        "description": "A minimal Expo starter template for integrating Phantom's embedded user wallets on Solana for mobile apps",
+        "id": "gh:solana-foundation/templates/community/phantom-embedded-react-native",
+        "image": "community/phantom-embedded-react-native/og-image.png",
+        "keywords": [
+          "solana",
+          "phantom",
+          "wallet",
+          "embedded-wallet",
+          "react-native",
+          "expo",
+          "mobile",
+          "typescript",
+          "oauth",
+          "authentication"
+        ],
+        "name": "phantom-embedded-react-native-starter",
+        "path": "community/phantom-embedded-react-native",
+        "displayName": "Phantom Embedded React Native Starter",
+        "usecase": "Mobile"
       },
       {
         "description": "ChatGPT app with Solana features - Swaps, transfers, staking and data query via natural language. Browser wallets + x402 payments or private key mode",
