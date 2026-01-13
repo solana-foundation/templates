@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { ShoppingCart } from 'lucide-react'
-import { ThemeSelect } from '@/components/theme-select'
+
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/store/providers/cart-provider'
 import { useDrawer } from '@/store/hooks/use-drawer'
@@ -38,7 +38,7 @@ export function Navbar() {
                 )}
                 <span className="sr-only">Shopping cart</span>
               </Button>
-              <ThemeSelect />
+
               <WalletUI />
             </div>
           </div>

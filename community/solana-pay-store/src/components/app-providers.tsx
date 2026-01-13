@@ -13,7 +13,7 @@ const defaultConfig: SolanaClientConfig = {
 
 export function AppProviders({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+    <ThemeProvider attribute="class" forcedTheme="dark" disableTransitionOnChange>
       <SolanaProvider config={defaultConfig}>
         <DialogProvider>{children}</DialogProvider>
       </SolanaProvider>

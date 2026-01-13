@@ -4,7 +4,7 @@
       "id": "1",
       "name": "Web3 Logo T-Shirt",
       "description": "A stylish t-shirt with HIGH QUALITY WEB3 logo front and back print. Premium cotton blend for maximum comfort.",
-      "basePrice": 0.07,
+      "basePrice": 30,
       "category": "t-shirt",
       "imageUrl": "/products/t-shirt-logo-web3.jpg",
       "images": {
@@ -52,7 +52,7 @@
           "color": "black",
           "sku": "WLT-XL-BLK",
           "stock": 10,
-          "priceModifier": 0.01
+          "priceModifier": 5
         },
         {
           "variationId": "1-s-white",
@@ -84,7 +84,7 @@
           "color": "white",
           "sku": "WLT-XL-WHT",
           "stock": 12,
-          "priceModifier": 0.01
+          "priceModifier": 5
         }
       ],
       "features": ["Premium cotton blend", "Front and back print", "Unisex fit", "Machine washable"],
@@ -94,7 +94,7 @@
       "id": "2",
       "name": "Web3 Logo Hoodie",
       "description": "A comfortable hoodie with the HIGH QUALITY WEB3 logo. Perfect for cool weather and crypto enthusiasts.",
-      "basePrice": 0.12,
+      "basePrice": 52,
       "category": "hoodie",
       "imageUrl": "/products/hoodie-logo-web3-black.jpg",
       "images": {
@@ -130,7 +130,7 @@
           "color": "black",
           "sku": "WLH-XL-BLK",
           "stock": 5,
-          "priceModifier": 0.02
+          "priceModifier": 5
         },
         {
           "variationId": "2-m-white",
@@ -154,7 +154,7 @@
           "color": "white",
           "sku": "WLH-XL-WHT",
           "stock": 8,
-          "priceModifier": 0.02
+          "priceModifier": 5
         }
       ],
       "features": ["80% cotton, 20% polyester", "Drawstring hood", "Kangaroo pocket", "Ribbed cuffs and waistband"],
@@ -164,7 +164,7 @@
       "id": "3",
       "name": "Web3 Phrase Hoodie",
       "description": "A comfortable hoodie with the HIGH QUALITY WEB3 phrase print. Stand out with this bold statement piece.",
-      "basePrice": 0.15,
+      "basePrice": 55,
       "category": "hoodie",
       "imageUrl": "/products/hoodie-phrase-web3.jpg",
       "images": {
@@ -200,7 +200,7 @@
           "color": "black",
           "sku": "WPH-XL-BLK",
           "stock": 5,
-          "priceModifier": 0.02
+          "priceModifier": 5
         },
         {
           "variationId": "3-m-white",
@@ -224,7 +224,7 @@
           "color": "white",
           "sku": "WPH-XL-WHT",
           "stock": 9,
-          "priceModifier": 0.02
+          "priceModifier": 5
         }
       ],
       "features": [
