@@ -5,7 +5,7 @@ Next.js starter with Tailwind CSS and `@solana/kit` for wallet connection and So
 ## Getting Started
 
 ```shell
-npx create-solana-dapp@latest -t kit/nextjs
+npx -y create-solana-dapp@latest -t solana-foundation/templates/kit/nextjs
 ```
 
 ```shell

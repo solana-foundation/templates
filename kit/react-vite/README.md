@@ -5,7 +5,7 @@ React + Vite starter with Tailwind CSS and `@solana/react-hooks` for wallet conn
 ## Getting Started
 
 ```shell
-npx create-solana-dapp@latest -t kit/vite
+npx -y create-solana-dapp@latest -t solana-foundation/templates/kit/react-vite
 ```
 
 ```shell
