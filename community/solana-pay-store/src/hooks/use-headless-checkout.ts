@@ -11,8 +11,20 @@ import {
 } from '@solana-commerce/headless'
 import type { CartItem } from '@/store/types/cart'
 
-const MERCHANT_WALLET = process.env.NEXT_PUBLIC_MERCHANT_WALLET || '11111111111111111111111111111111'
-const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+export const USDC_MINT_MAINNET = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+export const USDC_MINT_DEVNET = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'
+const USDC_MINT = process.env.NEXT_PUBLIC_USDC_MINT || USDC_MINT_MAINNET
+
+function getMerchantWallet(): string {
+  const wallet = process.env.NEXT_PUBLIC_MERCHANT_WALLET
+  if (!wallet) {
+    throw new Error(
+      'NEXT_PUBLIC_MERCHANT_WALLET environment variable is required. ' +
+        'Please set it to your Solana wallet address to receive payments.',
+    )
+  }
+  return wallet
+}
 
 /**
  * Commerce Kit's createSolanaPayRequest expects amounts in 9 decimals (like SOL lamports),
@@ -62,16 +74,17 @@ async function createPaymentRequest(
   reference: string,
   options: { label: string; message: string; memo?: string; qrSize: number },
 ) {
+  const merchantWallet = getMerchantWallet()
   const isCart = products.length > 1
 
   const commerceRequest = isCart
-    ? createCartRequest(MERCHANT_WALLET, products, {
+    ? createCartRequest(merchantWallet, products, {
         currency: 'USDC',
         memo: options.memo,
         label: options.label,
         message: options.message,
       })
-    : createBuyNowRequest(MERCHANT_WALLET, products[0], {
+    : createBuyNowRequest(merchantWallet, products[0], {
         memo: options.memo,
         label: options.label,
         message: options.message,
@@ -79,7 +92,7 @@ async function createPaymentRequest(
 
   const { url, qr } = await createSolanaPayRequest(
     {
-      recipient: address(MERCHANT_WALLET),
+      recipient: address(merchantWallet),
       amount: BigInt(Math.round(totalAmount * SOLANA_PAY_AMOUNT_MULTIPLIER)),
       splToken: address(USDC_MINT),
       reference: address(reference),
@@ -95,7 +108,7 @@ async function createPaymentRequest(
     qr,
     reference,
     amount: totalAmount,
-    recipient: MERCHANT_WALLET,
+    recipient: merchantWallet,
     splToken: USDC_MINT,
   }
 }
@@ -225,7 +238,7 @@ export function useHeadlessCheckout(options: UseHeadlessCheckoutOptions = {}) {
             client.runtime.rpc as unknown as Parameters<typeof verifyPayment>[0],
             foundSignature,
             Math.round(paymentRequest!.amount * USDC_MINOR_UNITS),
-            MERCHANT_WALLET,
+            getMerchantWallet(),
             USDC_MINT,
           )
 

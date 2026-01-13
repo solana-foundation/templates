@@ -31,8 +31,16 @@ pnpm install
 Create `.env.local`:
 
 ```bash
+# Required: Your Solana wallet address to receive payments
 NEXT_PUBLIC_MERCHANT_WALLET=<your-solana-wallet-address>
+
+# RPC endpoint (mainnet or devnet)
 NEXT_PUBLIC_RPC_URL=https://api.mainnet-beta.solana.com
+
+# Optional: USDC mint address (defaults to mainnet USDC)
+# Mainnet: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
+# Devnet:  4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU
+# NEXT_PUBLIC_USDC_MINT=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
 ```
 
 ### 3. Run
@@ -102,8 +110,7 @@ src/
 ├── components/
 │   ├── checkout/
 │   │   └── headless-checkout-dialog.tsx  # Payment dialog
-│   └── solana/
-│       └── use-solana.tsx        # Wallet state hook
+│   └── wallet-ui.tsx                     # Wallet connect button
 ├── store/
 │   ├── components/               # Product grid, cart drawer
 │   ├── hooks/                    # Cart, product selection
