@@ -31,12 +31,12 @@ solana-keygen pubkey facilitator-keypair.json
 **Option B: Using Node.js**
 
 ```javascript
-import { Keypair } from '@solana/web3.js';
+import { generateKeyPairSigner } from '@solana/kit';
 import bs58 from 'bs58';
 
-const keypair = Keypair.generate();
-console.log('Public Key:', keypair.publicKey.toString());
-console.log('Private Key:', bs58.encode(keypair.secretKey));
+const signer = await generateKeyPairSigner();
+console.log('Public Key:', signer.address);
+// Export private key bytes if needed
 ```
 
 ### 3. Configure Environment
@@ -476,9 +476,8 @@ curl http://localhost:3000/health
 ## Additional Resources
 
 - [Solana Documentation](https://docs.solana.com/)
-- [Gill SDK Documentation](https://www.gillsdk.com/)
+- [@solana/kit Documentation](https://github.com/anza-xyz/kit)
 - [PM2 Documentation](https://pm2.keymetrics.io/docs/)
-- [x402 Protocol Specification](https://github.com/yourusername/x402-spec)
 
 ## Support
 

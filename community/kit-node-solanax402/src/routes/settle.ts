@@ -3,7 +3,7 @@
  */
 
 import type { Request, Response } from 'express';
-import type { Address } from 'gill';
+import type { Address } from '@solana/addresses';
 import { PaymentRequest } from '../lib/payment-request.js';
 import { SolanaUtils } from '../lib/solana-utils.js';
 import type { NonceDatabase } from '../lib/nonce-database.js';

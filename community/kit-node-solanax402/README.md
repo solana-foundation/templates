@@ -64,7 +64,7 @@ x402_ts/
 │   │   ├── get-server-context.ts   # Server context
 │   │   ├── nonce-database.ts       # SQLite nonce management
 │   │   ├── payment-request.ts      # Payment payload structures
-│   │   ├── solana-utils.ts         # Solana/Gill SDK utilities
+│   │   ├── solana-utils.ts         # Solana Kit SDK utilities
 │   │   └── x402-middleware.ts      # Express middleware
 │   └── routes/
 │       ├── health.ts               # Health check endpoint
@@ -339,7 +339,7 @@ npm run fmt:check
 
 - **Runtime**: Node.js with TypeScript
 - **Framework**: Express.js
-- **Blockchain**: Solana (via Gill SDK and @solana/web3.js)
+- **Blockchain**: Solana (via @solana/kit)
 - **Database**: SQLite3 (for nonce management)
 - **Process Management**: PM2
 - **Validation**: Zod
@@ -419,7 +419,7 @@ MIT
 
 ## Contributing
 
-This implementation follows the Gill Node Express template patterns and addresses PR feedback for clean, maintainable code. Contributions should maintain:
+Contributions should maintain:
 
 - TypeScript with strict type checking
 - ES modules (import/export)
@@ -434,8 +434,7 @@ This implementation follows the Gill Node Express template patterns and addresse
 
 Built with:
 
-- [Gill SDK](https://www.gillsdk.com/) - Solana TypeScript SDK
-- [@solana/web3.js](https://github.com/solana-labs/solana-web3.js) - Solana JavaScript API
+- [@solana/kit](https://github.com/anza-xyz/kit) - Solana TypeScript SDK
 - [Express.js](https://expressjs.com/) - Web framework
 - [PM2](https://pm2.keymetrics.io/) - Process manager
 - [Zod](https://github.com/colinhacks/zod) - Schema validation

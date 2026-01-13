@@ -3,7 +3,7 @@
  */
 
 import type { Request, Response } from 'express';
-import type { Address } from 'gill';
+import type { Address } from '@solana/addresses';
 import { successResponse } from '../lib/api-response-helpers.js';
 
 export interface HealthRouteContext {
