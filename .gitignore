@@ -1,6 +1,7 @@
 /tmp
 node_modules
 .DS_Store
+.pnpm-store/
 
 # We only want a top-level `pnpm-lock.yaml` file.
 gill/**/package-lock.json
@@ -9,10 +10,17 @@ gill/**/yarn.lock
 web3js/**/package-lock.json
 web3js/**/pnpm-lock.yaml
 web3js/**/yarn.lock
+community/**/package-lock.json
+community/**/pnpm-lock.yaml
+community/**/yarn.lock
+mobile/**/package-lock.json
+mobile/**/pnpm-lock.yaml
+mobile/**/yarn.lock
 
 # Ignore any dist, tmp, or node_modules directories
 gill/**/.next
 gill/**/.env
+gill/**/.env.local
 gill/**/anchor/target/debug
 gill/**/anchor/target/deploy
 gill/**/anchor/target/release
@@ -25,6 +33,7 @@ gill/**/node_modules
 gill/**/tmp
 web3js/**/.next
 web3js/**/.env
+web3js/**/.env.local
 web3js/**/anchor/target/debug
 web3js/**/anchor/target/deploy
 web3js/**/anchor/target/release
@@ -36,3 +45,28 @@ web3js/**/dist
 web3js/**/node_modules
 web3js/**/tmp
 community/**/.next
+community/**/.env
+community/**/.env.local
+community/**/anchor/target/debug
+community/**/anchor/target/deploy
+community/**/anchor/target/release
+community/**/anchor/target/sbf-solana-solana
+community/**/anchor/target/sbpf-solana-solana
+community/**/anchor/target/test-ledger
+community/**/anchor/target/.rustc_info.json
+community/**/dist
+community/**/node_modules
+community/**/tmp
+mobile/**/.next
+mobile/**/.env
+mobile/**/.env.local
+mobile/**/anchor/target/debug
+mobile/**/anchor/target/deploy
+mobile/**/anchor/target/release
+mobile/**/anchor/target/sbf-solana-solana
+mobile/**/anchor/target/sbpf-solana-solana
+mobile/**/anchor/target/test-ledger
+mobile/**/anchor/target/.rustc_info.json
+mobile/**/dist
+mobile/**/node_modules
+mobile/**/tmp

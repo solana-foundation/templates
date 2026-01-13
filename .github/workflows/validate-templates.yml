@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - 'community/**/package.json'
-      - 'gill/**/package.json'
+      - 'kit/**/package.json'
       - 'mobile/**/package.json'
       - 'web3js/**/package.json'
       - 'scripts/**'
