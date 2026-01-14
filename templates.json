@@ -498,8 +498,8 @@
     "templates": [
       {
         "description": "Next.js, Tailwind, Lazorkit-sdk, Wallet UI",
-        "id": "gh:solana-foundation/templates/lazorkit/lazorkit-demo-next",
-        "image": "lazorkit/lazorkit-demo-next/og-image.png",
+        "id": "gh:solana-foundation/templates/community/lazorkit-starter-next",
+        "image": "community/lazorkit-starter-next/og-image.png",
         "keywords": [
           "biometrics",
           "nextjs",
@@ -516,8 +516,8 @@
       },
       {
         "description": "React+Vite, Tailwind, Lazorkit-sdk, Wallet UI",
-        "id": "gh:solana-foundation/templates/lazorkit/lazorkit-starter-vite",
-        "image": "lazorkit/lazorkit-starter-vite/og-image.png",
+        "id": "gh:solana-foundation/templates/community/lazorkit-starter-vite",
+        "image": "community/lazorkit-starter-vite/og-image.png",
         "keywords": [
           "biometrics",
           "react",
@@ -534,8 +534,8 @@
       },
       {
         "description": "ReactNative+Expo, Lazorkit-sdk, Wallet UI",
-        "id": "gh:solana-foundation/templates/lazorkit/lazorkit-starter-expo",
-        "image": "lazorkit/lazorkit-starter-expo/og-image.png",
+        "id": "gh:solana-foundation/templates/community/lazorkit-starter-expo",
+        "image": "community/lazorkit-starter-expo/og-image.png",
         "keywords": [
           "biometrics",
           "mobile",

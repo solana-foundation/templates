@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 118, "column": 0}, "map": {"version":3,"sources":["file:///home/joshua/Desktop/lazorkit/templates/lazorkit/lazorkit-starter-next/app/providers.tsx"],"sourcesContent":["\"use client\";\n\nimport { LazorkitProvider } from \"@lazorkit/wallet\";\n\nexport function Providers({ children }: { children: React.ReactNode }) {\n  return (\n    <LazorkitProvider\n      rpcUrl={process.env.NEXT_PUBLIC_LAZORKIT_RPC_URL!}\n      portalUrl={process.env.NEXT_PUBLIC_LAZORKIT_PORTAL_URL!}\n      paymasterConfig={{\n        paymasterUrl: process.env.NEXT_PUBLIC_LAZORKIT_PAYMASTER_URL!\n      }}\n    >\n      {children}\n    </LazorkitProvider>\n  );\n}\n"],"names":[],"mappings":";;;;;AAEA;AAFA;;;AAIO,SAAS,UAAU,EAAE,QAAQ,EAAiC;IACnE,qBACE,6TAAC,yQAAgB;QACf,MAAM;QACN,SAAS;QACT,iBAAiB;YACf,YAAY;QACd;kBAEC;;;;;;AAGP","debugId":null}}]
+}

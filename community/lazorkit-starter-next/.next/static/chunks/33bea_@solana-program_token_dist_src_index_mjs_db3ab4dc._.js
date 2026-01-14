@@ -1,0 +1,4021 @@
+(globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push([typeof document === "object" ? document.currentScript : undefined,
+"[project]/Desktop/lazorkit/templates/lazorkit/lazorkit-starter-next/node_modules/@solana-program/token/dist/src/index.mjs [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "AMOUNT_TO_UI_AMOUNT_DISCRIMINATOR",
+    ()=>AMOUNT_TO_UI_AMOUNT_DISCRIMINATOR,
+    "APPROVE_CHECKED_DISCRIMINATOR",
+    ()=>APPROVE_CHECKED_DISCRIMINATOR,
+    "APPROVE_DISCRIMINATOR",
+    ()=>APPROVE_DISCRIMINATOR,
+    "ASSOCIATED_TOKEN_ERROR__INVALID_OWNER",
+    ()=>ASSOCIATED_TOKEN_ERROR__INVALID_OWNER,
+    "ASSOCIATED_TOKEN_PROGRAM_ADDRESS",
+    ()=>ASSOCIATED_TOKEN_PROGRAM_ADDRESS,
+    "AccountState",
+    ()=>AccountState,
+    "AssociatedTokenInstruction",
+    ()=>AssociatedTokenInstruction,
+    "AuthorityType",
+    ()=>AuthorityType,
+    "BURN_CHECKED_DISCRIMINATOR",
+    ()=>BURN_CHECKED_DISCRIMINATOR,
+    "BURN_DISCRIMINATOR",
+    ()=>BURN_DISCRIMINATOR,
+    "CLOSE_ACCOUNT_DISCRIMINATOR",
+    ()=>CLOSE_ACCOUNT_DISCRIMINATOR,
+    "CREATE_ASSOCIATED_TOKEN_DISCRIMINATOR",
+    ()=>CREATE_ASSOCIATED_TOKEN_DISCRIMINATOR,
+    "CREATE_ASSOCIATED_TOKEN_IDEMPOTENT_DISCRIMINATOR",
+    ()=>CREATE_ASSOCIATED_TOKEN_IDEMPOTENT_DISCRIMINATOR,
+    "FREEZE_ACCOUNT_DISCRIMINATOR",
+    ()=>FREEZE_ACCOUNT_DISCRIMINATOR,
+    "GET_ACCOUNT_DATA_SIZE_DISCRIMINATOR",
+    ()=>GET_ACCOUNT_DATA_SIZE_DISCRIMINATOR,
+    "INITIALIZE_ACCOUNT2_DISCRIMINATOR",
+    ()=>INITIALIZE_ACCOUNT2_DISCRIMINATOR,
+    "INITIALIZE_ACCOUNT3_DISCRIMINATOR",
+    ()=>INITIALIZE_ACCOUNT3_DISCRIMINATOR,
+    "INITIALIZE_ACCOUNT_DISCRIMINATOR",
+    ()=>INITIALIZE_ACCOUNT_DISCRIMINATOR,
+    "INITIALIZE_IMMUTABLE_OWNER_DISCRIMINATOR",
+    ()=>INITIALIZE_IMMUTABLE_OWNER_DISCRIMINATOR,
+    "INITIALIZE_MINT2_DISCRIMINATOR",
+    ()=>INITIALIZE_MINT2_DISCRIMINATOR,
+    "INITIALIZE_MINT_DISCRIMINATOR",
+    ()=>INITIALIZE_MINT_DISCRIMINATOR,
+    "INITIALIZE_MULTISIG2_DISCRIMINATOR",
+    ()=>INITIALIZE_MULTISIG2_DISCRIMINATOR,
+    "INITIALIZE_MULTISIG_DISCRIMINATOR",
+    ()=>INITIALIZE_MULTISIG_DISCRIMINATOR,
+    "MINT_TO_CHECKED_DISCRIMINATOR",
+    ()=>MINT_TO_CHECKED_DISCRIMINATOR,
+    "MINT_TO_DISCRIMINATOR",
+    ()=>MINT_TO_DISCRIMINATOR,
+    "RECOVER_NESTED_ASSOCIATED_TOKEN_DISCRIMINATOR",
+    ()=>RECOVER_NESTED_ASSOCIATED_TOKEN_DISCRIMINATOR,
+    "REVOKE_DISCRIMINATOR",
+    ()=>REVOKE_DISCRIMINATOR,
+    "SET_AUTHORITY_DISCRIMINATOR",
+    ()=>SET_AUTHORITY_DISCRIMINATOR,
+    "SYNC_NATIVE_DISCRIMINATOR",
+    ()=>SYNC_NATIVE_DISCRIMINATOR,
+    "THAW_ACCOUNT_DISCRIMINATOR",
+    ()=>THAW_ACCOUNT_DISCRIMINATOR,
+    "TOKEN_ERROR__ACCOUNT_FROZEN",
+    ()=>TOKEN_ERROR__ACCOUNT_FROZEN,
+    "TOKEN_ERROR__ALREADY_IN_USE",
+    ()=>TOKEN_ERROR__ALREADY_IN_USE,
+    "TOKEN_ERROR__AUTHORITY_TYPE_NOT_SUPPORTED",
+    ()=>TOKEN_ERROR__AUTHORITY_TYPE_NOT_SUPPORTED,
+    "TOKEN_ERROR__FIXED_SUPPLY",
+    ()=>TOKEN_ERROR__FIXED_SUPPLY,
+    "TOKEN_ERROR__INSUFFICIENT_FUNDS",
+    ()=>TOKEN_ERROR__INSUFFICIENT_FUNDS,
+    "TOKEN_ERROR__INVALID_INSTRUCTION",
+    ()=>TOKEN_ERROR__INVALID_INSTRUCTION,
+    "TOKEN_ERROR__INVALID_MINT",
+    ()=>TOKEN_ERROR__INVALID_MINT,
+    "TOKEN_ERROR__INVALID_NUMBER_OF_PROVIDED_SIGNERS",
+    ()=>TOKEN_ERROR__INVALID_NUMBER_OF_PROVIDED_SIGNERS,
+    "TOKEN_ERROR__INVALID_NUMBER_OF_REQUIRED_SIGNERS",
+    ()=>TOKEN_ERROR__INVALID_NUMBER_OF_REQUIRED_SIGNERS,
+    "TOKEN_ERROR__INVALID_STATE",
+    ()=>TOKEN_ERROR__INVALID_STATE,
+    "TOKEN_ERROR__MINT_CANNOT_FREEZE",
+    ()=>TOKEN_ERROR__MINT_CANNOT_FREEZE,
+    "TOKEN_ERROR__MINT_DECIMALS_MISMATCH",
+    ()=>TOKEN_ERROR__MINT_DECIMALS_MISMATCH,
+    "TOKEN_ERROR__MINT_MISMATCH",
+    ()=>TOKEN_ERROR__MINT_MISMATCH,
+    "TOKEN_ERROR__NATIVE_NOT_SUPPORTED",
+    ()=>TOKEN_ERROR__NATIVE_NOT_SUPPORTED,
+    "TOKEN_ERROR__NON_NATIVE_HAS_BALANCE",
+    ()=>TOKEN_ERROR__NON_NATIVE_HAS_BALANCE,
+    "TOKEN_ERROR__NON_NATIVE_NOT_SUPPORTED",
+    ()=>TOKEN_ERROR__NON_NATIVE_NOT_SUPPORTED,
+    "TOKEN_ERROR__NOT_RENT_EXEMPT",
+    ()=>TOKEN_ERROR__NOT_RENT_EXEMPT,
+    "TOKEN_ERROR__OVERFLOW",
+    ()=>TOKEN_ERROR__OVERFLOW,
+    "TOKEN_ERROR__OWNER_MISMATCH",
+    ()=>TOKEN_ERROR__OWNER_MISMATCH,
+    "TOKEN_ERROR__UNINITIALIZED_STATE",
+    ()=>TOKEN_ERROR__UNINITIALIZED_STATE,
+    "TOKEN_PROGRAM_ADDRESS",
+    ()=>TOKEN_PROGRAM_ADDRESS,
+    "TRANSFER_CHECKED_DISCRIMINATOR",
+    ()=>TRANSFER_CHECKED_DISCRIMINATOR,
+    "TRANSFER_DISCRIMINATOR",
+    ()=>TRANSFER_DISCRIMINATOR,
+    "TokenAccount",
+    ()=>TokenAccount,
+    "TokenInstruction",
+    ()=>TokenInstruction,
+    "UI_AMOUNT_TO_AMOUNT_DISCRIMINATOR",
+    ()=>UI_AMOUNT_TO_AMOUNT_DISCRIMINATOR,
+    "decodeMint",
+    ()=>decodeMint,
+    "decodeMultisig",
+    ()=>decodeMultisig,
+    "decodeToken",
+    ()=>decodeToken,
+    "fetchAllMaybeMint",
+    ()=>fetchAllMaybeMint,
+    "fetchAllMaybeMultisig",
+    ()=>fetchAllMaybeMultisig,
+    "fetchAllMaybeToken",
+    ()=>fetchAllMaybeToken,
+    "fetchAllMint",
+    ()=>fetchAllMint,
+    "fetchAllMultisig",
+    ()=>fetchAllMultisig,
+    "fetchAllToken",
+    ()=>fetchAllToken,
+    "fetchMaybeMint",
+    ()=>fetchMaybeMint,
+    "fetchMaybeMultisig",
+    ()=>fetchMaybeMultisig,
+    "fetchMaybeToken",
+    ()=>fetchMaybeToken,
+    "fetchMint",
+    ()=>fetchMint,
+    "fetchMultisig",
+    ()=>fetchMultisig,
+    "fetchToken",
+    ()=>fetchToken,
+    "findAssociatedTokenPda",
+    ()=>findAssociatedTokenPda,
+    "getAccountStateCodec",
+    ()=>getAccountStateCodec,
+    "getAccountStateDecoder",
+    ()=>getAccountStateDecoder,
+    "getAccountStateEncoder",
+    ()=>getAccountStateEncoder,
+    "getAmountToUiAmountDiscriminatorBytes",
+    ()=>getAmountToUiAmountDiscriminatorBytes,
+    "getAmountToUiAmountInstruction",
+    ()=>getAmountToUiAmountInstruction,
+    "getAmountToUiAmountInstructionDataCodec",
+    ()=>getAmountToUiAmountInstructionDataCodec,
+    "getAmountToUiAmountInstructionDataDecoder",
+    ()=>getAmountToUiAmountInstructionDataDecoder,
+    "getAmountToUiAmountInstructionDataEncoder",
+    ()=>getAmountToUiAmountInstructionDataEncoder,
+    "getApproveCheckedDiscriminatorBytes",
+    ()=>getApproveCheckedDiscriminatorBytes,
+    "getApproveCheckedInstruction",
+    ()=>getApproveCheckedInstruction,
+    "getApproveCheckedInstructionDataCodec",
+    ()=>getApproveCheckedInstructionDataCodec,
+    "getApproveCheckedInstructionDataDecoder",
+    ()=>getApproveCheckedInstructionDataDecoder,
+    "getApproveCheckedInstructionDataEncoder",
+    ()=>getApproveCheckedInstructionDataEncoder,
+    "getApproveDiscriminatorBytes",
+    ()=>getApproveDiscriminatorBytes,
+    "getApproveInstruction",
+    ()=>getApproveInstruction,
+    "getApproveInstructionDataCodec",
+    ()=>getApproveInstructionDataCodec,
+    "getApproveInstructionDataDecoder",
+    ()=>getApproveInstructionDataDecoder,
+    "getApproveInstructionDataEncoder",
+    ()=>getApproveInstructionDataEncoder,
+    "getAssociatedTokenErrorMessage",
+    ()=>getAssociatedTokenErrorMessage,
+    "getAuthorityTypeCodec",
+    ()=>getAuthorityTypeCodec,
+    "getAuthorityTypeDecoder",
+    ()=>getAuthorityTypeDecoder,
+    "getAuthorityTypeEncoder",
+    ()=>getAuthorityTypeEncoder,
+    "getBurnCheckedDiscriminatorBytes",
+    ()=>getBurnCheckedDiscriminatorBytes,
+    "getBurnCheckedInstruction",
+    ()=>getBurnCheckedInstruction,
+    "getBurnCheckedInstructionDataCodec",
+    ()=>getBurnCheckedInstructionDataCodec,
+    "getBurnCheckedInstructionDataDecoder",
+    ()=>getBurnCheckedInstructionDataDecoder,
+    "getBurnCheckedInstructionDataEncoder",
+    ()=>getBurnCheckedInstructionDataEncoder,
+    "getBurnDiscriminatorBytes",
+    ()=>getBurnDiscriminatorBytes,
+    "getBurnInstruction",
+    ()=>getBurnInstruction,
+    "getBurnInstructionDataCodec",
+    ()=>getBurnInstructionDataCodec,
+    "getBurnInstructionDataDecoder",
+    ()=>getBurnInstructionDataDecoder,
+    "getBurnInstructionDataEncoder",
+    ()=>getBurnInstructionDataEncoder,
+    "getCloseAccountDiscriminatorBytes",
+    ()=>getCloseAccountDiscriminatorBytes,
+    "getCloseAccountInstruction",
+    ()=>getCloseAccountInstruction,
+    "getCloseAccountInstructionDataCodec",
+    ()=>getCloseAccountInstructionDataCodec,
+    "getCloseAccountInstructionDataDecoder",
+    ()=>getCloseAccountInstructionDataDecoder,
+    "getCloseAccountInstructionDataEncoder",
+    ()=>getCloseAccountInstructionDataEncoder,
+    "getCreateAssociatedTokenDiscriminatorBytes",
+    ()=>getCreateAssociatedTokenDiscriminatorBytes,
+    "getCreateAssociatedTokenIdempotentDiscriminatorBytes",
+    ()=>getCreateAssociatedTokenIdempotentDiscriminatorBytes,
+    "getCreateAssociatedTokenIdempotentInstruction",
+    ()=>getCreateAssociatedTokenIdempotentInstruction,
+    "getCreateAssociatedTokenIdempotentInstructionAsync",
+    ()=>getCreateAssociatedTokenIdempotentInstructionAsync,
+    "getCreateAssociatedTokenIdempotentInstructionDataCodec",
+    ()=>getCreateAssociatedTokenIdempotentInstructionDataCodec,
+    "getCreateAssociatedTokenIdempotentInstructionDataDecoder",
+    ()=>getCreateAssociatedTokenIdempotentInstructionDataDecoder,
+    "getCreateAssociatedTokenIdempotentInstructionDataEncoder",
+    ()=>getCreateAssociatedTokenIdempotentInstructionDataEncoder,
+    "getCreateAssociatedTokenInstruction",
+    ()=>getCreateAssociatedTokenInstruction,
+    "getCreateAssociatedTokenInstructionAsync",
+    ()=>getCreateAssociatedTokenInstructionAsync,
+    "getCreateAssociatedTokenInstructionDataCodec",
+    ()=>getCreateAssociatedTokenInstructionDataCodec,
+    "getCreateAssociatedTokenInstructionDataDecoder",
+    ()=>getCreateAssociatedTokenInstructionDataDecoder,
+    "getCreateAssociatedTokenInstructionDataEncoder",
+    ()=>getCreateAssociatedTokenInstructionDataEncoder,
+    "getCreateMintInstructionPlan",
+    ()=>getCreateMintInstructionPlan,
+    "getFreezeAccountDiscriminatorBytes",
+    ()=>getFreezeAccountDiscriminatorBytes,
+    "getFreezeAccountInstruction",
+    ()=>getFreezeAccountInstruction,
+    "getFreezeAccountInstructionDataCodec",
+    ()=>getFreezeAccountInstructionDataCodec,
+    "getFreezeAccountInstructionDataDecoder",
+    ()=>getFreezeAccountInstructionDataDecoder,
+    "getFreezeAccountInstructionDataEncoder",
+    ()=>getFreezeAccountInstructionDataEncoder,
+    "getGetAccountDataSizeDiscriminatorBytes",
+    ()=>getGetAccountDataSizeDiscriminatorBytes,
+    "getGetAccountDataSizeInstruction",
+    ()=>getGetAccountDataSizeInstruction,
+    "getGetAccountDataSizeInstructionDataCodec",
+    ()=>getGetAccountDataSizeInstructionDataCodec,
+    "getGetAccountDataSizeInstructionDataDecoder",
+    ()=>getGetAccountDataSizeInstructionDataDecoder,
+    "getGetAccountDataSizeInstructionDataEncoder",
+    ()=>getGetAccountDataSizeInstructionDataEncoder,
+    "getInitializeAccount2DiscriminatorBytes",
+    ()=>getInitializeAccount2DiscriminatorBytes,
+    "getInitializeAccount2Instruction",
+    ()=>getInitializeAccount2Instruction,
+    "getInitializeAccount2InstructionDataCodec",
+    ()=>getInitializeAccount2InstructionDataCodec,
+    "getInitializeAccount2InstructionDataDecoder",
+    ()=>getInitializeAccount2InstructionDataDecoder,
+    "getInitializeAccount2InstructionDataEncoder",
+    ()=>getInitializeAccount2InstructionDataEncoder,
+    "getInitializeAccount3DiscriminatorBytes",
+    ()=>getInitializeAccount3DiscriminatorBytes,
+    "getInitializeAccount3Instruction",
+    ()=>getInitializeAccount3Instruction,
+    "getInitializeAccount3InstructionDataCodec",
+    ()=>getInitializeAccount3InstructionDataCodec,
+    "getInitializeAccount3InstructionDataDecoder",
+    ()=>getInitializeAccount3InstructionDataDecoder,
+    "getInitializeAccount3InstructionDataEncoder",
+    ()=>getInitializeAccount3InstructionDataEncoder,
+    "getInitializeAccountDiscriminatorBytes",
+    ()=>getInitializeAccountDiscriminatorBytes,
+    "getInitializeAccountInstruction",
+    ()=>getInitializeAccountInstruction,
+    "getInitializeAccountInstructionDataCodec",
+    ()=>getInitializeAccountInstructionDataCodec,
+    "getInitializeAccountInstructionDataDecoder",
+    ()=>getInitializeAccountInstructionDataDecoder,
+    "getInitializeAccountInstructionDataEncoder",
+    ()=>getInitializeAccountInstructionDataEncoder,
+    "getInitializeImmutableOwnerDiscriminatorBytes",
+    ()=>getInitializeImmutableOwnerDiscriminatorBytes,
+    "getInitializeImmutableOwnerInstruction",
+    ()=>getInitializeImmutableOwnerInstruction,
+    "getInitializeImmutableOwnerInstructionDataCodec",
+    ()=>getInitializeImmutableOwnerInstructionDataCodec,
+    "getInitializeImmutableOwnerInstructionDataDecoder",
+    ()=>getInitializeImmutableOwnerInstructionDataDecoder,
+    "getInitializeImmutableOwnerInstructionDataEncoder",
+    ()=>getInitializeImmutableOwnerInstructionDataEncoder,
+    "getInitializeMint2DiscriminatorBytes",
+    ()=>getInitializeMint2DiscriminatorBytes,
+    "getInitializeMint2Instruction",
+    ()=>getInitializeMint2Instruction,
+    "getInitializeMint2InstructionDataCodec",
+    ()=>getInitializeMint2InstructionDataCodec,
+    "getInitializeMint2InstructionDataDecoder",
+    ()=>getInitializeMint2InstructionDataDecoder,
+    "getInitializeMint2InstructionDataEncoder",
+    ()=>getInitializeMint2InstructionDataEncoder,
+    "getInitializeMintDiscriminatorBytes",
+    ()=>getInitializeMintDiscriminatorBytes,
+    "getInitializeMintInstruction",
+    ()=>getInitializeMintInstruction,
+    "getInitializeMintInstructionDataCodec",
+    ()=>getInitializeMintInstructionDataCodec,
+    "getInitializeMintInstructionDataDecoder",
+    ()=>getInitializeMintInstructionDataDecoder,
+    "getInitializeMintInstructionDataEncoder",
+    ()=>getInitializeMintInstructionDataEncoder,
+    "getInitializeMultisig2DiscriminatorBytes",
+    ()=>getInitializeMultisig2DiscriminatorBytes,
+    "getInitializeMultisig2Instruction",
+    ()=>getInitializeMultisig2Instruction,
+    "getInitializeMultisig2InstructionDataCodec",
+    ()=>getInitializeMultisig2InstructionDataCodec,
+    "getInitializeMultisig2InstructionDataDecoder",
+    ()=>getInitializeMultisig2InstructionDataDecoder,
+    "getInitializeMultisig2InstructionDataEncoder",
+    ()=>getInitializeMultisig2InstructionDataEncoder,
+    "getInitializeMultisigDiscriminatorBytes",
+    ()=>getInitializeMultisigDiscriminatorBytes,
+    "getInitializeMultisigInstruction",
+    ()=>getInitializeMultisigInstruction,
+    "getInitializeMultisigInstructionDataCodec",
+    ()=>getInitializeMultisigInstructionDataCodec,
+    "getInitializeMultisigInstructionDataDecoder",
+    ()=>getInitializeMultisigInstructionDataDecoder,
+    "getInitializeMultisigInstructionDataEncoder",
+    ()=>getInitializeMultisigInstructionDataEncoder,
+    "getMintCodec",
+    ()=>getMintCodec,
+    "getMintDecoder",
+    ()=>getMintDecoder,
+    "getMintEncoder",
+    ()=>getMintEncoder,
+    "getMintSize",
+    ()=>getMintSize,
+    "getMintToATAInstructionPlan",
+    ()=>getMintToATAInstructionPlan,
+    "getMintToATAInstructionPlanAsync",
+    ()=>getMintToATAInstructionPlanAsync,
+    "getMintToCheckedDiscriminatorBytes",
+    ()=>getMintToCheckedDiscriminatorBytes,
+    "getMintToCheckedInstruction",
+    ()=>getMintToCheckedInstruction,
+    "getMintToCheckedInstructionDataCodec",
+    ()=>getMintToCheckedInstructionDataCodec,
+    "getMintToCheckedInstructionDataDecoder",
+    ()=>getMintToCheckedInstructionDataDecoder,
+    "getMintToCheckedInstructionDataEncoder",
+    ()=>getMintToCheckedInstructionDataEncoder,
+    "getMintToDiscriminatorBytes",
+    ()=>getMintToDiscriminatorBytes,
+    "getMintToInstruction",
+    ()=>getMintToInstruction,
+    "getMintToInstructionDataCodec",
+    ()=>getMintToInstructionDataCodec,
+    "getMintToInstructionDataDecoder",
+    ()=>getMintToInstructionDataDecoder,
+    "getMintToInstructionDataEncoder",
+    ()=>getMintToInstructionDataEncoder,
+    "getMultisigCodec",
+    ()=>getMultisigCodec,
+    "getMultisigDecoder",
+    ()=>getMultisigDecoder,
+    "getMultisigEncoder",
+    ()=>getMultisigEncoder,
+    "getMultisigSize",
+    ()=>getMultisigSize,
+    "getRecoverNestedAssociatedTokenDiscriminatorBytes",
+    ()=>getRecoverNestedAssociatedTokenDiscriminatorBytes,
+    "getRecoverNestedAssociatedTokenInstruction",
+    ()=>getRecoverNestedAssociatedTokenInstruction,
+    "getRecoverNestedAssociatedTokenInstructionAsync",
+    ()=>getRecoverNestedAssociatedTokenInstructionAsync,
+    "getRecoverNestedAssociatedTokenInstructionDataCodec",
+    ()=>getRecoverNestedAssociatedTokenInstructionDataCodec,
+    "getRecoverNestedAssociatedTokenInstructionDataDecoder",
+    ()=>getRecoverNestedAssociatedTokenInstructionDataDecoder,
+    "getRecoverNestedAssociatedTokenInstructionDataEncoder",
+    ()=>getRecoverNestedAssociatedTokenInstructionDataEncoder,
+    "getRevokeDiscriminatorBytes",
+    ()=>getRevokeDiscriminatorBytes,
+    "getRevokeInstruction",
+    ()=>getRevokeInstruction,
+    "getRevokeInstructionDataCodec",
+    ()=>getRevokeInstructionDataCodec,
+    "getRevokeInstructionDataDecoder",
+    ()=>getRevokeInstructionDataDecoder,
+    "getRevokeInstructionDataEncoder",
+    ()=>getRevokeInstructionDataEncoder,
+    "getSetAuthorityDiscriminatorBytes",
+    ()=>getSetAuthorityDiscriminatorBytes,
+    "getSetAuthorityInstruction",
+    ()=>getSetAuthorityInstruction,
+    "getSetAuthorityInstructionDataCodec",
+    ()=>getSetAuthorityInstructionDataCodec,
+    "getSetAuthorityInstructionDataDecoder",
+    ()=>getSetAuthorityInstructionDataDecoder,
+    "getSetAuthorityInstructionDataEncoder",
+    ()=>getSetAuthorityInstructionDataEncoder,
+    "getSyncNativeDiscriminatorBytes",
+    ()=>getSyncNativeDiscriminatorBytes,
+    "getSyncNativeInstruction",
+    ()=>getSyncNativeInstruction,
+    "getSyncNativeInstructionDataCodec",
+    ()=>getSyncNativeInstructionDataCodec,
+    "getSyncNativeInstructionDataDecoder",
+    ()=>getSyncNativeInstructionDataDecoder,
+    "getSyncNativeInstructionDataEncoder",
+    ()=>getSyncNativeInstructionDataEncoder,
+    "getThawAccountDiscriminatorBytes",
+    ()=>getThawAccountDiscriminatorBytes,
+    "getThawAccountInstruction",
+    ()=>getThawAccountInstruction,
+    "getThawAccountInstructionDataCodec",
+    ()=>getThawAccountInstructionDataCodec,
+    "getThawAccountInstructionDataDecoder",
+    ()=>getThawAccountInstructionDataDecoder,
+    "getThawAccountInstructionDataEncoder",
+    ()=>getThawAccountInstructionDataEncoder,
+    "getTokenCodec",
+    ()=>getTokenCodec,
+    "getTokenDecoder",
+    ()=>getTokenDecoder,
+    "getTokenEncoder",
+    ()=>getTokenEncoder,
+    "getTokenErrorMessage",
+    ()=>getTokenErrorMessage,
+    "getTokenSize",
+    ()=>getTokenSize,
+    "getTransferCheckedDiscriminatorBytes",
+    ()=>getTransferCheckedDiscriminatorBytes,
+    "getTransferCheckedInstruction",
+    ()=>getTransferCheckedInstruction,
+    "getTransferCheckedInstructionDataCodec",
+    ()=>getTransferCheckedInstructionDataCodec,
+    "getTransferCheckedInstructionDataDecoder",
+    ()=>getTransferCheckedInstructionDataDecoder,
+    "getTransferCheckedInstructionDataEncoder",
+    ()=>getTransferCheckedInstructionDataEncoder,
+    "getTransferDiscriminatorBytes",
+    ()=>getTransferDiscriminatorBytes,
+    "getTransferInstruction",
+    ()=>getTransferInstruction,
+    "getTransferInstructionDataCodec",
+    ()=>getTransferInstructionDataCodec,
+    "getTransferInstructionDataDecoder",
+    ()=>getTransferInstructionDataDecoder,
+    "getTransferInstructionDataEncoder",
+    ()=>getTransferInstructionDataEncoder,
+    "getTransferToATAInstructionPlan",
+    ()=>getTransferToATAInstructionPlan,
+    "getTransferToATAInstructionPlanAsync",
+    ()=>getTransferToATAInstructionPlanAsync,
+    "getUiAmountToAmountDiscriminatorBytes",
+    ()=>getUiAmountToAmountDiscriminatorBytes,
+    "getUiAmountToAmountInstruction",
+    ()=>getUiAmountToAmountInstruction,
+    "getUiAmountToAmountInstructionDataCodec",
+    ()=>getUiAmountToAmountInstructionDataCodec,
+    "getUiAmountToAmountInstructionDataDecoder",
+    ()=>getUiAmountToAmountInstructionDataDecoder,
+    "getUiAmountToAmountInstructionDataEncoder",
+    ()=>getUiAmountToAmountInstructionDataEncoder,
+    "identifyAssociatedTokenInstruction",
+    ()=>identifyAssociatedTokenInstruction,
+    "identifyTokenAccount",
+    ()=>identifyTokenAccount,
+    "identifyTokenInstruction",
+    ()=>identifyTokenInstruction,
+    "isAssociatedTokenError",
+    ()=>isAssociatedTokenError,
+    "isTokenError",
+    ()=>isTokenError,
+    "parseAmountToUiAmountInstruction",
+    ()=>parseAmountToUiAmountInstruction,
+    "parseApproveCheckedInstruction",
+    ()=>parseApproveCheckedInstruction,
+    "parseApproveInstruction",
+    ()=>parseApproveInstruction,
+    "parseBurnCheckedInstruction",
+    ()=>parseBurnCheckedInstruction,
+    "parseBurnInstruction",
+    ()=>parseBurnInstruction,
+    "parseCloseAccountInstruction",
+    ()=>parseCloseAccountInstruction,
+    "parseCreateAssociatedTokenIdempotentInstruction",
+    ()=>parseCreateAssociatedTokenIdempotentInstruction,
+    "parseCreateAssociatedTokenInstruction",
+    ()=>parseCreateAssociatedTokenInstruction,
+    "parseFreezeAccountInstruction",
+    ()=>parseFreezeAccountInstruction,
+    "parseGetAccountDataSizeInstruction",
+    ()=>parseGetAccountDataSizeInstruction,
+    "parseInitializeAccount2Instruction",
+    ()=>parseInitializeAccount2Instruction,
+    "parseInitializeAccount3Instruction",
+    ()=>parseInitializeAccount3Instruction,
+    "parseInitializeAccountInstruction",
+    ()=>parseInitializeAccountInstruction,
+    "parseInitializeImmutableOwnerInstruction",
+    ()=>parseInitializeImmutableOwnerInstruction,
+    "parseInitializeMint2Instruction",
+    ()=>parseInitializeMint2Instruction,
+    "parseInitializeMintInstruction",
+    ()=>parseInitializeMintInstruction,
+    "parseInitializeMultisig2Instruction",
+    ()=>parseInitializeMultisig2Instruction,
+    "parseInitializeMultisigInstruction",
+    ()=>parseInitializeMultisigInstruction,
+    "parseMintToCheckedInstruction",
+    ()=>parseMintToCheckedInstruction,
+    "parseMintToInstruction",
+    ()=>parseMintToInstruction,
+    "parseRecoverNestedAssociatedTokenInstruction",
+    ()=>parseRecoverNestedAssociatedTokenInstruction,
+    "parseRevokeInstruction",
+    ()=>parseRevokeInstruction,
+    "parseSetAuthorityInstruction",
+    ()=>parseSetAuthorityInstruction,
+    "parseSyncNativeInstruction",
+    ()=>parseSyncNativeInstruction,
+    "parseThawAccountInstruction",
+    ()=>parseThawAccountInstruction,
+    "parseTransferCheckedInstruction",
+    ()=>parseTransferCheckedInstruction,
+    "parseTransferInstruction",
+    ()=>parseTransferInstruction,
+    "parseUiAmountToAmountInstruction",
+    ()=>parseUiAmountToAmountInstruction
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/Desktop/lazorkit/templates/lazorkit/lazorkit-starter-next/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/lazorkit/templates/lazorkit/lazorkit-starter-next/node_modules/@solana/codecs-data-structures/dist/index.browser.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/lazorkit/templates/lazorkit/lazorkit-starter-next/node_modules/@solana/options/dist/index.browser.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/lazorkit/templates/lazorkit/lazorkit-starter-next/node_modules/@solana/addresses/dist/index.browser.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/lazorkit/templates/lazorkit/lazorkit-starter-next/node_modules/@solana/codecs-numbers/dist/index.browser.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/lazorkit/templates/lazorkit/lazorkit-starter-next/node_modules/@solana/codecs-core/dist/index.browser.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/lazorkit/templates/lazorkit/lazorkit-starter-next/node_modules/@solana/accounts/dist/index.browser.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$programs$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/lazorkit/templates/lazorkit/lazorkit-starter-next/node_modules/@solana/programs/dist/index.browser.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/lazorkit/templates/lazorkit/lazorkit-starter-next/node_modules/@solana/instructions/dist/index.browser.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$strings$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/lazorkit/templates/lazorkit/lazorkit-starter-next/node_modules/@solana/codecs-strings/dist/index.browser.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instruction$2d$plans$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/lazorkit/templates/lazorkit/lazorkit-starter-next/node_modules/@solana/instruction-plans/dist/index.browser.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$signers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/lazorkit/templates/lazorkit/lazorkit-starter-next/node_modules/@solana/signers/dist/index.browser.mjs [app-client] (ecmascript)");
+;
+// src/generated/accounts/mint.ts
+function getMintEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "mintAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])(), {
+                prefix: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU32Encoder"])(),
+                noneValue: "zeroes"
+            })
+        ],
+        [
+            "supply",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Encoder"])()
+        ],
+        [
+            "decimals",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "isInitialized",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getBooleanEncoder"])()
+        ],
+        [
+            "freezeAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])(), {
+                prefix: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU32Encoder"])(),
+                noneValue: "zeroes"
+            })
+        ]
+    ]);
+}
+function getMintDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "mintAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionDecoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressDecoder"])(), {
+                prefix: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU32Decoder"])(),
+                noneValue: "zeroes"
+            })
+        ],
+        [
+            "supply",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Decoder"])()
+        ],
+        [
+            "decimals",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "isInitialized",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getBooleanDecoder"])()
+        ],
+        [
+            "freezeAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionDecoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressDecoder"])(), {
+                prefix: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU32Decoder"])(),
+                noneValue: "zeroes"
+            })
+        ]
+    ]);
+}
+function getMintCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getMintEncoder(), getMintDecoder());
+}
+function decodeMint(encodedAccount) {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["decodeAccount"])(encodedAccount, getMintDecoder());
+}
+async function fetchMint(rpc, address, config) {
+    const maybeAccount = await fetchMaybeMint(rpc, address, config);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["assertAccountExists"])(maybeAccount);
+    return maybeAccount;
+}
+async function fetchMaybeMint(rpc, address, config) {
+    const maybeAccount = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["fetchEncodedAccount"])(rpc, address, config);
+    return decodeMint(maybeAccount);
+}
+async function fetchAllMint(rpc, addresses, config) {
+    const maybeAccounts = await fetchAllMaybeMint(rpc, addresses, config);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["assertAccountsExist"])(maybeAccounts);
+    return maybeAccounts;
+}
+async function fetchAllMaybeMint(rpc, addresses, config) {
+    const maybeAccounts = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["fetchEncodedAccounts"])(rpc, addresses, config);
+    return maybeAccounts.map((maybeAccount)=>decodeMint(maybeAccount));
+}
+function getMintSize() {
+    return 82;
+}
+function getMultisigEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "m",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "n",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "isInitialized",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getBooleanEncoder"])()
+        ],
+        [
+            "signers",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getArrayEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])(), {
+                size: 11
+            })
+        ]
+    ]);
+}
+function getMultisigDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "m",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "n",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "isInitialized",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getBooleanDecoder"])()
+        ],
+        [
+            "signers",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getArrayDecoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressDecoder"])(), {
+                size: 11
+            })
+        ]
+    ]);
+}
+function getMultisigCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getMultisigEncoder(), getMultisigDecoder());
+}
+function decodeMultisig(encodedAccount) {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["decodeAccount"])(encodedAccount, getMultisigDecoder());
+}
+async function fetchMultisig(rpc, address, config) {
+    const maybeAccount = await fetchMaybeMultisig(rpc, address, config);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["assertAccountExists"])(maybeAccount);
+    return maybeAccount;
+}
+async function fetchMaybeMultisig(rpc, address, config) {
+    const maybeAccount = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["fetchEncodedAccount"])(rpc, address, config);
+    return decodeMultisig(maybeAccount);
+}
+async function fetchAllMultisig(rpc, addresses, config) {
+    const maybeAccounts = await fetchAllMaybeMultisig(rpc, addresses, config);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["assertAccountsExist"])(maybeAccounts);
+    return maybeAccounts;
+}
+async function fetchAllMaybeMultisig(rpc, addresses, config) {
+    const maybeAccounts = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["fetchEncodedAccounts"])(rpc, addresses, config);
+    return maybeAccounts.map((maybeAccount)=>decodeMultisig(maybeAccount));
+}
+function getMultisigSize() {
+    return 355;
+}
+var AccountState = /* @__PURE__ */ ((AccountState2)=>{
+    AccountState2[AccountState2["Uninitialized"] = 0] = "Uninitialized";
+    AccountState2[AccountState2["Initialized"] = 1] = "Initialized";
+    AccountState2[AccountState2["Frozen"] = 2] = "Frozen";
+    return AccountState2;
+})(AccountState || {});
+function getAccountStateEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getEnumEncoder"])(AccountState);
+}
+function getAccountStateDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getEnumDecoder"])(AccountState);
+}
+function getAccountStateCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getAccountStateEncoder(), getAccountStateDecoder());
+}
+var AuthorityType = /* @__PURE__ */ ((AuthorityType2)=>{
+    AuthorityType2[AuthorityType2["MintTokens"] = 0] = "MintTokens";
+    AuthorityType2[AuthorityType2["FreezeAccount"] = 1] = "FreezeAccount";
+    AuthorityType2[AuthorityType2["AccountOwner"] = 2] = "AccountOwner";
+    AuthorityType2[AuthorityType2["CloseAccount"] = 3] = "CloseAccount";
+    return AuthorityType2;
+})(AuthorityType || {});
+function getAuthorityTypeEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getEnumEncoder"])(AuthorityType);
+}
+function getAuthorityTypeDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getEnumDecoder"])(AuthorityType);
+}
+function getAuthorityTypeCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getAuthorityTypeEncoder(), getAuthorityTypeDecoder());
+}
+// src/generated/accounts/token.ts
+function getTokenEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "mint",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])()
+        ],
+        [
+            "owner",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Encoder"])()
+        ],
+        [
+            "delegate",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])(), {
+                prefix: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU32Encoder"])(),
+                noneValue: "zeroes"
+            })
+        ],
+        [
+            "state",
+            getAccountStateEncoder()
+        ],
+        [
+            "isNative",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Encoder"])(), {
+                prefix: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU32Encoder"])(),
+                noneValue: "zeroes"
+            })
+        ],
+        [
+            "delegatedAmount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Encoder"])()
+        ],
+        [
+            "closeAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])(), {
+                prefix: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU32Encoder"])(),
+                noneValue: "zeroes"
+            })
+        ]
+    ]);
+}
+function getTokenDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "mint",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressDecoder"])()
+        ],
+        [
+            "owner",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressDecoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Decoder"])()
+        ],
+        [
+            "delegate",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionDecoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressDecoder"])(), {
+                prefix: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU32Decoder"])(),
+                noneValue: "zeroes"
+            })
+        ],
+        [
+            "state",
+            getAccountStateDecoder()
+        ],
+        [
+            "isNative",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionDecoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Decoder"])(), {
+                prefix: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU32Decoder"])(),
+                noneValue: "zeroes"
+            })
+        ],
+        [
+            "delegatedAmount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Decoder"])()
+        ],
+        [
+            "closeAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionDecoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressDecoder"])(), {
+                prefix: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU32Decoder"])(),
+                noneValue: "zeroes"
+            })
+        ]
+    ]);
+}
+function getTokenCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getTokenEncoder(), getTokenDecoder());
+}
+function decodeToken(encodedAccount) {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["decodeAccount"])(encodedAccount, getTokenDecoder());
+}
+async function fetchToken(rpc, address, config) {
+    const maybeAccount = await fetchMaybeToken(rpc, address, config);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["assertAccountExists"])(maybeAccount);
+    return maybeAccount;
+}
+async function fetchMaybeToken(rpc, address, config) {
+    const maybeAccount = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["fetchEncodedAccount"])(rpc, address, config);
+    return decodeToken(maybeAccount);
+}
+async function fetchAllToken(rpc, addresses, config) {
+    const maybeAccounts = await fetchAllMaybeToken(rpc, addresses, config);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["assertAccountsExist"])(maybeAccounts);
+    return maybeAccounts;
+}
+async function fetchAllMaybeToken(rpc, addresses, config) {
+    const maybeAccounts = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["fetchEncodedAccounts"])(rpc, addresses, config);
+    return maybeAccounts.map((maybeAccount)=>decodeToken(maybeAccount));
+}
+function getTokenSize() {
+    return 165;
+}
+var ASSOCIATED_TOKEN_PROGRAM_ADDRESS = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL";
+var AssociatedTokenInstruction = /* @__PURE__ */ ((AssociatedTokenInstruction2)=>{
+    AssociatedTokenInstruction2[AssociatedTokenInstruction2["CreateAssociatedToken"] = 0] = "CreateAssociatedToken";
+    AssociatedTokenInstruction2[AssociatedTokenInstruction2["CreateAssociatedTokenIdempotent"] = 1] = "CreateAssociatedTokenIdempotent";
+    AssociatedTokenInstruction2[AssociatedTokenInstruction2["RecoverNestedAssociatedToken"] = 2] = "RecoverNestedAssociatedToken";
+    return AssociatedTokenInstruction2;
+})(AssociatedTokenInstruction || {});
+function identifyAssociatedTokenInstruction(instruction) {
+    const data = "data" in instruction ? instruction.data : instruction;
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(0), 0)) {
+        return 0 /* CreateAssociatedToken */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(1), 0)) {
+        return 1 /* CreateAssociatedTokenIdempotent */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(2), 0)) {
+        return 2 /* RecoverNestedAssociatedToken */ ;
+    }
+    throw new Error("The provided instruction could not be identified as a associatedToken instruction.");
+}
+var TOKEN_PROGRAM_ADDRESS = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+var TokenAccount = /* @__PURE__ */ ((TokenAccount2)=>{
+    TokenAccount2[TokenAccount2["Mint"] = 0] = "Mint";
+    TokenAccount2[TokenAccount2["Token"] = 1] = "Token";
+    TokenAccount2[TokenAccount2["Multisig"] = 2] = "Multisig";
+    return TokenAccount2;
+})(TokenAccount || {});
+function identifyTokenAccount(account) {
+    const data = "data" in account ? account.data : account;
+    if (data.length === 82) {
+        return 0 /* Mint */ ;
+    }
+    if (data.length === 165) {
+        return 1 /* Token */ ;
+    }
+    if (data.length === 355) {
+        return 2 /* Multisig */ ;
+    }
+    throw new Error("The provided account could not be identified as a token account.");
+}
+var TokenInstruction = /* @__PURE__ */ ((TokenInstruction2)=>{
+    TokenInstruction2[TokenInstruction2["InitializeMint"] = 0] = "InitializeMint";
+    TokenInstruction2[TokenInstruction2["InitializeAccount"] = 1] = "InitializeAccount";
+    TokenInstruction2[TokenInstruction2["InitializeMultisig"] = 2] = "InitializeMultisig";
+    TokenInstruction2[TokenInstruction2["Transfer"] = 3] = "Transfer";
+    TokenInstruction2[TokenInstruction2["Approve"] = 4] = "Approve";
+    TokenInstruction2[TokenInstruction2["Revoke"] = 5] = "Revoke";
+    TokenInstruction2[TokenInstruction2["SetAuthority"] = 6] = "SetAuthority";
+    TokenInstruction2[TokenInstruction2["MintTo"] = 7] = "MintTo";
+    TokenInstruction2[TokenInstruction2["Burn"] = 8] = "Burn";
+    TokenInstruction2[TokenInstruction2["CloseAccount"] = 9] = "CloseAccount";
+    TokenInstruction2[TokenInstruction2["FreezeAccount"] = 10] = "FreezeAccount";
+    TokenInstruction2[TokenInstruction2["ThawAccount"] = 11] = "ThawAccount";
+    TokenInstruction2[TokenInstruction2["TransferChecked"] = 12] = "TransferChecked";
+    TokenInstruction2[TokenInstruction2["ApproveChecked"] = 13] = "ApproveChecked";
+    TokenInstruction2[TokenInstruction2["MintToChecked"] = 14] = "MintToChecked";
+    TokenInstruction2[TokenInstruction2["BurnChecked"] = 15] = "BurnChecked";
+    TokenInstruction2[TokenInstruction2["InitializeAccount2"] = 16] = "InitializeAccount2";
+    TokenInstruction2[TokenInstruction2["SyncNative"] = 17] = "SyncNative";
+    TokenInstruction2[TokenInstruction2["InitializeAccount3"] = 18] = "InitializeAccount3";
+    TokenInstruction2[TokenInstruction2["InitializeMultisig2"] = 19] = "InitializeMultisig2";
+    TokenInstruction2[TokenInstruction2["InitializeMint2"] = 20] = "InitializeMint2";
+    TokenInstruction2[TokenInstruction2["GetAccountDataSize"] = 21] = "GetAccountDataSize";
+    TokenInstruction2[TokenInstruction2["InitializeImmutableOwner"] = 22] = "InitializeImmutableOwner";
+    TokenInstruction2[TokenInstruction2["AmountToUiAmount"] = 23] = "AmountToUiAmount";
+    TokenInstruction2[TokenInstruction2["UiAmountToAmount"] = 24] = "UiAmountToAmount";
+    return TokenInstruction2;
+})(TokenInstruction || {});
+function identifyTokenInstruction(instruction) {
+    const data = "data" in instruction ? instruction.data : instruction;
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(0), 0)) {
+        return 0 /* InitializeMint */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(1), 0)) {
+        return 1 /* InitializeAccount */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(2), 0)) {
+        return 2 /* InitializeMultisig */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(3), 0)) {
+        return 3 /* Transfer */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(4), 0)) {
+        return 4 /* Approve */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(5), 0)) {
+        return 5 /* Revoke */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(6), 0)) {
+        return 6 /* SetAuthority */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(7), 0)) {
+        return 7 /* MintTo */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(8), 0)) {
+        return 8 /* Burn */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(9), 0)) {
+        return 9 /* CloseAccount */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(10), 0)) {
+        return 10 /* FreezeAccount */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(11), 0)) {
+        return 11 /* ThawAccount */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(12), 0)) {
+        return 12 /* TransferChecked */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(13), 0)) {
+        return 13 /* ApproveChecked */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(14), 0)) {
+        return 14 /* MintToChecked */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(15), 0)) {
+        return 15 /* BurnChecked */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(16), 0)) {
+        return 16 /* InitializeAccount2 */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(17), 0)) {
+        return 17 /* SyncNative */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(18), 0)) {
+        return 18 /* InitializeAccount3 */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(19), 0)) {
+        return 19 /* InitializeMultisig2 */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(20), 0)) {
+        return 20 /* InitializeMint2 */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(21), 0)) {
+        return 21 /* GetAccountDataSize */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(22), 0)) {
+        return 22 /* InitializeImmutableOwner */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(23), 0)) {
+        return 23 /* AmountToUiAmount */ ;
+    }
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["containsBytes"])(data, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(24), 0)) {
+        return 24 /* UiAmountToAmount */ ;
+    }
+    throw new Error("The provided instruction could not be identified as a token instruction.");
+}
+// src/generated/errors/associatedToken.ts
+var ASSOCIATED_TOKEN_ERROR__INVALID_OWNER = 0;
+var associatedTokenErrorMessages;
+if (("TURBOPACK compile-time value", "development") !== "production") {
+    associatedTokenErrorMessages = {
+        [ASSOCIATED_TOKEN_ERROR__INVALID_OWNER]: "Associated token account owner does not match address derivation"
+    };
+}
+function getAssociatedTokenErrorMessage(code) {
+    if ("TURBOPACK compile-time truthy", 1) {
+        return associatedTokenErrorMessages[code];
+    }
+    //TURBOPACK unreachable
+    ;
+}
+function isAssociatedTokenError(error, transactionMessage, code) {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$programs$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["isProgramError"])(error, transactionMessage, ASSOCIATED_TOKEN_PROGRAM_ADDRESS, code);
+}
+var TOKEN_ERROR__NOT_RENT_EXEMPT = 0;
+var TOKEN_ERROR__INSUFFICIENT_FUNDS = 1;
+var TOKEN_ERROR__INVALID_MINT = 2;
+var TOKEN_ERROR__MINT_MISMATCH = 3;
+var TOKEN_ERROR__OWNER_MISMATCH = 4;
+var TOKEN_ERROR__FIXED_SUPPLY = 5;
+var TOKEN_ERROR__ALREADY_IN_USE = 6;
+var TOKEN_ERROR__INVALID_NUMBER_OF_PROVIDED_SIGNERS = 7;
+var TOKEN_ERROR__INVALID_NUMBER_OF_REQUIRED_SIGNERS = 8;
+var TOKEN_ERROR__UNINITIALIZED_STATE = 9;
+var TOKEN_ERROR__NATIVE_NOT_SUPPORTED = 10;
+var TOKEN_ERROR__NON_NATIVE_HAS_BALANCE = 11;
+var TOKEN_ERROR__INVALID_INSTRUCTION = 12;
+var TOKEN_ERROR__INVALID_STATE = 13;
+var TOKEN_ERROR__OVERFLOW = 14;
+var TOKEN_ERROR__AUTHORITY_TYPE_NOT_SUPPORTED = 15;
+var TOKEN_ERROR__MINT_CANNOT_FREEZE = 16;
+var TOKEN_ERROR__ACCOUNT_FROZEN = 17;
+var TOKEN_ERROR__MINT_DECIMALS_MISMATCH = 18;
+var TOKEN_ERROR__NON_NATIVE_NOT_SUPPORTED = 19;
+var tokenErrorMessages;
+if (("TURBOPACK compile-time value", "development") !== "production") {
+    tokenErrorMessages = {
+        [TOKEN_ERROR__ACCOUNT_FROZEN]: "Account is frozen",
+        [TOKEN_ERROR__ALREADY_IN_USE]: "Already in use",
+        [TOKEN_ERROR__AUTHORITY_TYPE_NOT_SUPPORTED]: "Account does not support specified authority type",
+        [TOKEN_ERROR__FIXED_SUPPLY]: "Fixed supply",
+        [TOKEN_ERROR__INSUFFICIENT_FUNDS]: "Insufficient funds",
+        [TOKEN_ERROR__INVALID_INSTRUCTION]: "Invalid instruction",
+        [TOKEN_ERROR__INVALID_MINT]: "Invalid Mint",
+        [TOKEN_ERROR__INVALID_NUMBER_OF_PROVIDED_SIGNERS]: "Invalid number of provided signers",
+        [TOKEN_ERROR__INVALID_NUMBER_OF_REQUIRED_SIGNERS]: "Invalid number of required signers",
+        [TOKEN_ERROR__INVALID_STATE]: "State is invalid for requested operation",
+        [TOKEN_ERROR__MINT_CANNOT_FREEZE]: "This token mint cannot freeze accounts",
+        [TOKEN_ERROR__MINT_DECIMALS_MISMATCH]: "The provided decimals value different from the Mint decimals",
+        [TOKEN_ERROR__MINT_MISMATCH]: "Account not associated with this Mint",
+        [TOKEN_ERROR__NATIVE_NOT_SUPPORTED]: "Instruction does not support native tokens",
+        [TOKEN_ERROR__NON_NATIVE_HAS_BALANCE]: "Non-native account can only be closed if its balance is zero",
+        [TOKEN_ERROR__NON_NATIVE_NOT_SUPPORTED]: "Instruction does not support non-native tokens",
+        [TOKEN_ERROR__NOT_RENT_EXEMPT]: "Lamport balance below rent-exempt threshold",
+        [TOKEN_ERROR__OVERFLOW]: "Operation overflowed",
+        [TOKEN_ERROR__OWNER_MISMATCH]: "Owner does not match",
+        [TOKEN_ERROR__UNINITIALIZED_STATE]: "State is unititialized"
+    };
+}
+function getTokenErrorMessage(code) {
+    if ("TURBOPACK compile-time truthy", 1) {
+        return tokenErrorMessages[code];
+    }
+    //TURBOPACK unreachable
+    ;
+}
+function isTokenError(error, transactionMessage, code) {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$programs$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["isProgramError"])(error, transactionMessage, TOKEN_PROGRAM_ADDRESS, code);
+}
+function expectAddress(value) {
+    if (!value) {
+        throw new Error("Expected a Address.");
+    }
+    if (typeof value === "object" && "address" in value) {
+        return value.address;
+    }
+    if (Array.isArray(value)) {
+        return value[0];
+    }
+    return value;
+}
+function getAccountMetaFactory(programAddress, optionalAccountStrategy) {
+    return (account)=>{
+        if (!account.value) {
+            return Object.freeze({
+                address: programAddress,
+                role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY
+            });
+        }
+        const writableRole = account.isWritable ? __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].WRITABLE : __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY;
+        return Object.freeze({
+            address: expectAddress(account.value),
+            role: isTransactionSigner(account.value) ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["upgradeRoleToSigner"])(writableRole) : writableRole,
+            ...isTransactionSigner(account.value) ? {
+                signer: account.value
+            } : {}
+        });
+    };
+}
+function isTransactionSigner(value) {
+    return !!value && typeof value === "object" && "address" in value && (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$signers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["isTransactionSigner"])(value);
+}
+// src/generated/instructions/amountToUiAmount.ts
+var AMOUNT_TO_UI_AMOUNT_DISCRIMINATOR = 23;
+function getAmountToUiAmountDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(AMOUNT_TO_UI_AMOUNT_DISCRIMINATOR);
+}
+function getAmountToUiAmountInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: AMOUNT_TO_UI_AMOUNT_DISCRIMINATOR
+        }));
+}
+function getAmountToUiAmountInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Decoder"])()
+        ]
+    ]);
+}
+function getAmountToUiAmountInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getAmountToUiAmountInstructionDataEncoder(), getAmountToUiAmountInstructionDataDecoder());
+}
+function getAmountToUiAmountInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_mint;
+    const originalAccounts = {
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.mint)
+        ],
+        data: getAmountToUiAmountInstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseAmountToUiAmountInstruction(instruction) {
+    if (instruction.accounts.length < 1) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            mint: getNextAccount()
+        },
+        data: getAmountToUiAmountInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var APPROVE_DISCRIMINATOR = 4;
+function getApproveDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(APPROVE_DISCRIMINATOR);
+}
+function getApproveInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: APPROVE_DISCRIMINATOR
+        }));
+}
+function getApproveInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Decoder"])()
+        ]
+    ]);
+}
+function getApproveInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getApproveInstructionDataEncoder(), getApproveInstructionDataDecoder());
+}
+function getApproveInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_source, _input_delegate, _input_owner;
+    const originalAccounts = {
+        source: {
+            value: (_input_source = input.source) !== null && _input_source !== void 0 ? _input_source : null,
+            isWritable: true
+        },
+        delegate: {
+            value: (_input_delegate = input.delegate) !== null && _input_delegate !== void 0 ? _input_delegate : null,
+            isWritable: false
+        },
+        owner: {
+            value: (_input_owner = input.owner) !== null && _input_owner !== void 0 ? _input_owner : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    var _args_multiSigners;
+    const remainingAccounts = ((_args_multiSigners = args.multiSigners) !== null && _args_multiSigners !== void 0 ? _args_multiSigners : []).map((signer)=>({
+            address: signer.address,
+            role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY_SIGNER,
+            signer
+        }));
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.source),
+            getAccountMeta(accounts.delegate),
+            getAccountMeta(accounts.owner),
+            ...remainingAccounts
+        ],
+        data: getApproveInstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseApproveInstruction(instruction) {
+    if (instruction.accounts.length < 3) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            source: getNextAccount(),
+            delegate: getNextAccount(),
+            owner: getNextAccount()
+        },
+        data: getApproveInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var APPROVE_CHECKED_DISCRIMINATOR = 13;
+function getApproveCheckedDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(APPROVE_CHECKED_DISCRIMINATOR);
+}
+function getApproveCheckedInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Encoder"])()
+        ],
+        [
+            "decimals",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: APPROVE_CHECKED_DISCRIMINATOR
+        }));
+}
+function getApproveCheckedInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Decoder"])()
+        ],
+        [
+            "decimals",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getApproveCheckedInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getApproveCheckedInstructionDataEncoder(), getApproveCheckedInstructionDataDecoder());
+}
+function getApproveCheckedInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_source, _input_mint, _input_delegate, _input_owner;
+    const originalAccounts = {
+        source: {
+            value: (_input_source = input.source) !== null && _input_source !== void 0 ? _input_source : null,
+            isWritable: true
+        },
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: false
+        },
+        delegate: {
+            value: (_input_delegate = input.delegate) !== null && _input_delegate !== void 0 ? _input_delegate : null,
+            isWritable: false
+        },
+        owner: {
+            value: (_input_owner = input.owner) !== null && _input_owner !== void 0 ? _input_owner : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    var _args_multiSigners;
+    const remainingAccounts = ((_args_multiSigners = args.multiSigners) !== null && _args_multiSigners !== void 0 ? _args_multiSigners : []).map((signer)=>({
+            address: signer.address,
+            role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY_SIGNER,
+            signer
+        }));
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.source),
+            getAccountMeta(accounts.mint),
+            getAccountMeta(accounts.delegate),
+            getAccountMeta(accounts.owner),
+            ...remainingAccounts
+        ],
+        data: getApproveCheckedInstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseApproveCheckedInstruction(instruction) {
+    if (instruction.accounts.length < 4) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            source: getNextAccount(),
+            mint: getNextAccount(),
+            delegate: getNextAccount(),
+            owner: getNextAccount()
+        },
+        data: getApproveCheckedInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var BURN_DISCRIMINATOR = 8;
+function getBurnDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(BURN_DISCRIMINATOR);
+}
+function getBurnInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: BURN_DISCRIMINATOR
+        }));
+}
+function getBurnInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Decoder"])()
+        ]
+    ]);
+}
+function getBurnInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getBurnInstructionDataEncoder(), getBurnInstructionDataDecoder());
+}
+function getBurnInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_account, _input_mint, _input_authority;
+    const originalAccounts = {
+        account: {
+            value: (_input_account = input.account) !== null && _input_account !== void 0 ? _input_account : null,
+            isWritable: true
+        },
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: true
+        },
+        authority: {
+            value: (_input_authority = input.authority) !== null && _input_authority !== void 0 ? _input_authority : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    var _args_multiSigners;
+    const remainingAccounts = ((_args_multiSigners = args.multiSigners) !== null && _args_multiSigners !== void 0 ? _args_multiSigners : []).map((signer)=>({
+            address: signer.address,
+            role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY_SIGNER,
+            signer
+        }));
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.account),
+            getAccountMeta(accounts.mint),
+            getAccountMeta(accounts.authority),
+            ...remainingAccounts
+        ],
+        data: getBurnInstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseBurnInstruction(instruction) {
+    if (instruction.accounts.length < 3) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            account: getNextAccount(),
+            mint: getNextAccount(),
+            authority: getNextAccount()
+        },
+        data: getBurnInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var BURN_CHECKED_DISCRIMINATOR = 15;
+function getBurnCheckedDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(BURN_CHECKED_DISCRIMINATOR);
+}
+function getBurnCheckedInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Encoder"])()
+        ],
+        [
+            "decimals",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: BURN_CHECKED_DISCRIMINATOR
+        }));
+}
+function getBurnCheckedInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Decoder"])()
+        ],
+        [
+            "decimals",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getBurnCheckedInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getBurnCheckedInstructionDataEncoder(), getBurnCheckedInstructionDataDecoder());
+}
+function getBurnCheckedInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_account, _input_mint, _input_authority;
+    const originalAccounts = {
+        account: {
+            value: (_input_account = input.account) !== null && _input_account !== void 0 ? _input_account : null,
+            isWritable: true
+        },
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: true
+        },
+        authority: {
+            value: (_input_authority = input.authority) !== null && _input_authority !== void 0 ? _input_authority : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    var _args_multiSigners;
+    const remainingAccounts = ((_args_multiSigners = args.multiSigners) !== null && _args_multiSigners !== void 0 ? _args_multiSigners : []).map((signer)=>({
+            address: signer.address,
+            role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY_SIGNER,
+            signer
+        }));
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.account),
+            getAccountMeta(accounts.mint),
+            getAccountMeta(accounts.authority),
+            ...remainingAccounts
+        ],
+        data: getBurnCheckedInstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseBurnCheckedInstruction(instruction) {
+    if (instruction.accounts.length < 3) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            account: getNextAccount(),
+            mint: getNextAccount(),
+            authority: getNextAccount()
+        },
+        data: getBurnCheckedInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var CLOSE_ACCOUNT_DISCRIMINATOR = 9;
+function getCloseAccountDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(CLOSE_ACCOUNT_DISCRIMINATOR);
+}
+function getCloseAccountInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: CLOSE_ACCOUNT_DISCRIMINATOR
+        }));
+}
+function getCloseAccountInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getCloseAccountInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getCloseAccountInstructionDataEncoder(), getCloseAccountInstructionDataDecoder());
+}
+function getCloseAccountInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_account, _input_destination, _input_owner;
+    const originalAccounts = {
+        account: {
+            value: (_input_account = input.account) !== null && _input_account !== void 0 ? _input_account : null,
+            isWritable: true
+        },
+        destination: {
+            value: (_input_destination = input.destination) !== null && _input_destination !== void 0 ? _input_destination : null,
+            isWritable: true
+        },
+        owner: {
+            value: (_input_owner = input.owner) !== null && _input_owner !== void 0 ? _input_owner : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    var _args_multiSigners;
+    const remainingAccounts = ((_args_multiSigners = args.multiSigners) !== null && _args_multiSigners !== void 0 ? _args_multiSigners : []).map((signer)=>({
+            address: signer.address,
+            role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY_SIGNER,
+            signer
+        }));
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.account),
+            getAccountMeta(accounts.destination),
+            getAccountMeta(accounts.owner),
+            ...remainingAccounts
+        ],
+        data: getCloseAccountInstructionDataEncoder().encode({}),
+        programAddress
+    });
+}
+function parseCloseAccountInstruction(instruction) {
+    if (instruction.accounts.length < 3) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            account: getNextAccount(),
+            destination: getNextAccount(),
+            owner: getNextAccount()
+        },
+        data: getCloseAccountInstructionDataDecoder().decode(instruction.data)
+    };
+}
+async function findAssociatedTokenPda(seeds) {
+    let config = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+    const { programAddress = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL" } = config;
+    return await (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getProgramDerivedAddress"])({
+        programAddress,
+        seeds: [
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])().encode(seeds.owner),
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])().encode(seeds.tokenProgram),
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])().encode(seeds.mint)
+        ]
+    });
+}
+// src/generated/instructions/createAssociatedToken.ts
+var CREATE_ASSOCIATED_TOKEN_DISCRIMINATOR = 0;
+function getCreateAssociatedTokenDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(CREATE_ASSOCIATED_TOKEN_DISCRIMINATOR);
+}
+function getCreateAssociatedTokenInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: CREATE_ASSOCIATED_TOKEN_DISCRIMINATOR
+        }));
+}
+function getCreateAssociatedTokenInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getCreateAssociatedTokenInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getCreateAssociatedTokenInstructionDataEncoder(), getCreateAssociatedTokenInstructionDataDecoder());
+}
+async function getCreateAssociatedTokenInstructionAsync(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : ASSOCIATED_TOKEN_PROGRAM_ADDRESS;
+    var _input_payer, _input_ata, _input_owner, _input_mint, _input_systemProgram, _input_tokenProgram;
+    const originalAccounts = {
+        payer: {
+            value: (_input_payer = input.payer) !== null && _input_payer !== void 0 ? _input_payer : null,
+            isWritable: true
+        },
+        ata: {
+            value: (_input_ata = input.ata) !== null && _input_ata !== void 0 ? _input_ata : null,
+            isWritable: true
+        },
+        owner: {
+            value: (_input_owner = input.owner) !== null && _input_owner !== void 0 ? _input_owner : null,
+            isWritable: false
+        },
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: false
+        },
+        systemProgram: {
+            value: (_input_systemProgram = input.systemProgram) !== null && _input_systemProgram !== void 0 ? _input_systemProgram : null,
+            isWritable: false
+        },
+        tokenProgram: {
+            value: (_input_tokenProgram = input.tokenProgram) !== null && _input_tokenProgram !== void 0 ? _input_tokenProgram : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    if (!accounts.tokenProgram.value) {
+        accounts.tokenProgram.value = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+    }
+    if (!accounts.ata.value) {
+        accounts.ata.value = await findAssociatedTokenPda({
+            owner: expectAddress(accounts.owner.value),
+            tokenProgram: expectAddress(accounts.tokenProgram.value),
+            mint: expectAddress(accounts.mint.value)
+        });
+    }
+    if (!accounts.systemProgram.value) {
+        accounts.systemProgram.value = "11111111111111111111111111111111";
+    }
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.payer),
+            getAccountMeta(accounts.ata),
+            getAccountMeta(accounts.owner),
+            getAccountMeta(accounts.mint),
+            getAccountMeta(accounts.systemProgram),
+            getAccountMeta(accounts.tokenProgram)
+        ],
+        data: getCreateAssociatedTokenInstructionDataEncoder().encode({}),
+        programAddress
+    });
+}
+function getCreateAssociatedTokenInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : ASSOCIATED_TOKEN_PROGRAM_ADDRESS;
+    var _input_payer, _input_ata, _input_owner, _input_mint, _input_systemProgram, _input_tokenProgram;
+    const originalAccounts = {
+        payer: {
+            value: (_input_payer = input.payer) !== null && _input_payer !== void 0 ? _input_payer : null,
+            isWritable: true
+        },
+        ata: {
+            value: (_input_ata = input.ata) !== null && _input_ata !== void 0 ? _input_ata : null,
+            isWritable: true
+        },
+        owner: {
+            value: (_input_owner = input.owner) !== null && _input_owner !== void 0 ? _input_owner : null,
+            isWritable: false
+        },
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: false
+        },
+        systemProgram: {
+            value: (_input_systemProgram = input.systemProgram) !== null && _input_systemProgram !== void 0 ? _input_systemProgram : null,
+            isWritable: false
+        },
+        tokenProgram: {
+            value: (_input_tokenProgram = input.tokenProgram) !== null && _input_tokenProgram !== void 0 ? _input_tokenProgram : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    if (!accounts.tokenProgram.value) {
+        accounts.tokenProgram.value = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+    }
+    if (!accounts.systemProgram.value) {
+        accounts.systemProgram.value = "11111111111111111111111111111111";
+    }
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.payer),
+            getAccountMeta(accounts.ata),
+            getAccountMeta(accounts.owner),
+            getAccountMeta(accounts.mint),
+            getAccountMeta(accounts.systemProgram),
+            getAccountMeta(accounts.tokenProgram)
+        ],
+        data: getCreateAssociatedTokenInstructionDataEncoder().encode({}),
+        programAddress
+    });
+}
+function parseCreateAssociatedTokenInstruction(instruction) {
+    if (instruction.accounts.length < 6) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            payer: getNextAccount(),
+            ata: getNextAccount(),
+            owner: getNextAccount(),
+            mint: getNextAccount(),
+            systemProgram: getNextAccount(),
+            tokenProgram: getNextAccount()
+        },
+        data: getCreateAssociatedTokenInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var CREATE_ASSOCIATED_TOKEN_IDEMPOTENT_DISCRIMINATOR = 1;
+function getCreateAssociatedTokenIdempotentDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(CREATE_ASSOCIATED_TOKEN_IDEMPOTENT_DISCRIMINATOR);
+}
+function getCreateAssociatedTokenIdempotentInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: CREATE_ASSOCIATED_TOKEN_IDEMPOTENT_DISCRIMINATOR
+        }));
+}
+function getCreateAssociatedTokenIdempotentInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getCreateAssociatedTokenIdempotentInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getCreateAssociatedTokenIdempotentInstructionDataEncoder(), getCreateAssociatedTokenIdempotentInstructionDataDecoder());
+}
+async function getCreateAssociatedTokenIdempotentInstructionAsync(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : ASSOCIATED_TOKEN_PROGRAM_ADDRESS;
+    var _input_payer, _input_ata, _input_owner, _input_mint, _input_systemProgram, _input_tokenProgram;
+    const originalAccounts = {
+        payer: {
+            value: (_input_payer = input.payer) !== null && _input_payer !== void 0 ? _input_payer : null,
+            isWritable: true
+        },
+        ata: {
+            value: (_input_ata = input.ata) !== null && _input_ata !== void 0 ? _input_ata : null,
+            isWritable: true
+        },
+        owner: {
+            value: (_input_owner = input.owner) !== null && _input_owner !== void 0 ? _input_owner : null,
+            isWritable: false
+        },
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: false
+        },
+        systemProgram: {
+            value: (_input_systemProgram = input.systemProgram) !== null && _input_systemProgram !== void 0 ? _input_systemProgram : null,
+            isWritable: false
+        },
+        tokenProgram: {
+            value: (_input_tokenProgram = input.tokenProgram) !== null && _input_tokenProgram !== void 0 ? _input_tokenProgram : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    if (!accounts.tokenProgram.value) {
+        accounts.tokenProgram.value = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+    }
+    if (!accounts.ata.value) {
+        accounts.ata.value = await findAssociatedTokenPda({
+            owner: expectAddress(accounts.owner.value),
+            tokenProgram: expectAddress(accounts.tokenProgram.value),
+            mint: expectAddress(accounts.mint.value)
+        });
+    }
+    if (!accounts.systemProgram.value) {
+        accounts.systemProgram.value = "11111111111111111111111111111111";
+    }
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.payer),
+            getAccountMeta(accounts.ata),
+            getAccountMeta(accounts.owner),
+            getAccountMeta(accounts.mint),
+            getAccountMeta(accounts.systemProgram),
+            getAccountMeta(accounts.tokenProgram)
+        ],
+        data: getCreateAssociatedTokenIdempotentInstructionDataEncoder().encode({}),
+        programAddress
+    });
+}
+function getCreateAssociatedTokenIdempotentInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : ASSOCIATED_TOKEN_PROGRAM_ADDRESS;
+    var _input_payer, _input_ata, _input_owner, _input_mint, _input_systemProgram, _input_tokenProgram;
+    const originalAccounts = {
+        payer: {
+            value: (_input_payer = input.payer) !== null && _input_payer !== void 0 ? _input_payer : null,
+            isWritable: true
+        },
+        ata: {
+            value: (_input_ata = input.ata) !== null && _input_ata !== void 0 ? _input_ata : null,
+            isWritable: true
+        },
+        owner: {
+            value: (_input_owner = input.owner) !== null && _input_owner !== void 0 ? _input_owner : null,
+            isWritable: false
+        },
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: false
+        },
+        systemProgram: {
+            value: (_input_systemProgram = input.systemProgram) !== null && _input_systemProgram !== void 0 ? _input_systemProgram : null,
+            isWritable: false
+        },
+        tokenProgram: {
+            value: (_input_tokenProgram = input.tokenProgram) !== null && _input_tokenProgram !== void 0 ? _input_tokenProgram : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    if (!accounts.tokenProgram.value) {
+        accounts.tokenProgram.value = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+    }
+    if (!accounts.systemProgram.value) {
+        accounts.systemProgram.value = "11111111111111111111111111111111";
+    }
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.payer),
+            getAccountMeta(accounts.ata),
+            getAccountMeta(accounts.owner),
+            getAccountMeta(accounts.mint),
+            getAccountMeta(accounts.systemProgram),
+            getAccountMeta(accounts.tokenProgram)
+        ],
+        data: getCreateAssociatedTokenIdempotentInstructionDataEncoder().encode({}),
+        programAddress
+    });
+}
+function parseCreateAssociatedTokenIdempotentInstruction(instruction) {
+    if (instruction.accounts.length < 6) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            payer: getNextAccount(),
+            ata: getNextAccount(),
+            owner: getNextAccount(),
+            mint: getNextAccount(),
+            systemProgram: getNextAccount(),
+            tokenProgram: getNextAccount()
+        },
+        data: getCreateAssociatedTokenIdempotentInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var FREEZE_ACCOUNT_DISCRIMINATOR = 10;
+function getFreezeAccountDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(FREEZE_ACCOUNT_DISCRIMINATOR);
+}
+function getFreezeAccountInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: FREEZE_ACCOUNT_DISCRIMINATOR
+        }));
+}
+function getFreezeAccountInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getFreezeAccountInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getFreezeAccountInstructionDataEncoder(), getFreezeAccountInstructionDataDecoder());
+}
+function getFreezeAccountInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_account, _input_mint, _input_owner;
+    const originalAccounts = {
+        account: {
+            value: (_input_account = input.account) !== null && _input_account !== void 0 ? _input_account : null,
+            isWritable: true
+        },
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: false
+        },
+        owner: {
+            value: (_input_owner = input.owner) !== null && _input_owner !== void 0 ? _input_owner : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    var _args_multiSigners;
+    const remainingAccounts = ((_args_multiSigners = args.multiSigners) !== null && _args_multiSigners !== void 0 ? _args_multiSigners : []).map((signer)=>({
+            address: signer.address,
+            role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY_SIGNER,
+            signer
+        }));
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.account),
+            getAccountMeta(accounts.mint),
+            getAccountMeta(accounts.owner),
+            ...remainingAccounts
+        ],
+        data: getFreezeAccountInstructionDataEncoder().encode({}),
+        programAddress
+    });
+}
+function parseFreezeAccountInstruction(instruction) {
+    if (instruction.accounts.length < 3) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            account: getNextAccount(),
+            mint: getNextAccount(),
+            owner: getNextAccount()
+        },
+        data: getFreezeAccountInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var GET_ACCOUNT_DATA_SIZE_DISCRIMINATOR = 21;
+function getGetAccountDataSizeDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(GET_ACCOUNT_DATA_SIZE_DISCRIMINATOR);
+}
+function getGetAccountDataSizeInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: GET_ACCOUNT_DATA_SIZE_DISCRIMINATOR
+        }));
+}
+function getGetAccountDataSizeInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getGetAccountDataSizeInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getGetAccountDataSizeInstructionDataEncoder(), getGetAccountDataSizeInstructionDataDecoder());
+}
+function getGetAccountDataSizeInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_mint;
+    const originalAccounts = {
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.mint)
+        ],
+        data: getGetAccountDataSizeInstructionDataEncoder().encode({}),
+        programAddress
+    });
+}
+function parseGetAccountDataSizeInstruction(instruction) {
+    if (instruction.accounts.length < 1) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            mint: getNextAccount()
+        },
+        data: getGetAccountDataSizeInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var INITIALIZE_ACCOUNT_DISCRIMINATOR = 1;
+function getInitializeAccountDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(INITIALIZE_ACCOUNT_DISCRIMINATOR);
+}
+function getInitializeAccountInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: INITIALIZE_ACCOUNT_DISCRIMINATOR
+        }));
+}
+function getInitializeAccountInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getInitializeAccountInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getInitializeAccountInstructionDataEncoder(), getInitializeAccountInstructionDataDecoder());
+}
+function getInitializeAccountInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_account, _input_mint, _input_owner, _input_rent;
+    const originalAccounts = {
+        account: {
+            value: (_input_account = input.account) !== null && _input_account !== void 0 ? _input_account : null,
+            isWritable: true
+        },
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: false
+        },
+        owner: {
+            value: (_input_owner = input.owner) !== null && _input_owner !== void 0 ? _input_owner : null,
+            isWritable: false
+        },
+        rent: {
+            value: (_input_rent = input.rent) !== null && _input_rent !== void 0 ? _input_rent : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    if (!accounts.rent.value) {
+        accounts.rent.value = "SysvarRent111111111111111111111111111111111";
+    }
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.account),
+            getAccountMeta(accounts.mint),
+            getAccountMeta(accounts.owner),
+            getAccountMeta(accounts.rent)
+        ],
+        data: getInitializeAccountInstructionDataEncoder().encode({}),
+        programAddress
+    });
+}
+function parseInitializeAccountInstruction(instruction) {
+    if (instruction.accounts.length < 4) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            account: getNextAccount(),
+            mint: getNextAccount(),
+            owner: getNextAccount(),
+            rent: getNextAccount()
+        },
+        data: getInitializeAccountInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var INITIALIZE_ACCOUNT2_DISCRIMINATOR = 16;
+function getInitializeAccount2DiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(INITIALIZE_ACCOUNT2_DISCRIMINATOR);
+}
+function getInitializeAccount2InstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "owner",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: INITIALIZE_ACCOUNT2_DISCRIMINATOR
+        }));
+}
+function getInitializeAccount2InstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "owner",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressDecoder"])()
+        ]
+    ]);
+}
+function getInitializeAccount2InstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getInitializeAccount2InstructionDataEncoder(), getInitializeAccount2InstructionDataDecoder());
+}
+function getInitializeAccount2Instruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_account, _input_mint, _input_rent;
+    const originalAccounts = {
+        account: {
+            value: (_input_account = input.account) !== null && _input_account !== void 0 ? _input_account : null,
+            isWritable: true
+        },
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: false
+        },
+        rent: {
+            value: (_input_rent = input.rent) !== null && _input_rent !== void 0 ? _input_rent : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    if (!accounts.rent.value) {
+        accounts.rent.value = "SysvarRent111111111111111111111111111111111";
+    }
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.account),
+            getAccountMeta(accounts.mint),
+            getAccountMeta(accounts.rent)
+        ],
+        data: getInitializeAccount2InstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseInitializeAccount2Instruction(instruction) {
+    if (instruction.accounts.length < 3) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            account: getNextAccount(),
+            mint: getNextAccount(),
+            rent: getNextAccount()
+        },
+        data: getInitializeAccount2InstructionDataDecoder().decode(instruction.data)
+    };
+}
+var INITIALIZE_ACCOUNT3_DISCRIMINATOR = 18;
+function getInitializeAccount3DiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(INITIALIZE_ACCOUNT3_DISCRIMINATOR);
+}
+function getInitializeAccount3InstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "owner",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: INITIALIZE_ACCOUNT3_DISCRIMINATOR
+        }));
+}
+function getInitializeAccount3InstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "owner",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressDecoder"])()
+        ]
+    ]);
+}
+function getInitializeAccount3InstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getInitializeAccount3InstructionDataEncoder(), getInitializeAccount3InstructionDataDecoder());
+}
+function getInitializeAccount3Instruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_account, _input_mint;
+    const originalAccounts = {
+        account: {
+            value: (_input_account = input.account) !== null && _input_account !== void 0 ? _input_account : null,
+            isWritable: true
+        },
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.account),
+            getAccountMeta(accounts.mint)
+        ],
+        data: getInitializeAccount3InstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseInitializeAccount3Instruction(instruction) {
+    if (instruction.accounts.length < 2) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            account: getNextAccount(),
+            mint: getNextAccount()
+        },
+        data: getInitializeAccount3InstructionDataDecoder().decode(instruction.data)
+    };
+}
+var INITIALIZE_IMMUTABLE_OWNER_DISCRIMINATOR = 22;
+function getInitializeImmutableOwnerDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(INITIALIZE_IMMUTABLE_OWNER_DISCRIMINATOR);
+}
+function getInitializeImmutableOwnerInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: INITIALIZE_IMMUTABLE_OWNER_DISCRIMINATOR
+        }));
+}
+function getInitializeImmutableOwnerInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getInitializeImmutableOwnerInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getInitializeImmutableOwnerInstructionDataEncoder(), getInitializeImmutableOwnerInstructionDataDecoder());
+}
+function getInitializeImmutableOwnerInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_account;
+    const originalAccounts = {
+        account: {
+            value: (_input_account = input.account) !== null && _input_account !== void 0 ? _input_account : null,
+            isWritable: true
+        }
+    };
+    const accounts = originalAccounts;
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.account)
+        ],
+        data: getInitializeImmutableOwnerInstructionDataEncoder().encode({}),
+        programAddress
+    });
+}
+function parseInitializeImmutableOwnerInstruction(instruction) {
+    if (instruction.accounts.length < 1) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            account: getNextAccount()
+        },
+        data: getInitializeImmutableOwnerInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var INITIALIZE_MINT_DISCRIMINATOR = 0;
+function getInitializeMintDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(INITIALIZE_MINT_DISCRIMINATOR);
+}
+function getInitializeMintInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "decimals",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "mintAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])()
+        ],
+        [
+            "freezeAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])())
+        ]
+    ]), (value)=>{
+        var _value_freezeAuthority;
+        return {
+            ...value,
+            discriminator: INITIALIZE_MINT_DISCRIMINATOR,
+            freezeAuthority: (_value_freezeAuthority = value.freezeAuthority) !== null && _value_freezeAuthority !== void 0 ? _value_freezeAuthority : (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["none"])()
+        };
+    });
+}
+function getInitializeMintInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "decimals",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "mintAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressDecoder"])()
+        ],
+        [
+            "freezeAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionDecoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressDecoder"])())
+        ]
+    ]);
+}
+function getInitializeMintInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getInitializeMintInstructionDataEncoder(), getInitializeMintInstructionDataDecoder());
+}
+function getInitializeMintInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_mint, _input_rent;
+    const originalAccounts = {
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: true
+        },
+        rent: {
+            value: (_input_rent = input.rent) !== null && _input_rent !== void 0 ? _input_rent : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    if (!accounts.rent.value) {
+        accounts.rent.value = "SysvarRent111111111111111111111111111111111";
+    }
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.mint),
+            getAccountMeta(accounts.rent)
+        ],
+        data: getInitializeMintInstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseInitializeMintInstruction(instruction) {
+    if (instruction.accounts.length < 2) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            mint: getNextAccount(),
+            rent: getNextAccount()
+        },
+        data: getInitializeMintInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var INITIALIZE_MINT2_DISCRIMINATOR = 20;
+function getInitializeMint2DiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(INITIALIZE_MINT2_DISCRIMINATOR);
+}
+function getInitializeMint2InstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "decimals",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "mintAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])()
+        ],
+        [
+            "freezeAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])())
+        ]
+    ]), (value)=>{
+        var _value_freezeAuthority;
+        return {
+            ...value,
+            discriminator: INITIALIZE_MINT2_DISCRIMINATOR,
+            freezeAuthority: (_value_freezeAuthority = value.freezeAuthority) !== null && _value_freezeAuthority !== void 0 ? _value_freezeAuthority : (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["none"])()
+        };
+    });
+}
+function getInitializeMint2InstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "decimals",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "mintAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressDecoder"])()
+        ],
+        [
+            "freezeAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionDecoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressDecoder"])())
+        ]
+    ]);
+}
+function getInitializeMint2InstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getInitializeMint2InstructionDataEncoder(), getInitializeMint2InstructionDataDecoder());
+}
+function getInitializeMint2Instruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_mint;
+    const originalAccounts = {
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: true
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.mint)
+        ],
+        data: getInitializeMint2InstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseInitializeMint2Instruction(instruction) {
+    if (instruction.accounts.length < 1) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            mint: getNextAccount()
+        },
+        data: getInitializeMint2InstructionDataDecoder().decode(instruction.data)
+    };
+}
+var INITIALIZE_MULTISIG_DISCRIMINATOR = 2;
+function getInitializeMultisigDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(INITIALIZE_MULTISIG_DISCRIMINATOR);
+}
+function getInitializeMultisigInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "m",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: INITIALIZE_MULTISIG_DISCRIMINATOR
+        }));
+}
+function getInitializeMultisigInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "m",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getInitializeMultisigInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getInitializeMultisigInstructionDataEncoder(), getInitializeMultisigInstructionDataDecoder());
+}
+function getInitializeMultisigInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_multisig, _input_rent;
+    const originalAccounts = {
+        multisig: {
+            value: (_input_multisig = input.multisig) !== null && _input_multisig !== void 0 ? _input_multisig : null,
+            isWritable: true
+        },
+        rent: {
+            value: (_input_rent = input.rent) !== null && _input_rent !== void 0 ? _input_rent : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    if (!accounts.rent.value) {
+        accounts.rent.value = "SysvarRent111111111111111111111111111111111";
+    }
+    const remainingAccounts = args.signers.map((address)=>({
+            address,
+            role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY
+        }));
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.multisig),
+            getAccountMeta(accounts.rent),
+            ...remainingAccounts
+        ],
+        data: getInitializeMultisigInstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseInitializeMultisigInstruction(instruction) {
+    if (instruction.accounts.length < 2) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            multisig: getNextAccount(),
+            rent: getNextAccount()
+        },
+        data: getInitializeMultisigInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var INITIALIZE_MULTISIG2_DISCRIMINATOR = 19;
+function getInitializeMultisig2DiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(INITIALIZE_MULTISIG2_DISCRIMINATOR);
+}
+function getInitializeMultisig2InstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "m",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: INITIALIZE_MULTISIG2_DISCRIMINATOR
+        }));
+}
+function getInitializeMultisig2InstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "m",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getInitializeMultisig2InstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getInitializeMultisig2InstructionDataEncoder(), getInitializeMultisig2InstructionDataDecoder());
+}
+function getInitializeMultisig2Instruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_multisig;
+    const originalAccounts = {
+        multisig: {
+            value: (_input_multisig = input.multisig) !== null && _input_multisig !== void 0 ? _input_multisig : null,
+            isWritable: true
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    const remainingAccounts = args.signers.map((address)=>({
+            address,
+            role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY
+        }));
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.multisig),
+            ...remainingAccounts
+        ],
+        data: getInitializeMultisig2InstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseInitializeMultisig2Instruction(instruction) {
+    if (instruction.accounts.length < 1) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            multisig: getNextAccount()
+        },
+        data: getInitializeMultisig2InstructionDataDecoder().decode(instruction.data)
+    };
+}
+var MINT_TO_DISCRIMINATOR = 7;
+function getMintToDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(MINT_TO_DISCRIMINATOR);
+}
+function getMintToInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: MINT_TO_DISCRIMINATOR
+        }));
+}
+function getMintToInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Decoder"])()
+        ]
+    ]);
+}
+function getMintToInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getMintToInstructionDataEncoder(), getMintToInstructionDataDecoder());
+}
+function getMintToInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_mint, _input_token, _input_mintAuthority;
+    const originalAccounts = {
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: true
+        },
+        token: {
+            value: (_input_token = input.token) !== null && _input_token !== void 0 ? _input_token : null,
+            isWritable: true
+        },
+        mintAuthority: {
+            value: (_input_mintAuthority = input.mintAuthority) !== null && _input_mintAuthority !== void 0 ? _input_mintAuthority : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    var _args_multiSigners;
+    const remainingAccounts = ((_args_multiSigners = args.multiSigners) !== null && _args_multiSigners !== void 0 ? _args_multiSigners : []).map((signer)=>({
+            address: signer.address,
+            role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY_SIGNER,
+            signer
+        }));
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.mint),
+            getAccountMeta(accounts.token),
+            getAccountMeta(accounts.mintAuthority),
+            ...remainingAccounts
+        ],
+        data: getMintToInstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseMintToInstruction(instruction) {
+    if (instruction.accounts.length < 3) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            mint: getNextAccount(),
+            token: getNextAccount(),
+            mintAuthority: getNextAccount()
+        },
+        data: getMintToInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var MINT_TO_CHECKED_DISCRIMINATOR = 14;
+function getMintToCheckedDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(MINT_TO_CHECKED_DISCRIMINATOR);
+}
+function getMintToCheckedInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Encoder"])()
+        ],
+        [
+            "decimals",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: MINT_TO_CHECKED_DISCRIMINATOR
+        }));
+}
+function getMintToCheckedInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Decoder"])()
+        ],
+        [
+            "decimals",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getMintToCheckedInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getMintToCheckedInstructionDataEncoder(), getMintToCheckedInstructionDataDecoder());
+}
+function getMintToCheckedInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_mint, _input_token, _input_mintAuthority;
+    const originalAccounts = {
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: true
+        },
+        token: {
+            value: (_input_token = input.token) !== null && _input_token !== void 0 ? _input_token : null,
+            isWritable: true
+        },
+        mintAuthority: {
+            value: (_input_mintAuthority = input.mintAuthority) !== null && _input_mintAuthority !== void 0 ? _input_mintAuthority : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    var _args_multiSigners;
+    const remainingAccounts = ((_args_multiSigners = args.multiSigners) !== null && _args_multiSigners !== void 0 ? _args_multiSigners : []).map((signer)=>({
+            address: signer.address,
+            role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY_SIGNER,
+            signer
+        }));
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.mint),
+            getAccountMeta(accounts.token),
+            getAccountMeta(accounts.mintAuthority),
+            ...remainingAccounts
+        ],
+        data: getMintToCheckedInstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseMintToCheckedInstruction(instruction) {
+    if (instruction.accounts.length < 3) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            mint: getNextAccount(),
+            token: getNextAccount(),
+            mintAuthority: getNextAccount()
+        },
+        data: getMintToCheckedInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var RECOVER_NESTED_ASSOCIATED_TOKEN_DISCRIMINATOR = 2;
+function getRecoverNestedAssociatedTokenDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(RECOVER_NESTED_ASSOCIATED_TOKEN_DISCRIMINATOR);
+}
+function getRecoverNestedAssociatedTokenInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: RECOVER_NESTED_ASSOCIATED_TOKEN_DISCRIMINATOR
+        }));
+}
+function getRecoverNestedAssociatedTokenInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getRecoverNestedAssociatedTokenInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getRecoverNestedAssociatedTokenInstructionDataEncoder(), getRecoverNestedAssociatedTokenInstructionDataDecoder());
+}
+async function getRecoverNestedAssociatedTokenInstructionAsync(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : ASSOCIATED_TOKEN_PROGRAM_ADDRESS;
+    var _input_nestedAssociatedAccountAddress, _input_nestedTokenMintAddress, _input_destinationAssociatedAccountAddress, _input_ownerAssociatedAccountAddress, _input_ownerTokenMintAddress, _input_walletAddress, _input_tokenProgram;
+    const originalAccounts = {
+        nestedAssociatedAccountAddress: {
+            value: (_input_nestedAssociatedAccountAddress = input.nestedAssociatedAccountAddress) !== null && _input_nestedAssociatedAccountAddress !== void 0 ? _input_nestedAssociatedAccountAddress : null,
+            isWritable: true
+        },
+        nestedTokenMintAddress: {
+            value: (_input_nestedTokenMintAddress = input.nestedTokenMintAddress) !== null && _input_nestedTokenMintAddress !== void 0 ? _input_nestedTokenMintAddress : null,
+            isWritable: false
+        },
+        destinationAssociatedAccountAddress: {
+            value: (_input_destinationAssociatedAccountAddress = input.destinationAssociatedAccountAddress) !== null && _input_destinationAssociatedAccountAddress !== void 0 ? _input_destinationAssociatedAccountAddress : null,
+            isWritable: true
+        },
+        ownerAssociatedAccountAddress: {
+            value: (_input_ownerAssociatedAccountAddress = input.ownerAssociatedAccountAddress) !== null && _input_ownerAssociatedAccountAddress !== void 0 ? _input_ownerAssociatedAccountAddress : null,
+            isWritable: false
+        },
+        ownerTokenMintAddress: {
+            value: (_input_ownerTokenMintAddress = input.ownerTokenMintAddress) !== null && _input_ownerTokenMintAddress !== void 0 ? _input_ownerTokenMintAddress : null,
+            isWritable: false
+        },
+        walletAddress: {
+            value: (_input_walletAddress = input.walletAddress) !== null && _input_walletAddress !== void 0 ? _input_walletAddress : null,
+            isWritable: true
+        },
+        tokenProgram: {
+            value: (_input_tokenProgram = input.tokenProgram) !== null && _input_tokenProgram !== void 0 ? _input_tokenProgram : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    if (!accounts.tokenProgram.value) {
+        accounts.tokenProgram.value = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+    }
+    if (!accounts.ownerAssociatedAccountAddress.value) {
+        accounts.ownerAssociatedAccountAddress.value = await findAssociatedTokenPda({
+            owner: expectAddress(accounts.walletAddress.value),
+            tokenProgram: expectAddress(accounts.tokenProgram.value),
+            mint: expectAddress(accounts.ownerTokenMintAddress.value)
+        });
+    }
+    if (!accounts.nestedAssociatedAccountAddress.value) {
+        accounts.nestedAssociatedAccountAddress.value = await findAssociatedTokenPda({
+            owner: expectAddress(accounts.ownerAssociatedAccountAddress.value),
+            tokenProgram: expectAddress(accounts.tokenProgram.value),
+            mint: expectAddress(accounts.nestedTokenMintAddress.value)
+        });
+    }
+    if (!accounts.destinationAssociatedAccountAddress.value) {
+        accounts.destinationAssociatedAccountAddress.value = await findAssociatedTokenPda({
+            owner: expectAddress(accounts.walletAddress.value),
+            tokenProgram: expectAddress(accounts.tokenProgram.value),
+            mint: expectAddress(accounts.nestedTokenMintAddress.value)
+        });
+    }
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.nestedAssociatedAccountAddress),
+            getAccountMeta(accounts.nestedTokenMintAddress),
+            getAccountMeta(accounts.destinationAssociatedAccountAddress),
+            getAccountMeta(accounts.ownerAssociatedAccountAddress),
+            getAccountMeta(accounts.ownerTokenMintAddress),
+            getAccountMeta(accounts.walletAddress),
+            getAccountMeta(accounts.tokenProgram)
+        ],
+        data: getRecoverNestedAssociatedTokenInstructionDataEncoder().encode({}),
+        programAddress
+    });
+}
+function getRecoverNestedAssociatedTokenInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : ASSOCIATED_TOKEN_PROGRAM_ADDRESS;
+    var _input_nestedAssociatedAccountAddress, _input_nestedTokenMintAddress, _input_destinationAssociatedAccountAddress, _input_ownerAssociatedAccountAddress, _input_ownerTokenMintAddress, _input_walletAddress, _input_tokenProgram;
+    const originalAccounts = {
+        nestedAssociatedAccountAddress: {
+            value: (_input_nestedAssociatedAccountAddress = input.nestedAssociatedAccountAddress) !== null && _input_nestedAssociatedAccountAddress !== void 0 ? _input_nestedAssociatedAccountAddress : null,
+            isWritable: true
+        },
+        nestedTokenMintAddress: {
+            value: (_input_nestedTokenMintAddress = input.nestedTokenMintAddress) !== null && _input_nestedTokenMintAddress !== void 0 ? _input_nestedTokenMintAddress : null,
+            isWritable: false
+        },
+        destinationAssociatedAccountAddress: {
+            value: (_input_destinationAssociatedAccountAddress = input.destinationAssociatedAccountAddress) !== null && _input_destinationAssociatedAccountAddress !== void 0 ? _input_destinationAssociatedAccountAddress : null,
+            isWritable: true
+        },
+        ownerAssociatedAccountAddress: {
+            value: (_input_ownerAssociatedAccountAddress = input.ownerAssociatedAccountAddress) !== null && _input_ownerAssociatedAccountAddress !== void 0 ? _input_ownerAssociatedAccountAddress : null,
+            isWritable: false
+        },
+        ownerTokenMintAddress: {
+            value: (_input_ownerTokenMintAddress = input.ownerTokenMintAddress) !== null && _input_ownerTokenMintAddress !== void 0 ? _input_ownerTokenMintAddress : null,
+            isWritable: false
+        },
+        walletAddress: {
+            value: (_input_walletAddress = input.walletAddress) !== null && _input_walletAddress !== void 0 ? _input_walletAddress : null,
+            isWritable: true
+        },
+        tokenProgram: {
+            value: (_input_tokenProgram = input.tokenProgram) !== null && _input_tokenProgram !== void 0 ? _input_tokenProgram : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    if (!accounts.tokenProgram.value) {
+        accounts.tokenProgram.value = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+    }
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.nestedAssociatedAccountAddress),
+            getAccountMeta(accounts.nestedTokenMintAddress),
+            getAccountMeta(accounts.destinationAssociatedAccountAddress),
+            getAccountMeta(accounts.ownerAssociatedAccountAddress),
+            getAccountMeta(accounts.ownerTokenMintAddress),
+            getAccountMeta(accounts.walletAddress),
+            getAccountMeta(accounts.tokenProgram)
+        ],
+        data: getRecoverNestedAssociatedTokenInstructionDataEncoder().encode({}),
+        programAddress
+    });
+}
+function parseRecoverNestedAssociatedTokenInstruction(instruction) {
+    if (instruction.accounts.length < 7) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            nestedAssociatedAccountAddress: getNextAccount(),
+            nestedTokenMintAddress: getNextAccount(),
+            destinationAssociatedAccountAddress: getNextAccount(),
+            ownerAssociatedAccountAddress: getNextAccount(),
+            ownerTokenMintAddress: getNextAccount(),
+            walletAddress: getNextAccount(),
+            tokenProgram: getNextAccount()
+        },
+        data: getRecoverNestedAssociatedTokenInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var REVOKE_DISCRIMINATOR = 5;
+function getRevokeDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(REVOKE_DISCRIMINATOR);
+}
+function getRevokeInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: REVOKE_DISCRIMINATOR
+        }));
+}
+function getRevokeInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getRevokeInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getRevokeInstructionDataEncoder(), getRevokeInstructionDataDecoder());
+}
+function getRevokeInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_source, _input_owner;
+    const originalAccounts = {
+        source: {
+            value: (_input_source = input.source) !== null && _input_source !== void 0 ? _input_source : null,
+            isWritable: true
+        },
+        owner: {
+            value: (_input_owner = input.owner) !== null && _input_owner !== void 0 ? _input_owner : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    var _args_multiSigners;
+    const remainingAccounts = ((_args_multiSigners = args.multiSigners) !== null && _args_multiSigners !== void 0 ? _args_multiSigners : []).map((signer)=>({
+            address: signer.address,
+            role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY_SIGNER,
+            signer
+        }));
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.source),
+            getAccountMeta(accounts.owner),
+            ...remainingAccounts
+        ],
+        data: getRevokeInstructionDataEncoder().encode({}),
+        programAddress
+    });
+}
+function parseRevokeInstruction(instruction) {
+    if (instruction.accounts.length < 2) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            source: getNextAccount(),
+            owner: getNextAccount()
+        },
+        data: getRevokeInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var SET_AUTHORITY_DISCRIMINATOR = 6;
+function getSetAuthorityDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(SET_AUTHORITY_DISCRIMINATOR);
+}
+function getSetAuthorityInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "authorityType",
+            getAuthorityTypeEncoder()
+        ],
+        [
+            "newAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])())
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: SET_AUTHORITY_DISCRIMINATOR
+        }));
+}
+function getSetAuthorityInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "authorityType",
+            getAuthorityTypeDecoder()
+        ],
+        [
+            "newAuthority",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$options$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getOptionDecoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressDecoder"])())
+        ]
+    ]);
+}
+function getSetAuthorityInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getSetAuthorityInstructionDataEncoder(), getSetAuthorityInstructionDataDecoder());
+}
+function getSetAuthorityInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_owned, _input_owner;
+    const originalAccounts = {
+        owned: {
+            value: (_input_owned = input.owned) !== null && _input_owned !== void 0 ? _input_owned : null,
+            isWritable: true
+        },
+        owner: {
+            value: (_input_owner = input.owner) !== null && _input_owner !== void 0 ? _input_owner : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    var _args_multiSigners;
+    const remainingAccounts = ((_args_multiSigners = args.multiSigners) !== null && _args_multiSigners !== void 0 ? _args_multiSigners : []).map((signer)=>({
+            address: signer.address,
+            role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY_SIGNER,
+            signer
+        }));
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.owned),
+            getAccountMeta(accounts.owner),
+            ...remainingAccounts
+        ],
+        data: getSetAuthorityInstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseSetAuthorityInstruction(instruction) {
+    if (instruction.accounts.length < 2) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            owned: getNextAccount(),
+            owner: getNextAccount()
+        },
+        data: getSetAuthorityInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var SYNC_NATIVE_DISCRIMINATOR = 17;
+function getSyncNativeDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(SYNC_NATIVE_DISCRIMINATOR);
+}
+function getSyncNativeInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: SYNC_NATIVE_DISCRIMINATOR
+        }));
+}
+function getSyncNativeInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getSyncNativeInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getSyncNativeInstructionDataEncoder(), getSyncNativeInstructionDataDecoder());
+}
+function getSyncNativeInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_account;
+    const originalAccounts = {
+        account: {
+            value: (_input_account = input.account) !== null && _input_account !== void 0 ? _input_account : null,
+            isWritable: true
+        }
+    };
+    const accounts = originalAccounts;
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.account)
+        ],
+        data: getSyncNativeInstructionDataEncoder().encode({}),
+        programAddress
+    });
+}
+function parseSyncNativeInstruction(instruction) {
+    if (instruction.accounts.length < 1) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            account: getNextAccount()
+        },
+        data: getSyncNativeInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var THAW_ACCOUNT_DISCRIMINATOR = 11;
+function getThawAccountDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(THAW_ACCOUNT_DISCRIMINATOR);
+}
+function getThawAccountInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: THAW_ACCOUNT_DISCRIMINATOR
+        }));
+}
+function getThawAccountInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getThawAccountInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getThawAccountInstructionDataEncoder(), getThawAccountInstructionDataDecoder());
+}
+function getThawAccountInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_account, _input_mint, _input_owner;
+    const originalAccounts = {
+        account: {
+            value: (_input_account = input.account) !== null && _input_account !== void 0 ? _input_account : null,
+            isWritable: true
+        },
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: false
+        },
+        owner: {
+            value: (_input_owner = input.owner) !== null && _input_owner !== void 0 ? _input_owner : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    var _args_multiSigners;
+    const remainingAccounts = ((_args_multiSigners = args.multiSigners) !== null && _args_multiSigners !== void 0 ? _args_multiSigners : []).map((signer)=>({
+            address: signer.address,
+            role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY_SIGNER,
+            signer
+        }));
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.account),
+            getAccountMeta(accounts.mint),
+            getAccountMeta(accounts.owner),
+            ...remainingAccounts
+        ],
+        data: getThawAccountInstructionDataEncoder().encode({}),
+        programAddress
+    });
+}
+function parseThawAccountInstruction(instruction) {
+    if (instruction.accounts.length < 3) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            account: getNextAccount(),
+            mint: getNextAccount(),
+            owner: getNextAccount()
+        },
+        data: getThawAccountInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var TRANSFER_DISCRIMINATOR = 3;
+function getTransferDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(TRANSFER_DISCRIMINATOR);
+}
+function getTransferInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: TRANSFER_DISCRIMINATOR
+        }));
+}
+function getTransferInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Decoder"])()
+        ]
+    ]);
+}
+function getTransferInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getTransferInstructionDataEncoder(), getTransferInstructionDataDecoder());
+}
+function getTransferInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_source, _input_destination, _input_authority;
+    const originalAccounts = {
+        source: {
+            value: (_input_source = input.source) !== null && _input_source !== void 0 ? _input_source : null,
+            isWritable: true
+        },
+        destination: {
+            value: (_input_destination = input.destination) !== null && _input_destination !== void 0 ? _input_destination : null,
+            isWritable: true
+        },
+        authority: {
+            value: (_input_authority = input.authority) !== null && _input_authority !== void 0 ? _input_authority : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    var _args_multiSigners;
+    const remainingAccounts = ((_args_multiSigners = args.multiSigners) !== null && _args_multiSigners !== void 0 ? _args_multiSigners : []).map((signer)=>({
+            address: signer.address,
+            role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY_SIGNER,
+            signer
+        }));
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.source),
+            getAccountMeta(accounts.destination),
+            getAccountMeta(accounts.authority),
+            ...remainingAccounts
+        ],
+        data: getTransferInstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseTransferInstruction(instruction) {
+    if (instruction.accounts.length < 3) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            source: getNextAccount(),
+            destination: getNextAccount(),
+            authority: getNextAccount()
+        },
+        data: getTransferInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var TRANSFER_CHECKED_DISCRIMINATOR = 12;
+function getTransferCheckedDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(TRANSFER_CHECKED_DISCRIMINATOR);
+}
+function getTransferCheckedInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Encoder"])()
+        ],
+        [
+            "decimals",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: TRANSFER_CHECKED_DISCRIMINATOR
+        }));
+}
+function getTransferCheckedInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "amount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Decoder"])()
+        ],
+        [
+            "decimals",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ]
+    ]);
+}
+function getTransferCheckedInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getTransferCheckedInstructionDataEncoder(), getTransferCheckedInstructionDataDecoder());
+}
+function getTransferCheckedInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_source, _input_mint, _input_destination, _input_authority;
+    const originalAccounts = {
+        source: {
+            value: (_input_source = input.source) !== null && _input_source !== void 0 ? _input_source : null,
+            isWritable: true
+        },
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: false
+        },
+        destination: {
+            value: (_input_destination = input.destination) !== null && _input_destination !== void 0 ? _input_destination : null,
+            isWritable: true
+        },
+        authority: {
+            value: (_input_authority = input.authority) !== null && _input_authority !== void 0 ? _input_authority : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    var _args_multiSigners;
+    const remainingAccounts = ((_args_multiSigners = args.multiSigners) !== null && _args_multiSigners !== void 0 ? _args_multiSigners : []).map((signer)=>({
+            address: signer.address,
+            role: __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY_SIGNER,
+            signer
+        }));
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.source),
+            getAccountMeta(accounts.mint),
+            getAccountMeta(accounts.destination),
+            getAccountMeta(accounts.authority),
+            ...remainingAccounts
+        ],
+        data: getTransferCheckedInstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseTransferCheckedInstruction(instruction) {
+    if (instruction.accounts.length < 4) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            source: getNextAccount(),
+            mint: getNextAccount(),
+            destination: getNextAccount(),
+            authority: getNextAccount()
+        },
+        data: getTransferCheckedInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var UI_AMOUNT_TO_AMOUNT_DISCRIMINATOR = 24;
+function getUiAmountToAmountDiscriminatorBytes() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])().encode(UI_AMOUNT_TO_AMOUNT_DISCRIMINATOR);
+}
+function getUiAmountToAmountInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Encoder"])()
+        ],
+        [
+            "uiAmount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$strings$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getUtf8Encoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: UI_AMOUNT_TO_AMOUNT_DISCRIMINATOR
+        }));
+}
+function getUiAmountToAmountInstructionDataDecoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructDecoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU8Decoder"])()
+        ],
+        [
+            "uiAmount",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$strings$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getUtf8Decoder"])()
+        ]
+    ]);
+}
+function getUiAmountToAmountInstructionDataCodec() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineCodec"])(getUiAmountToAmountInstructionDataEncoder(), getUiAmountToAmountInstructionDataDecoder());
+}
+function getUiAmountToAmountInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : TOKEN_PROGRAM_ADDRESS;
+    var _input_mint;
+    const originalAccounts = {
+        mint: {
+            value: (_input_mint = input.mint) !== null && _input_mint !== void 0 ? _input_mint : null,
+            isWritable: false
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    const getAccountMeta = getAccountMetaFactory(programAddress);
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.mint)
+        ],
+        data: getUiAmountToAmountInstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+function parseUiAmountToAmountInstruction(instruction) {
+    if (instruction.accounts.length < 1) {
+        throw new Error("Not enough accounts");
+    }
+    let accountIndex = 0;
+    const getNextAccount = ()=>{
+        const accountMeta = instruction.accounts[accountIndex];
+        accountIndex += 1;
+        return accountMeta;
+    };
+    return {
+        programAddress: instruction.programAddress,
+        accounts: {
+            mint: getNextAccount()
+        },
+        data: getUiAmountToAmountInstructionDataDecoder().decode(instruction.data)
+    };
+}
+var SYSTEM_PROGRAM_ADDRESS = "11111111111111111111111111111111";
+if (("TURBOPACK compile-time value", "development") !== "production") ;
+function expectAddress2(value) {
+    if (!value) {
+        throw new Error("Expected a Address.");
+    }
+    if (typeof value === "object" && "address" in value) {
+        return value.address;
+    }
+    if (Array.isArray(value)) {
+        return value[0];
+    }
+    return value;
+}
+function getAccountMetaFactory2(programAddress, optionalAccountStrategy) {
+    return (account)=>{
+        if (!account.value) {
+            return;
+        }
+        const writableRole = account.isWritable ? __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].WRITABLE : __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccountRole"].READONLY;
+        return Object.freeze({
+            address: expectAddress2(account.value),
+            role: isTransactionSigner2(account.value) ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instructions$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["upgradeRoleToSigner"])(writableRole) : writableRole,
+            ...isTransactionSigner2(account.value) ? {
+                signer: account.value
+            } : {}
+        });
+    };
+}
+function isTransactionSigner2(value) {
+    return !!value && typeof value === "object" && "address" in value && (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$signers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["isTransactionSigner"])(value);
+}
+var CREATE_ACCOUNT_DISCRIMINATOR = 0;
+function getCreateAccountInstructionDataEncoder() {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$core$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transformEncoder"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$data$2d$structures$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStructEncoder"])([
+        [
+            "discriminator",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU32Encoder"])()
+        ],
+        [
+            "lamports",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Encoder"])()
+        ],
+        [
+            "space",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$codecs$2d$numbers$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getU64Encoder"])()
+        ],
+        [
+            "programAddress",
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$addresses$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAddressEncoder"])()
+        ]
+    ]), (value)=>({
+            ...value,
+            discriminator: CREATE_ACCOUNT_DISCRIMINATOR
+        }));
+}
+function getCreateAccountInstruction(input, config) {
+    var _config_programAddress;
+    const programAddress = (_config_programAddress = config === null || config === void 0 ? void 0 : config.programAddress) !== null && _config_programAddress !== void 0 ? _config_programAddress : SYSTEM_PROGRAM_ADDRESS;
+    var _input_payer, _input_newAccount;
+    const originalAccounts = {
+        payer: {
+            value: (_input_payer = input.payer) !== null && _input_payer !== void 0 ? _input_payer : null,
+            isWritable: true
+        },
+        newAccount: {
+            value: (_input_newAccount = input.newAccount) !== null && _input_newAccount !== void 0 ? _input_newAccount : null,
+            isWritable: true
+        }
+    };
+    const accounts = originalAccounts;
+    const args = {
+        ...input
+    };
+    const byteDelta = [
+        Number(args.space) + __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$accounts$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["BASE_ACCOUNT_SIZE"]
+    ].reduce((a, b)=>a + b, 0);
+    const getAccountMeta = getAccountMetaFactory2();
+    return Object.freeze({
+        accounts: [
+            getAccountMeta(accounts.payer),
+            getAccountMeta(accounts.newAccount)
+        ],
+        byteDelta,
+        data: getCreateAccountInstructionDataEncoder().encode(args),
+        programAddress
+    });
+}
+var MINIMUM_BALANCE_FOR_MINT = 1461600;
+function getCreateMintInstructionPlan(input, config) {
+    var _input_mintAccountLamports, _config_tokenProgram;
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instruction$2d$plans$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["sequentialInstructionPlan"])([
+        getCreateAccountInstruction({
+            payer: input.payer,
+            newAccount: input.newMint,
+            lamports: (_input_mintAccountLamports = input.mintAccountLamports) !== null && _input_mintAccountLamports !== void 0 ? _input_mintAccountLamports : MINIMUM_BALANCE_FOR_MINT,
+            space: getMintSize(),
+            programAddress: (_config_tokenProgram = config === null || config === void 0 ? void 0 : config.tokenProgram) !== null && _config_tokenProgram !== void 0 ? _config_tokenProgram : TOKEN_PROGRAM_ADDRESS
+        }, {
+            programAddress: config === null || config === void 0 ? void 0 : config.systemProgram
+        }),
+        getInitializeMint2Instruction({
+            mint: input.newMint.address,
+            decimals: input.decimals,
+            mintAuthority: input.mintAuthority,
+            freezeAuthority: input.freezeAuthority
+        }, {
+            programAddress: config === null || config === void 0 ? void 0 : config.tokenProgram
+        })
+    ]);
+}
+function getMintToATAInstructionPlan(input, config) {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instruction$2d$plans$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["sequentialInstructionPlan"])([
+        getCreateAssociatedTokenIdempotentInstruction({
+            payer: input.payer,
+            ata: input.ata,
+            owner: input.owner,
+            mint: input.mint,
+            systemProgram: config === null || config === void 0 ? void 0 : config.systemProgram,
+            tokenProgram: config === null || config === void 0 ? void 0 : config.tokenProgram
+        }, {
+            programAddress: config === null || config === void 0 ? void 0 : config.associatedTokenProgram
+        }),
+        // mint to this token account
+        getMintToCheckedInstruction({
+            mint: input.mint,
+            token: input.ata,
+            mintAuthority: input.mintAuthority,
+            amount: input.amount,
+            decimals: input.decimals,
+            multiSigners: input.multiSigners
+        }, {
+            programAddress: config === null || config === void 0 ? void 0 : config.tokenProgram
+        })
+    ]);
+}
+async function getMintToATAInstructionPlanAsync(input, config) {
+    var _config_tokenProgram;
+    const [ataAddress] = await findAssociatedTokenPda({
+        owner: input.owner,
+        tokenProgram: (_config_tokenProgram = config === null || config === void 0 ? void 0 : config.tokenProgram) !== null && _config_tokenProgram !== void 0 ? _config_tokenProgram : TOKEN_PROGRAM_ADDRESS,
+        mint: input.mint
+    });
+    return getMintToATAInstructionPlan({
+        ...input,
+        ata: ataAddress
+    }, config);
+}
+function getTransferToATAInstructionPlan(input, config) {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$lazorkit$2f$templates$2f$lazorkit$2f$lazorkit$2d$starter$2d$next$2f$node_modules$2f40$solana$2f$instruction$2d$plans$2f$dist$2f$index$2e$browser$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["sequentialInstructionPlan"])([
+        getCreateAssociatedTokenIdempotentInstruction({
+            payer: input.payer,
+            ata: input.destination,
+            owner: input.recipient,
+            mint: input.mint,
+            systemProgram: config === null || config === void 0 ? void 0 : config.systemProgram,
+            tokenProgram: config === null || config === void 0 ? void 0 : config.tokenProgram
+        }, {
+            programAddress: config === null || config === void 0 ? void 0 : config.associatedTokenProgram
+        }),
+        getTransferCheckedInstruction({
+            source: input.source,
+            mint: input.mint,
+            destination: input.destination,
+            authority: input.authority,
+            amount: input.amount,
+            decimals: input.decimals,
+            multiSigners: input.multiSigners
+        }, {
+            programAddress: config === null || config === void 0 ? void 0 : config.tokenProgram
+        })
+    ]);
+}
+async function getTransferToATAInstructionPlanAsync(input, config) {
+    var _config_tokenProgram;
+    const [ataAddress] = await findAssociatedTokenPda({
+        owner: input.recipient,
+        tokenProgram: (_config_tokenProgram = config === null || config === void 0 ? void 0 : config.tokenProgram) !== null && _config_tokenProgram !== void 0 ? _config_tokenProgram : TOKEN_PROGRAM_ADDRESS,
+        mint: input.mint
+    });
+    return getTransferToATAInstructionPlan({
+        ...input,
+        destination: ataAddress
+    }, config);
+}
+;
+ //# sourceMappingURL=index.mjs.map
+ //# sourceMappingURL=index.mjs.map
+}),
+]);
+
+//# sourceMappingURL=33bea_%40solana-program_token_dist_src_index_mjs_db3ab4dc._.js.map
