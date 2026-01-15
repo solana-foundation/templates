@@ -241,6 +241,24 @@
     "path": "community",
     "templates": [
       {
+        "description": "Next.js store template using @solana-commerce/headless and @solana/kit",
+        "id": "gh:solana-foundation/templates/community/commerce-kit-store",
+        "image": "community/commerce-kit-store/og-image.png",
+        "keywords": [
+          "nextjs",
+          "react",
+          "@solana/kit",
+          "@solana-commerce/headless",
+          "solana-pay",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "commerce-kit-store",
+        "path": "community/commerce-kit-store",
+        "displayName": "Solana Commerce Kit Store",
+        "usecase": "Starter"
+      },
+      {
         "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit",
         "id": "gh:solana-foundation/templates/community/kit-node-solanax402",
         "image": "community/kit-node-solanax402/og-image.png",
