@@ -295,6 +295,62 @@
         "usecase": "Payments"
       },
       {
+        "description": "React Native (Expo) template with LazorKit passkey wallet integration for Solana",
+        "id": "gh:solana-foundation/templates/community/lazorkit-starter-expo",
+        "image": "community/lazorkit-starter-expo/og-image.png",
+        "keywords": [
+          "solana",
+          "lazorkit",
+          "passkey",
+          "smart-wallet",
+          "expo",
+          "react-native",
+          "mobile",
+          "typescript"
+        ],
+        "name": "lazorkit-starter-expo",
+        "path": "community/lazorkit-starter-expo",
+        "displayName": "LazorKit Starter (Expo)",
+        "usecase": "Mobile"
+      },
+      {
+        "description": "Next.js template with LazorKit passkey wallet integration for Solana",
+        "id": "gh:solana-foundation/templates/community/lazorkit-starter-next",
+        "image": "community/lazorkit-starter-next/og-image.png",
+        "keywords": [
+          "solana",
+          "lazorkit",
+          "passkey",
+          "smart-wallet",
+          "nextjs",
+          "react",
+          "typescript",
+          "tailwind"
+        ],
+        "name": "lazorkit-starter-next",
+        "path": "community/lazorkit-starter-next",
+        "displayName": "LazorKit Starter (Next.js)",
+        "usecase": "Starter"
+      },
+      {
+        "description": "React + Vite template with LazorKit passkey wallet integration for Solana",
+        "id": "gh:solana-foundation/templates/community/lazorkit-starter-vite",
+        "image": "community/lazorkit-starter-vite/og-image.png",
+        "keywords": [
+          "solana",
+          "lazorkit",
+          "passkey",
+          "smart-wallet",
+          "vite",
+          "react",
+          "typescript"
+        ],
+        "name": "lazorkit-starter-vite",
+        "path": "community/lazorkit-starter-vite",
+        "displayName": "LazorKit Starter (Vite)",
+        "usecase": "Starter"
+      },
+      {
         "description": "A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree",
         "id": "gh:solana-foundation/templates/community/merkle-airdrop",
         "image": "community/merkle-airdrop/og-image.png",
@@ -488,66 +544,6 @@
         "path": "community/zk-compression-airdrop",
         "displayName": "ZK Compression Airdrop",
         "usecase": "Airdrop"
-      }
-    ]
-  },
-  {
-    "description": "Lazorkit Templates maintained by the Lazor Community",
-    "name": "Lazorkit Templates",
-    "path": "lazorkit",
-    "templates": [
-      {
-        "description": "Next.js, Tailwind, Lazorkit-sdk, Wallet UI",
-        "id": "gh:solana-foundation/templates/community/lazorkit-starter-next",
-        "image": "community/lazorkit-starter-next/og-image.png",
-        "keywords": [
-          "biometrics",
-          "nextjs",
-          "react",
-          "lazorkit-kit",
-          "tailwind",
-          "typescript",
-          "wallet-ui"
-        ],
-        "name": "lazorkit-demo-next",
-        "path": "lazorkit/lazorkit-demo-next",
-        "displayName": "Lazorkit-Next Boilerplate",
-        "usecase": "Starter"
-      },
-      {
-        "description": "React+Vite, Tailwind, Lazorkit-sdk, Wallet UI",
-        "id": "gh:solana-foundation/templates/community/lazorkit-starter-vite",
-        "image": "community/lazorkit-starter-vite/og-image.png",
-        "keywords": [
-          "biometrics",
-          "react",
-          "lazorkit-kit",
-          "tailwind",
-          "typescript",
-          "vite",
-          "wallet-ui"
-        ],
-        "name": "lazorkit-starter-vite",
-        "path": "lazorkit/lazorkit-starter-vite",
-        "displayName": "Lazorkit-Vite Boilerplate",
-        "usecase": "Starter"
-      },
-      {
-        "description": "ReactNative+Expo, Lazorkit-sdk, Wallet UI",
-        "id": "gh:solana-foundation/templates/community/lazorkit-starter-expo",
-        "image": "community/lazorkit-starter-expo/og-image.png",
-        "keywords": [
-          "biometrics",
-          "mobile",
-          "lazorkit-kit",
-          "biometrics",
-          "typescript",
-          "wallet-ui"
-        ],
-        "name": "lazorkit-starter-expo",
-        "path": "lazorkit/lazorkit-starter-expo",
-        "displayName": "Lazorkit-Expo Boilerplate",
-        "usecase": "Starter"
       }
     ]
   }

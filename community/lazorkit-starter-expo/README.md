@@ -31,6 +31,7 @@ pnpm start
 ```
 
 Then:
+
 - Press `i` to open in iOS Simulator
 - Press `a` to open in Android Emulator
 - Scan the QR code with Expo Go app on your device
@@ -56,11 +57,11 @@ This template uses `@lazorkit/wallet-mobile-adapter` for React Native integratio
 import { useLazorkitWallet } from '@lazorkit/wallet-mobile-adapter'
 
 const {
-  smartWalletPubkey,  // User's smart wallet address
-  isConnected,        // Connection status
-  connect,            // Connect/create wallet
-  disconnect,         // Disconnect wallet
-  signAndSendTransaction  // Sign and send transactions
+  smartWalletPubkey, // User's smart wallet address
+  isConnected, // Connection status
+  connect, // Connect/create wallet
+  disconnect, // Disconnect wallet
+  signAndSendTransaction, // Sign and send transactions
 } = useLazorkitWallet()
 ```
 

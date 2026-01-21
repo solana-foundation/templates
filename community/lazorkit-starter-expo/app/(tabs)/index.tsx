@@ -1,28 +1,28 @@
-import { useLazorWallet } from '@lazorkit/wallet-mobile-adapter';
-import { router } from 'expo-router';
-import { useEffect } from 'react';
-import { Button, View, StyleSheet } from 'react-native';
+import { useLazorWallet } from '@lazorkit/wallet-mobile-adapter'
+import { router } from 'expo-router'
+import { useEffect } from 'react'
+import { Button, View, StyleSheet } from 'react-native'
 
-import { HelloWave } from '@/components/hello-wave';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { HelloWave } from '@/components/hello-wave'
+import { ThemedText } from '@/components/themed-text'
+import { ThemedView } from '@/components/themed-view'
 
 export default function LoginScreen() {
-  const { connect, isConnecting, isConnected } = useLazorWallet();
+  const { connect, isConnecting, isConnected } = useLazorWallet()
 
   useEffect(() => {
     if (isConnected) {
-      router.replace('/wallet');
+      router.replace('/wallet')
     }
-  }, [isConnected]);
+  }, [isConnected])
 
   const handleLogin = async () => {
     try {
-      await connect({ redirectUrl: 'lazorkitstarterexpo://wallet-callback' });
+      await connect({ redirectUrl: 'lazorkitstarterexpo://wallet-callback' })
     } catch (err) {
-      console.error('Connection failed', err);
+      console.error('Connection failed', err)
     }
-  };
+  }
 
   return (
     <ThemedView style={styles.container}>
@@ -30,9 +30,7 @@ export default function LoginScreen() {
         <ThemedText type="title">Welcome!</ThemedText>
         <HelloWave />
       </View>
-      <ThemedText>
-        Connect your wallet to get started.
-      </ThemedText>
+      <ThemedText>Connect your wallet to get started.</ThemedText>
       <View style={styles.buttonContainer}>
         <Button
           title={isConnecting ? 'Connecting...' : 'Login with LazorKit'}
@@ -41,7 +39,7 @@ export default function LoginScreen() {
         />
       </View>
     </ThemedView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -59,5 +57,4 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 20,
   },
-});
-
+})

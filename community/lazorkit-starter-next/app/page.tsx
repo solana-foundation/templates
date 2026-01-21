@@ -1,99 +1,109 @@
-"use client";
+'use client'
 
-import { useWallet } from "@lazorkit/wallet";
-import { SystemProgram, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
-import { useState, useEffect } from "react";
+import { useWallet } from '@lazorkit/wallet'
+import { SystemProgram, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { useState, useEffect } from 'react'
 
 export default function Home() {
-  const { smartWalletPubkey, isConnected, isConnecting, isSigning, connect, disconnect, signAndSendTransaction, error, wallet } = useWallet();
-  const [recipientAddress, setRecipientAddress] = useState('');
-  const [amount, setAmount] = useState('0.01');
-  const [copied, setCopied] = useState(false);
-  const [txStatus, setTxStatus] = useState<string>('');
+  const {
+    smartWalletPubkey,
+    isConnected,
+    isConnecting,
+    isSigning,
+    connect,
+    disconnect,
+    signAndSendTransaction,
+    error,
+    wallet,
+  } = useWallet()
+  const [recipientAddress, setRecipientAddress] = useState('')
+  const [amount, setAmount] = useState('0.01')
+  const [copied, setCopied] = useState(false)
+  const [txStatus, setTxStatus] = useState<string>('')
 
   useEffect(() => {
     if (wallet) {
       if (!wallet.passkeyPubkey || wallet.passkeyPubkey.length === 0) {
-        setTxStatus('Error: Wallet data corrupted. Please disconnect and reconnect your wallet.');
-        return;
+        setTxStatus('Error: Wallet data corrupted. Please disconnect and reconnect your wallet.')
+        return
       }
 
       if (wallet.passkeyPubkey.length !== 33) {
-        setTxStatus('Error: Invalid wallet data. Please disconnect and reconnect your wallet.');
-        return;
+        setTxStatus('Error: Invalid wallet data. Please disconnect and reconnect your wallet.')
+        return
       }
 
-      const storedCredId = localStorage.getItem('CREDENTIAL_ID');
+      const storedCredId = localStorage.getItem('CREDENTIAL_ID')
       if (wallet.credentialId && !storedCredId) {
-        localStorage.setItem('CREDENTIAL_ID', wallet.credentialId);
+        localStorage.setItem('CREDENTIAL_ID', wallet.credentialId)
       }
 
-      setTxStatus('');
+      setTxStatus('')
     }
-  }, [wallet, isConnected]);
+  }, [wallet, isConnected])
 
   const handleConnect = async () => {
     try {
-      await connect();
+      await connect()
     } catch (err) {
-      setTxStatus('Connection failed. Please try again.');
+      setTxStatus('Connection failed. Please try again.')
     }
-  };
+  }
 
   const handleCopyAddress = async () => {
     if (smartWalletPubkey) {
       try {
-        await navigator.clipboard.writeText(smartWalletPubkey.toString());
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        await navigator.clipboard.writeText(smartWalletPubkey.toString())
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
       } catch (err) {
-        setTxStatus('Failed to copy address');
+        setTxStatus('Failed to copy address')
       }
     }
-  };
+  }
 
   const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!smartWalletPubkey || !recipientAddress || !amount) return;
+    e.preventDefault()
+    if (!smartWalletPubkey || !recipientAddress || !amount) return
 
     if (!wallet || !wallet.passkeyPubkey || wallet.passkeyPubkey.length !== 33) {
-      setTxStatus('Error: Invalid wallet state. Please disconnect and reconnect your wallet.');
-      return;
+      setTxStatus('Error: Invalid wallet state. Please disconnect and reconnect your wallet.')
+      return
     }
 
-    setTxStatus('');
+    setTxStatus('')
     try {
-      let recipientPubkey: PublicKey;
+      let recipientPubkey: PublicKey
       try {
-        recipientPubkey = new PublicKey(recipientAddress);
+        recipientPubkey = new PublicKey(recipientAddress)
       } catch (err) {
-        setTxStatus('Error: Invalid recipient address');
-        return;
+        setTxStatus('Error: Invalid recipient address')
+        return
       }
 
       const transferInstruction = SystemProgram.transfer({
         fromPubkey: smartWalletPubkey,
         toPubkey: recipientPubkey,
         lamports: LAMPORTS_PER_SOL * parseFloat(amount),
-      });
+      })
 
       const sig = await signAndSendTransaction({
         instructions: [transferInstruction],
         transactionOptions: {
-          computeUnitLimit: 200_000
-        }
-      });
+          computeUnitLimit: 200_000,
+        },
+      })
 
-      setTxStatus(`Success! Transaction: ${sig}`);
-      setRecipientAddress('');
-      setAmount('0.01');
+      setTxStatus(`Success! Transaction: ${sig}`)
+      setRecipientAddress('')
+      setAmount('0.01')
 
-      setTimeout(() => setTxStatus(''), 5000);
+      setTimeout(() => setTxStatus(''), 5000)
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setTxStatus(`Error: ${errorMsg}`);
+      const errorMsg = err instanceof Error ? err.message : 'Unknown error'
+      setTxStatus(`Error: ${errorMsg}`)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -101,13 +111,19 @@ export default function Home() {
         <div className="text-xl font-bold">LazorKit Scaffold</div>
         <div>
           {!isConnected ? (
-            <button onClick={handleConnect} disabled={isConnecting} className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 disabled:bg-gray-500">
+            <button
+              onClick={handleConnect}
+              disabled={isConnecting}
+              className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 disabled:bg-gray-500"
+            >
               {isConnecting ? 'Connecting...' : 'Connect Wallet'}
             </button>
           ) : (
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <span className="text-sm">{smartWalletPubkey?.toString().slice(0, 4)}...{smartWalletPubkey?.toString().slice(-4)}</span>
+                <span className="text-sm">
+                  {smartWalletPubkey?.toString().slice(0, 4)}...{smartWalletPubkey?.toString().slice(-4)}
+                </span>
                 <button
                   onClick={handleCopyAddress}
                   className="px-2 py-1 text-xs bg-gray-700 rounded hover:bg-gray-600"
@@ -116,7 +132,9 @@ export default function Home() {
                   {copied ? '✓ Copied' : 'Copy'}
                 </button>
               </div>
-              <button onClick={disconnect} className="px-4 py-2 bg-red-600 rounded hover:bg-red-700">Disconnect</button>
+              <button onClick={disconnect} className="px-4 py-2 bg-red-600 rounded hover:bg-red-700">
+                Disconnect
+              </button>
             </div>
           )}
         </div>
@@ -124,11 +142,21 @@ export default function Home() {
 
       <main className="p-8">
         <div className="grid md:grid-cols-2 gap-8">
-          <a href="https://docs.lazorkit.com/" target="_blank" rel="noopener noreferrer" className="block p-6 bg-gray-800 rounded-lg hover:bg-gray-700">
+          <a
+            href="https://docs.lazorkit.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block p-6 bg-gray-800 rounded-lg hover:bg-gray-700"
+          >
             <h2 className="text-2xl font-bold mb-2">Docs</h2>
             <p>Explore the LazorKit documentation to get started.</p>
           </a>
-          <a href="https://github.com/lazor-kit" target="_blank" rel="noopener noreferrer" className="block p-6 bg-gray-800 rounded-lg hover:bg-gray-700">
+          <a
+            href="https://github.com/lazor-kit"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block p-6 bg-gray-800 rounded-lg hover:bg-gray-700"
+          >
             <h2 className="text-2xl font-bold mb-2">GitHub</h2>
             <p>Contribute and see the source code on our GitHub.</p>
           </a>
@@ -142,7 +170,9 @@ export default function Home() {
               {wallet && (!wallet.passkeyPubkey || wallet.passkeyPubkey.length !== 33) && (
                 <div className="mb-4 p-3 bg-red-900/50 border border-red-700 rounded">
                   <p className="text-red-200 text-sm font-medium">⚠️ Wallet data is corrupted</p>
-                  <p className="text-red-300 text-xs mt-1">Please disconnect and reconnect your wallet to fix this issue.</p>
+                  <p className="text-red-300 text-xs mt-1">
+                    Please disconnect and reconnect your wallet to fix this issue.
+                  </p>
                 </div>
               )}
 
@@ -187,7 +217,9 @@ export default function Home() {
               </form>
 
               {txStatus && (
-                <div className={`mt-4 p-3 rounded ${txStatus.startsWith('Success') ? 'bg-green-900/50 text-green-200' : 'bg-red-900/50 text-red-200'}`}>
+                <div
+                  className={`mt-4 p-3 rounded ${txStatus.startsWith('Success') ? 'bg-green-900/50 text-green-200' : 'bg-red-900/50 text-red-200'}`}
+                >
                   <p className="text-sm break-all">{txStatus}</p>
                 </div>
               )}
@@ -198,5 +230,5 @@ export default function Home() {
         {error && <p className="mt-4 text-center text-red-500">Error: {error.message}</p>}
       </main>
     </div>
-  );
+  )
 }

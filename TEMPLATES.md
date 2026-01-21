@@ -142,6 +142,30 @@ Templates maintained by the Solana community
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript`
 
+### [lazorkit-starter-expo](community/lazorkit-starter-expo)
+
+`gh:solana-foundation/templates/community/lazorkit-starter-expo`
+
+> React Native (Expo) template with LazorKit passkey wallet integration for Solana
+
+`solana` `lazorkit` `passkey` `smart-wallet` `expo` `react-native` `mobile` `typescript`
+
+### [lazorkit-starter-next](community/lazorkit-starter-next)
+
+`gh:solana-foundation/templates/community/lazorkit-starter-next`
+
+> Next.js template with LazorKit passkey wallet integration for Solana
+
+`solana` `lazorkit` `passkey` `smart-wallet` `nextjs` `react` `typescript` `tailwind`
+
+### [lazorkit-starter-vite](community/lazorkit-starter-vite)
+
+`gh:solana-foundation/templates/community/lazorkit-starter-vite`
+
+> React + Vite template with LazorKit passkey wallet integration for Solana
+
+`solana` `lazorkit` `passkey` `smart-wallet` `vite` `react` `typescript`
+
 ### [merkle-airdrop](community/merkle-airdrop)
 
 `gh:solana-foundation/templates/community/merkle-airdrop`

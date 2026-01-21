@@ -6,15 +6,10 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   define: {
-    'global': 'window',
+    global: 'window',
   },
   server: {
     host: true,
-    allowedHosts: [
-      '.ngrok-free.app',
-      '.ngrok-free.dev',
-      '.ngrok.io',
-      'localhost',
-    ],
+    allowedHosts: ['.ngrok-free.app', '.ngrok-free.dev', '.ngrok.io', 'localhost'],
   },
 })

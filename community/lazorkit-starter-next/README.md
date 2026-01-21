@@ -40,11 +40,11 @@ Open [http://localhost:3000](http://localhost:3000) and click "Connect Wallet" t
 
 ## Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `NEXT_PUBLIC_LAZORKIT_RPC_URL` | Solana RPC endpoint (devnet or mainnet) |
-| `NEXT_PUBLIC_LAZORKIT_PORTAL_URL` | LazorKit portal for passkey auth |
-| `NEXT_PUBLIC_LAZORKIT_PAYMASTER_URL` | Paymaster for transaction fees |
+| Variable                             | Description                             |
+| ------------------------------------ | --------------------------------------- |
+| `NEXT_PUBLIC_LAZORKIT_RPC_URL`       | Solana RPC endpoint (devnet or mainnet) |
+| `NEXT_PUBLIC_LAZORKIT_PORTAL_URL`    | LazorKit portal for passkey auth        |
+| `NEXT_PUBLIC_LAZORKIT_PAYMASTER_URL` | Paymaster for transaction fees          |
 
 ## Project Structure
 
@@ -62,12 +62,11 @@ app/
 
 ```tsx
 import { LazorkitProvider } from '@lazorkit/wallet'
-
-<LazorkitProvider
+;<LazorkitProvider
   rpcUrl={process.env.NEXT_PUBLIC_LAZORKIT_RPC_URL!}
   portalUrl={process.env.NEXT_PUBLIC_LAZORKIT_PORTAL_URL!}
   paymasterConfig={{
-    paymasterUrl: process.env.NEXT_PUBLIC_LAZORKIT_PAYMASTER_URL!
+    paymasterUrl: process.env.NEXT_PUBLIC_LAZORKIT_PAYMASTER_URL!,
   }}
 >
   {children}
@@ -80,11 +79,11 @@ import { LazorkitProvider } from '@lazorkit/wallet'
 import { useWallet } from '@lazorkit/wallet'
 
 const {
-  smartWalletPubkey,  // User's smart wallet address
-  isConnected,        // Connection status
-  connect,            // Connect/create wallet
-  disconnect,         // Disconnect wallet
-  signAndSendTransaction  // Sign and send transactions
+  smartWalletPubkey, // User's smart wallet address
+  isConnected, // Connection status
+  connect, // Connect/create wallet
+  disconnect, // Disconnect wallet
+  signAndSendTransaction, // Sign and send transactions
 } = useWallet()
 ```
 

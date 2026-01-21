@@ -1,18 +1,18 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { LazorKitProvider } from '@lazorkit/wallet-mobile-adapter';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import { Stack } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
+import { LazorKitProvider } from '@lazorkit/wallet-mobile-adapter'
+import { useColorScheme } from '@/hooks/use-color-scheme'
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme()
 
   // Try passing props directly without useMemo and spreading
   return (
-    <LazorKitProvider 
+    <LazorKitProvider
       rpcUrl="https://api.devnet.solana.com"
       ipfsUrl="https://portal.lazor.sh"
-      paymasterUrl='https://kora.devnet.lazorkit.com'
+      paymasterUrl="https://kora.devnet.lazorkit.com"
       isDebug={false}
     >
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -23,5 +23,5 @@ export default function RootLayout() {
         <StatusBar style="auto" />
       </ThemeProvider>
     </LazorKitProvider>
-  );
+  )
 }
