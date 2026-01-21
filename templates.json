@@ -259,23 +259,6 @@
         "usecase": "Starter"
       },
       {
-        "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit",
-        "id": "gh:solana-foundation/templates/community/kit-node-solanax402",
-        "image": "community/kit-node-solanax402/og-image.png",
-        "keywords": [
-          "solana",
-          "x402",
-          "payment",
-          "protocol",
-          "blockchain",
-          "typescript"
-        ],
-        "name": "kit-node-solanax402",
-        "path": "community/kit-node-solanax402",
-        "displayName": "x402 Express Server",
-        "usecase": "Payments"
-      },
-      {
         "description": "Next.js + Tailwind template showing basic Drift Protocol integration",
         "id": "gh:solana-foundation/templates/community/drift-hello-world",
         "image": "community/drift-hello-world/og-image.png",
@@ -293,6 +276,23 @@
         "path": "community/drift-hello-world",
         "displayName": "Drift Hello World",
         "usecase": "DeFi"
+      },
+      {
+        "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit",
+        "id": "gh:solana-foundation/templates/community/kit-node-solanax402",
+        "image": "community/kit-node-solanax402/og-image.png",
+        "keywords": [
+          "solana",
+          "x402",
+          "payment",
+          "protocol",
+          "blockchain",
+          "typescript"
+        ],
+        "name": "kit-node-solanax402",
+        "path": "community/kit-node-solanax402",
+        "displayName": "x402 Express Server",
+        "usecase": "Payments"
       },
       {
         "description": "A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree",

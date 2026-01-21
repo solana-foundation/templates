@@ -126,14 +126,6 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `@solana/kit` `@solana-commerce/headless` `solana-pay` `tailwind` `typescript`
 
-### [kit-node-solanax402](community/kit-node-solanax402)
-
-`gh:solana-foundation/templates/community/kit-node-solanax402`
-
-> x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit
-
-`solana` `x402` `payment` `protocol` `blockchain` `typescript`
-
 ### [drift-hello-world](community/drift-hello-world)
 
 `gh:solana-foundation/templates/community/drift-hello-world`
@@ -141,6 +133,14 @@ Templates maintained by the Solana community
 > Next.js + Tailwind template showing basic Drift Protocol integration
 
 `drift` `defi` `perps` `nextjs` `tailwind` `typescript` `solana` `wallet-adapter`
+
+### [kit-node-solanax402](community/kit-node-solanax402)
+
+`gh:solana-foundation/templates/community/kit-node-solanax402`
+
+> x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit
+
+`solana` `x402` `payment` `protocol` `blockchain` `typescript`
 
 ### [merkle-airdrop](community/merkle-airdrop)
 
