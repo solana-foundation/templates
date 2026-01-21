@@ -48,6 +48,7 @@ Open [http://localhost:3000](http://localhost:3000).
 ```
 
 The template is pre-configured with:
+
 - Google, Apple, and injected wallet auth providers
 - Solana address type enabled
 - SSR-safe component patterns for Next.js
@@ -64,6 +65,7 @@ The template is pre-configured with:
 ## Deployment
 
 Add these environment variables to your hosting platform:
+
 - `NEXT_PUBLIC_PHANTOM_APP_ID`
 - `NEXT_PUBLIC_REDIRECT_URL` (update to your production callback URL)
 
