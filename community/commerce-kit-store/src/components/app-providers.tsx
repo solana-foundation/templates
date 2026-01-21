@@ -8,7 +8,7 @@ import { SolanaProvider } from '@solana/react-hooks'
 import React from 'react'
 
 const defaultConfig: SolanaClientConfig = {
-  endpoint: process.env.SOLANA_RPC_URL!,
+  endpoint: process.env.NEXT_PUBLIC_RPC_URL || 'https://api.mainnet-beta.solana.com',
 }
 
 export function AppProviders({ children }: Readonly<{ children: React.ReactNode }>) {

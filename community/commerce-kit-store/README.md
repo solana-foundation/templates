@@ -123,7 +123,6 @@ src/
 
 - [Solana Commerce Kit Docs](https://launch.solana.com/docs/commerce-kit)
 - [Solana Pay Specification](https://docs.solanapay.com)
-- [@solana/kit Documentation](https://github.com/solana-labs/solana-web3.js)
 
 ## License
 
