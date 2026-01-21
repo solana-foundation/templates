@@ -1,7 +1,29 @@
 {
   "name": "lazorkit-starter-expo",
+  "displayName": "LazorKit Starter (Expo)",
+  "description": "React Native (Expo) template with LazorKit passkey wallet integration for Solana",
+  "usecase": "Mobile",
+  "keywords": [
+    "solana",
+    "lazorkit",
+    "passkey",
+    "smart-wallet",
+    "expo",
+    "react-native",
+    "mobile",
+    "typescript"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Install dependencies:",
+      "+{pm} install",
+      "Start the Expo development server:",
+      "+{pm} start"
+    ]
+  },
   "main": "expo-router/entry",
-  "version": "1.0.0",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -49,6 +71,5 @@
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "typescript": "~5.9.2"
-  },
-  "private": true
+  }
 }

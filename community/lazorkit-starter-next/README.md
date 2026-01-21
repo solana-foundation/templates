@@ -1,6 +1,6 @@
-# LazorKit Starter (Vite)
+# LazorKit Starter (Next.js)
 
-A React + Vite template demonstrating passkey-based smart wallet integration on Solana using LazorKit.
+A Next.js template demonstrating passkey-based smart wallet integration on Solana using LazorKit.
 
 ## What is LazorKit?
 
@@ -11,12 +11,12 @@ LazorKit provides passkey-based authentication for Solana, enabling users to cre
 - Passkey authentication (no seed phrases)
 - Non-custodial smart wallet
 - SOL transfer example
-- Built with Vite, React 19, and Tailwind CSS
+- Built with Next.js 15, React 19, and Tailwind CSS
 
 ## Quick Start
 
 ```bash
-pnpm create solana-dapp@latest -t lazorkit-starter-vite
+pnpm create solana-dapp@latest -t lazorkit-starter-next
 ```
 
 ```bash
@@ -27,7 +27,7 @@ pnpm install
 Copy the environment file and configure:
 
 ```bash
-cp .env.example .env
+cp .env.example .env.local
 ```
 
 Start the development server:
@@ -36,45 +36,45 @@ Start the development server:
 pnpm dev
 ```
 
-Open the app and click "Connect Wallet" to create or access your passkey wallet.
+Open [http://localhost:3000](http://localhost:3000) and click "Connect Wallet" to create or access your passkey wallet.
 
 ## Environment Variables
 
 | Variable | Description |
 |----------|-------------|
-| `VITE_LAZORKIT_RPC_URL` | Solana RPC endpoint (devnet or mainnet) |
-| `VITE_LAZORKIT_PORTAL_URL` | LazorKit portal for passkey auth |
-| `VITE_LAZORKIT_PAYMASTER_URL` | Paymaster for transaction fees |
+| `NEXT_PUBLIC_LAZORKIT_RPC_URL` | Solana RPC endpoint (devnet or mainnet) |
+| `NEXT_PUBLIC_LAZORKIT_PORTAL_URL` | LazorKit portal for passkey auth |
+| `NEXT_PUBLIC_LAZORKIT_PAYMASTER_URL` | Paymaster for transaction fees |
 
 ## Project Structure
 
 ```
-src/
-├── App.tsx                 # Main app with LazorKit provider
-├── components/
-│   └── WalletDemo.tsx      # Wallet connection and transfer demo
-└── main.tsx                # Entry point
+app/
+├── layout.tsx      # Root layout with providers
+├── page.tsx        # Main page with wallet demo
+├── providers.tsx   # LazorKit provider setup
+└── globals.css     # Tailwind styles
 ```
 
 ## Key Integration Points
 
-### Provider Setup (`App.tsx`)
+### Provider Setup (`providers.tsx`)
 
 ```tsx
 import { LazorkitProvider } from '@lazorkit/wallet'
 
 <LazorkitProvider
-  rpcUrl={import.meta.env.VITE_LAZORKIT_RPC_URL}
-  portalUrl={import.meta.env.VITE_LAZORKIT_PORTAL_URL}
+  rpcUrl={process.env.NEXT_PUBLIC_LAZORKIT_RPC_URL!}
+  portalUrl={process.env.NEXT_PUBLIC_LAZORKIT_PORTAL_URL!}
   paymasterConfig={{
-    paymasterUrl: import.meta.env.VITE_LAZORKIT_PAYMASTER_URL
+    paymasterUrl: process.env.NEXT_PUBLIC_LAZORKIT_PAYMASTER_URL!
   }}
 >
-  <WalletDemo />
+  {children}
 </LazorkitProvider>
 ```
 
-### Using the Wallet Hook (`WalletDemo.tsx`)
+### Using the Wallet Hook (`page.tsx`)
 
 ```tsx
 import { useWallet } from '@lazorkit/wallet'

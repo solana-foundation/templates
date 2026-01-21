@@ -1,0 +1,55 @@
+{
+  "name": "lazorkit-starter-vite",
+  "displayName": "LazorKit Starter (Vite)",
+  "description": "React + Vite template with LazorKit passkey wallet integration for Solana",
+  "usecase": "Starter",
+  "keywords": [
+    "solana",
+    "lazorkit",
+    "passkey",
+    "smart-wallet",
+    "vite",
+    "react",
+    "typescript"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Install dependencies:",
+      "+{pm} install",
+      "Copy .env.example to .env and configure:",
+      "+cp .env.example .env",
+      "Start the development server:",
+      "+{pm} dev"
+    ]
+  },
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@lazorkit/wallet": "^2.0.1",
+    "@solana/web3.js": "^1.98.4",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/react": "^19.2.3",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.5.2",
+    "eslint": "^9.35.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.2.0",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.35.1",
+    "vite": "^6.3.5"
+  }
+}

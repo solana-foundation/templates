@@ -41,3 +41,7 @@ app-example
 # generated native folders
 /ios
 /android
+
+# lock files (use pnpm)
+package-lock.json
+yarn.lock
