@@ -50,7 +50,7 @@ export function WalletUiDropdown() {
       onDismiss={() => setIsOpen(false)}
       anchor={
         <BaseButton
-          label={account ? ellipsify(account.publicKey.toString()) : 'Connect'}
+          label={account ? ellipsify(account.address.toString()) : 'Connect'}
           icon="wallet"
           onPress={() => setIsOpen(true)}
         />
@@ -61,14 +61,14 @@ export function WalletUiDropdown() {
     >
       <Menu.Item
         onPress={() => {
-          Clipboard.setString(account.publicKey.toString())
+          Clipboard.setString(account.address.toString())
           setIsOpen(false)
         }}
         title="Copy Address"
       />
       <Menu.Item
         onPress={async () => {
-          await Linking.openURL(getExplorerUrl(`account/${account.publicKey.toString()}`))
+          await Linking.openURL(getExplorerUrl(`account/${account.address.toString()}`))
           setIsOpen(false)
         }}
         title="View in Explorer"

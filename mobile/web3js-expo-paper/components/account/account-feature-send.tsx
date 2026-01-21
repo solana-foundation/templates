@@ -12,7 +12,7 @@ import { useAppTheme } from '@/components/app-theme'
 export function AccountFeatureSend({ address }: { address: PublicKey }) {
   const { spacing } = useAppTheme()
   const { account } = useMobileWallet()
-  const requestAirdrop = useRequestAirdrop({ address: account?.publicKey as PublicKey })
+  const requestAirdrop = useRequestAirdrop({ address: account?.address as PublicKey })
   const transferSol = useTransferSol({ address })
   const [destinationAddress, setDestinationAddress] = useState('')
   const [amount, setAmount] = useState('1')

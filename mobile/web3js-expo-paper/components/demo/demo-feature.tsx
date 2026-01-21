@@ -11,7 +11,7 @@ export function DemoFeature() {
     <AppView>
       <AppText variant="titleMedium">Demo page</AppText>
       <AppText>Start building your features here.</AppText>
-      <DemoFeatureSignMessage address={account?.publicKey as PublicKey} />
+      <DemoFeatureSignMessage address={account?.address as PublicKey} />
     </AppView>
   )
 }

@@ -19,11 +19,11 @@ function useDropdownItems() {
   return [
     {
       label: 'Copy Address',
-      onPress: () => Clipboard.setString(account.publicKey.toString()),
+      onPress: () => Clipboard.setString(account.address.toString()),
     },
     {
       label: 'View in Explorer',
-      onPress: async () => await Linking.openURL(getExplorerUrl(`account/${account.publicKey.toString()}`)),
+      onPress: async () => await Linking.openURL(getExplorerUrl(`account/${account.address.toString()}`)),
     },
     {
       label: 'Disconnect',
@@ -46,7 +46,7 @@ export function WalletUiDropdown() {
     <Dropdown.Root>
       <Dropdown.Trigger style={[styles.trigger, { backgroundColor, borderColor }]}>
         <UiIconSymbol name="wallet.pass.fill" color={textColor} />
-        <AppText>{ellipsify(account.publicKey.toString())}</AppText>
+        <AppText>{ellipsify(account.address.toString())}</AppText>
       </Dropdown.Trigger>
       <Dropdown.Portal>
         <Dropdown.Overlay style={StyleSheet.absoluteFill}>
