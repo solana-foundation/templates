@@ -9,6 +9,9 @@ import NoiseBackground from '@/components/noise-background'
 export const metadata: Metadata = {
   title: 'Solana Pay Store',
   description: 'An educational Next.js template demonstrating how to implement Solana Pay on your store',
+  openGraph: {
+    images: ['/og-image.png'],
+  },
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
