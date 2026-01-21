@@ -58,7 +58,7 @@
     "@solana/spl-token": "^0.4.13",
     "@solana/web3.js": "^1.98.4",
     "@tanstack/react-query": "^5.85.5",
-    "@wallet-ui/react-native-web3js": "^2.2.0",
+    "@wallet-ui/react-native-web3js": "^2.2.2",
     "expo": "~54.0.21",
     "expo-blur": "~15.0.7",
     "expo-constants": "~18.0.9",

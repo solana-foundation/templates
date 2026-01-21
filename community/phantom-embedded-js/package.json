@@ -1,0 +1,66 @@
+{
+  "name": "phantom-embedded-js",
+  "version": "1.0.0",
+  "description": "Vite + vanilla JavaScript template for integrating Phantom's embedded user wallets on Solana",
+  "displayName": "Phantom Embedded JS",
+  "usecase": "Auth",
+  "keywords": [
+    "solana",
+    "phantom",
+    "wallet",
+    "embedded-wallet",
+    "javascript",
+    "typescript",
+    "vite",
+    "oauth",
+    "social-login"
+  ],
+  "author": "Phantom",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phantom/phantom-embedded-js"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "create-solana-dapp": {
+    "instructions": [
+      "Your Phantom Embedded Vanilla JS starter is ready!",
+      "",
+      "Next steps:",
+      "+1. Copy .env.example to .env and add your Phantom App ID",
+      "+2. Get your App ID at https://phantom.com/portal",
+      "+3. Read the docs at https://docs.phantom.com/sdks/browser-sdk",
+      "",
+      "Start developing:",
+      "+{pm} run dev",
+      "",
+      "Learn more:",
+      "- Browser SDK Docs: https://docs.phantom.com/sdks/browser-sdk",
+      "- Get Support: https://docs.phantom.com"
+    ],
+    "rename": {
+      "phantom-embedded-js": {
+        "to": "{{name}}",
+        "paths": [
+          "src",
+          "package.json",
+          "README.md",
+          "index.html"
+        ]
+      }
+    }
+  },
+  "dependencies": {
+    "@phantom/browser-sdk": "1.0.0-beta.21",
+    "@solana/web3.js": "^1.95.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "vite": "^5.4.0"
+  },
+  "packageManager": "pnpm@10.20.0"
+}

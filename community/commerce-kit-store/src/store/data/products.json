@@ -1,0 +1,240 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "Web3 Logo T-Shirt",
+      "description": "A stylish t-shirt with HIGH QUALITY WEB3 logo front and back print. Premium cotton blend for maximum comfort.",
+      "basePrice": 30,
+      "category": "t-shirt",
+      "imageUrl": "/products/t-shirt-logo-web3.jpg",
+      "images": {
+        "white": {
+          "front": "/products/t-shirt-logo-web3.jpg",
+          "back": "/products/t-shirt-phrase-web3.jpg",
+          "frontHighRes": "/products/t-shirt-logo-web3-high-res.jpg",
+          "backHighRes": "/products/t-shirt-phrase-web3-high-res.jpg"
+        },
+        "black": {
+          "front": "/products/t-shirt-logo-web3-black.jpg",
+          "back": "/products/t-shirt-phrase-web3-black.jpg",
+          "frontHighRes": "/products/t-shirt-logo-web3-black-high-res.jpg",
+          "backHighRes": "/products/t-shirt-phrase-web3-black-high-res.jpg"
+        }
+      },
+      "variations": [
+        {
+          "variationId": "1-s-black",
+          "size": "S",
+          "color": "black",
+          "sku": "WLT-S-BLK",
+          "stock": 20,
+          "priceModifier": 0
+        },
+        {
+          "variationId": "1-m-black",
+          "size": "M",
+          "color": "black",
+          "sku": "WLT-M-BLK",
+          "stock": 25,
+          "priceModifier": 0
+        },
+        {
+          "variationId": "1-l-black",
+          "size": "L",
+          "color": "black",
+          "sku": "WLT-L-BLK",
+          "stock": 15,
+          "priceModifier": 0
+        },
+        {
+          "variationId": "1-xl-black",
+          "size": "XL",
+          "color": "black",
+          "sku": "WLT-XL-BLK",
+          "stock": 10,
+          "priceModifier": 5
+        },
+        {
+          "variationId": "1-s-white",
+          "size": "S",
+          "color": "white",
+          "sku": "WLT-S-WHT",
+          "stock": 18,
+          "priceModifier": 0
+        },
+        {
+          "variationId": "1-m-white",
+          "size": "M",
+          "color": "white",
+          "sku": "WLT-M-WHT",
+          "stock": 22,
+          "priceModifier": 0
+        },
+        {
+          "variationId": "1-l-white",
+          "size": "L",
+          "color": "white",
+          "sku": "WLT-L-WHT",
+          "stock": 12,
+          "priceModifier": 0
+        },
+        {
+          "variationId": "1-xl-white",
+          "size": "XL",
+          "color": "white",
+          "sku": "WLT-XL-WHT",
+          "stock": 12,
+          "priceModifier": 5
+        }
+      ],
+      "features": ["Premium cotton blend", "Front and back print", "Unisex fit", "Machine washable"],
+      "tags": ["web3", "crypto", "blockchain", "t-shirt"]
+    },
+    {
+      "id": "2",
+      "name": "Web3 Logo Hoodie",
+      "description": "A comfortable hoodie with the HIGH QUALITY WEB3 logo. Perfect for cool weather and crypto enthusiasts.",
+      "basePrice": 52,
+      "category": "hoodie",
+      "imageUrl": "/products/hoodie-logo-web3-black.jpg",
+      "images": {
+        "black": {
+          "front": "/products/hoodie-logo-web3-black.jpg",
+          "frontHighRes": "/products/hoodie-logo-web3-black-high-res.jpg"
+        },
+        "white": {
+          "front": "/products/hoodie-logo-web3.jpg",
+          "frontHighRes": "/products/hoodie-logo-web3-high-res.jpg"
+        }
+      },
+      "variations": [
+        {
+          "variationId": "2-m-black",
+          "size": "M",
+          "color": "black",
+          "sku": "WLH-M-BLK",
+          "stock": 7,
+          "priceModifier": 0
+        },
+        {
+          "variationId": "2-l-black",
+          "size": "L",
+          "color": "black",
+          "sku": "WLH-L-BLK",
+          "stock": 3,
+          "priceModifier": 0
+        },
+        {
+          "variationId": "2-xl-black",
+          "size": "XL",
+          "color": "black",
+          "sku": "WLH-XL-BLK",
+          "stock": 5,
+          "priceModifier": 5
+        },
+        {
+          "variationId": "2-m-white",
+          "size": "M",
+          "color": "white",
+          "sku": "WLH-M-WHT",
+          "stock": 6,
+          "priceModifier": 0
+        },
+        {
+          "variationId": "2-l-white",
+          "size": "L",
+          "color": "white",
+          "sku": "WLH-L-WHT",
+          "stock": 4,
+          "priceModifier": 0
+        },
+        {
+          "variationId": "2-xl-white",
+          "size": "XL",
+          "color": "white",
+          "sku": "WLH-XL-WHT",
+          "stock": 8,
+          "priceModifier": 5
+        }
+      ],
+      "features": ["80% cotton, 20% polyester", "Drawstring hood", "Kangaroo pocket", "Ribbed cuffs and waistband"],
+      "tags": ["web3", "crypto", "blockchain", "hoodie"]
+    },
+    {
+      "id": "3",
+      "name": "Web3 Phrase Hoodie",
+      "description": "A comfortable hoodie with the HIGH QUALITY WEB3 phrase print. Stand out with this bold statement piece.",
+      "basePrice": 55,
+      "category": "hoodie",
+      "imageUrl": "/products/hoodie-phrase-web3.jpg",
+      "images": {
+        "black": {
+          "front": "/products/hoodie-phrase-web3-black.jpg",
+          "frontHighRes": "/products/hoodie-frase-web3-black-high-res.jpg"
+        },
+        "white": {
+          "front": "/products/hoodie-phrase-web3.jpg",
+          "frontHighRes": "/products/hoodie-frase-web3-high-res.jpg"
+        }
+      },
+      "variations": [
+        {
+          "variationId": "3-m-black",
+          "size": "M",
+          "color": "black",
+          "sku": "WPH-M-BLK",
+          "stock": 7,
+          "priceModifier": 0
+        },
+        {
+          "variationId": "3-l-black",
+          "size": "L",
+          "color": "black",
+          "sku": "WPH-L-BLK",
+          "stock": 3,
+          "priceModifier": 0
+        },
+        {
+          "variationId": "3-xl-black",
+          "size": "XL",
+          "color": "black",
+          "sku": "WPH-XL-BLK",
+          "stock": 5,
+          "priceModifier": 5
+        },
+        {
+          "variationId": "3-m-white",
+          "size": "M",
+          "color": "white",
+          "sku": "WPH-M-WHT",
+          "stock": 6,
+          "priceModifier": 0
+        },
+        {
+          "variationId": "3-l-white",
+          "size": "L",
+          "color": "white",
+          "sku": "WPH-L-WHT",
+          "stock": 4,
+          "priceModifier": 0
+        },
+        {
+          "variationId": "3-xl-white",
+          "size": "XL",
+          "color": "white",
+          "sku": "WPH-XL-WHT",
+          "stock": 9,
+          "priceModifier": 5
+        }
+      ],
+      "features": [
+        "80% cotton, 20% polyester",
+        "Drawstring hood",
+        "Kangaroo pocket",
+        "Bold phrase print",
+        "Ribbed cuffs and waistband"
+      ],
+      "tags": ["web3", "crypto", "blockchain", "hoodie", "phrase"]
+    }
+  ]
+}
