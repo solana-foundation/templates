@@ -259,6 +259,25 @@
         "usecase": "Starter"
       },
       {
+        "description": "Next.js + Tailwind template showing basic Drift Protocol integration",
+        "id": "gh:solana-foundation/templates/community/drift-hello-world",
+        "image": "community/drift-hello-world/og-image.png",
+        "keywords": [
+          "drift",
+          "defi",
+          "perps",
+          "nextjs",
+          "tailwind",
+          "typescript",
+          "solana",
+          "wallet-adapter"
+        ],
+        "name": "drift-hello-world",
+        "path": "community/drift-hello-world",
+        "displayName": "Drift Hello World",
+        "usecase": "DeFi"
+      },
+      {
         "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit",
         "id": "gh:solana-foundation/templates/community/kit-node-solanax402",
         "image": "community/kit-node-solanax402/og-image.png",

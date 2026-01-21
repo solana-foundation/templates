@@ -126,6 +126,14 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `@solana/kit` `@solana-commerce/headless` `solana-pay` `tailwind` `typescript`
 
+### [drift-hello-world](community/drift-hello-world)
+
+`gh:solana-foundation/templates/community/drift-hello-world`
+
+> Next.js + Tailwind template showing basic Drift Protocol integration
+
+`drift` `defi` `perps` `nextjs` `tailwind` `typescript` `solana` `wallet-adapter`
+
 ### [kit-node-solanax402](community/kit-node-solanax402)
 
 `gh:solana-foundation/templates/community/kit-node-solanax402`
