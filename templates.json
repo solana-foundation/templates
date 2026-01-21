@@ -295,6 +295,62 @@
         "usecase": "Payments"
       },
       {
+        "description": "React Native (Expo) template with LazorKit passkey wallet integration for Solana",
+        "id": "gh:solana-foundation/templates/community/lazorkit-starter-expo",
+        "image": "community/lazorkit-starter-expo/og-image.png",
+        "keywords": [
+          "solana",
+          "lazorkit",
+          "passkey",
+          "smart-wallet",
+          "expo",
+          "react-native",
+          "mobile",
+          "typescript"
+        ],
+        "name": "lazorkit-starter-expo",
+        "path": "community/lazorkit-starter-expo",
+        "displayName": "LazorKit Starter (Expo)",
+        "usecase": "Mobile"
+      },
+      {
+        "description": "Next.js template with LazorKit passkey wallet integration for Solana",
+        "id": "gh:solana-foundation/templates/community/lazorkit-starter-next",
+        "image": "community/lazorkit-starter-next/og-image.png",
+        "keywords": [
+          "solana",
+          "lazorkit",
+          "passkey",
+          "smart-wallet",
+          "nextjs",
+          "react",
+          "typescript",
+          "tailwind"
+        ],
+        "name": "lazorkit-starter-next",
+        "path": "community/lazorkit-starter-next",
+        "displayName": "LazorKit Starter (Next.js)",
+        "usecase": "Starter"
+      },
+      {
+        "description": "React + Vite template with LazorKit passkey wallet integration for Solana",
+        "id": "gh:solana-foundation/templates/community/lazorkit-starter-vite",
+        "image": "community/lazorkit-starter-vite/og-image.png",
+        "keywords": [
+          "solana",
+          "lazorkit",
+          "passkey",
+          "smart-wallet",
+          "vite",
+          "react",
+          "typescript"
+        ],
+        "name": "lazorkit-starter-vite",
+        "path": "community/lazorkit-starter-vite",
+        "displayName": "LazorKit Starter (Vite)",
+        "usecase": "Starter"
+      },
+      {
         "description": "A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree",
         "id": "gh:solana-foundation/templates/community/merkle-airdrop",
         "image": "community/merkle-airdrop/og-image.png",
