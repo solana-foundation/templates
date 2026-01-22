@@ -8,12 +8,12 @@ import {
 } from '@solana/web3.js'
 
 export async function createTransaction({
-  publicKey,
+  address,
   destination,
   amount,
   connection,
 }: {
-  publicKey: PublicKey
+  address: PublicKey
   destination: PublicKey
   amount: number
   connection: Connection
@@ -31,7 +31,7 @@ export async function createTransaction({
   // Create instructions to send, in this case a simple transfer
   const instructions = [
     SystemProgram.transfer({
-      fromPubkey: publicKey,
+      fromPubkey: address,
       toPubkey: destination,
       lamports: amount * LAMPORTS_PER_SOL,
     }),
@@ -39,7 +39,7 @@ export async function createTransaction({
 
   // Create a new TransactionMessage with version and compile it to legacy
   const messageLegacy = new TransactionMessage({
-    payerKey: publicKey,
+    payerKey: address,
     recentBlockhash: latestBlockhash.blockhash,
     instructions,
   }).compileToLegacyMessage()

@@ -19,12 +19,12 @@ export function AccountFeatureIndex() {
       {account ? (
         <View style={appStyles.stack}>
           <View style={appStyles.card}>
-            <Text>Connected to {ellipsify(account.publicKey.toString(), 8)}</Text>
-            <AccountFeatureGetBalance publicKey={account.publicKey} />
+            <Text>Connected to {ellipsify(account.address.toString(), 8)}</Text>
+            <AccountFeatureGetBalance address={account.address} />
           </View>
-          <AccountFeatureSignIn publicKey={account.publicKey} />
-          <AccountFeatureSignMessage publicKey={account.publicKey} />
-          <AccountFeatureSignTransaction publicKey={account.publicKey} />
+          <AccountFeatureSignIn address={account.address} />
+          <AccountFeatureSignMessage address={account.address} />
+          <AccountFeatureSignTransaction address={account.address} />
           <AccountFeatureDisconnect />
         </View>
       ) : (

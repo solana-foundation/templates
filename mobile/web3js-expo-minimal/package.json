@@ -47,7 +47,7 @@
     "@solana/web3.js": "^1.98.4",
     "@tanstack/react-query": "^5.90.7",
     "@wallet-standard/core": "^1.1.1",
-    "@wallet-ui/react-native-web3js": "^2.2.2",
+    "@wallet-ui/react-native-web3js": "^3.0.0",
     "expo": "~54.0.23",
     "expo-constants": "~18.0.10",
     "expo-dev-client": "~6.0.17",

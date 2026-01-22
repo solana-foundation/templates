@@ -9,9 +9,7 @@ export function SettingsUiAccount() {
   return (
     <AppView>
       <AppText variant="titleMedium">Account</AppText>
-      <AppText>
-        {account ? `Connected to ${ellipsify(account.publicKey.toString(), 8)}` : 'Connect your wallet.'}
-      </AppText>
+      <AppText>{account ? `Connected to ${ellipsify(account.address.toString(), 8)}` : 'Connect your wallet.'}</AppText>
       <AppView style={{ alignItems: 'flex-end' }}>
         {account ? <WalletUiDisconnectButton /> : <WalletUiConnectButton />}
       </AppView>
