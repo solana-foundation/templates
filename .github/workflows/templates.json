@@ -19,6 +19,7 @@
   "kit/nextjs-anchor",
   "kit/react-vite",
   "kit/react-vite-anchor",
+  "mobile/kit-expo-minimal",
   "mobile/web3js-expo",
   "mobile/web3js-expo-minimal",
   "mobile/web3js-expo-paper",

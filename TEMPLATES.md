@@ -38,6 +38,14 @@ Kit Templates (using @solana/kit)
 
 Solana Mobile Templates
 
+### [kit-expo-minimal](mobile/kit-expo-minimal)
+
+`gh:solana-foundation/templates/mobile/kit-expo-minimal`
+
+> A minimal template for building a Solana mobile app with Expo, React Native, and Solana Kit.
+
+`expo` `mobile-wallet-adapter` `react-native` `solana-kit`
+
 ### [web3js-expo](mobile/web3js-expo)
 
 `gh:solana-foundation/templates/mobile/web3js-expo`
