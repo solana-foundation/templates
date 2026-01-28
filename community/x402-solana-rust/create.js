@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+if (process.env.CI || process.env.PNPM_SCRIPT_SRC_DIR) {
+  process.exit(0)
+}
+
 const fs = require('fs')
 const path = require('path')
 const readline = require('readline')
