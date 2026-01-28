@@ -1,5 +1,10 @@
 [
+  "community/commerce-kit-store",
+  "community/drift-hello-world",
   "community/kit-node-solanax402",
+  "community/lazorkit-starter-expo",
+  "community/lazorkit-starter-next",
+  "community/lazorkit-starter-vite",
   "community/merkle-airdrop",
   "community/moneymq-x402",
   "community/phantom-embedded-js",

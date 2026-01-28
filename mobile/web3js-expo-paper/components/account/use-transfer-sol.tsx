@@ -14,7 +14,7 @@ export function useTransferSol({ address }: { address: PublicKey }) {
       let signature: TransactionSignature = ''
       try {
         const { transaction, latestBlockhash, minContextSlot } = await createTransaction({
-          publicKey: address,
+          address,
           destination: input.destination,
           amount: input.amount,
           connection,

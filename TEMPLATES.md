@@ -118,6 +118,22 @@ Templates using @solana/web3.js (legacy)
 
 Templates maintained by the Solana community
 
+### [commerce-kit-store](community/commerce-kit-store)
+
+`gh:solana-foundation/templates/community/commerce-kit-store`
+
+> Next.js store template using @solana-commerce/headless and @solana/kit
+
+`nextjs` `react` `@solana/kit` `@solana-commerce/headless` `solana-pay` `tailwind` `typescript`
+
+### [drift-hello-world](community/drift-hello-world)
+
+`gh:solana-foundation/templates/community/drift-hello-world`
+
+> Next.js + Tailwind template showing basic Drift Protocol integration
+
+`drift` `defi` `perps` `nextjs` `tailwind` `typescript` `solana` `wallet-adapter`
+
 ### [kit-node-solanax402](community/kit-node-solanax402)
 
 `gh:solana-foundation/templates/community/kit-node-solanax402`
@@ -125,6 +141,30 @@ Templates maintained by the Solana community
 > x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript`
+
+### [lazorkit-starter-expo](community/lazorkit-starter-expo)
+
+`gh:solana-foundation/templates/community/lazorkit-starter-expo`
+
+> React Native (Expo) template with LazorKit passkey wallet integration for Solana
+
+`solana` `lazorkit` `passkey` `smart-wallet` `expo` `react-native` `mobile` `typescript`
+
+### [lazorkit-starter-next](community/lazorkit-starter-next)
+
+`gh:solana-foundation/templates/community/lazorkit-starter-next`
+
+> Next.js template with LazorKit passkey wallet integration for Solana
+
+`solana` `lazorkit` `passkey` `smart-wallet` `nextjs` `react` `typescript` `tailwind`
+
+### [lazorkit-starter-vite](community/lazorkit-starter-vite)
+
+`gh:solana-foundation/templates/community/lazorkit-starter-vite`
+
+> React + Vite template with LazorKit passkey wallet integration for Solana
+
+`solana` `lazorkit` `passkey` `smart-wallet` `vite` `react` `typescript`
 
 ### [merkle-airdrop](community/merkle-airdrop)
 

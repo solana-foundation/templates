@@ -12,7 +12,7 @@ export function SettingsUiAccount() {
       <AppText type="subtitle">Account</AppText>
       {account ? (
         <AppView style={{ flexDirection: 'column', justifyContent: 'flex-end' }}>
-          <AppText>Connected to {ellipsify(account.publicKey.toString(), 8)}</AppText>
+          <AppText>Connected to {ellipsify(account.address.toString(), 8)}</AppText>
           <WalletUiButtonDisconnect />
         </AppView>
       ) : (
