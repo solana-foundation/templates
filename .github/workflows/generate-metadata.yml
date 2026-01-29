@@ -1,0 +1,84 @@
+name: Generate Template Metadata
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'community/**/package.json'
+      - 'kit/**/package.json'
+      - 'mobile/**/package.json'
+      - 'web3js/**/package.json'
+      - 'package.json'
+      - 'scripts/**'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run - generate but do not commit'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.5.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate metadata
+        run: pnpm generate
+
+      - name: Validate generated output
+        run: pnpm validate
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git add templates.json TEMPLATES.md .github/workflows/templates.json
+          if git diff --staged --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push
+        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "chore: regenerate template metadata [skip ci]"
+          git push
+
+      - name: Dry run summary
+        if: inputs.dry_run == true && steps.changes.outputs.has_changes == 'true'
+        run: |
+          echo "## Dry Run - Changes Detected" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```diff' >> $GITHUB_STEP_SUMMARY
+          git diff --staged >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: No changes summary
+        if: steps.changes.outputs.has_changes == 'false'
+        run: |
+          echo "## No Changes Detected" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Generated files are already up to date." >> $GITHUB_STEP_SUMMARY
