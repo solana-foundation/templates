@@ -46,6 +46,11 @@
         "description": "Templates maintained by the Solana community",
         "name": "Community Templates",
         "path": "community"
+      },
+      {
+        "description": "Pinocchio-based program templates",
+        "name": "Pinocchio",
+        "path": "pinocchio"
       }
     ]
   },
