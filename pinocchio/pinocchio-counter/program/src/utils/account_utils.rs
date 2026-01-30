@@ -3,18 +3,16 @@
 use crate::ID as PINOCCHIO_COUNTER_PROGRAM_ID;
 use pinocchio::{account::AccountView, address::Address, error::ProgramError};
 
-/// Verify account as writable, returning an error if it is not or if it is not writable while
-/// expected to be.
+/// Verify account is writable, returning an error if it is not.
 ///
 /// # Arguments
 /// * `account` - The account to verify.
-/// * `expect_writable` - Whether the account should be writable
 ///
 /// # Returns
 /// * `Result<(), ProgramError>` - The result of the operation
 #[inline(always)]
-pub fn verify_writable(account: &AccountView, expect_writable: bool) -> Result<(), ProgramError> {
-    if expect_writable && !account.is_writable() {
+pub fn verify_writable(account: &AccountView) -> Result<(), ProgramError> {
+    if !account.is_writable() {
         return Err(ProgramError::Immutable);
     }
     Ok(())
@@ -35,22 +33,19 @@ pub fn verify_readonly(account: &AccountView) -> Result<(), ProgramError> {
     Ok(())
 }
 
-/// Verify account as a signer, returning an error if it is not or if it is not writable while
-/// expected to be.
+/// Verify account is a signer, returning an error if it is not.
 ///
 /// # Arguments
 /// * `account` - The account to verify.
-/// * `expect_writable` - Whether the account should be writable
 ///
 /// # Returns
 /// * `Result<(), ProgramError>` - The result of the operation
 #[inline(always)]
-pub fn verify_signer(account: &AccountView, expect_writable: bool) -> Result<(), ProgramError> {
+pub fn verify_signer(account: &AccountView) -> Result<(), ProgramError> {
     if !account.is_signer() {
         return Err(ProgramError::MissingRequiredSignature);
     }
-
-    verify_writable(account, expect_writable)
+    Ok(())
 }
 
 /// Verify account's owner, returning an error if it is not the expected owner.
@@ -92,4 +87,19 @@ pub fn verify_system_account(account: &AccountView) -> Result<(), ProgramError> 
 #[inline(always)]
 pub fn verify_current_program_account(account: &AccountView) -> Result<(), ProgramError> {
     verify_owned_by(account, &PINOCCHIO_COUNTER_PROGRAM_ID)
+}
+
+/// Verify account data is empty, returning an error if it is not.
+///
+/// # Arguments
+/// * `account` - The account to verify.
+///
+/// # Returns
+/// * `Result<(), ProgramError>` - The result of the operation
+#[inline(always)]
+pub fn verify_empty(account: &AccountView) -> Result<(), ProgramError> {
+    if account.data_len() != 0 {
+        return Err(ProgramError::AccountAlreadyInitialized);
+    }
+    Ok(())
 }

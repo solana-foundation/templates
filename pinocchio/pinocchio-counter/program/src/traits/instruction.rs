@@ -5,6 +5,9 @@ use pinocchio::{account::AccountView, error::ProgramError};
 pub enum PinocchioCounterInstructionDiscriminators {
     CreateCounter = 0,
     Increment = 1,
+    CloseCounter = 2,
+    /// 228 is the Anchor event instruction discriminator used for CPI-based event emission.
+    /// Events are emitted by invoking CPI to this instruction with serialized event data.
     EmitEvent = 228,
 }
 
@@ -15,6 +18,7 @@ impl TryFrom<u8> for PinocchioCounterInstructionDiscriminators {
         match value {
             0 => Ok(Self::CreateCounter),
             1 => Ok(Self::Increment),
+            2 => Ok(Self::CloseCounter),
             228 => Ok(Self::EmitEvent),
             _ => Err(ProgramError::InvalidInstructionData),
         }

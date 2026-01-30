@@ -35,3 +35,17 @@ pub fn create_pda_account<const N: usize>(
         .invoke_signed(&signers)
     }
 }
+
+/// Close a PDA account and return the lamports to the recipient.
+pub fn close_pda_account(pda_account: &AccountView, recipient: &AccountView) -> ProgramResult {
+    let payer_lamports = recipient.lamports();
+    recipient.set_lamports(
+        payer_lamports
+            .checked_add(pda_account.lamports())
+            .ok_or(ProgramError::ArithmeticOverflow)?,
+    );
+    pda_account.set_lamports(0);
+    pda_account.close()?;
+
+    Ok(())
+}

@@ -10,6 +10,7 @@ pub const EVENT_DISCRIMINATOR_LEN: usize = 8 + 1;
 pub enum EventDiscriminators {
     CounterCreated = 0,
     CounterIncremented = 1,
+    CounterClosed = 2,
 }
 
 /// Event discriminator with Anchor-compatible prefix

@@ -12,7 +12,7 @@ pub fn process_emit_event(_program_id: &Address, accounts: &[AccountView]) -> Pr
     };
 
     verify_event_authority(event_authority)?;
-    verify_signer(event_authority, false)?;
+    verify_signer(event_authority)?;
 
     Ok(())
 }

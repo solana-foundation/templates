@@ -3,8 +3,8 @@ use pinocchio::{account::AccountView, error::ProgramError};
 use crate::{
     traits::InstructionAccounts,
     utils::{
-        verify_current_program, verify_event_authority, verify_signer, verify_system_program,
-        verify_writable,
+        verify_current_program, verify_empty, verify_event_authority, verify_signer,
+        verify_system_account, verify_system_program, verify_writable,
     },
 };
 
@@ -35,10 +35,13 @@ impl<'a> TryFrom<&'a [AccountView]> for CreateCounterAccounts<'a> {
             return Err(ProgramError::NotEnoughAccountKeys);
         };
 
-        verify_signer(payer, true)?;
-        verify_signer(authority, false)?;
+        verify_signer(payer)?;
+        verify_writable(payer)?;
+        verify_signer(authority)?;
 
-        verify_writable(counter, true)?;
+        verify_writable(counter)?;
+        verify_empty(counter)?;
+        verify_system_account(counter)?;
 
         verify_system_program(system_program)?;
         verify_current_program(program)?;
