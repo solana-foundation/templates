@@ -13,7 +13,7 @@ import { removeEmitInstruction } from './updates/remove-emit-instruction';
 export class PinocchioCounterCodamaBuilder {
     private codama: Codama;
 
-    constructor(pinocchioCounterIdl: any) {
+    constructor(pinocchioCounterIdl: unknown) {
         const idlJson =
             typeof pinocchioCounterIdl === 'string' ? pinocchioCounterIdl : JSON.stringify(pinocchioCounterIdl);
         this.codama = createFromJson(idlJson);
@@ -49,6 +49,6 @@ export class PinocchioCounterCodamaBuilder {
     }
 }
 
-export function createPinocchioCounterCodamaBuilder(pinocchioCounterIdl: any): PinocchioCounterCodamaBuilder {
+export function createPinocchioCounterCodamaBuilder(pinocchioCounterIdl: unknown): PinocchioCounterCodamaBuilder {
     return new PinocchioCounterCodamaBuilder(pinocchioCounterIdl);
 }
