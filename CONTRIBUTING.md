@@ -78,7 +78,6 @@ pnpm run
 **Core Development Commands:**
 
 - `pnpm clean` - Clean generated files and artifacts
-- `pnpm generate` - Generate template files and configurations
 - `pnpm format` - Format code using prettier
 - `pnpm lint` - Lint code for style and quality issues
 - `pnpm update-deps` - Update all dependencies to latest versions

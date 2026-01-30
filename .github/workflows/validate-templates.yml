@@ -48,11 +48,6 @@ jobs:
 
       - name: Validate generated output
         run: pnpm validate
-
-      - name: Check for uncommitted changes
-        run: |
-          if ! git diff --exit-code templates.json TEMPLATES.md .github/workflows/templates.json; then
-            echo "Error: Generated files have uncommitted changes"
-            echo "Please run 'pnpm generate' and commit the changes"
-            exit 1
-          fi
+        # Note: Generated files (templates.json, TEMPLATES.md, .github/workflows/templates.json)
+        # are auto-committed by the generate-metadata.yml workflow on merge to main.
+        # Contributors do not need to commit these files.
