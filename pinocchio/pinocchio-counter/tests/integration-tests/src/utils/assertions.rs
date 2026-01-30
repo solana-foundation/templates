@@ -1,6 +1,6 @@
-use crate::utils::TestContext;
+use crate::utils::{Address, TestContext};
 use pinocchio_counter_client::{accounts::Counter, PINOCCHIO_COUNTER_ID};
-use solana_sdk::{instruction::InstructionError, pubkey::Pubkey, transaction::TransactionError};
+use solana_sdk::{instruction::InstructionError, transaction::TransactionError};
 
 pub use pinocchio_counter_client::errors::PinocchioCounterError as ProgramError;
 
@@ -8,17 +8,17 @@ pub fn assert_program_error(tx_error: TransactionError, expected: ProgramError) 
     assert_instruction_error(tx_error, InstructionError::Custom(expected as u32));
 }
 
-pub fn assert_account_exists(context: &TestContext, pubkey: &Pubkey) {
+pub fn assert_account_exists(context: &TestContext, address: &Address) {
     let account = context
-        .get_account(pubkey)
-        .unwrap_or_else(|| panic!("Account {pubkey} should exist"));
+        .get_account(address)
+        .unwrap_or_else(|| panic!("Account {address} should exist"));
     assert!(!account.data.is_empty(), "Account data should not be empty");
 }
 
-pub fn assert_account_not_exists(context: &TestContext, pubkey: &Pubkey) {
+pub fn assert_account_not_exists(context: &TestContext, address: &Address) {
     assert!(
-        context.get_account(pubkey).is_none(),
-        "Account {pubkey} should not exist"
+        context.get_account(address).is_none(),
+        "Account {address} should not exist"
     );
 }
 
@@ -39,8 +39,8 @@ pub fn assert_custom_error(tx_error: TransactionError, expected_code: u32) {
 
 pub fn assert_counter_account(
     context: &TestContext,
-    counter_pda: &Pubkey,
-    expected_authority: &Pubkey,
+    counter_pda: &Address,
+    expected_authority: &Address,
     expected_bump: u8,
     expected_count: u8,
 ) {

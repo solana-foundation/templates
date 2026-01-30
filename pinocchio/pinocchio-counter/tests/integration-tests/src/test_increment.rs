@@ -3,7 +3,7 @@ use crate::{
     utils::{
         assert_counter_account, assert_instruction_error, find_counter_pda, test_missing_signer,
         test_not_writable, test_wrong_account, test_wrong_current_program, InstructionTestFixture,
-        TestContext, RANDOM_PUBKEY,
+        TestContext, RANDOM_ADDRESS,
     },
 };
 use solana_sdk::{instruction::InstructionError, signature::Signer};
@@ -65,7 +65,7 @@ fn test_increment_counter_not_owned_by_program() {
     let test_ix = IncrementFixture::build_valid(&mut ctx);
 
     let error = test_ix
-        .with_account_at(1, RANDOM_PUBKEY)
+        .with_account_at(1, RANDOM_ADDRESS)
         .send_expect_error(&mut ctx);
     assert_instruction_error(error, InstructionError::InvalidAccountOwner);
 }

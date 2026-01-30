@@ -1,11 +1,10 @@
 use solana_sdk::{
     instruction::{AccountMeta, Instruction},
-    pubkey::Pubkey,
     signature::Keypair,
     transaction::TransactionError,
 };
 
-use crate::utils::TestContext;
+use crate::utils::{Address, TestContext};
 
 /// Wrapper around an instruction and its required signers for testing
 pub struct TestInstruction {
@@ -55,12 +54,12 @@ impl TestInstruction {
         self
     }
 
-    /// Replace an account pubkey at the given instruction account index
-    pub fn with_account_at(mut self, account_index: usize, pubkey: Pubkey) -> Self {
+    /// Replace an account address at the given instruction account index
+    pub fn with_account_at(mut self, account_index: usize, address: Address) -> Self {
         if account_index < self.instruction.accounts.len() {
             let meta = &self.instruction.accounts[account_index];
             self.instruction.accounts[account_index] = AccountMeta {
-                pubkey,
+                pubkey: address,
                 is_signer: meta.is_signer,
                 is_writable: meta.is_writable,
             };

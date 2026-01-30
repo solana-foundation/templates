@@ -1,11 +1,11 @@
-use solana_sdk::{instruction::InstructionError, pubkey::Pubkey};
+use solana_sdk::instruction::InstructionError;
 
-use crate::utils::{assert_instruction_error, TestContext};
+use crate::utils::{assert_instruction_error, Address, TestContext};
 
 use super::traits::InstructionTestFixture;
 
-pub const RANDOM_PUBKEY: Pubkey =
-    Pubkey::from_str_const("EpkG1ek8zrHWHqgUv42fTd6vJPsceSzkPSZfGaoLUGqf");
+pub const RANDOM_ADDRESS: Address =
+    Address::from_str_const("EpkG1ek8zrHWHqgUv42fTd6vJPsceSzkPSZfGaoLUGqf");
 
 /// Test that removing a required signer fails with MissingRequiredSignature
 ///
@@ -40,7 +40,7 @@ pub fn test_not_writable<T: InstructionTestFixture>(ctx: &mut TestContext, accou
 pub fn test_wrong_system_program<T: InstructionTestFixture>(ctx: &mut TestContext) {
     let index = T::system_program_index().expect("Instruction must have system_program_index");
     let error = T::build_valid(ctx)
-        .with_account_at(index, RANDOM_PUBKEY)
+        .with_account_at(index, RANDOM_ADDRESS)
         .send_expect_error(ctx);
     assert_instruction_error(error, InstructionError::IncorrectProgramId);
 }
@@ -49,7 +49,7 @@ pub fn test_wrong_system_program<T: InstructionTestFixture>(ctx: &mut TestContex
 pub fn test_wrong_current_program<T: InstructionTestFixture>(ctx: &mut TestContext) {
     let index = T::current_program_index().expect("Instruction must have current_program_index");
     let error = T::build_valid(ctx)
-        .with_account_at(index, RANDOM_PUBKEY)
+        .with_account_at(index, RANDOM_ADDRESS)
         .send_expect_error(ctx);
     assert_instruction_error(error, InstructionError::IncorrectProgramId);
 }
@@ -66,7 +66,7 @@ pub fn test_wrong_account<T: InstructionTestFixture>(
     expected_error: InstructionError,
 ) {
     let error = T::build_valid(ctx)
-        .with_account_at(account_index, RANDOM_PUBKEY)
+        .with_account_at(account_index, Address::new_unique())
         .send_expect_error(ctx);
     assert_instruction_error(error, expected_error);
 }

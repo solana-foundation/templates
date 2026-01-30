@@ -3,12 +3,11 @@ use solana_program::clock::Clock;
 use solana_sdk::{
     account::Account,
     instruction::Instruction,
-    pubkey::Pubkey,
     signature::{Keypair, Signer},
     transaction::{Transaction, TransactionError},
 };
 
-use crate::utils::cu_utils::CuTracker;
+use crate::utils::{cu_utils::CuTracker, Address};
 use pinocchio_counter_client::PINOCCHIO_COUNTER_ID;
 
 const MIN_LAMPORTS: u64 = 500_000_000;
@@ -58,18 +57,18 @@ impl TestContext {
 
     pub fn airdrop_if_required(
         &mut self,
-        pubkey: &Pubkey,
+        address: &Address,
         lamports: u64,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        if let Some(account) = self.svm.get_account(pubkey) {
+        if let Some(account) = self.svm.get_account(address) {
             if account.lamports < MIN_LAMPORTS {
-                return match self.svm.airdrop(pubkey, lamports) {
+                return match self.svm.airdrop(address, lamports) {
                     Ok(_) => Ok(()),
                     Err(e) => Err(format!("Airdrop failed: {:?}", e).into()),
                 };
             }
         } else {
-            return match self.svm.airdrop(pubkey, lamports) {
+            return match self.svm.airdrop(address, lamports) {
                 Ok(_) => Ok(()),
                 Err(e) => Err(format!("Airdrop failed: {:?}", e).into()),
             };
@@ -117,8 +116,8 @@ impl TestContext {
             .map_err(|e| e.err)
     }
 
-    pub fn get_account(&self, pubkey: &Pubkey) -> Option<Account> {
-        self.svm.get_account(pubkey)
+    pub fn get_account(&self, address: &Address) -> Option<Account> {
+        self.svm.get_account(address)
     }
 
     pub fn create_funded_keypair(&mut self) -> Keypair {

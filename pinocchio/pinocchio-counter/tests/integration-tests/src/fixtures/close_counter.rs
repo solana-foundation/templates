@@ -1,13 +1,10 @@
-use solana_sdk::{
-    pubkey::Pubkey,
-    signature::{Keypair, Signer},
-};
+use solana_sdk::signature::{Keypair, Signer};
 
 use pinocchio_counter_client::instructions::CloseCounterBuilder;
 
 use crate::{
     fixtures::CreateCounterFixture,
-    utils::{find_counter_pda, find_event_authority_pda, TestContext},
+    utils::{find_counter_pda, find_event_authority_pda, Address, TestContext},
 };
 
 use crate::utils::traits::{InstructionTestFixture, TestInstruction};
@@ -17,9 +14,9 @@ pub struct CloseCounterFixture;
 impl CloseCounterFixture {
     pub fn build_with_counter(
         _ctx: &mut TestContext,
-        counter_pda: Pubkey,
+        counter_pda: Address,
         authority: Keypair,
-        destination: Pubkey,
+        destination: Address,
     ) -> TestInstruction {
         let (event_authority, _) = find_event_authority_pda();
 
@@ -37,7 +34,7 @@ impl CloseCounterFixture {
         }
     }
 
-    pub fn build_with_destination(ctx: &mut TestContext, destination: Pubkey) -> TestInstruction {
+    pub fn build_with_destination(ctx: &mut TestContext, destination: Address) -> TestInstruction {
         let counter_ix = CreateCounterFixture::build_valid(ctx);
         let authority = counter_ix.signers[0].insecure_clone();
         counter_ix.send_expect_success(ctx);

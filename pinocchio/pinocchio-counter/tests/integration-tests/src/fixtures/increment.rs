@@ -1,13 +1,10 @@
-use solana_sdk::{
-    pubkey::Pubkey,
-    signature::{Keypair, Signer},
-};
+use solana_sdk::signature::{Keypair, Signer};
 
 use pinocchio_counter_client::instructions::IncrementBuilder;
 
 use crate::{
     fixtures::CreateCounterFixture,
-    utils::{find_counter_pda, find_event_authority_pda, TestContext},
+    utils::{find_counter_pda, find_event_authority_pda, Address, TestContext},
 };
 
 use crate::utils::traits::{InstructionTestFixture, TestInstruction};
@@ -17,7 +14,7 @@ pub struct IncrementFixture;
 impl IncrementFixture {
     pub fn build_with_counter(
         _ctx: &mut TestContext,
-        counter_pda: Pubkey,
+        counter_pda: Address,
         authority: Keypair,
     ) -> TestInstruction {
         let (event_authority, _) = find_event_authority_pda();
