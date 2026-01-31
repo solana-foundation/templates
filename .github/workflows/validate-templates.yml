@@ -6,6 +6,7 @@ on:
       - 'community/**/package.json'
       - 'kit/**/package.json'
       - 'mobile/**/package.json'
+      - 'pinocchio/**/package.json'
       - 'web3js/**/package.json'
       - 'scripts/**'
       - 'package.json'

@@ -561,5 +561,27 @@
         "usecase": "Airdrop"
       }
     ]
+  },
+  {
+    "description": "Pinocchio-based program templates",
+    "name": "Pinocchio",
+    "path": "pinocchio",
+    "templates": [
+      {
+        "description": "Pinocchio Counter Program",
+        "id": "gh:solana-foundation/templates/pinocchio/pinocchio-counter",
+        "image": "pinocchio/pinocchio-counter/og-image.png",
+        "keywords": [
+          "pinocchio",
+          "counter",
+          "native",
+          "solana-program"
+        ],
+        "name": "pinocchio-counter",
+        "path": "pinocchio/pinocchio-counter",
+        "displayName": "Pinocchio Counter",
+        "usecase": "Program Development"
+      }
+    ]
   }
 ]

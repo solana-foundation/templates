@@ -253,3 +253,15 @@ Templates maintained by the Solana community
 > ZK-Compression based airdrop app built with Next.js, Tailwind, and @solana/react-hooks
 
 `minimal` `nextjs` `react` `solana-kit` `tailwind` `typescript` `zk-compression` `airdrop` `zero-knowledge` `zk` `framework-kit`
+
+# Pinocchio
+
+Pinocchio-based program templates
+
+### [pinocchio-counter](pinocchio/pinocchio-counter)
+
+`gh:solana-foundation/templates/pinocchio/pinocchio-counter`
+
+> Pinocchio Counter Program
+
+`pinocchio` `counter` `native` `solana-program`

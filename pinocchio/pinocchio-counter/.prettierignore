@@ -1,0 +1,18 @@
+# IDL files
+idl/
+
+# Generated files
+clients/typescript/src/generated/
+
+# Build outputs
+dist/
+build/
+target/
+
+# Dependencies
+node_modules/
+package.json
+pnpm-lock.yaml
+
+# Claude Code
+.claude/
