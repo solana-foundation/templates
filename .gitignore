@@ -70,3 +70,10 @@ mobile/**/anchor/target/.rustc_info.json
 mobile/**/dist
 mobile/**/node_modules
 mobile/**/tmp
+pinocchio/**/target/
+pinocchio/**/clients/typescript/src/generated/
+pinocchio/**/clients/rust/src/generated/
+pinocchio/**/dist
+
+# AI
+**/.claude/

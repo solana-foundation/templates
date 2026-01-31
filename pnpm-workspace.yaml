@@ -19,4 +19,5 @@ onlyBuiltDependencies:
 packages:
   - community/*
   - kit/*
+  - pinocchio/*
   - web3js/*
