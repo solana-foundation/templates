@@ -1,0 +1,110 @@
+name: Generate Template Metadata
+
+on:
+  pull_request:
+    paths:
+      - 'community/**/package.json'
+      - 'kit/**/package.json'
+      - 'mobile/**/package.json'
+      - 'pinocchio/**/package.json'
+      - 'web3js/**/package.json'
+      - 'package.json'
+      - 'scripts/**'
+  push:
+    branches: [main]
+    paths:
+      - 'community/**/package.json'
+      - 'kit/**/package.json'
+      - 'mobile/**/package.json'
+      - 'pinocchio/**/package.json'
+      - 'web3js/**/package.json'
+      - 'package.json'
+      - 'scripts/**'
+  workflow_dispatch:
+
+concurrency:
+  group: generate-metadata-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.5.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate metadata
+        run: pnpm generate
+
+      - name: Validate generated output
+        run: pnpm validate
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet templates.json TEMPLATES.md .github/workflows/templates.json; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      # On PR: Show preview of changes in job summary
+      - name: Preview changes (PR only)
+        if: github.event_name == 'pull_request' && steps.changes.outputs.has_changes == 'true'
+        run: |
+          echo "## Template Metadata Preview" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The following changes will be applied to generated files when this PR is merged:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```diff' >> $GITHUB_STEP_SUMMARY
+          git diff templates.json TEMPLATES.md .github/workflows/templates.json >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: No changes detected (PR only)
+        if: github.event_name == 'pull_request' && steps.changes.outputs.has_changes == 'false'
+        run: |
+          echo "## Template Metadata Preview" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "No changes to generated files. Everything is up to date." >> $GITHUB_STEP_SUMMARY
+
+      # On push to main: Commit the changes
+      - name: Commit and push (main only)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add templates.json TEMPLATES.md .github/workflows/templates.json
+          git commit -m "chore: regenerate template metadata"
+          git push
+
+      - name: Summary (main only)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          if [ "${{ steps.changes.outputs.has_changes }}" == "true" ]; then
+            echo "## Template Metadata Updated" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Generated files have been committed to main." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## Template Metadata" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "No changes needed. Generated files are already up to date." >> $GITHUB_STEP_SUMMARY
+          fi

@@ -24,6 +24,7 @@
   "mobile/web3js-expo",
   "mobile/web3js-expo-minimal",
   "mobile/web3js-expo-paper",
+  "pinocchio/pinocchio-counter",
   "web3js/web3js-next-tailwind",
   "web3js/web3js-next-tailwind-basic",
   "web3js/web3js-next-tailwind-counter",

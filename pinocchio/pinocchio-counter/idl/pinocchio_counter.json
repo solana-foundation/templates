@@ -1,0 +1,370 @@
+{
+    "additionalPrograms": [],
+    "kind": "rootNode",
+    "program": {
+        "accounts": [
+            {
+                "data": {
+                    "fields": [
+                        {
+                            "kind": "structFieldTypeNode",
+                            "name": "bump",
+                            "type": {
+                                "endian": "le",
+                                "format": "u8",
+                                "kind": "numberTypeNode"
+                            }
+                        },
+                        {
+                            "kind": "structFieldTypeNode",
+                            "name": "padding",
+                            "type": {
+                                "count": {
+                                    "kind": "fixedCountNode",
+                                    "value": 7
+                                },
+                                "item": {
+                                    "endian": "le",
+                                    "format": "u8",
+                                    "kind": "numberTypeNode"
+                                },
+                                "kind": "arrayTypeNode"
+                            }
+                        },
+                        {
+                            "kind": "structFieldTypeNode",
+                            "name": "authority",
+                            "type": {
+                                "kind": "publicKeyTypeNode"
+                            }
+                        },
+                        {
+                            "kind": "structFieldTypeNode",
+                            "name": "count",
+                            "type": {
+                                "endian": "le",
+                                "format": "u8",
+                                "kind": "numberTypeNode"
+                            }
+                        }
+                    ],
+                    "kind": "structTypeNode"
+                },
+                "kind": "accountNode",
+                "name": "counter"
+            }
+        ],
+        "definedTypes": [
+            {
+                "kind": "definedTypeNode",
+                "name": "counterClosedEvent",
+                "type": {
+                    "fields": [
+                        {
+                            "kind": "structFieldTypeNode",
+                            "name": "authority",
+                            "type": {
+                                "kind": "publicKeyTypeNode"
+                            }
+                        },
+                        {
+                            "kind": "structFieldTypeNode",
+                            "name": "finalCount",
+                            "type": {
+                                "endian": "le",
+                                "format": "u8",
+                                "kind": "numberTypeNode"
+                            }
+                        }
+                    ],
+                    "kind": "structTypeNode"
+                }
+            },
+            {
+                "kind": "definedTypeNode",
+                "name": "counterCreatedEvent",
+                "type": {
+                    "fields": [
+                        {
+                            "kind": "structFieldTypeNode",
+                            "name": "authority",
+                            "type": {
+                                "kind": "publicKeyTypeNode"
+                            }
+                        }
+                    ],
+                    "kind": "structTypeNode"
+                }
+            },
+            {
+                "kind": "definedTypeNode",
+                "name": "counterIncrementedEvent",
+                "type": {
+                    "fields": [
+                        {
+                            "kind": "structFieldTypeNode",
+                            "name": "authority",
+                            "type": {
+                                "kind": "publicKeyTypeNode"
+                            }
+                        },
+                        {
+                            "kind": "structFieldTypeNode",
+                            "name": "newCount",
+                            "type": {
+                                "endian": "le",
+                                "format": "u8",
+                                "kind": "numberTypeNode"
+                            }
+                        }
+                    ],
+                    "kind": "structTypeNode"
+                }
+            }
+        ],
+        "errors": [
+            {
+                "code": 0,
+                "kind": "errorNode",
+                "message": "Authority invalid or does not match counter authority",
+                "name": "invalidAuthority"
+            },
+            {
+                "code": 1,
+                "kind": "errorNode",
+                "message": "Event authority PDA is invalid",
+                "name": "invalidEventAuthority"
+            }
+        ],
+        "instructions": [
+            {
+                "accounts": [
+                    {
+                        "isSigner": true,
+                        "isWritable": true,
+                        "kind": "instructionAccountNode",
+                        "name": "payer"
+                    },
+                    {
+                        "isSigner": true,
+                        "isWritable": false,
+                        "kind": "instructionAccountNode",
+                        "name": "authority"
+                    },
+                    {
+                        "isSigner": false,
+                        "isWritable": true,
+                        "kind": "instructionAccountNode",
+                        "name": "counter"
+                    },
+                    {
+                        "isSigner": false,
+                        "isWritable": false,
+                        "kind": "instructionAccountNode",
+                        "name": "systemProgram"
+                    },
+                    {
+                        "isSigner": false,
+                        "isWritable": false,
+                        "kind": "instructionAccountNode",
+                        "name": "eventAuthority"
+                    },
+                    {
+                        "isSigner": false,
+                        "isWritable": false,
+                        "kind": "instructionAccountNode",
+                        "name": "pinocchioCounterProgram"
+                    }
+                ],
+                "arguments": [
+                    {
+                        "defaultValue": {
+                            "kind": "numberValueNode",
+                            "number": 0
+                        },
+                        "defaultValueStrategy": "omitted",
+                        "kind": "instructionArgumentNode",
+                        "name": "discriminator",
+                        "type": {
+                            "endian": "le",
+                            "format": "u8",
+                            "kind": "numberTypeNode"
+                        }
+                    },
+                    {
+                        "kind": "instructionArgumentNode",
+                        "name": "bump",
+                        "type": {
+                            "endian": "le",
+                            "format": "u8",
+                            "kind": "numberTypeNode"
+                        }
+                    }
+                ],
+                "discriminators": [
+                    {
+                        "kind": "fieldDiscriminatorNode",
+                        "name": "discriminator",
+                        "offset": 0
+                    }
+                ],
+                "kind": "instructionNode",
+                "name": "createCounter"
+            },
+            {
+                "accounts": [
+                    {
+                        "isSigner": true,
+                        "isWritable": false,
+                        "kind": "instructionAccountNode",
+                        "name": "authority"
+                    },
+                    {
+                        "isSigner": false,
+                        "isWritable": true,
+                        "kind": "instructionAccountNode",
+                        "name": "counter"
+                    },
+                    {
+                        "isSigner": false,
+                        "isWritable": false,
+                        "kind": "instructionAccountNode",
+                        "name": "eventAuthority"
+                    },
+                    {
+                        "isSigner": false,
+                        "isWritable": false,
+                        "kind": "instructionAccountNode",
+                        "name": "pinocchioCounterProgram"
+                    }
+                ],
+                "arguments": [
+                    {
+                        "defaultValue": {
+                            "kind": "numberValueNode",
+                            "number": 1
+                        },
+                        "defaultValueStrategy": "omitted",
+                        "kind": "instructionArgumentNode",
+                        "name": "discriminator",
+                        "type": {
+                            "endian": "le",
+                            "format": "u8",
+                            "kind": "numberTypeNode"
+                        }
+                    }
+                ],
+                "discriminators": [
+                    {
+                        "kind": "fieldDiscriminatorNode",
+                        "name": "discriminator",
+                        "offset": 0
+                    }
+                ],
+                "kind": "instructionNode",
+                "name": "increment"
+            },
+            {
+                "accounts": [
+                    {
+                        "isSigner": true,
+                        "isWritable": false,
+                        "kind": "instructionAccountNode",
+                        "name": "authority"
+                    },
+                    {
+                        "isSigner": false,
+                        "isWritable": true,
+                        "kind": "instructionAccountNode",
+                        "name": "counter"
+                    },
+                    {
+                        "isSigner": false,
+                        "isWritable": true,
+                        "kind": "instructionAccountNode",
+                        "name": "destination"
+                    },
+                    {
+                        "isSigner": false,
+                        "isWritable": false,
+                        "kind": "instructionAccountNode",
+                        "name": "eventAuthority"
+                    },
+                    {
+                        "isSigner": false,
+                        "isWritable": false,
+                        "kind": "instructionAccountNode",
+                        "name": "pinocchioCounterProgram"
+                    }
+                ],
+                "arguments": [
+                    {
+                        "defaultValue": {
+                            "kind": "numberValueNode",
+                            "number": 2
+                        },
+                        "defaultValueStrategy": "omitted",
+                        "kind": "instructionArgumentNode",
+                        "name": "discriminator",
+                        "type": {
+                            "endian": "le",
+                            "format": "u8",
+                            "kind": "numberTypeNode"
+                        }
+                    }
+                ],
+                "discriminators": [
+                    {
+                        "kind": "fieldDiscriminatorNode",
+                        "name": "discriminator",
+                        "offset": 0
+                    }
+                ],
+                "kind": "instructionNode",
+                "name": "closeCounter"
+            },
+            {
+                "accounts": [
+                    {
+                        "isSigner": true,
+                        "isWritable": false,
+                        "kind": "instructionAccountNode",
+                        "name": "eventAuthority"
+                    }
+                ],
+                "arguments": [
+                    {
+                        "defaultValue": {
+                            "kind": "numberValueNode",
+                            "number": 228
+                        },
+                        "defaultValueStrategy": "omitted",
+                        "kind": "instructionArgumentNode",
+                        "name": "discriminator",
+                        "type": {
+                            "endian": "le",
+                            "format": "u8",
+                            "kind": "numberTypeNode"
+                        }
+                    }
+                ],
+                "discriminators": [
+                    {
+                        "kind": "fieldDiscriminatorNode",
+                        "name": "discriminator",
+                        "offset": 0
+                    }
+                ],
+                "kind": "instructionNode",
+                "name": "emitEvent"
+            }
+        ],
+        "kind": "programNode",
+        "name": "pinocchioCounter",
+        "pdas": [],
+        "publicKey": "PinocchioTemp1ate11111111111111111111111111",
+        "version": "0.0.1"
+    },
+    "standard": "codama",
+    "version": "1.0.0"
+}
