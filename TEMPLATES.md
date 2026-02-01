@@ -46,6 +46,14 @@ Solana Mobile Templates
 
 `expo` `mobile-wallet-adapter` `react-native` `solana-kit`
 
+### [kit-expo-uniwind](mobile/kit-expo-uniwind)
+
+`gh:solana-foundation/templates/mobile/kit-expo-uniwind`
+
+> A template for building a Solana mobile app with Expo, React Native, Solana Kit, and Uniwind.
+
+`expo` `mobile-wallet-adapter` `react-native` `solana-kit` `uniwind` `tailwind`
+
 ### [web3js-expo](mobile/web3js-expo)
 
 `gh:solana-foundation/templates/mobile/web3js-expo`

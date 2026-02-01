@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "scheme": "acme",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "web": {
+      "output": "static"
+    },
+    "name": "kit-expo-uniwind",
+    "slug": "kit-expo-uniwind",
+    "android": {
+      "package": "com.anonymous.kitexpouniwind"
+    }
+  }
+}
