@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+}
+
+/* Wallet adapter button styling */
+.wallet-adapter-button {
+  @apply bg-purple-600 hover:bg-purple-700 !important;
+}
+
+.wallet-adapter-button-trigger {
+  @apply bg-purple-600 hover:bg-purple-700 !important;
+}
