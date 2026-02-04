@@ -345,6 +345,18 @@ This template uses minimal dependencies:
 2. Verify session token endpoint is configured
 3. Check for CORS issues if using custom domains
 
+### During installation, viewing  `--silent --ignore-scripts` flag
+
+1. If you’re using npm with Node 18+ and pnpm is not yet installed, some required scripts may be skipped due to the flags used.
+2. Although the project files are generated, you’ll need to install pnpm to ensure all scripts run correctly and fix the setup.
+3.  Clean any partial install and install pnpm: 
+
+```
+rm -rf node_modules
+rm -f package-lock.json pnpm-lock.yaml yarn.lock     
+pnpm install 
+``` 
+
 ---
 
 ## Support
