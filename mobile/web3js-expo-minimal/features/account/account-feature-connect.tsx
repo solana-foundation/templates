@@ -1,9 +1,9 @@
 import { Button } from 'react-native'
 import React from 'react'
-import { useMobileWalletAdapter } from '@wallet-ui/react-native-web3js'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 
 export function AccountFeatureConnect() {
-  const { account, connect } = useMobileWalletAdapter()
+  const { account, connect } = useMobileWallet()
 
   return <Button disabled={!!account} title="Connect" onPress={connect} />
 }

@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { PropsWithChildren } from 'react'
 import { NetworkProvider } from '@/features/network/network-provider'
-import { MobileWalletAdapterProvider } from '@wallet-ui/react-native-web3js'
+import { MobileWalletProvider } from '@wallet-ui/react-native-web3js'
 import { useNetwork } from '@/features/network/use-network'
 
 const queryClient = new QueryClient()
@@ -16,16 +16,16 @@ export function AppProviders({ children }: PropsWithChildren) {
 }
 
 // We have this SolanaNetworkProvider because of the network switching logic.
-// If you only connect to a single network, use MobileWalletAdapterProvider directly.
+// If you only connect to a single network, use MobileWalletProvider directly.
 function SolanaNetworkProvider({ children }: PropsWithChildren) {
   const { selectedNetwork } = useNetwork()
   return (
-    <MobileWalletAdapterProvider
-      clusterId={selectedNetwork.id}
+    <MobileWalletProvider
+      chain={selectedNetwork.id}
       endpoint={selectedNetwork.url}
       identity={{ name: 'Wallet UI Example Web3js Expo' }}
     >
       {children}
-    </MobileWalletAdapterProvider>
+    </MobileWalletProvider>
   )
 }

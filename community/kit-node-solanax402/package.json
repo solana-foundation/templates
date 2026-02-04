@@ -1,0 +1,82 @@
+{
+  "name": "{{project-name}}",
+  "displayName": "x402 Express Server",
+  "usecase": "Payments",
+  "version": "1.0.0",
+  "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit",
+  "main": "dist/facilitator/index.js",
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "create-solana-dapp": {
+    "instructions": "## Quick Start\n\n1. Generate facilitator keypair:\n   ```\n   solana-keygen new --outfile facilitator-keypair.json\n   ```\n\n2. Copy and configure environment:\n   ```\n   cp env.example .env\n   ```\n   Update FACILITATOR_PRIVATE_KEY and MERCHANT_SOLANA_ADDRESS\n\n3. Fund facilitator on devnet:\n   ```\n   solana airdrop 2 <FACILITATOR_PUBLIC_KEY> --url devnet\n   ```\n\n4. Build and start:\n   ```\n   npm run build\n   npm start\n   ```\n\n5. Generate test client:\n   ```\n   npm run generate:client\n   ```\n   Fund it: `solana airdrop 1 <CLIENT_KEY> --url devnet`\n\n6. Run tests:\n   ```\n   npm test\n   ```\n\nSee README.md and SETUP.md for detailed documentation.",
+    "rename": {
+      "x402-solana-protocol": "{{project-name}}"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "ci": "npm run build && npm run lint && npm run fmt:check",
+    "clean": "rm -rf dist",
+    "dev:facilitator": "tsx watch src/facilitator/index.ts",
+    "dev:server": "tsx watch src/server/index.ts",
+    "start:facilitator": "node -r dotenv/config dist/facilitator/index.js",
+    "start:server": "node -r dotenv/config dist/server/index.js",
+    "pm2:start": "pm2 start ecosystem.config.cjs",
+    "pm2:stop": "pm2 stop ecosystem.config.cjs",
+    "pm2:restart": "pm2 restart ecosystem.config.cjs",
+    "pm2:delete": "pm2 delete ecosystem.config.cjs",
+    "pm2:logs": "pm2 logs",
+    "pm2:monit": "pm2 monit",
+    "start": "npm run pm2:start",
+    "stop": "npm run pm2:stop",
+    "restart": "npm run pm2:restart",
+    "logs": "pm2 logs",
+    "test": "node test-true-x402.mjs",
+    "test:402": "node test-402-response.mjs",
+    "test:replay": "node test-replay-attack.mjs",
+    "generate:client": "node generate-test-client.mjs",
+    "lint": "eslint src --ext .ts",
+    "fmt": "prettier --write src",
+    "fmt:check": "prettier --check src"
+  },
+  "keywords": [
+    "solana",
+    "x402",
+    "payment",
+    "protocol",
+    "blockchain",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@solana/client": "^1.1.0",
+    "@solana/kit": "^5.0.0",
+    "bs58": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "sqlite3": "^5.1.7",
+    "tweetnacl": "^1.0.3",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/bs58": "^4.0.4",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.0",
+    "@types/sqlite3": "^3.1.11",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^9.26.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2",
+    "pm2": "^5.3.0",
+    "prettier": "^3.2.4",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}

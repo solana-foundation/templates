@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Linking } from 'react-native'
 import Clipboard from '@react-native-clipboard/clipboard'
-import { useWalletUi } from '@/components/solana/use-wallet-ui'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { ellipsify } from '@/utils/ellipsify'
 import { useCluster } from '@/components/cluster/cluster-provider'
 import { Button, ButtonProps, Menu } from 'react-native-paper'
@@ -23,20 +23,20 @@ function BaseButton({
 }
 
 export function WalletUiConnectButton({ label = 'Connect', then }: { label?: string; then?: () => void }) {
-  const { connect } = useWalletUi()
+  const { connect } = useMobileWallet()
 
   return <BaseButton icon="wallet" label={label} onPress={() => connect().then(() => then?.())} />
 }
 
 export function WalletUiDisconnectButton({ label = 'Disconnect', then }: { label?: string; then?: () => void }) {
-  const { disconnect } = useWalletUi()
+  const { disconnect } = useMobileWallet()
 
   return <BaseButton icon="wallet" label={label} onPress={() => disconnect().then(() => then?.())} />
 }
 
 export function WalletUiDropdown() {
   const { getExplorerUrl } = useCluster()
-  const { account, disconnect } = useWalletUi()
+  const { account, disconnect } = useMobileWallet()
   const [isOpen, setIsOpen] = useState(false)
 
   if (!account) {
@@ -50,7 +50,7 @@ export function WalletUiDropdown() {
       onDismiss={() => setIsOpen(false)}
       anchor={
         <BaseButton
-          label={account ? ellipsify(account.publicKey.toString()) : 'Connect'}
+          label={account ? ellipsify(account.address.toString()) : 'Connect'}
           icon="wallet"
           onPress={() => setIsOpen(true)}
         />
@@ -61,14 +61,14 @@ export function WalletUiDropdown() {
     >
       <Menu.Item
         onPress={() => {
-          Clipboard.setString(account.publicKey.toString())
+          Clipboard.setString(account.address.toString())
           setIsOpen(false)
         }}
         title="Copy Address"
       />
       <Menu.Item
         onPress={async () => {
-          await Linking.openURL(getExplorerUrl(`account/${account.publicKey.toString()}`))
+          await Linking.openURL(getExplorerUrl(`account/${account.address.toString()}`))
           setIsOpen(false)
         }}
         title="View in Explorer"

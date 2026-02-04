@@ -5,7 +5,7 @@ Next.js starter with Tailwind CSS, `@solana/react-hooks`, and an Anchor vault pr
 ## Getting Started
 
 ```shell
-npx create-solana-dapp@latest -t kit/nextjs-anchor
+npx -y create-solana-dapp@latest -t solana-foundation/templates/kit/nextjs-anchor
 ```
 
 ```shell

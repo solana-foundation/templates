@@ -1,11 +1,11 @@
 import React from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { useConnection } from '../solana/solana-provider'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { AppText } from '@/components/app-text'
 import { Cluster } from '@/components/cluster/cluster'
 
 export function ClusterUiVersion({ selectedCluster }: { selectedCluster: Cluster }) {
-  const connection = useConnection()
+  const { connection } = useMobileWallet()
   const query = useQuery({
     queryKey: ['get-version', { selectedCluster }],
     queryFn: () =>

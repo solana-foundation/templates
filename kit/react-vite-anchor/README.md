@@ -5,7 +5,7 @@ React + Vite starter with Tailwind CSS, `@solana/react-hooks`, and an Anchor vau
 ## Getting Started
 
 ```shell
-npx create-solana-dapp@latest -t kit/vite-anchor
+npx -y create-solana-dapp@latest -t solana-foundation/templates/kit/react-vite-anchor
 ```
 
 ```shell

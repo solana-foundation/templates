@@ -236,24 +236,6 @@ If you prefer to create your own image:
 
 The image will be validated during the linting process.
 
-## Generating Template Metadata
-
-After creating your template and OG image, generate the metadata files:
-
-```bash
-cd templates
-pnpm generate
-```
-
-This command:
-
-1. Scans all template directories (including `community/`)
-2. Extracts metadata from each `package.json`
-3. Validates required fields are present
-4. Generates `templates.json` with complete template data
-5. Generates `TEMPLATES.md` with human-readable template list
-6. Runs `automd` to update `README.md`
-
 ## Getting Help
 
 If you encounter issues not covered in this guide:
@@ -270,11 +252,9 @@ Before submitting your community template PR:
 - [ ] Template is in `community/your-template-name/` directory
 - [ ] `package.json` includes: name, displayName, description, usecase, keywords
 - [ ] Generated `og-image.png` (1200x630 pixels, under 500KB)
-- [ ] Ran `pnpm generate` to update templates.json and TEMPLATES.md
 - [ ] Ran `pnpm lint` - all checks pass
 - [ ] Tested template with create-solana-dapp CLI
 - [ ] Template works as expected for its use case
-- [ ] Committed all changes including generated files
 - [ ] Created PR with descriptive title and detailed description
 
 Welcome to the Solana Templates community, and thank you for contributing!

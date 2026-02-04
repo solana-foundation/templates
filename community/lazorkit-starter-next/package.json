@@ -1,0 +1,52 @@
+{
+  "name": "lazorkit-starter-next",
+  "displayName": "LazorKit Starter (Next.js)",
+  "description": "Next.js template with LazorKit passkey wallet integration for Solana",
+  "usecase": "Starter",
+  "keywords": [
+    "solana",
+    "lazorkit",
+    "passkey",
+    "smart-wallet",
+    "nextjs",
+    "react",
+    "typescript",
+    "tailwind"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Install dependencies:",
+      "+{pm} install",
+      "Copy .env.example to .env.local and configure:",
+      "+cp .env.example .env.local",
+      "Start the development server:",
+      "+{pm} dev"
+    ]
+  },
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@lazorkit/wallet": "^2.0.1",
+    "@solana/web3.js": "^1.98.4",
+    "next": "^15.3.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "^15.3.3",
+    "postcss": "^8",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5"
+  }
+}

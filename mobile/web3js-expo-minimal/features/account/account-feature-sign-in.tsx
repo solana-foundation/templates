@@ -1,14 +1,14 @@
 import { PublicKey } from '@solana/web3.js'
 import { Button, View } from 'react-native'
 import { appStyles } from '@/constants/app-styles'
-import { useMobileWalletAdapter } from '@wallet-ui/react-native-web3js'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { AppConfig } from '@/constants/app-config'
 
-export function AccountFeatureSignIn({ publicKey }: { publicKey: PublicKey }) {
-  const { signIn } = useMobileWalletAdapter()
+export function AccountFeatureSignIn({ address }: { address: PublicKey }) {
+  const { signIn } = useMobileWallet()
   async function submit() {
     try {
-      await signIn({ address: publicKey.toString(), uri: AppConfig.uri })
+      await signIn({ address: address.toString(), uri: AppConfig.uri })
       console.log('Signed in!')
     } catch (e) {
       console.log(`Error signing in: ${e}`)

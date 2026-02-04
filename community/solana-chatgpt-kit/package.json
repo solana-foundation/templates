@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@bonfida/spl-name-service": "^3.0.16",
-    "@modelcontextprotocol/sdk": "^1.24.0",
+    "@modelcontextprotocol/sdk": "^1.25.2",
     "@onsol/tldparser": "^1.0.8",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
@@ -44,7 +44,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.546.0",
     "mcp-handler": "^1.0.2",
-    "next": "16.0.10",
+    "next": "16.1.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "tailwind-merge": "^3.3.1",

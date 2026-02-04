@@ -2,10 +2,10 @@ import { PublicKey, TransactionMessage, VersionedTransaction } from '@solana/web
 import { Button, View } from 'react-native'
 import { appStyles } from '@/constants/app-styles'
 import { createMemoInstruction } from '@solana/spl-memo'
-import { useMobileWalletAdapter } from '@wallet-ui/react-native-web3js'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 
-export function AccountFeatureSignTransaction({ publicKey }: { publicKey: PublicKey }) {
-  const { connection, signAndSendTransaction } = useMobileWalletAdapter()
+export function AccountFeatureSignTransaction({ address }: { address: PublicKey }) {
+  const { connection, signAndSendTransaction } = useMobileWallet()
 
   async function submit() {
     try {
@@ -15,7 +15,7 @@ export function AccountFeatureSignTransaction({ publicKey }: { publicKey: Public
       } = await connection.getLatestBlockhashAndContext()
 
       const message = new TransactionMessage({
-        payerKey: publicKey,
+        payerKey: address,
         recentBlockhash: latestBlockhash.blockhash,
         instructions: [
           // You can add more instructions here

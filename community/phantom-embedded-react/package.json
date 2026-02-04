@@ -1,0 +1,61 @@
+{
+  "name": "phantom-embedded-react",
+  "displayName": "Phantom Embedded Wallet",
+  "version": "1.0.0",
+  "description": "Next.js template with Phantom Embedded Wallet SDK for seamless Web3 authentication",
+  "usecase": "Starter",
+  "keywords": [
+    "solana",
+    "phantom",
+    "embedded-wallet",
+    "nextjs",
+    "react",
+    "typescript",
+    "tailwind",
+    "web3",
+    "authentication"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Install dependencies:",
+      "+{pm} install",
+      "",
+      "Copy the environment file and configure your Phantom App ID:",
+      "+cp .env.example .env.local",
+      "",
+      "Get your Phantom App ID from https://portal.phantom.com",
+      "",
+      "Start the development server:",
+      "+{pm} dev"
+    ]
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@phantom/browser-sdk": "1.0.0-beta.26",
+    "@phantom/react-sdk": "1.0.0-beta.26",
+    "@solana/web3.js": "^1.95.0",
+    "@tailwindcss/postcss": "^4.1.17",
+    "lucide-react": "^0.553.0",
+    "next": "16.1.5",
+    "postcss": "^8.5.6",
+    "react": "19.2.1",
+    "react-dom": "19.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.1",
+    "eslint-config-next": "16.0.7",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.9.3"
+  },
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.20.0"
+}

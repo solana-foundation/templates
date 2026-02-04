@@ -1,13 +1,11 @@
 import { PublicKey, TransactionSignature } from '@solana/web3.js'
-import { useConnection } from '@/components/solana/solana-provider'
 import { useMutation } from '@tanstack/react-query'
-import { useWalletUi } from '@/components/solana/use-wallet-ui'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { createTransaction } from '@/components/solana/create-transaction'
 import { useGetBalanceInvalidate } from './use-get-balance'
 
 export function useTransferSol({ address }: { address: PublicKey }) {
-  const connection = useConnection()
-  const { signAndSendTransaction } = useWalletUi()
+  const { connection, signAndSendTransaction } = useMobileWallet()
   const invalidateBalance = useGetBalanceInvalidate({ address })
 
   return useMutation({
@@ -16,7 +14,7 @@ export function useTransferSol({ address }: { address: PublicKey }) {
       let signature: TransactionSignature = ''
       try {
         const { transaction, latestBlockhash, minContextSlot } = await createTransaction({
-          publicKey: address,
+          address,
           destination: input.destination,
           amount: input.amount,
           connection,

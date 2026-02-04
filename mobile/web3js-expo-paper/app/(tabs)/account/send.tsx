@@ -1,11 +1,11 @@
 import { useRouter } from 'expo-router'
-import { useWalletUi } from '@/components/solana/use-wallet-ui'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { AccountFeatureSend } from '@/components/account/account-feature-send'
 import { AppView } from '@/components/app-view'
 
 export default function Send() {
   const router = useRouter()
-  const { account } = useWalletUi()
+  const { account } = useMobileWallet()
 
   if (!account) {
     return router.replace('/(tabs)/account')
@@ -13,7 +13,7 @@ export default function Send() {
 
   return (
     <AppView style={{ flex: 1, padding: 16 }}>
-      <AccountFeatureSend address={account.publicKey} />
+      <AccountFeatureSend address={account.address} />
     </AppView>
   )
 }

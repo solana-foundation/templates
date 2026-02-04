@@ -1,4 +1,4 @@
-import { useWalletUi } from '@/components/solana/use-wallet-ui'
+import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { AppText } from '@/components/app-text'
 import { ellipsify } from '@/utils/ellipsify'
 import { AppView } from '@/components/app-view'
@@ -15,11 +15,11 @@ import { useGetTokenAccountsInvalidate } from '@/components/account/use-get-toke
 import { useAppTheme } from '../app-theme'
 
 export function AccountFeature() {
-  const { account } = useWalletUi()
+  const { account } = useMobileWallet()
   const { spacing } = useAppTheme()
   const [refreshing, setRefreshing] = useState(false)
-  const invalidateBalance = useGetBalanceInvalidate({ address: account?.publicKey as PublicKey })
-  const invalidateTokenAccounts = useGetTokenAccountsInvalidate({ address: account?.publicKey as PublicKey })
+  const invalidateBalance = useGetBalanceInvalidate({ address: account?.address as PublicKey })
+  const invalidateTokenAccounts = useGetTokenAccountsInvalidate({ address: account?.address as PublicKey })
   const onRefresh = useCallback(async () => {
     setRefreshing(true)
     await Promise.all([invalidateBalance(), invalidateTokenAccounts()])
@@ -34,14 +34,14 @@ export function AccountFeature() {
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} />}
         >
           <AppView style={{ alignItems: 'center', gap: 4 }}>
-            <AccountUiBalance address={account.publicKey} />
-            <AppText style={{ opacity: 0.7 }}>{ellipsify(account.publicKey.toString(), 8)}</AppText>
+            <AccountUiBalance address={account.address} />
+            <AppText style={{ opacity: 0.7 }}>{ellipsify(account.address.toString(), 8)}</AppText>
           </AppView>
           <AppView style={{ marginTop: spacing.md, alignItems: 'center' }}>
             <AccountUiButtons />
           </AppView>
           <AppView style={{ marginTop: spacing.md, alignItems: 'center' }}>
-            <AccountUiTokenAccounts address={account.publicKey} />
+            <AccountUiTokenAccounts address={account.address} />
           </AppView>
         </ScrollView>
       ) : (

@@ -47,12 +47,6 @@ sequenceDiagram
 Create a new project with one command:
 
 ```bash
-npx github:crypto-priest/x402-solana-rust my-project
-```
-
-### OR
-
-```bash
 # Create from template
 npx create-solana-dapp my-project --template x402-solana-rust
 ```
@@ -60,6 +54,12 @@ npx create-solana-dapp my-project --template x402-solana-rust
 ```bash
 # Navigate to project
 cd my-project
+```
+
+```bash
+# Initialize the project with a framework(Axum, Actix or Rocket)
+node create
+# Choose 1, 2 or 3 when prompted
 ```
 
 ### Configuration
