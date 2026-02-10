@@ -1,6 +1,9 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::keccak;
 
+#[cfg(test)]
+mod tests;
+
 declare_id!("111111111111111111111111111111111111");
 
 #[program]

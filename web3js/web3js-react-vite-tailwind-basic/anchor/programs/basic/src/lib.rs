@@ -1,5 +1,8 @@
 use anchor_lang::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 declare_id!("JAVuBXeBZqXNtS73azhBDAoYaaAFfo4gWXoZe2e7Jf8H");
 
 #[program]

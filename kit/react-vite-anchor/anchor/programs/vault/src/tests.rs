@@ -13,6 +13,13 @@ mod tests {
 
     const LAMPORTS_PER_SOL: u64 = 1_000_000_000;
 
+    fn setup() -> LiteSVM {
+        let mut svm = LiteSVM::new();
+        let program_bytes = include_bytes!("../../../target/deploy/vault.so");
+        svm.add_program(PROGRAM_ID, program_bytes);
+        svm
+    }
+
     fn get_vault_pda(signer: &Pubkey) -> (Pubkey, u8) {
         Pubkey::find_program_address(&[b"vault", signer.as_ref()], &PROGRAM_ID)
     }
@@ -50,12 +57,25 @@ mod tests {
     }
 
     #[test]
-    fn test_deposit_and_withdraw() {
-        let mut svm = LiteSVM::new();
+    fn test_hello_world() {
+        // Simple hello world test to verify program loads correctly
+        let mut svm = setup();
 
-        // Load the program
-        let program_bytes = include_bytes!("../../../target/deploy/vault.so");
-        svm.add_program(PROGRAM_ID, program_bytes);
+        // Create a user with some SOL
+        let user = Keypair::new();
+        svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
+
+        // Verify user has expected balance
+        let user_balance = svm.get_account(&user.pubkey()).unwrap().lamports;
+        assert_eq!(user_balance, 10 * LAMPORTS_PER_SOL, "User should have 10 SOL");
+
+        println!("✓ Vault program loaded successfully");
+        println!("✓ Test user created with {} SOL", user_balance / LAMPORTS_PER_SOL);
+    }
+
+    #[test]
+    fn test_deposit_and_withdraw() {
+        let mut svm = setup();
 
         // Create a user with some SOL
         let user = Keypair::new();
@@ -103,14 +123,13 @@ mod tests {
             vault_account.is_none() || vault_account.unwrap().lamports == 0,
             "Vault should be empty after withdraw"
         );
+
+        println!("✓ Deposit and withdraw completed successfully");
     }
 
     #[test]
     fn test_deposit_fails_if_vault_has_funds() {
-        let mut svm = LiteSVM::new();
-
-        let program_bytes = include_bytes!("../../../target/deploy/vault.so");
-        svm.add_program(PROGRAM_ID, program_bytes);
+        let mut svm = setup();
 
         let user = Keypair::new();
         svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
@@ -140,14 +159,13 @@ mod tests {
 
         let result = svm.send_transaction(tx2);
         assert!(result.is_err(), "Second deposit should fail");
+
+        println!("✓ Second deposit correctly failed");
     }
 
     #[test]
     fn test_withdraw_fails_if_vault_empty() {
-        let mut svm = LiteSVM::new();
-
-        let program_bytes = include_bytes!("../../../target/deploy/vault.so");
-        svm.add_program(PROGRAM_ID, program_bytes);
+        let mut svm = setup();
 
         let user = Keypair::new();
         svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
@@ -166,5 +184,7 @@ mod tests {
 
         let result = svm.send_transaction(tx);
         assert!(result.is_err(), "Withdraw from empty vault should fail");
+
+        println!("✓ Withdraw from empty vault correctly failed");
     }
 }

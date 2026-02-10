@@ -2,6 +2,9 @@
 
 use anchor_lang::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 declare_id!("Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe");
 
 #[program]
