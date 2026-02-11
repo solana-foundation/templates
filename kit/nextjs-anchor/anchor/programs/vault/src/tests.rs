@@ -1,190 +1,238 @@
-#[cfg(test)]
-mod tests {
-    use crate::ID as PROGRAM_ID;
-    use litesvm::LiteSVM;
-    use solana_sdk::{
-        instruction::{AccountMeta, Instruction},
-        pubkey::Pubkey,
-        signature::Keypair,
-        signer::Signer,
-        system_program,
-        transaction::Transaction,
+#![allow(unexpected_cfgs)]
+
+use anchor_lang::prelude::*;
+use litesvm::LiteSVM;
+use sha2::{Digest, Sha256};
+use solana_sdk::{
+    instruction::{AccountMeta, Instruction},
+    pubkey::Pubkey,
+    signature::Keypair,
+    signer::Signer,
+    system_program,
+    transaction::Transaction,
+};
+
+// Import the program module
+use crate::{vault, VaultAction, ID as PROGRAM_ID};
+
+const LAMPORTS_PER_SOL: u64 = 1_000_000_000;
+
+/// Helper to set up test context with the vault program
+fn setup() -> LiteSVM {
+    let mut svm = LiteSVM::new();
+    let program_bytes = include_bytes!("../../../target/deploy/vault.so");
+    svm.add_program(PROGRAM_ID, program_bytes);
+    svm
+}
+
+/// Helper to get vault PDA
+fn get_vault_pda(user: &Pubkey) -> (Pubkey, u8) {
+    Pubkey::find_program_address(&[b"vault", user.as_ref()], &PROGRAM_ID)
+}
+
+/// Helper to compute Anchor instruction discriminator
+fn get_discriminator(namespace: &str, name: &str) -> [u8; 8] {
+    let mut hasher = Sha256::new();
+    hasher.update(format!("{}:{}", namespace, name).as_bytes());
+    let hash = hasher.finalize();
+    let mut discriminator = [0u8; 8];
+    discriminator.copy_from_slice(&hash[..8]);
+    discriminator
+}
+
+#[test]
+fn test_hello_world() {
+    // Simple hello world test to verify program loads correctly
+    let mut svm = setup();
+
+    // Create a funded user account
+    let user = Keypair::new();
+    svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
+
+    // Verify user has expected balance
+    let user_balance = svm.get_account(&user.pubkey()).unwrap().lamports;
+    assert_eq!(
+        user_balance,
+        10 * LAMPORTS_PER_SOL,
+        "User should have 10 SOL"
+    );
+
+    println!("✓ Vault program loaded successfully");
+    println!("✓ Test user created with 10 SOL");
+}
+
+#[test]
+fn test_deposit_and_withdraw() {
+    let mut svm = setup();
+
+    // Create a funded user account
+    let user = Keypair::new();
+    svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
+
+    // Get vault PDA
+    let (vault_pda, _bump) = get_vault_pda(&user.pubkey());
+
+    // Build deposit instruction
+    let deposit_amount = LAMPORTS_PER_SOL;
+    let deposit_discriminator = get_discriminator("global", "deposit");
+    let mut deposit_data = deposit_discriminator.to_vec();
+    deposit_data.extend_from_slice(&deposit_amount.to_le_bytes());
+
+    let deposit_ix = Instruction {
+        program_id: PROGRAM_ID,
+        accounts: vec![
+            AccountMeta::new(user.pubkey(), true),
+            AccountMeta::new(vault_pda, false),
+            AccountMeta::new_readonly(system_program::id(), false),
+        ],
+        data: deposit_data,
     };
 
-    const LAMPORTS_PER_SOL: u64 = 1_000_000_000;
+    let blockhash = svm.latest_blockhash();
+    let deposit_tx = Transaction::new_signed_with_payer(
+        &[deposit_ix],
+        Some(&user.pubkey()),
+        &[&user],
+        blockhash,
+    );
 
-    fn setup() -> LiteSVM {
-        let mut svm = LiteSVM::new();
-        let program_bytes = include_bytes!("../../../target/deploy/vault.so");
-        svm.add_program(PROGRAM_ID, program_bytes);
-        svm
-    }
+    let result = svm.send_transaction(deposit_tx);
+    assert!(result.is_ok(), "Deposit transaction should succeed");
 
-    fn get_vault_pda(signer: &Pubkey) -> (Pubkey, u8) {
-        Pubkey::find_program_address(&[b"vault", signer.as_ref()], &PROGRAM_ID)
-    }
+    // Verify vault balance
+    let vault_balance = svm.get_account(&vault_pda).unwrap().lamports;
+    assert_eq!(
+        vault_balance, deposit_amount,
+        "Vault should have deposit amount"
+    );
 
-    fn create_deposit_ix(signer: &Pubkey, vault: &Pubkey, amount: u64) -> Instruction {
-        // Anchor discriminator for "deposit" = hash("global:deposit")[0..8]
-        let discriminator: [u8; 8] = [242, 35, 198, 137, 82, 225, 242, 182];
-        let mut data = discriminator.to_vec();
-        data.extend_from_slice(&amount.to_le_bytes());
+    // Build withdraw instruction
+    let withdraw_discriminator = get_discriminator("global", "withdraw");
+    let withdraw_data = withdraw_discriminator.to_vec();
 
-        Instruction {
-            program_id: PROGRAM_ID,
-            accounts: vec![
-                AccountMeta::new(*signer, true),
-                AccountMeta::new(*vault, false),
-                AccountMeta::new_readonly(system_program::ID, false),
-            ],
-            data,
-        }
-    }
+    let withdraw_ix = Instruction {
+        program_id: PROGRAM_ID,
+        accounts: vec![
+            AccountMeta::new(user.pubkey(), true),
+            AccountMeta::new(vault_pda, false),
+            AccountMeta::new_readonly(system_program::id(), false),
+        ],
+        data: withdraw_data,
+    };
 
-    fn create_withdraw_ix(signer: &Pubkey, vault: &Pubkey) -> Instruction {
-        // Anchor discriminator for "withdraw" = hash("global:withdraw")[0..8]
-        let discriminator: [u8; 8] = [183, 18, 70, 156, 148, 109, 161, 34];
+    let blockhash = svm.latest_blockhash();
+    let withdraw_tx = Transaction::new_signed_with_payer(
+        &[withdraw_ix],
+        Some(&user.pubkey()),
+        &[&user],
+        blockhash,
+    );
 
-        Instruction {
-            program_id: PROGRAM_ID,
-            accounts: vec![
-                AccountMeta::new(*signer, true),
-                AccountMeta::new(*vault, false),
-                AccountMeta::new_readonly(system_program::ID, false),
-            ],
-            data: discriminator.to_vec(),
-        }
-    }
+    let result = svm.send_transaction(withdraw_tx);
+    assert!(result.is_ok(), "Withdraw transaction should succeed");
 
-    #[test]
-    fn test_hello_world() {
-        // Simple hello world test to verify program loads correctly
-        let mut svm = setup();
+    // Verify vault is empty (account should be closed)
+    // In LiteSVM, closed accounts might still exist with 0 lamports and 0 data
+    let vault_closed = match svm.get_account(&vault_pda) {
+        None => true,
+        Some(account) => account.lamports == 0 && account.data.is_empty(),
+    };
+    assert!(
+        vault_closed,
+        "Vault account should be closed (0 lamports, 0 data)"
+    );
 
-        // Create a user with some SOL
-        let user = Keypair::new();
-        svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
+    println!("✓ Deposit and withdraw completed successfully");
+}
 
-        // Verify user has expected balance
-        let user_balance = svm.get_account(&user.pubkey()).unwrap().lamports;
-        assert_eq!(user_balance, 10 * LAMPORTS_PER_SOL, "User should have 10 SOL");
+#[test]
+fn test_deposit_fails_if_vault_has_funds() {
+    let mut svm = setup();
 
-        println!("✓ Vault program loaded successfully");
-        println!("✓ Test user created with {} SOL", user_balance / LAMPORTS_PER_SOL);
-    }
+    let user = Keypair::new();
+    svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
+    let (vault_pda, _bump) = get_vault_pda(&user.pubkey());
 
-    #[test]
-    fn test_deposit_and_withdraw() {
-        let mut svm = setup();
+    // First deposit
+    let deposit_discriminator = get_discriminator("global", "deposit");
+    let mut deposit_data = deposit_discriminator.to_vec();
+    deposit_data.extend_from_slice(&LAMPORTS_PER_SOL.to_le_bytes());
 
-        // Create a user with some SOL
-        let user = Keypair::new();
-        svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
+    let deposit_accounts = vec![
+        AccountMeta::new(user.pubkey(), true),
+        AccountMeta::new(vault_pda, false),
+        AccountMeta::new_readonly(system_program::id(), false),
+    ];
 
-        // Get vault PDA
-        let (vault_pda, _bump) = get_vault_pda(&user.pubkey());
+    let deposit_ix = Instruction {
+        program_id: PROGRAM_ID,
+        accounts: deposit_accounts.clone(),
+        data: deposit_data.clone(),
+    };
 
-        // Deposit 1 SOL
-        let deposit_amount = LAMPORTS_PER_SOL;
-        let deposit_ix = create_deposit_ix(&user.pubkey(), &vault_pda, deposit_amount);
+    let blockhash = svm.latest_blockhash();
+    let tx = Transaction::new_signed_with_payer(
+        &[deposit_ix],
+        Some(&user.pubkey()),
+        &[&user],
+        blockhash,
+    );
+    let result = svm.send_transaction(tx);
+    assert!(result.is_ok(), "First deposit should succeed");
 
-        let blockhash = svm.latest_blockhash();
-        let deposit_tx = Transaction::new_signed_with_payer(
-            &[deposit_ix],
-            Some(&user.pubkey()),
-            &[&user],
-            blockhash,
-        );
+    // Second deposit should fail
+    let deposit_ix2 = Instruction {
+        program_id: PROGRAM_ID,
+        accounts: deposit_accounts,
+        data: deposit_data,
+    };
 
-        let result = svm.send_transaction(deposit_tx);
-        assert!(result.is_ok(), "Deposit should succeed");
+    let blockhash = svm.latest_blockhash();
+    let tx2 = Transaction::new_signed_with_payer(
+        &[deposit_ix2],
+        Some(&user.pubkey()),
+        &[&user],
+        blockhash,
+    );
 
-        // Check vault balance
-        let vault_account = svm.get_account(&vault_pda).unwrap();
-        assert_eq!(vault_account.lamports, deposit_amount);
+    let result = svm.send_transaction(tx2);
+    assert!(result.is_err(), "Second deposit should fail");
 
-        // Withdraw
-        let withdraw_ix = create_withdraw_ix(&user.pubkey(), &vault_pda);
+    println!("✓ Second deposit correctly failed");
+}
 
-        let blockhash = svm.latest_blockhash();
-        let withdraw_tx = Transaction::new_signed_with_payer(
-            &[withdraw_ix],
-            Some(&user.pubkey()),
-            &[&user],
-            blockhash,
-        );
+#[test]
+fn test_withdraw_fails_if_vault_empty() {
+    let mut svm = setup();
 
-        let result = svm.send_transaction(withdraw_tx);
-        assert!(result.is_ok(), "Withdraw should succeed");
+    let user = Keypair::new();
+    svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
+    let (vault_pda, _bump) = get_vault_pda(&user.pubkey());
 
-        // Check vault is empty (account may not exist or have 0 lamports)
-        let vault_account = svm.get_account(&vault_pda);
-        assert!(
-            vault_account.is_none() || vault_account.unwrap().lamports == 0,
-            "Vault should be empty after withdraw"
-        );
+    // Try to withdraw from empty vault
+    let withdraw_discriminator = get_discriminator("global", "withdraw");
+    let withdraw_data = withdraw_discriminator.to_vec();
 
-        println!("✓ Deposit and withdraw completed successfully");
-    }
+    let withdraw_ix = Instruction {
+        program_id: PROGRAM_ID,
+        accounts: vec![
+            AccountMeta::new(user.pubkey(), true),
+            AccountMeta::new(vault_pda, false),
+            AccountMeta::new_readonly(system_program::id(), false),
+        ],
+        data: withdraw_data,
+    };
 
-    #[test]
-    fn test_deposit_fails_if_vault_has_funds() {
-        let mut svm = setup();
+    let blockhash = svm.latest_blockhash();
+    let tx = Transaction::new_signed_with_payer(
+        &[withdraw_ix],
+        Some(&user.pubkey()),
+        &[&user],
+        blockhash,
+    );
 
-        let user = Keypair::new();
-        svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
+    let result = svm.send_transaction(tx);
+    assert!(result.is_err(), "Withdraw from empty vault should fail");
 
-        let (vault_pda, _bump) = get_vault_pda(&user.pubkey());
-
-        // First deposit
-        let deposit_ix = create_deposit_ix(&user.pubkey(), &vault_pda, LAMPORTS_PER_SOL);
-        let blockhash = svm.latest_blockhash();
-        let tx = Transaction::new_signed_with_payer(
-            &[deposit_ix],
-            Some(&user.pubkey()),
-            &[&user],
-            blockhash,
-        );
-        svm.send_transaction(tx).unwrap();
-
-        // Second deposit should fail
-        let deposit_ix2 = create_deposit_ix(&user.pubkey(), &vault_pda, LAMPORTS_PER_SOL);
-        let blockhash = svm.latest_blockhash();
-        let tx2 = Transaction::new_signed_with_payer(
-            &[deposit_ix2],
-            Some(&user.pubkey()),
-            &[&user],
-            blockhash,
-        );
-
-        let result = svm.send_transaction(tx2);
-        assert!(result.is_err(), "Second deposit should fail");
-
-        println!("✓ Second deposit correctly failed");
-    }
-
-    #[test]
-    fn test_withdraw_fails_if_vault_empty() {
-        let mut svm = setup();
-
-        let user = Keypair::new();
-        svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
-
-        let (vault_pda, _bump) = get_vault_pda(&user.pubkey());
-
-        // Try to withdraw from empty vault
-        let withdraw_ix = create_withdraw_ix(&user.pubkey(), &vault_pda);
-        let blockhash = svm.latest_blockhash();
-        let tx = Transaction::new_signed_with_payer(
-            &[withdraw_ix],
-            Some(&user.pubkey()),
-            &[&user],
-            blockhash,
-        );
-
-        let result = svm.send_transaction(tx);
-        assert!(result.is_err(), "Withdraw from empty vault should fail");
-
-        println!("✓ Withdraw from empty vault correctly failed");
-    }
+    println!("✓ Withdraw from empty vault correctly failed");
 }

@@ -2,9 +2,9 @@
 mod tests {
     use crate::ID as PROGRAM_ID;
     use litesvm::LiteSVM;
+    use sha2::{Digest, Sha256};
     use solana_sdk::{
-        instruction::{AccountMeta, Instruction},
-        pubkey::Pubkey,
+        instruction::Instruction,
         signature::Keypair,
         signer::Signer,
         transaction::Transaction,
@@ -19,9 +19,18 @@ mod tests {
         svm
     }
 
+    /// Helper to compute Anchor instruction discriminator
+    fn get_discriminator(namespace: &str, name: &str) -> [u8; 8] {
+        let mut hasher = Sha256::new();
+        hasher.update(format!("{}:{}", namespace, name).as_bytes());
+        let hash = hasher.finalize();
+        let mut discriminator = [0u8; 8];
+        discriminator.copy_from_slice(&hash[..8]);
+        discriminator
+    }
+
     fn create_greet_ix() -> Instruction {
-        // Anchor discriminator for "greet" = hash("global:greet")[0..8]
-        let discriminator: [u8; 8] = [203, 194, 3, 150, 228, 58, 181, 62];
+        let discriminator = get_discriminator("global", "greet");
 
         Instruction {
             program_id: PROGRAM_ID,

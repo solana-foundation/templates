@@ -7,7 +7,7 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-solana_distributor = "6Gs656WdKHM2XuZU3CZQ7SJNo63FecawsLECE6wFnozT"
+solana_distributor = "4fz5zanipjq9i2o9CwDXFZ9w6UyraqDo3uCv8AECD7Qe"
 
 [registry]
 url = "https://api.apr.dev"
@@ -18,3 +18,5 @@ wallet = "deploy-wallet.json"
 
 [scripts]
 test = "pnpm exec vitest run"
+
+[hooks]

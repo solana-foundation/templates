@@ -2,8 +2,8 @@
 mod tests {
     use crate::{Counter, ID as PROGRAM_ID};
     use litesvm::LiteSVM;
+    use sha2::{Digest, Sha256};
     use solana_sdk::{
-        account::Account,
         instruction::{AccountMeta, Instruction},
         pubkey::Pubkey,
         signature::Keypair,
@@ -21,9 +21,18 @@ mod tests {
         svm
     }
 
+    /// Helper to compute Anchor instruction discriminator
+    fn get_discriminator(namespace: &str, name: &str) -> [u8; 8] {
+        let mut hasher = Sha256::new();
+        hasher.update(format!("{}:{}", namespace, name).as_bytes());
+        let hash = hasher.finalize();
+        let mut discriminator = [0u8; 8];
+        discriminator.copy_from_slice(&hash[..8]);
+        discriminator
+    }
+
     fn create_initialize_ix(payer: &Pubkey, counter: &Pubkey) -> Instruction {
-        // Anchor discriminator for "initialize" = hash("global:initialize")[0..8]
-        let discriminator: [u8; 8] = [175, 175, 109, 31, 13, 152, 155, 237];
+        let discriminator = get_discriminator("global", "initialize");
 
         Instruction {
             program_id: PROGRAM_ID,
@@ -37,8 +46,7 @@ mod tests {
     }
 
     fn create_increment_ix(counter: &Pubkey) -> Instruction {
-        // Anchor discriminator for "increment" = hash("global:increment")[0..8]
-        let discriminator: [u8; 8] = [11, 18, 104, 9, 104, 174, 59, 33];
+        let discriminator = get_discriminator("global", "increment");
 
         Instruction {
             program_id: PROGRAM_ID,
@@ -48,8 +56,7 @@ mod tests {
     }
 
     fn create_decrement_ix(counter: &Pubkey) -> Instruction {
-        // Anchor discriminator for "decrement" = hash("global:decrement")[0..8]
-        let discriminator: [u8; 8] = [106, 227, 168, 59, 248, 27, 150, 101];
+        let discriminator = get_discriminator("global", "decrement");
 
         Instruction {
             program_id: PROGRAM_ID,
@@ -59,8 +66,7 @@ mod tests {
     }
 
     fn create_set_ix(counter: &Pubkey, value: u8) -> Instruction {
-        // Anchor discriminator for "set" = hash("global:set")[0..8]
-        let discriminator: [u8; 8] = [198, 51, 53, 241, 116, 29, 126, 194];
+        let discriminator = get_discriminator("global", "set");
         let mut data = discriminator.to_vec();
         data.push(value);
 

@@ -2,6 +2,7 @@
 mod tests {
     use crate::ID as PROGRAM_ID;
     use litesvm::LiteSVM;
+    use sha2::{Digest, Sha256};
     use solana_sdk::{
         instruction::{AccountMeta, Instruction},
         pubkey::Pubkey,
@@ -20,6 +21,16 @@ mod tests {
         svm
     }
 
+    /// Helper to compute Anchor instruction discriminator
+    fn get_discriminator(namespace: &str, name: &str) -> [u8; 8] {
+        let mut hasher = Sha256::new();
+        hasher.update(format!("{}:{}", namespace, name).as_bytes());
+        let hash = hasher.finalize();
+        let mut discriminator = [0u8; 8];
+        discriminator.copy_from_slice(&hash[..8]);
+        discriminator
+    }
+
     fn get_airdrop_state_pda() -> (Pubkey, u8) {
         Pubkey::find_program_address(&[b"merkle_tree"], &PROGRAM_ID)
     }
@@ -30,8 +41,7 @@ mod tests {
         merkle_root: [u8; 32],
         amount: u64,
     ) -> Instruction {
-        // Anchor discriminator for "initialize_airdrop" = hash("global:initialize_airdrop")[0..8]
-        let discriminator: [u8; 8] = [235, 127, 186, 208, 47, 185, 67, 75];
+        let discriminator = get_discriminator("global", "initialize_airdrop");
 
         let mut data = discriminator.to_vec();
         data.extend_from_slice(&merkle_root);
