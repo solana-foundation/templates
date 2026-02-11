@@ -5,7 +5,7 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-vault = "F4jZpgbtTb6RWNWq6v35fUeiAsRJMrDczVPv9U23yXjB"
+vault = "FtLmbN47XymPqPqTXGSLzpYjnS6Lx5TXjbuVJBXd7Ve5"
 
 [registry]
 url = "https://api.apr.dev"
@@ -16,3 +16,5 @@ wallet = "~/.config/solana/id.json"
 
 [scripts]
 test = "cargo test"
+
+[hooks]
