@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@solana/kit": "^5.5.0",
-    "@wallet-ui/react-native-kit": "^3.1.0",
+    "@wallet-ui/react-native-kit": "^3.2.0",
     "expo": "~54.0.22",
     "expo-constants": "~18.0.13",
     "expo-dev-client": "^6.0.20",
