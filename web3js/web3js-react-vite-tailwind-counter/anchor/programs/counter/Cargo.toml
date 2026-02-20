@@ -19,4 +19,8 @@ idl-build = ["anchor-lang/idl-build"]
 
 [dependencies]
 anchor-lang = "0.32.1"
+# anchor-lang 0.32.1 declares ^2 for these crates but needs specific minimum
+# versions that contain the APIs it uses (store_current_index_checked, resize)
+solana-instructions-sysvar = ">=2.2.2"
+solana-account-info = ">=2.3.0"
 
