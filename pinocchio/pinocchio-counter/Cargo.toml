@@ -28,6 +28,6 @@ solana-address = { version = "2.0", features = ["curve25519"] }
 pinocchio-log = "^0.5.1"
 pinocchio-system = "^0.5.0"
 thiserror = "^2.0.17"
-borsh = "^1.6.0"
+borsh = { version = "^1.6.0", features = ["derive"] }
 num-derive = "^0.4.0"
 num-traits = "^0.2.0"
