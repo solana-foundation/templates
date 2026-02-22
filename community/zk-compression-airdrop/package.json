@@ -46,7 +46,7 @@
     "@solana/react-hooks": "^1.1.0",
     "@solana/spl-token": "^0.4.14",
     "@solana/web3.js": "^1.98.4",
-    "bn.js": "^5.2.1",
+    "bn.js": "^5.2.3",
     "bs58": "^6.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
