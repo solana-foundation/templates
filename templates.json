@@ -506,6 +506,25 @@
         "usecase": "Starter"
       },
       {
+        "description": "Next.js + Tailwind template demonstrating Privy authentication for Solana dApps",
+        "id": "gh:solana-foundation/templates/community/privy-auth",
+        "image": "community/privy-auth/og-image.png",
+        "keywords": [
+          "privy",
+          "authentication",
+          "social-login",
+          "embedded-wallet",
+          "nextjs",
+          "tailwind",
+          "typescript",
+          "solana"
+        ],
+        "name": "privy-auth",
+        "path": "community/privy-auth",
+        "displayName": "Privy Auth",
+        "usecase": "Identity"
+      },
+      {
         "description": "Authenticate Solana wallets with Supabase",
         "id": "gh:solana-foundation/templates/community/supabase-auth",
         "image": "community/supabase-auth/og-image.png",

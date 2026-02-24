@@ -10,6 +10,7 @@
   "community/phantom-embedded-js",
   "community/phantom-embedded-react",
   "community/phantom-embedded-react-native",
+  "community/privy-auth",
   "community/solana-chatgpt-kit",
   "community/supabase-auth",
   "community/x402-solana-rust",
