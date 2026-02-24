@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@privy-io/react-auth": "^3.14.1",
+    "@solana-program/memo": "^0.11.0",
     "@solana-program/system": "^0.12.0",
     "@solana/kit": "^6.1.0",
     "@solana/web3.js": "^1.98.4",
