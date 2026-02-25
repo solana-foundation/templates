@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::ID as PROGRAM_ID;
+    use crate::{AirdropState, ID as PROGRAM_ID};
     use anchor_litesvm::{build_anchor_instruction, AccountMeta, AnchorLiteSVM, AnchorSerialize};
     use litesvm_utils::{AssertionHelpers, TestHelpers};
     use solana_sdk::{signer::Signer, system_program};
@@ -56,10 +56,14 @@ mod tests {
             .unwrap()
             .assert_success();
 
-        assert!(
-            ctx.svm.get_account(&airdrop_state_pda).is_some(),
-            "Airdrop state account should exist"
-        );
+        ctx.svm.assert_account_exists(&airdrop_state_pda);
+        ctx.svm.assert_account_owner(&airdrop_state_pda, &PROGRAM_ID);
+
+        let state = ctx.get_account::<AirdropState>(&airdrop_state_pda).unwrap();
+        assert_eq!(state.merkle_root, merkle_root, "Merkle root should match");
+        assert_eq!(state.airdrop_amount, airdrop_amount, "Airdrop amount should match");
+        assert_eq!(state.authority, authority.pubkey(), "Authority should match");
+        assert_eq!(state.amount_claimed, 0, "No tokens should be claimed yet");
 
         println!("✓ Airdrop initialized successfully");
         println!("  - Merkle root: {:02x?}", &merkle_root[..8]);
@@ -97,6 +101,15 @@ mod tests {
         ctx.execute_instruction(init_ix, &[&authority])
             .unwrap()
             .assert_success();
+
+        ctx.svm.assert_account_exists(&airdrop_state_pda);
+        ctx.svm.assert_account_owner(&airdrop_state_pda, &PROGRAM_ID);
+
+        let state = ctx.get_account::<AirdropState>(&airdrop_state_pda).unwrap();
+        assert_eq!(state.merkle_root, merkle_root, "Custom merkle root should be stored correctly");
+        assert_eq!(state.airdrop_amount, airdrop_amount, "Airdrop amount should match");
+        assert_eq!(state.authority, authority.pubkey(), "Authority should match");
+        assert_eq!(state.amount_claimed, 0, "No tokens should be claimed yet");
 
         println!("✓ Airdrop initialized with custom merkle root");
         println!("  - Custom root verified successfully");

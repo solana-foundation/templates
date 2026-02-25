@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::ID as PROGRAM_ID;
+    use crate::{Counter, ID as PROGRAM_ID};
     use anchor_litesvm::{
         build_anchor_instruction, AccountMeta, AnchorLiteSVM, AnchorSerialize, Keypair,
     };
@@ -54,12 +54,13 @@ mod tests {
             .unwrap()
             .assert_success();
 
-        assert!(
-            ctx.svm.get_account(&counter.pubkey()).is_some(),
-            "Counter account should exist"
-        );
+        ctx.svm.assert_account_exists(&counter.pubkey());
+        ctx.svm.assert_account_owner(&counter.pubkey(), &PROGRAM_ID);
 
-        println!("✓ Counter initialized successfully");
+        let counter_data = ctx.get_account::<Counter>(&counter.pubkey()).unwrap();
+        assert_eq!(counter_data.count, 0, "Counter should be initialized to 0");
+
+        println!("✓ Counter initialized successfully with count = 0");
     }
 
     #[test]
@@ -100,7 +101,10 @@ mod tests {
             .unwrap()
             .assert_success();
 
-        println!("✓ Counter incremented successfully");
+        let counter_data = ctx.get_account::<Counter>(&counter.pubkey()).unwrap();
+        assert_eq!(counter_data.count, 1, "Counter should be 1 after increment");
+
+        println!("✓ Counter incremented successfully to {}", counter_data.count);
     }
 
     #[test]
@@ -141,6 +145,9 @@ mod tests {
             .unwrap()
             .assert_success();
 
+        let counter_data = ctx.get_account::<Counter>(&counter.pubkey()).unwrap();
+        assert_eq!(counter_data.count, 5, "Counter should be 5 after set");
+
         let dec_ix = build_anchor_instruction(
             &PROGRAM_ID,
             "decrement",
@@ -153,6 +160,9 @@ mod tests {
             .unwrap()
             .assert_success();
 
-        println!("✓ Counter set and decremented successfully");
+        let counter_data = ctx.get_account::<Counter>(&counter.pubkey()).unwrap();
+        assert_eq!(counter_data.count, 4, "Counter should be 4 after decrement");
+
+        println!("✓ Counter set to 5, decremented to {}", counter_data.count);
     }
 }

@@ -54,7 +54,9 @@ fn test_deposit_and_withdraw() {
         .unwrap()
         .assert_success();
 
+    ctx.svm.assert_account_exists(&vault_pda);
     ctx.svm.assert_sol_balance(&vault_pda, deposit_amount);
+    ctx.svm.assert_account_owner(&vault_pda, &system_program::id());
 
     let withdraw_ix = build_anchor_instruction(
         &PROGRAM_ID,
