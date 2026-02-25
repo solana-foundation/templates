@@ -1,121 +1,63 @@
 #[cfg(test)]
 mod tests {
     use crate::ID as PROGRAM_ID;
-    use litesvm::LiteSVM;
-    use sha2::{Digest, Sha256};
-    use solana_sdk::{
-        instruction::{AccountMeta, Instruction},
-        pubkey::Pubkey,
-        signature::Keypair,
-        signer::Signer,
-        system_program,
-        transaction::Transaction,
-    };
+    use anchor_litesvm::{build_anchor_instruction, AccountMeta, AnchorLiteSVM, AnchorSerialize};
+    use litesvm_utils::{AssertionHelpers, TestHelpers};
+    use solana_sdk::{signer::Signer, system_program};
 
     const LAMPORTS_PER_SOL: u64 = 1_000_000_000;
 
-    fn setup() -> LiteSVM {
-        let mut svm = LiteSVM::new();
-        let program_bytes = include_bytes!("../../../target/deploy/solana_distributor.so");
-        svm.add_program(PROGRAM_ID, program_bytes);
-        svm
-    }
-
-    /// Helper to compute Anchor instruction discriminator
-    fn get_discriminator(namespace: &str, name: &str) -> [u8; 8] {
-        let mut hasher = Sha256::new();
-        hasher.update(format!("{}:{}", namespace, name).as_bytes());
-        let hash = hasher.finalize();
-        let mut discriminator = [0u8; 8];
-        discriminator.copy_from_slice(&hash[..8]);
-        discriminator
-    }
-
-    fn get_airdrop_state_pda() -> (Pubkey, u8) {
-        Pubkey::find_program_address(&[b"merkle_tree"], &PROGRAM_ID)
-    }
-
-    fn create_initialize_airdrop_ix(
-        authority: &Pubkey,
-        airdrop_state: &Pubkey,
+    #[derive(AnchorSerialize)]
+    struct InitializeAirdropArgs {
         merkle_root: [u8; 32],
         amount: u64,
-    ) -> Instruction {
-        let discriminator = get_discriminator("global", "initialize_airdrop");
-
-        let mut data = discriminator.to_vec();
-        data.extend_from_slice(&merkle_root);
-        data.extend_from_slice(&amount.to_le_bytes());
-
-        Instruction {
-            program_id: PROGRAM_ID,
-            accounts: vec![
-                AccountMeta::new(*airdrop_state, false),
-                AccountMeta::new(*authority, true),
-                AccountMeta::new_readonly(system_program::id(), false),
-            ],
-            data,
-        }
     }
 
     #[test]
     fn test_hello_world() {
-        // Simple hello world test to verify program loads correctly
-        let mut svm = setup();
-
-        // Create an authority with some SOL
-        let authority = Keypair::new();
-        svm.airdrop(&authority.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
-
-        // Verify authority has expected balance
-        let authority_balance = svm.get_account(&authority.pubkey()).unwrap().lamports;
-        assert_eq!(
-            authority_balance, 10 * LAMPORTS_PER_SOL,
-            "Authority should have 10 SOL"
+        let mut ctx = AnchorLiteSVM::build_with_program(
+            PROGRAM_ID,
+            include_bytes!("../../../target/deploy/solana_distributor.so"),
         );
 
+        let authority = ctx.svm.create_funded_account(10 * LAMPORTS_PER_SOL).unwrap();
+        ctx.svm.assert_sol_balance(&authority.pubkey(), 10 * LAMPORTS_PER_SOL);
+
         println!("✓ Solana Distributor program loaded successfully");
-        println!("✓ Test authority created with {} SOL", authority_balance / LAMPORTS_PER_SOL);
+        println!("✓ Test authority created with 10 SOL");
     }
 
     #[test]
     fn test_initialize_airdrop() {
-        let mut svm = setup();
+        let mut ctx = AnchorLiteSVM::build_with_program(
+            PROGRAM_ID,
+            include_bytes!("../../../target/deploy/solana_distributor.so"),
+        );
 
-        // Create an authority with some SOL
-        let authority = Keypair::new();
-        svm.airdrop(&authority.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
+        let authority = ctx.svm.create_funded_account(10 * LAMPORTS_PER_SOL).unwrap();
+        let airdrop_state_pda = ctx.svm.get_pda(&[b"merkle_tree"], &PROGRAM_ID);
 
-        // Get airdrop state PDA
-        let (airdrop_state_pda, _bump) = get_airdrop_state_pda();
-
-        // Create a test merkle root (all zeros for simplicity)
         let merkle_root = [0u8; 32];
         let airdrop_amount = 5 * LAMPORTS_PER_SOL;
 
-        // Create and send initialize_airdrop instruction
-        let init_ix = create_initialize_airdrop_ix(
-            &authority.pubkey(),
-            &airdrop_state_pda,
-            merkle_root,
-            airdrop_amount,
-        );
+        let init_ix = build_anchor_instruction(
+            &PROGRAM_ID,
+            "initialize_airdrop",
+            vec![
+                AccountMeta::new(airdrop_state_pda, false),
+                AccountMeta::new(authority.pubkey(), true),
+                AccountMeta::new_readonly(system_program::id(), false),
+            ],
+            InitializeAirdropArgs { merkle_root, amount: airdrop_amount },
+        )
+        .unwrap();
 
-        let blockhash = svm.latest_blockhash();
-        let tx = Transaction::new_signed_with_payer(
-            &[init_ix],
-            Some(&authority.pubkey()),
-            &[&authority],
-            blockhash,
-        );
+        ctx.execute_instruction(init_ix, &[&authority])
+            .unwrap()
+            .assert_success();
 
-        let result = svm.send_transaction(tx);
-        assert!(result.is_ok(), "Initialize airdrop should succeed");
-
-        // Verify airdrop_state account was created
-        let airdrop_state_account = svm.get_account(&airdrop_state_pda);
         assert!(
-            airdrop_state_account.is_some(),
+            ctx.svm.get_account(&airdrop_state_pda).is_some(),
             "Airdrop state account should exist"
         );
 
@@ -126,37 +68,35 @@ mod tests {
 
     #[test]
     fn test_initialize_with_custom_merkle_root() {
-        let mut svm = setup();
+        let mut ctx = AnchorLiteSVM::build_with_program(
+            PROGRAM_ID,
+            include_bytes!("../../../target/deploy/solana_distributor.so"),
+        );
 
-        let authority = Keypair::new();
-        svm.airdrop(&authority.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
+        let authority = ctx.svm.create_funded_account(10 * LAMPORTS_PER_SOL).unwrap();
+        let airdrop_state_pda = ctx.svm.get_pda(&[b"merkle_tree"], &PROGRAM_ID);
 
-        let (airdrop_state_pda, _bump) = get_airdrop_state_pda();
-
-        // Create a custom merkle root with some data
         let merkle_root = [
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
             24, 25, 26, 27, 28, 29, 30, 31, 32,
         ];
         let airdrop_amount = 2 * LAMPORTS_PER_SOL;
 
-        let init_ix = create_initialize_airdrop_ix(
-            &authority.pubkey(),
-            &airdrop_state_pda,
-            merkle_root,
-            airdrop_amount,
-        );
+        let init_ix = build_anchor_instruction(
+            &PROGRAM_ID,
+            "initialize_airdrop",
+            vec![
+                AccountMeta::new(airdrop_state_pda, false),
+                AccountMeta::new(authority.pubkey(), true),
+                AccountMeta::new_readonly(system_program::id(), false),
+            ],
+            InitializeAirdropArgs { merkle_root, amount: airdrop_amount },
+        )
+        .unwrap();
 
-        let blockhash = svm.latest_blockhash();
-        let tx = Transaction::new_signed_with_payer(
-            &[init_ix],
-            Some(&authority.pubkey()),
-            &[&authority],
-            blockhash,
-        );
-
-        let result = svm.send_transaction(tx);
-        assert!(result.is_ok(), "Initialize with custom root should succeed");
+        ctx.execute_instruction(init_ix, &[&authority])
+            .unwrap()
+            .assert_success();
 
         println!("✓ Airdrop initialized with custom merkle root");
         println!("  - Custom root verified successfully");

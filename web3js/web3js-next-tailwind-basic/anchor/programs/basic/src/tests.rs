@@ -1,90 +1,40 @@
 #[cfg(test)]
 mod tests {
     use crate::ID as PROGRAM_ID;
-    use litesvm::LiteSVM;
-    use sha2::{Digest, Sha256};
-    use solana_sdk::{
-        instruction::Instruction,
-        signature::Keypair,
-        signer::Signer,
-        transaction::Transaction,
-    };
+    use anchor_litesvm::{build_anchor_instruction, AnchorLiteSVM};
+    use litesvm_utils::{AssertionHelpers, TestHelpers};
+    use solana_sdk::signer::Signer;
 
     const LAMPORTS_PER_SOL: u64 = 1_000_000_000;
 
-    fn setup() -> LiteSVM {
-        let mut svm = LiteSVM::new();
-        let program_bytes = include_bytes!("../../../target/deploy/basic.so");
-        svm.add_program(PROGRAM_ID, program_bytes);
-        svm
-    }
-
-    /// Helper to compute Anchor instruction discriminator
-    fn get_discriminator(namespace: &str, name: &str) -> [u8; 8] {
-        let mut hasher = Sha256::new();
-        hasher.update(format!("{}:{}", namespace, name).as_bytes());
-        let hash = hasher.finalize();
-        let mut discriminator = [0u8; 8];
-        discriminator.copy_from_slice(&hash[..8]);
-        discriminator
-    }
-
-    fn create_greet_ix() -> Instruction {
-        let discriminator = get_discriminator("global", "greet");
-
-        Instruction {
-            program_id: PROGRAM_ID,
-            accounts: vec![],
-            data: discriminator.to_vec(),
-        }
-    }
-
     #[test]
     fn test_hello_world() {
-        // Simple hello world test to verify program loads correctly
-        let mut svm = setup();
+        let mut ctx = AnchorLiteSVM::build_with_program(
+            PROGRAM_ID,
+            include_bytes!("../../../target/deploy/basic.so"),
+        );
 
-        // Create a user with some SOL
-        let user = Keypair::new();
-        svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
-
-        // Verify user has expected balance
-        let user_balance = svm.get_account(&user.pubkey()).unwrap().lamports;
-        assert_eq!(user_balance, 10 * LAMPORTS_PER_SOL, "User should have 10 SOL");
+        let user = ctx.svm.create_funded_account(10 * LAMPORTS_PER_SOL).unwrap();
+        ctx.svm.assert_sol_balance(&user.pubkey(), 10 * LAMPORTS_PER_SOL);
 
         println!("✓ Basic program loaded successfully");
-        println!("✓ Test user created with {} SOL", user_balance / LAMPORTS_PER_SOL);
+        println!("✓ Test user created with 10 SOL");
     }
 
     #[test]
     fn test_greet() {
-        let mut svm = setup();
-
-        // Create a user with some SOL
-        let user = Keypair::new();
-        svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
-
-        // Create and send greet instruction
-        let greet_ix = create_greet_ix();
-
-        let blockhash = svm.latest_blockhash();
-        let tx = Transaction::new_signed_with_payer(
-            &[greet_ix],
-            Some(&user.pubkey()),
-            &[&user],
-            blockhash,
+        let mut ctx = AnchorLiteSVM::build_with_program(
+            PROGRAM_ID,
+            include_bytes!("../../../target/deploy/basic.so"),
         );
 
-        let result = svm.send_transaction(tx);
-        assert!(result.is_ok(), "Greet instruction should succeed");
+        let user = ctx.svm.create_funded_account(10 * LAMPORTS_PER_SOL).unwrap();
 
-        // Check that the "GM!" message was logged
-        let tx_result = result.unwrap();
-        let logs = &tx_result.logs;
-        assert!(
-            logs.iter().any(|log| log.contains("GM!")),
-            "Expected 'GM!' message in logs"
-        );
+        let greet_ix = build_anchor_instruction(&PROGRAM_ID, "greet", vec![], ()).unwrap();
+
+        let result = ctx.execute_instruction(greet_ix, &[&user]).unwrap();
+        result.assert_success();
+        assert!(result.has_log("GM!"), "Expected 'GM!' message in logs");
 
         println!("✓ Greet instruction executed successfully");
         println!("✓ Program logged: GM!");

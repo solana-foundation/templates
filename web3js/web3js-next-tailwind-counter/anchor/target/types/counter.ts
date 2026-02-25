@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/counter.json`.
  */
 export type Counter = {
-  "address": "Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe",
+  "address": "5WbMMdKQwSVQxSgEZMkQpSus6u7F8gJiVKUzU8JwzeVr",
   "metadata": {
     "name": "counter",
     "version": "0.1.0",

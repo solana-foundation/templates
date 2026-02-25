@@ -5,7 +5,7 @@ use anchor_lang::prelude::*;
 #[cfg(test)]
 mod tests;
 
-declare_id!("Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe");
+declare_id!("EzMp9W9AosjZeQy5LiHWg2L8spTSK4XTAgv6BWE4SMKG");
 
 #[program]
 pub mod counter {

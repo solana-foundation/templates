@@ -242,6 +242,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "anchor-litesvm"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9c8d24c0ac5acf2d74ed1edbee6b229027ec23da218d01b64dbc965d4ff33f3b"
+dependencies = [
+ "anchor-lang",
+ "base64 0.22.1",
+ "borsh 1.5.7",
+ "litesvm",
+ "litesvm-utils",
+ "sha2 0.10.9",
+ "solana-program",
+ "solana-sdk",
+ "spl-associated-token-account",
+ "spl-token",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "anchor-spl"
 version = "0.31.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1814,6 +1833,41 @@ dependencies = [
 ]
 
 [[package]]
+name = "litesvm-token"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5e86e6be8c00c17755cbcdef6e35f18051725239e0e6eba61a021d84378693df"
+dependencies = [
+ "litesvm",
+ "smallvec",
+ "solana-keypair",
+ "solana-program-pack",
+ "solana-pubkey",
+ "solana-signer",
+ "solana-system-interface",
+ "solana-transaction",
+ "solana-transaction-error",
+ "spl-associated-token-account-client",
+ "spl-token",
+]
+
+[[package]]
+name = "litesvm-utils"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1f73b6ec4d75ad22c86281445cdb4eab5080728f991d0fbbf4ee4ec533ed6340"
+dependencies = [
+ "litesvm",
+ "litesvm-token",
+ "solana-program",
+ "solana-program-pack",
+ "solana-sdk",
+ "spl-associated-token-account",
+ "spl-token",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "lock_api"
 version = "0.4.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3110,8 +3164,10 @@ name = "solana-distributor"
 version = "0.1.0"
 dependencies = [
  "anchor-lang",
+ "anchor-litesvm",
  "anchor-spl",
  "litesvm",
+ "litesvm-utils",
  "sha2 0.10.9",
  "solana-sdk",
 ]

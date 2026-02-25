@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/basic.json`.
  */
 export type Basic = {
-  "address": "JAVuBXeBZqXNtS73azhBDAoYaaAFfo4gWXoZe2e7Jf8H",
+  "address": "C9b6uv2JdjyzAwFvMGsGF6Qp8oXTXXFv67JJZbC4gRRM",
   "metadata": {
     "name": "basic",
     "version": "0.1.0",

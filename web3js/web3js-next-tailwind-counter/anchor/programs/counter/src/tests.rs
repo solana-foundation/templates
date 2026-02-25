@@ -1,207 +1,157 @@
 #[cfg(test)]
 mod tests {
-    use crate::{Counter, ID as PROGRAM_ID};
-    use litesvm::LiteSVM;
-    use sha2::{Digest, Sha256};
-    use solana_sdk::{
-        instruction::{AccountMeta, Instruction},
-        pubkey::Pubkey,
-        signature::Keypair,
-        signer::Signer,
-        system_program,
-        transaction::Transaction,
+    use crate::ID as PROGRAM_ID;
+    use anchor_litesvm::{
+        build_anchor_instruction, AccountMeta, AnchorLiteSVM, AnchorSerialize, Keypair,
     };
+    use litesvm_utils::{AssertionHelpers, TestHelpers};
+    use solana_sdk::{signer::Signer, system_program};
 
     const LAMPORTS_PER_SOL: u64 = 1_000_000_000;
 
-    fn setup() -> LiteSVM {
-        let mut svm = LiteSVM::new();
-        let program_bytes = include_bytes!("../../../target/deploy/counter.so");
-        svm.add_program(PROGRAM_ID, program_bytes);
-        svm
-    }
-
-    /// Helper to compute Anchor instruction discriminator
-    fn get_discriminator(namespace: &str, name: &str) -> [u8; 8] {
-        let mut hasher = Sha256::new();
-        hasher.update(format!("{}:{}", namespace, name).as_bytes());
-        let hash = hasher.finalize();
-        let mut discriminator = [0u8; 8];
-        discriminator.copy_from_slice(&hash[..8]);
-        discriminator
-    }
-
-    fn create_initialize_ix(payer: &Pubkey, counter: &Pubkey) -> Instruction {
-        let discriminator = get_discriminator("global", "initialize");
-
-        Instruction {
-            program_id: PROGRAM_ID,
-            accounts: vec![
-                AccountMeta::new(*payer, true),
-                AccountMeta::new(*counter, true),
-                AccountMeta::new_readonly(system_program::id(), false),
-            ],
-            data: discriminator.to_vec(),
-        }
-    }
-
-    fn create_increment_ix(counter: &Pubkey) -> Instruction {
-        let discriminator = get_discriminator("global", "increment");
-
-        Instruction {
-            program_id: PROGRAM_ID,
-            accounts: vec![AccountMeta::new(*counter, false)],
-            data: discriminator.to_vec(),
-        }
-    }
-
-    fn create_decrement_ix(counter: &Pubkey) -> Instruction {
-        let discriminator = get_discriminator("global", "decrement");
-
-        Instruction {
-            program_id: PROGRAM_ID,
-            accounts: vec![AccountMeta::new(*counter, false)],
-            data: discriminator.to_vec(),
-        }
-    }
-
-    fn create_set_ix(counter: &Pubkey, value: u8) -> Instruction {
-        let discriminator = get_discriminator("global", "set");
-        let mut data = discriminator.to_vec();
-        data.push(value);
-
-        Instruction {
-            program_id: PROGRAM_ID,
-            accounts: vec![AccountMeta::new(*counter, false)],
-            data,
-        }
+    #[derive(AnchorSerialize)]
+    struct SetArgs {
+        value: u8,
     }
 
     #[test]
     fn test_hello_world() {
-        // Simple hello world test to verify program loads correctly
-        let mut svm = setup();
+        let mut ctx = AnchorLiteSVM::build_with_program(
+            PROGRAM_ID,
+            include_bytes!("../../../target/deploy/counter.so"),
+        );
 
-        // Create a user with some SOL
-        let user = Keypair::new();
-        svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
-
-        // Verify user has expected balance
-        let user_balance = svm.get_account(&user.pubkey()).unwrap().lamports;
-        assert_eq!(user_balance, 10 * LAMPORTS_PER_SOL, "User should have 10 SOL");
+        let user = ctx.svm.create_funded_account(10 * LAMPORTS_PER_SOL).unwrap();
+        ctx.svm.assert_sol_balance(&user.pubkey(), 10 * LAMPORTS_PER_SOL);
 
         println!("✓ Counter program loaded successfully");
-        println!("✓ Test user created with {} SOL", user_balance / LAMPORTS_PER_SOL);
+        println!("✓ Test user created with 10 SOL");
     }
 
     #[test]
     fn test_initialize_counter() {
-        let mut svm = setup();
-
-        let payer = Keypair::new();
-        svm.airdrop(&payer.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
-
-        let counter = Keypair::new();
-
-        let init_ix = create_initialize_ix(&payer.pubkey(), &counter.pubkey());
-
-        let blockhash = svm.latest_blockhash();
-        let tx = Transaction::new_signed_with_payer(
-            &[init_ix],
-            Some(&payer.pubkey()),
-            &[&payer, &counter],
-            blockhash,
+        let mut ctx = AnchorLiteSVM::build_with_program(
+            PROGRAM_ID,
+            include_bytes!("../../../target/deploy/counter.so"),
         );
 
-        let result = svm.send_transaction(tx);
-        assert!(result.is_ok(), "Initialize should succeed");
+        let payer = ctx.svm.create_funded_account(10 * LAMPORTS_PER_SOL).unwrap();
+        let counter = Keypair::new();
 
-        // Verify counter account was created
-        let counter_account = svm.get_account(&counter.pubkey());
-        assert!(counter_account.is_some(), "Counter account should exist");
+        let init_ix = build_anchor_instruction(
+            &PROGRAM_ID,
+            "initialize",
+            vec![
+                AccountMeta::new(payer.pubkey(), true),
+                AccountMeta::new(counter.pubkey(), true),
+                AccountMeta::new_readonly(system_program::id(), false),
+            ],
+            (),
+        )
+        .unwrap();
+
+        ctx.execute_instruction(init_ix, &[&payer, &counter])
+            .unwrap()
+            .assert_success();
+
+        assert!(
+            ctx.svm.get_account(&counter.pubkey()).is_some(),
+            "Counter account should exist"
+        );
 
         println!("✓ Counter initialized successfully");
     }
 
     #[test]
     fn test_increment() {
-        let mut svm = setup();
+        let mut ctx = AnchorLiteSVM::build_with_program(
+            PROGRAM_ID,
+            include_bytes!("../../../target/deploy/counter.so"),
+        );
 
-        let payer = Keypair::new();
-        svm.airdrop(&payer.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
-
+        let payer = ctx.svm.create_funded_account(10 * LAMPORTS_PER_SOL).unwrap();
         let counter = Keypair::new();
 
-        // Initialize
-        let init_ix = create_initialize_ix(&payer.pubkey(), &counter.pubkey());
-        let blockhash = svm.latest_blockhash();
-        let tx = Transaction::new_signed_with_payer(
-            &[init_ix],
-            Some(&payer.pubkey()),
-            &[&payer, &counter],
-            blockhash,
-        );
-        svm.send_transaction(tx).unwrap();
+        let init_ix = build_anchor_instruction(
+            &PROGRAM_ID,
+            "initialize",
+            vec![
+                AccountMeta::new(payer.pubkey(), true),
+                AccountMeta::new(counter.pubkey(), true),
+                AccountMeta::new_readonly(system_program::id(), false),
+            ],
+            (),
+        )
+        .unwrap();
 
-        // Increment
-        let inc_ix = create_increment_ix(&counter.pubkey());
-        let blockhash = svm.latest_blockhash();
-        let tx = Transaction::new_signed_with_payer(
-            &[inc_ix],
-            Some(&payer.pubkey()),
-            &[&payer],
-            blockhash,
-        );
+        ctx.execute_instruction(init_ix, &[&payer, &counter])
+            .unwrap()
+            .assert_success();
 
-        let result = svm.send_transaction(tx);
-        assert!(result.is_ok(), "Increment should succeed");
+        let inc_ix = build_anchor_instruction(
+            &PROGRAM_ID,
+            "increment",
+            vec![AccountMeta::new(counter.pubkey(), false)],
+            (),
+        )
+        .unwrap();
+
+        ctx.execute_instruction(inc_ix, &[&payer])
+            .unwrap()
+            .assert_success();
 
         println!("✓ Counter incremented successfully");
     }
 
     #[test]
     fn test_set_and_decrement() {
-        let mut svm = setup();
+        let mut ctx = AnchorLiteSVM::build_with_program(
+            PROGRAM_ID,
+            include_bytes!("../../../target/deploy/counter.so"),
+        );
 
-        let payer = Keypair::new();
-        svm.airdrop(&payer.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
-
+        let payer = ctx.svm.create_funded_account(10 * LAMPORTS_PER_SOL).unwrap();
         let counter = Keypair::new();
 
-        // Initialize
-        let init_ix = create_initialize_ix(&payer.pubkey(), &counter.pubkey());
-        let blockhash = svm.latest_blockhash();
-        let tx = Transaction::new_signed_with_payer(
-            &[init_ix],
-            Some(&payer.pubkey()),
-            &[&payer, &counter],
-            blockhash,
-        );
-        svm.send_transaction(tx).unwrap();
+        let init_ix = build_anchor_instruction(
+            &PROGRAM_ID,
+            "initialize",
+            vec![
+                AccountMeta::new(payer.pubkey(), true),
+                AccountMeta::new(counter.pubkey(), true),
+                AccountMeta::new_readonly(system_program::id(), false),
+            ],
+            (),
+        )
+        .unwrap();
 
-        // Set to 5
-        let set_ix = create_set_ix(&counter.pubkey(), 5);
-        let blockhash = svm.latest_blockhash();
-        let tx = Transaction::new_signed_with_payer(
-            &[set_ix],
-            Some(&payer.pubkey()),
-            &[&payer],
-            blockhash,
-        );
-        svm.send_transaction(tx).unwrap();
+        ctx.execute_instruction(init_ix, &[&payer, &counter])
+            .unwrap()
+            .assert_success();
 
-        // Decrement
-        let dec_ix = create_decrement_ix(&counter.pubkey());
-        let blockhash = svm.latest_blockhash();
-        let tx = Transaction::new_signed_with_payer(
-            &[dec_ix],
-            Some(&payer.pubkey()),
-            &[&payer],
-            blockhash,
-        );
+        let set_ix = build_anchor_instruction(
+            &PROGRAM_ID,
+            "set",
+            vec![AccountMeta::new(counter.pubkey(), false)],
+            SetArgs { value: 5 },
+        )
+        .unwrap();
 
-        let result = svm.send_transaction(tx);
-        assert!(result.is_ok(), "Decrement should succeed");
+        ctx.execute_instruction(set_ix, &[&payer])
+            .unwrap()
+            .assert_success();
+
+        let dec_ix = build_anchor_instruction(
+            &PROGRAM_ID,
+            "decrement",
+            vec![AccountMeta::new(counter.pubkey(), false)],
+            (),
+        )
+        .unwrap();
+
+        ctx.execute_instruction(dec_ix, &[&payer])
+            .unwrap()
+            .assert_success();
 
         println!("✓ Counter set and decremented successfully");
     }
