@@ -16,7 +16,14 @@ import { discoverWallets, watchWallets } from "./standard";
 import { createWalletSigner } from "./signer";
 import { useCluster } from "../../components/cluster-context";
 
-type WalletStatus = "disconnected" | "connecting" | "connected" | "error";
+const WALLET_STATUS = {
+  DISCONNECTED: "disconnected",
+  CONNECTING: "connecting",
+  CONNECTED: "connected",
+  ERROR: "error",
+} as const;
+
+type WalletStatus = (typeof WALLET_STATUS)[keyof typeof WALLET_STATUS];
 
 type WalletContextValue = {
   connectors: WalletConnector[];
@@ -41,7 +48,9 @@ export function WalletProvider({ children }: PropsWithChildren) {
     typeof window === "undefined" ? [] : discoverWallets()
   );
   const [session, setSession] = useState<WalletSession | undefined>();
-  const [status, setStatus] = useState<WalletStatus>("disconnected");
+  const [status, setStatus] = useState<WalletStatus>(
+    WALLET_STATUS.DISCONNECTED
+  );
   const [error, setError] = useState<unknown>();
   const isReady = typeof window !== "undefined";
 
@@ -54,13 +63,13 @@ export function WalletProvider({ children }: PropsWithChildren) {
   }, []);
 
   const runAutoConnect = useCallback(async (connector: WalletConnector) => {
-    setStatus("connecting");
+    setStatus(WALLET_STATUS.CONNECTING);
     try {
       const s = await connector.connect({ silent: true });
       setSession(s);
-      setStatus("connected");
+      setStatus(WALLET_STATUS.CONNECTED);
     } catch {
-      setStatus("disconnected");
+      setStatus(WALLET_STATUS.DISCONNECTED);
       localStorage.removeItem(STORAGE_KEY);
     }
   }, []);
@@ -84,17 +93,17 @@ export function WalletProvider({ children }: PropsWithChildren) {
     const connector = connectorsRef.current.find((c) => c.id === connectorId);
     if (!connector) throw new Error(`Unknown connector: ${connectorId}`);
 
-    setStatus("connecting");
+    setStatus(WALLET_STATUS.CONNECTING);
     setError(undefined);
 
     try {
       const s = await connector.connect();
       setSession(s);
-      setStatus("connected");
+      setStatus(WALLET_STATUS.CONNECTED);
       localStorage.setItem(STORAGE_KEY, connectorId);
     } catch (err) {
       setError(err);
-      setStatus("error");
+      setStatus(WALLET_STATUS.ERROR);
     }
   }, []);
 
@@ -107,7 +116,7 @@ export function WalletProvider({ children }: PropsWithChildren) {
       }
     }
     setSession(undefined);
-    setStatus("disconnected");
+    setStatus(WALLET_STATUS.DISCONNECTED);
     setError(undefined);
     localStorage.removeItem(STORAGE_KEY);
   }, [session]);

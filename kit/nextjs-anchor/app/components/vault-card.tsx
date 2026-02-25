@@ -241,7 +241,7 @@ export function VaultCard() {
         <p className="mb-2">
           This vault is an{" "}
           <a
-            href="https://www.anchor-lang.com/docs/introduction"
+            href="https://www.anchor-lang.com/docs"
             target="_blank"
             rel="noreferrer"
             className="font-medium underline underline-offset-2"
