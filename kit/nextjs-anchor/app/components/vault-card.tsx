@@ -1,33 +1,36 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useWallet } from "../lib/wallet/context";
+import { useSendTransaction } from "../lib/hooks/use-send-transaction";
+import { useBalance } from "../lib/hooks/use-balance";
+import { lamportsFromSol, lamportsToSolString } from "../lib/lamports";
 import {
-  useWalletConnection,
-  useSendTransaction,
-  useBalance,
-} from "@solana/react-hooks";
-import {
+  AccountRole,
   getProgramDerivedAddress,
   getAddressEncoder,
   getBytesEncoder,
   type Address,
 } from "@solana/kit";
+import { toast } from "sonner";
 import {
   getDepositInstructionDataEncoder,
   getWithdrawInstructionDataEncoder,
   VAULT_PROGRAM_ADDRESS,
 } from "../generated/vault";
+import { parseTransactionError } from "../lib/errors";
+import { useCluster } from "./cluster-context";
 
-const LAMPORTS_PER_SOL = 1_000_000_000n;
-const SYSTEM_PROGRAM_ADDRESS = "11111111111111111111111111111111" as Address;
+const SYSTEM_PROGRAM_ADDRESS =
+  "11111111111111111111111111111111" as Address<"11111111111111111111111111111111">;
 
 export function VaultCard() {
-  const { wallet, status } = useWalletConnection();
+  const { wallet, status } = useWallet();
   const { send, isSending } = useSendTransaction();
+  const { getExplorerUrl } = useCluster();
 
   const [amount, setAmount] = useState("");
   const [vaultAddress, setVaultAddress] = useState<Address | null>(null);
-  const [txStatus, setTxStatus] = useState<string | null>(null);
 
   const walletAddress = wallet?.account.address;
 
@@ -42,7 +45,9 @@ export function VaultCard() {
       const [pda] = await getProgramDerivedAddress({
         programAddress: VAULT_PROGRAM_ADDRESS,
         seeds: [
-          getBytesEncoder().encode(new Uint8Array([118, 97, 117, 108, 116])), // "vault"
+          getBytesEncoder().encode(
+            new Uint8Array([118, 97, 117, 108, 116]) // "vault"
+          ),
           getAddressEncoder().encode(walletAddress),
         ],
       });
@@ -53,85 +58,94 @@ export function VaultCard() {
     deriveVault();
   }, [walletAddress]);
 
-  // Get vault balance
+  // Get balances
+  const walletBalance = useBalance(walletAddress);
+  const walletLamports = walletBalance?.lamports;
   const vaultBalance = useBalance(vaultAddress ?? undefined);
-  const vaultLamports = vaultBalance?.lamports ?? 0n;
-  const vaultSol = Number(vaultLamports) / Number(LAMPORTS_PER_SOL);
+  const vaultLamports = vaultBalance?.lamports;
 
   const handleDeposit = useCallback(async () => {
     if (!walletAddress || !vaultAddress || !amount) return;
 
+    const depositLamports = lamportsFromSol(parseFloat(amount));
+    if (walletLamports != null && walletLamports < depositLamports) {
+      toast.error("Insufficient balance.", {
+        description: `You need at least ${amount} SOL plus fees. Current balance: ${lamportsToSolString(walletLamports)} SOL.`,
+      });
+      return;
+    }
+
     try {
-      setTxStatus("Building transaction...");
-
-      const depositAmount = BigInt(
-        Math.floor(parseFloat(amount) * Number(LAMPORTS_PER_SOL))
-      );
-
-      // Manually construct the instruction
       const instruction = {
         programAddress: VAULT_PROGRAM_ADDRESS,
         accounts: [
-          { address: walletAddress, role: 3 }, // WritableSigner (3 = writable + signer)
-          { address: vaultAddress, role: 1 }, // Writable (1 = writable)
-          { address: SYSTEM_PROGRAM_ADDRESS, role: 0 }, // Readonly (0 = readonly)
+          { address: walletAddress, role: AccountRole.WRITABLE_SIGNER },
+          { address: vaultAddress, role: AccountRole.WRITABLE },
+          { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY },
         ],
         data: getDepositInstructionDataEncoder().encode({
-          amount: depositAmount,
+          amount: lamportsFromSol(parseFloat(amount)),
         }),
       };
 
-      setTxStatus("Awaiting signature...");
+      const signature = await send({ instructions: [instruction] });
 
-      const signature = await send({
-        instructions: [instruction],
+      toast.success("Deposit confirmed!", {
+        description: (
+          <a
+            href={getExplorerUrl(`/tx/${signature}`)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            View transaction
+          </a>
+        ),
       });
-
-      setTxStatus(`Deposited! Signature: ${signature?.slice(0, 20)}...`);
       setAmount("");
     } catch (err) {
       console.error("Deposit failed:", err);
-      setTxStatus(
-        `Error: ${err instanceof Error ? err.message : "Unknown error"}`
-      );
+      toast.error(parseTransactionError(err));
     }
-  }, [walletAddress, vaultAddress, amount, send]);
+  }, [walletAddress, vaultAddress, amount, send, getExplorerUrl]);
 
   const handleWithdraw = useCallback(async () => {
     if (!walletAddress || !vaultAddress) return;
 
     try {
-      setTxStatus("Building transaction...");
-
-      // Manually construct the instruction
       const instruction = {
         programAddress: VAULT_PROGRAM_ADDRESS,
         accounts: [
-          { address: walletAddress, role: 3 }, // WritableSigner
-          { address: vaultAddress, role: 1 }, // Writable
-          { address: SYSTEM_PROGRAM_ADDRESS, role: 0 }, // Readonly
+          { address: walletAddress, role: AccountRole.WRITABLE_SIGNER },
+          { address: vaultAddress, role: AccountRole.WRITABLE },
+          { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY },
         ],
         data: getWithdrawInstructionDataEncoder().encode({}),
       };
 
-      setTxStatus("Awaiting signature...");
+      const signature = await send({ instructions: [instruction] });
 
-      const signature = await send({
-        instructions: [instruction],
+      toast.success("Withdrawal confirmed!", {
+        description: (
+          <a
+            href={getExplorerUrl(`/tx/${signature}`)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            View transaction
+          </a>
+        ),
       });
-
-      setTxStatus(`Withdrawn! Signature: ${signature?.slice(0, 20)}...`);
     } catch (err) {
       console.error("Withdraw failed:", err);
-      setTxStatus(
-        `Error: ${err instanceof Error ? err.message : "Unknown error"}`
-      );
+      toast.error(parseTransactionError(err));
     }
-  }, [walletAddress, vaultAddress, send]);
+  }, [walletAddress, vaultAddress, send, getExplorerUrl]);
 
   if (status !== "connected") {
     return (
-      <section className="w-full max-w-3xl space-y-4 rounded-2xl border border-border-low bg-card p-6 shadow-[0_20px_80px_-50px_rgba(0,0,0,0.35)]">
+      <section className="w-full space-y-4 rounded-2xl border border-border-low bg-card p-6 shadow-[0_20px_80px_-50px_rgba(0,0,0,0.35)]">
         <div className="space-y-1">
           <p className="text-lg font-semibold">SOL Vault</p>
           <p className="text-sm text-muted">
@@ -146,7 +160,7 @@ export function VaultCard() {
   }
 
   return (
-    <section className="w-full max-w-3xl space-y-4 rounded-2xl border border-border-low bg-card p-6 shadow-[0_20px_80px_-50px_rgba(0,0,0,0.35)]">
+    <section className="w-full space-y-4 rounded-2xl border border-border-low bg-card p-6 shadow-[0_20px_80px_-50px_rgba(0,0,0,0.35)]">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
           <p className="text-lg font-semibold">SOL Vault</p>
@@ -155,7 +169,7 @@ export function VaultCard() {
           </p>
         </div>
         <span className="rounded-full bg-cream px-3 py-1 text-xs font-semibold uppercase tracking-wide text-foreground/80">
-          {vaultLamports > 0n ? "Has funds" : "Empty"}
+          {(vaultLamports ?? 0n) > 0n ? "Has funds" : "Empty"}
         </span>
       </div>
 
@@ -165,12 +179,24 @@ export function VaultCard() {
           Vault Balance
         </p>
         <p className="mt-1 text-3xl font-bold tabular-nums">
-          {vaultSol.toFixed(4)}{" "}
+          {vaultLamports ? lamportsToSolString(vaultLamports) : "0"}{" "}
           <span className="text-lg font-normal text-muted">SOL</span>
         </p>
-        {vaultAddress && (
-          <p className="mt-2 truncate font-mono text-xs text-muted">
-            {vaultAddress}
+        {vaultAddress && (vaultLamports ?? 0n) > 0n && (
+          <p className="group mt-2 flex items-center gap-1.5">
+            <a
+              href={getExplorerUrl(`/address/${vaultAddress}`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="truncate font-mono text-xs text-muted underline underline-offset-2"
+            >
+              {vaultAddress}
+            </a>
+            <span className="relative cursor-default text-muted" title="This is your vault PDA — a program-derived account that holds your deposited SOL. Only you can withdraw from it.">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-3.5 w-3.5">
+                <path fillRule="evenodd" d="M15 8A7 7 0 1 1 1 8a7 7 0 0 1 14 0ZM9 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM6.75 8a.75.75 0 0 0 0 1.5h.75v1.75a.75.75 0 0 0 1.5 0v-2.5A.75.75 0 0 0 8.25 8h-1.5Z" clipRule="evenodd" />
+              </svg>
+            </span>
           </p>
         )}
       </div>
@@ -186,7 +212,7 @@ export function VaultCard() {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             disabled={isSending}
-            className="flex-1 rounded-lg border border-border-low bg-card px-4 py-2.5 text-sm outline-none transition placeholder:text-muted focus:border-foreground/30 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex-1 rounded-lg border border-border-low bg-card px-4 py-2.5 text-sm outline-none transition placeholder:text-muted focus:border-foreground/30 disabled:opacity-50 disabled:pointer-events-none"
           />
           <button
             onClick={handleDeposit}
@@ -194,14 +220,14 @@ export function VaultCard() {
               isSending ||
               !amount ||
               parseFloat(amount) <= 0 ||
-              vaultLamports > 0n
+              (vaultLamports ?? 0n) > 0n
             }
-            className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-xs transition hover:bg-primary/90 disabled:opacity-50 disabled:pointer-events-none"
           >
             {isSending ? "Confirming..." : "Deposit"}
           </button>
         </div>
-        {vaultLamports > 0n && (
+        {(vaultLamports ?? 0n) > 0n && (
           <p className="text-xs text-muted">
             Vault already has funds. Withdraw first before depositing again.
           </p>
@@ -211,25 +237,18 @@ export function VaultCard() {
       {/* Withdraw Button */}
       <button
         onClick={handleWithdraw}
-        disabled={isSending || vaultLamports === 0n}
-        className="w-full rounded-lg border border-border-low bg-card px-4 py-2.5 text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
+        disabled={isSending || !vaultLamports}
+        className="w-full rounded-lg border border-border-low bg-card px-4 py-2.5 text-sm font-medium shadow-xs transition hover:bg-cream disabled:opacity-50 disabled:pointer-events-none"
       >
         {isSending ? "Confirming..." : "Withdraw All"}
       </button>
-
-      {/* Status */}
-      {txStatus && (
-        <div className="rounded-lg border border-border-low bg-cream/50 px-4 py-3 text-sm">
-          {txStatus}
-        </div>
-      )}
 
       {/* Educational Footer */}
       <div className="border-t border-border-low pt-4 text-xs text-muted">
         <p className="mb-2">
           This vault is an{" "}
           <a
-            href="https://www.anchor-lang.com/docs"
+            href="https://www.anchor-lang.com/docs/introduction"
             target="_blank"
             rel="noreferrer"
             className="font-medium underline underline-offset-2"
@@ -254,14 +273,6 @@ export function VaultCard() {
             className="inline-flex items-center gap-1 rounded-md bg-cream px-2 py-1 font-medium transition hover:bg-cream/70"
           >
             Deploy Programs
-          </a>
-          <a
-            href="https://github.com/ZYJLiu/anchor-vault-template"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1 rounded-md bg-cream px-2 py-1 font-medium transition hover:bg-cream/70"
-          >
-            Reference Repo
           </a>
         </div>
       </div>
