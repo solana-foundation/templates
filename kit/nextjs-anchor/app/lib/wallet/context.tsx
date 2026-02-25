@@ -37,48 +37,48 @@ export function WalletProvider({ children }: PropsWithChildren) {
   const { cluster } = useCluster();
   const chain = `solana:${cluster}`;
 
-  const [connectors, setConnectors] = useState<WalletConnector[]>([]);
+  const [connectors, setConnectors] = useState<WalletConnector[]>(() =>
+    typeof window === "undefined" ? [] : discoverWallets()
+  );
   const [session, setSession] = useState<WalletSession | undefined>();
   const [status, setStatus] = useState<WalletStatus>("disconnected");
   const [error, setError] = useState<unknown>();
-  const [isReady, setIsReady] = useState(false);
+  const isReady = typeof window !== "undefined";
 
-  const connectorsRef = useRef<WalletConnector[]>([]);
+  const connectorsRef = useRef<WalletConnector[]>(connectors);
   const autoConnectAttempted = useRef(false);
 
+  const handleWalletsChanged = useCallback((updated: WalletConnector[]) => {
+    connectorsRef.current = updated;
+    setConnectors(updated);
+  }, []);
+
+  const runAutoConnect = useCallback(async (connector: WalletConnector) => {
+    setStatus("connecting");
+    try {
+      const s = await connector.connect({ silent: true });
+      setSession(s);
+      setStatus("connected");
+    } catch {
+      setStatus("disconnected");
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }, []);
+
   useEffect(() => {
-    setIsReady(true);
-
-    const initial = discoverWallets();
-    connectorsRef.current = initial;
-    setConnectors(initial);
-
-    const unsubscribe = watchWallets((updated) => {
-      connectorsRef.current = updated;
-      setConnectors(updated);
-    });
+    const unsubscribe = watchWallets(handleWalletsChanged);
 
     const lastId = localStorage.getItem(STORAGE_KEY);
     if (lastId && !autoConnectAttempted.current) {
       autoConnectAttempted.current = true;
-      const connector = initial.find((c) => c.id === lastId);
+      const connector = connectorsRef.current.find((c) => c.id === lastId);
       if (connector) {
-        setStatus("connecting");
-        connector.connect({ silent: true }).then(
-          (s) => {
-            setSession(s);
-            setStatus("connected");
-          },
-          () => {
-            setStatus("disconnected");
-            localStorage.removeItem(STORAGE_KEY);
-          }
-        );
+        void runAutoConnect(connector);
       }
     }
 
     return unsubscribe;
-  }, []);
+  }, [handleWalletsChanged, runAutoConnect]);
 
   const connect = useCallback(async (connectorId: string) => {
     const connector = connectorsRef.current.find((c) => c.id === connectorId);

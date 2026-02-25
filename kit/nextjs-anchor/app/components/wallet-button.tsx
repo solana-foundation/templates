@@ -32,10 +32,6 @@ export function WalletButton() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    if (status === "connected") close();
-  }, [status]);
-
   const handleCopy = async () => {
     if (!address) return;
     await navigator.clipboard.writeText(address);
@@ -62,7 +58,14 @@ export function WalletButton() {
               {connectors.map((connector) => (
                 <button
                   key={connector.id}
-                  onClick={() => connect(connector.id)}
+                  onClick={async () => {
+                    try {
+                      await connect(connector.id);
+                      close();
+                    } catch {
+                      // connection errors are surfaced through context state
+                    }
+                  }}
                   disabled={status === "connecting"}
                   className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition hover:bg-cream disabled:opacity-50 disabled:pointer-events-none"
                 >

@@ -1,19 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
-import {
-  getProgramDerivedAddress,
-  getAddressEncoder,
-  getBytesEncoder,
-  type Address,
-} from "@solana/kit";
 import { useWallet } from "./lib/wallet/context";
 import { useBalance } from "./lib/hooks/use-balance";
 import { lamportsToSolString, lamportsFromSol } from "./lib/lamports";
 import { createClusterRpc } from "./lib/cluster";
 import { ellipsify } from "./lib/explorer";
-import { VAULT_PROGRAM_ADDRESS } from "./generated/vault";
 import { VaultCard } from "./components/vault-card";
 import { GridBackground } from "./components/grid-background";
 import { ThemeToggle } from "./components/theme-toggle";
@@ -28,25 +21,6 @@ export default function Home() {
   const address = wallet?.account.address;
   const balance = useBalance(address);
   const [copied, setCopied] = useState(false);
-  const [vaultAddress, setVaultAddress] = useState<Address | null>(null);
-
-  useEffect(() => {
-    if (!address) {
-      setVaultAddress(null);
-      return;
-    }
-    getProgramDerivedAddress({
-      programAddress: VAULT_PROGRAM_ADDRESS,
-      seeds: [
-        getBytesEncoder().encode(
-          new Uint8Array([118, 97, 117, 108, 116]) // "vault"
-        ),
-        getAddressEncoder().encode(address),
-      ],
-    }).then(([pda]) => setVaultAddress(pda));
-  }, [address]);
-
-  const vaultBalance = useBalance(vaultAddress ?? undefined);
 
   const handleCopy = async () => {
     if (!address) return;
@@ -60,9 +34,7 @@ export default function Home() {
     try {
       toast.info("Requesting airdrop...");
       const rpc = createClusterRpc(cluster);
-      const sig = await rpc
-        .requestAirdrop(address, lamportsFromSol(1))
-        .send();
+      const sig = await rpc.requestAirdrop(address, lamportsFromSol(1)).send();
       toast.success("Airdrop received!", {
         description: (
           <a
@@ -198,7 +170,8 @@ export default function Home() {
                     `,
                     backgroundSize: "24px 24px",
                     mask: "radial-gradient(ellipse 80% 80% at 50% 0%, black, transparent)",
-                    WebkitMask: "radial-gradient(ellipse 80% 80% at 50% 0%, black, transparent)",
+                    WebkitMask:
+                      "radial-gradient(ellipse 80% 80% at 50% 0%, black, transparent)",
                   }}
                 />
                 <div
@@ -211,13 +184,23 @@ export default function Home() {
                     `,
                     backgroundSize: "24px 24px",
                     mask: "radial-gradient(ellipse 80% 80% at 50% 0%, black, transparent)",
-                    WebkitMask: "radial-gradient(ellipse 80% 80% at 50% 0%, black, transparent)",
+                    WebkitMask:
+                      "radial-gradient(ellipse 80% 80% at 50% 0%, black, transparent)",
                   }}
                 />
                 <div className="relative flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-cream">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-foreground/70">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-4 w-4 text-foreground/70"
+                      >
                         <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
                         <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
                         <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
@@ -229,12 +212,28 @@ export default function Home() {
                       className="flex cursor-pointer items-center gap-1.5 font-mono text-xs text-muted transition hover:text-foreground"
                     >
                       {ellipsify(address, 4)}
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-3 w-3"
+                      >
                         {copied ? (
                           <path d="M20 6 9 17l-5-5" />
                         ) : (
                           <>
-                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                            <rect
+                              width="14"
+                              height="14"
+                              x="8"
+                              y="8"
+                              rx="2"
+                              ry="2"
+                            />
                             <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
                           </>
                         )}
@@ -257,15 +256,6 @@ export default function Home() {
                   <span className="ml-1.5 text-lg font-normal text-muted">
                     SOL
                   </span>
-                </p>
-                <p className="relative mt-1.5 text-sm text-muted">
-                  <span className="opacity-70">vault</span>{" "}
-                  <span className="font-mono">
-                    {vaultBalance.lamports
-                      ? lamportsToSolString(vaultBalance.lamports)
-                      : "0"}
-                  </span>{" "}
-                  SOL
                 </p>
               </section>
             )}
