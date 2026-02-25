@@ -480,6 +480,27 @@
         "usecase": "Mobile"
       },
       {
+        "description": "Next.js + Solana dApp with Privy auth: social logins, embedded wallets & protected routes",
+        "id": "gh:solana-foundation/templates/community/privy-auth",
+        "image": "community/privy-auth/og-image.png",
+        "keywords": [
+          "solana",
+          "privy",
+          "authentication",
+          "social-login",
+          "embedded-wallet",
+          "nextjs",
+          "react",
+          "typescript",
+          "tailwind",
+          "web3"
+        ],
+        "name": "privy-auth",
+        "path": "community/privy-auth",
+        "displayName": "Privy Auth",
+        "usecase": "Auth"
+      },
+      {
         "description": "ChatGPT app with Solana features - Swaps, transfers, staking and data query via natural language. Browser wallets + x402 payments or private key mode",
         "id": "gh:solana-foundation/templates/community/solana-chatgpt-kit",
         "image": "community/solana-chatgpt-kit/og-image.png",
@@ -576,6 +597,25 @@
         "path": "community/zk-compression-airdrop",
         "displayName": "ZK Compression Airdrop",
         "usecase": "Airdrop"
+      },
+      {
+        "description": "Next.js + Tailwind template with Anchor staking program - stake, unstake, claim rewards",
+        "id": "gh:solana-foundation/templates/community/staking",
+        "image": "community/staking/og-image.png",
+        "keywords": [
+          "anchor",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "staking",
+          "defi",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "staking",
+        "path": "community/staking",
+        "displayName": "Staking Pool",
+        "usecase": "DeFi"
       }
     ]
   },

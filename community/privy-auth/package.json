@@ -1,0 +1,57 @@
+{
+  "name": "privy-auth",
+  "version": "0.1.0",
+  "private": true,
+  "displayName": "Privy Auth",
+  "description": "Next.js + Privy template for Solana dApps — social logins, embedded wallets & protected routes",
+  "usecase": "Auth",
+  "keywords": [
+    "solana",
+    "privy",
+    "authentication",
+    "social-login",
+    "embedded-wallet",
+    "nextjs",
+    "react",
+    "typescript",
+    "tailwind",
+    "web3"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Set up Privy:",
+      "1. Create a project at https://dashboard.privy.io",
+      "2. Copy .env.example to .env.local and add your App ID (and optional Client ID)",
+      "3. In the Privy dashboard, enable your desired login methods (Google, Twitter, Discord, etc.)",
+      "4. Run: +{pm} run dev",
+      "Open http://localhost:3000 and click 'Connect with Privy' to test authentication."
+    ]
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.513.0",
+    "next": "16.1.6",
+    "next-themes": "^0.4.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.5.0"
+  },
+  "devDependencies": {
+    "@privy-io/react-auth": "^3.14.1",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
