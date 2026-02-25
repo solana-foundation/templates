@@ -1,9 +1,6 @@
 import type { ClusterMoniker } from "./cluster";
 
-export function getExplorerUrl(
-  path: string,
-  cluster: ClusterMoniker
-): string {
+export function getExplorerUrl(path: string, cluster: ClusterMoniker): string {
   const base = "https://explorer.solana.com";
   const url = new URL(path, base);
 

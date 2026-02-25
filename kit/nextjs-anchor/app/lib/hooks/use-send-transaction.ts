@@ -27,9 +27,7 @@ export function useSendTransaction() {
           feePayer: signer,
         });
 
-        mutate(
-          (key: unknown) => Array.isArray(key) && key[0] === "balance"
-        );
+        mutate((key: unknown) => Array.isArray(key) && key[0] === "balance");
 
         return signature;
       } finally {

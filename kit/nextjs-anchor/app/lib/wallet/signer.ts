@@ -29,9 +29,7 @@ function createSendingSigner(
   };
 }
 
-function createPartialSigner(
-  session: WalletSession
-): TransactionPartialSigner {
+function createPartialSigner(session: WalletSession): TransactionPartialSigner {
   return {
     address: session.account.address,
     signTransactions: async (transactions) => {

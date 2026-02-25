@@ -32,7 +32,8 @@ function getInitialCluster(): ClusterMoniker {
 export { CLUSTERS };
 
 export function ClusterProvider({ children }: { children: ReactNode }) {
-  const [cluster, setClusterState] = useState<ClusterMoniker>(getInitialCluster);
+  const [cluster, setClusterState] =
+    useState<ClusterMoniker>(getInitialCluster);
 
   const setCluster = useCallback((c: ClusterMoniker) => {
     setClusterState(c);

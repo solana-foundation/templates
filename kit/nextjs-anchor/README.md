@@ -29,13 +29,13 @@ Open [http://localhost:3000](http://localhost:3000), connect your wallet, and in
 
 ## Stack
 
-| Layer          | Technology                              |
-| -------------- | --------------------------------------- |
-| Frontend       | Next.js 16, React 19, TypeScript        |
-| Styling        | Tailwind CSS v4                         |
-| Solana Client  | `@solana/kit`, wallet-standard          |
-| Program Client | Codama-generated, `@solana/kit`         |
-| Program        | Anchor (Rust)                           |
+| Layer          | Technology                       |
+| -------------- | -------------------------------- |
+| Frontend       | Next.js 16, React 19, TypeScript |
+| Styling        | Tailwind CSS v4                  |
+| Solana Client  | `@solana/kit`, wallet-standard   |
+| Program Client | Codama-generated, `@solana/kit`  |
+| Program        | Anchor (Rust)                    |
 
 ## Project Structure
 

@@ -37,7 +37,8 @@ function collectMessages(err: unknown): string {
       "message" in current
     ) {
       messages.push(String((current as { message: unknown }).message));
-      current = "cause" in current ? (current as { cause: unknown }).cause : undefined;
+      current =
+        "cause" in current ? (current as { cause: unknown }).cause : undefined;
     } else {
       if (messages.length === 0) messages.push(String(current));
       break;
