@@ -3166,9 +3166,8 @@ dependencies = [
  "anchor-lang",
  "anchor-litesvm",
  "anchor-spl",
- "litesvm",
+ "borsh 0.10.4",
  "litesvm-utils",
- "sha2 0.10.9",
  "solana-sdk",
 ]
 
