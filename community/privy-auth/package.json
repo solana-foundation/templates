@@ -1,0 +1,79 @@
+{
+  "name": "privy-auth",
+  "version": "0.0.0",
+  "private": true,
+  "displayName": "Privy Auth",
+  "description": "Next.js Solana starter with Privy authentication, social logins, and embedded wallets",
+  "usecase": "Auth",
+  "keywords": [
+    "solana",
+    "nextjs",
+    "privy",
+    "auth",
+    "social-login",
+    "embedded-wallet",
+    "typescript",
+    "tailwind"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Set up your Privy App:",
+      "1. Go to https://dashboard.privy.io and create a new app",
+      "2. Enable desired login methods (Google, Twitter, Discord, Email)",
+      "3. Copy your App ID and App Secret",
+      "",
+      "Configure environment variables:",
+      "Copy .env.example to .env.local and fill in your values",
+      "",
+      "Install dependencies:",
+      "+{pm} install",
+      "",
+      "Start dev server:",
+      "+{pm} dev"
+    ],
+    "rename": {
+      "privy-auth": {
+        "to": "{{name}}",
+        "paths": [
+          "README.md",
+          "src"
+        ]
+      }
+    }
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@privy-io/react-auth": "^2.24.0",
+    "@radix-ui/react-separator": "^1.1.8",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "@solana/spl-token": "^0.4.14",
+    "@solana/web3.js": "^1.98.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.575.0",
+    "next": "^15.3.0",
+    "next-themes": "^0.4.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.4",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "^15.3.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
