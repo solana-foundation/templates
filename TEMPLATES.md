@@ -38,6 +38,22 @@ Kit Templates (using @solana/kit)
 
 Solana Mobile Templates
 
+### [kit-expo-minimal](mobile/kit-expo-minimal)
+
+`gh:solana-foundation/templates/mobile/kit-expo-minimal`
+
+> A minimal template for building a Solana mobile app with Expo, React Native, and Solana Kit.
+
+`expo` `mobile-wallet-adapter` `react-native` `solana-kit`
+
+### [kit-expo-uniwind](mobile/kit-expo-uniwind)
+
+`gh:solana-foundation/templates/mobile/kit-expo-uniwind`
+
+> A template for building a Solana mobile app with Expo, React Native, Solana Kit, and Uniwind.
+
+`expo` `mobile-wallet-adapter` `react-native` `solana-kit` `uniwind` `tailwind`
+
 ### [web3js-expo](mobile/web3js-expo)
 
 `gh:solana-foundation/templates/mobile/web3js-expo`
@@ -245,3 +261,15 @@ Templates maintained by the Solana community
 > ZK-Compression based airdrop app built with Next.js, Tailwind, and @solana/react-hooks
 
 `minimal` `nextjs` `react` `solana-kit` `tailwind` `typescript` `zk-compression` `airdrop` `zero-knowledge` `zk` `framework-kit`
+
+# Pinocchio
+
+Pinocchio-based program templates
+
+### [pinocchio-counter](pinocchio/pinocchio-counter)
+
+`gh:solana-foundation/templates/pinocchio/pinocchio-counter`
+
+> Pinocchio Counter Program
+
+`pinocchio` `counter` `native` `solana-program`

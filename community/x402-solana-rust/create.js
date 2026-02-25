@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+if (process.env.CI || process.env.PNPM_SCRIPT_SRC_DIR) {
+  process.exit(0)
+}
+
 const fs = require('fs')
 const path = require('path')
 const readline = require('readline')
@@ -32,19 +36,37 @@ ${colors.reset}
 ${colors.dim}                           Solana x402 Payment Protocol - Rust Template${colors.reset}
 `
 
-var projectName = process.argv[2]
+// Get project name from parent directory, or fallback
+const currentDir = path.basename(process.cwd())
+var projectName
 
-if (!projectName) {
+if (currentDir && currentDir !== '.' && currentDir !== '..') {
+  projectName = currentDir
+} else {
   projectName = 'x402-solana-backend'
 }
 
-const targetDir = path.join(process.cwd(), projectName)
+// Use current directory instead of creating subdirectory
+const targetDir = process.cwd()
 
-if (fs.existsSync(targetDir)) {
-  console.error(
-    `${colors.red}[ERROR]${colors.reset} Directory ${colors.bright}${projectName}${colors.reset} already exists\n`,
-  )
-  process.exit(1)
+// Only check for conflicts if we're NOT running from the template directory itself
+// (i.e., if create.js is in a different location than the target directory)
+const templateDir = __dirname
+const isInTemplateDir = path.resolve(templateDir) === path.resolve(targetDir)
+
+if (!isInTemplateDir) {
+  // Check for conflicting files that would be overwritten
+  const conflictingFiles = ['Cargo.toml', 'src', 'frontend', '.env']
+  const conflicts = conflictingFiles.filter((file) => fs.existsSync(path.join(targetDir, file)))
+
+  if (conflicts.length > 0) {
+    console.error(
+      `${colors.red}[ERROR]${colors.reset} The following files/directories already exist and would be overwritten:\n`,
+    )
+    conflicts.forEach((file) => console.error(`  - ${file}`))
+    console.error(`\nPlease remove them or run this in a clean directory.\n`)
+    process.exit(1)
+  }
 }
 
 console.log(logo)
@@ -101,9 +123,6 @@ const setupProject = (answer) => {
   )
 
   try {
-    // Create project directory
-    fs.mkdirSync(targetDir, { recursive: true })
-
     const templateDir = __dirname
     const frameworkDir = path.join(templateDir, 'frameworks', framework)
     const srcDir = path.join(frameworkDir, 'src')
@@ -133,8 +152,16 @@ const setupProject = (answer) => {
 
     fs.writeFileSync(path.join(targetDir, 'Cargo.toml'), cargoToml)
 
+    // Copy framework-specific README with project name
+    const frameworkReadme = path.join(frameworkDir, 'README.md')
+    if (fs.existsSync(frameworkReadme)) {
+      const readmeContent = fs.readFileSync(frameworkReadme, 'utf8')
+      const customizedReadme = readmeContent.replace(/\{\{name\}\}/g, projectName)
+      fs.writeFileSync(path.join(targetDir, 'README.md'), customizedReadme)
+    }
+
     // Copy other root files
-    const rootFiles = ['.env.example', '.gitignore', 'README.md', 'LICENSE']
+    const rootFiles = ['.env.example', '.gitignore', 'LICENSE']
     rootFiles.forEach((file) => {
       const srcFile = path.join(templateDir, file)
       if (fs.existsSync(srcFile)) {
@@ -148,7 +175,10 @@ const setupProject = (answer) => {
     const frontendTargetDir = path.join(targetDir, 'frontend')
 
     if (fs.existsSync(frontendSrcDir)) {
-      fs.cpSync(frontendSrcDir, frontendTargetDir, { recursive: true })
+      // Only copy if source and destination are different
+      if (path.resolve(frontendSrcDir) !== path.resolve(frontendTargetDir)) {
+        fs.cpSync(frontendSrcDir, frontendTargetDir, { recursive: true })
+      }
 
       try {
         console.log(`${colors.dim}   Installing dependencies...${colors.reset}`)
@@ -240,13 +270,33 @@ const setupProject = (answer) => {
     console.log(
       `  ${colors.bright}Documentation:${colors.reset} ${colors.cyan}${projectName}/frontend/README.md${colors.reset}\n`,
     )
+
+    // Clean up template scaffolding if running in-place
+    if (path.resolve(templateDir) === path.resolve(targetDir)) {
+      console.log(`${colors.dim}Cleaning up template files...${colors.reset}`)
+      const filesToRemove = [
+        'frameworks',
+        'shared',
+        'facilitator',
+        'create.js',
+        'package.json',
+        'package-lock.json',
+        'node_modules',
+        'Cargo.toml.template',
+        'og-image.png',
+      ]
+
+      filesToRemove.forEach((file) => {
+        const filePath = path.join(targetDir, file)
+        if (fs.existsSync(filePath)) {
+          fs.rmSync(filePath, { recursive: true, force: true })
+        }
+      })
+      console.log(`${colors.green}[OK]${colors.reset} Template files cleaned up\n`)
+    }
   } catch (error) {
     console.error(`\n${colors.bright}${colors.red}[ERROR]${colors.reset} Error during setup: ${error.message}\n`)
-
-    // Clean up on failure
-    if (fs.existsSync(targetDir)) {
-      fs.rmSync(targetDir, { recursive: true, force: true })
-    }
+    console.error(`${colors.yellow}[WARN]${colors.reset} Please manually clean up any partially created files.\n`)
 
     process.exit(1)
   }

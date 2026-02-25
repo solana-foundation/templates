@@ -1,0 +1,66 @@
+{
+  "name": "kit-expo-uniwind",
+  "displayName": "Uniwind Mobile Kit Expo example",
+  "description": "A template for building a Solana mobile app with Expo, React Native, Solana Kit, and Uniwind.",
+  "usecase": "Mobile",
+  "keywords": [
+    "expo",
+    "mobile-wallet-adapter",
+    "react-native",
+    "solana-kit",
+    "uniwind",
+    "tailwind"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "To buld the Android app locally, run this:",
+      "+{pm} run android"
+    ],
+    "versions:": {
+      "adb": "33.0.0"
+    }
+  },
+  "main": "./index.js",
+  "version": "1.0.0",
+  "scripts": {
+    "android": "expo run:android",
+    "android:build": "expo prebuild -p android",
+    "build": "tsc --noEmit && npm run android:build",
+    "ci": "tsc --noEmit && npm run lint:check && npm run fmt:check && npm run android:build",
+    "dev": "expo start --clear --dev-client --reset-cache",
+    "doctor": "npx -y expo-doctor@latest",
+    "fmt": "prettier --write .",
+    "fmt:check": "prettier --check .",
+    "ios": "expo run:ios",
+    "lint": "expo lint --fix",
+    "lint:check": "expo lint",
+    "start": "expo start",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@solana/kit": "^5.5.0",
+    "@wallet-ui/react-native-kit": "^3.2.0",
+    "expo": "~54.0.22",
+    "expo-constants": "~18.0.13",
+    "expo-dev-client": "^6.0.20",
+    "expo-linking": "~8.0.11",
+    "expo-router": "~6.0.14",
+    "expo-status-bar": "~3.0.8",
+    "react": "~19.1.0",
+    "react-dom": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-quick-crypto": "^1.0.7",
+    "react-native-safe-area-context": "~5.6.2",
+    "react-native-screens": "~4.16.0",
+    "tailwindcss": "~4.1.16",
+    "uniwind": "~1.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.1.0",
+    "eslint": "^9.25.0",
+    "eslint-config-expo": "~10.0.0",
+    "prettier": "^3.8.1",
+    "typescript": "~5.9.2"
+  },
+  "private": true
+}

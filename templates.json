@@ -74,6 +74,38 @@
     "path": "mobile",
     "templates": [
       {
+        "description": "A minimal template for building a Solana mobile app with Expo, React Native, and Solana Kit.",
+        "id": "gh:solana-foundation/templates/mobile/kit-expo-minimal",
+        "image": "mobile/kit-expo-minimal/og-image.png",
+        "keywords": [
+          "expo",
+          "mobile-wallet-adapter",
+          "react-native",
+          "solana-kit"
+        ],
+        "name": "kit-expo-minimal",
+        "path": "mobile/kit-expo-minimal",
+        "displayName": "Minimal Mobile Kit Expo example",
+        "usecase": "Mobile"
+      },
+      {
+        "description": "A template for building a Solana mobile app with Expo, React Native, Solana Kit, and Uniwind.",
+        "id": "gh:solana-foundation/templates/mobile/kit-expo-uniwind",
+        "image": "mobile/kit-expo-uniwind/og-image.png",
+        "keywords": [
+          "expo",
+          "mobile-wallet-adapter",
+          "react-native",
+          "solana-kit",
+          "uniwind",
+          "tailwind"
+        ],
+        "name": "kit-expo-uniwind",
+        "path": "mobile/kit-expo-uniwind",
+        "displayName": "Uniwind Mobile Kit Expo example",
+        "usecase": "Mobile"
+      },
+      {
         "description": "A template for building a Solana mobile app with Expo and React Native.",
         "id": "gh:solana-foundation/templates/mobile/web3js-expo",
         "image": "mobile/web3js-expo/og-image.png",
@@ -544,6 +576,28 @@
         "path": "community/zk-compression-airdrop",
         "displayName": "ZK Compression Airdrop",
         "usecase": "Airdrop"
+      }
+    ]
+  },
+  {
+    "description": "Pinocchio-based program templates",
+    "name": "Pinocchio",
+    "path": "pinocchio",
+    "templates": [
+      {
+        "description": "Pinocchio Counter Program",
+        "id": "gh:solana-foundation/templates/pinocchio/pinocchio-counter",
+        "image": "pinocchio/pinocchio-counter/og-image.png",
+        "keywords": [
+          "pinocchio",
+          "counter",
+          "native",
+          "solana-program"
+        ],
+        "name": "pinocchio-counter",
+        "path": "pinocchio/pinocchio-counter",
+        "displayName": "Pinocchio Counter",
+        "usecase": "Program Development"
       }
     ]
   }

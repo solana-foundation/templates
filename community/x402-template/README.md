@@ -290,11 +290,11 @@ This template uses minimal dependencies:
 ```json
 {
   "dependencies": {
-    "next": "16.0.0",
+    "next": "16.0.10",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "viem": "^2.38.5",
-    "x402-next": "^0.7.1"
+    "x402-next": "^1.1.0"
   }
 }
 ```
@@ -344,6 +344,18 @@ This template uses minimal dependencies:
 1. Check that cookies are enabled in your browser
 2. Verify session token endpoint is configured
 3. Check for CORS issues if using custom domains
+
+### During installation, viewing `--silent --ignore-scripts` flag
+
+1. If you are using npm with Node 18+ and pnpm is not yet installed, some required scripts may be skipped due to the flags used.
+2. Although the project files are generated, you will need to install pnpm to ensure all scripts run correctly and fix the setup.
+3. Clean any partial install and install pnpm:
+
+```bash
+rm -rf node_modules
+rm -f package-lock.json pnpm-lock.yaml yarn.lock
+pnpm install
+```
 
 ---
 

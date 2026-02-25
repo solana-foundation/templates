@@ -1,0 +1,33 @@
+[workspace]
+members = [
+    "program",
+    "clients/rust",
+    "tests/integration-tests",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.0.1"
+edition = "2021"
+
+[workspace.lints.rust]
+unused_imports = "deny"
+dead_code = "warn"
+unused_variables = "warn"
+deprecated = "warn"
+unexpected_cfgs = { level = "warn", check-cfg = [
+    'cfg(target_os, values("solana"))',
+] }
+
+[workspace.dependencies]
+codama = "^0.7.2"
+serde_json = "^1.0.145"
+const-crypto = "^0.3.0"
+pinocchio = { version = "^0.10.1", features = ["copy"] }
+solana-address = { version = "2.0", features = ["curve25519"] }
+pinocchio-log = "^0.5.1"
+pinocchio-system = "^0.5.0"
+thiserror = "^2.0.17"
+borsh = { version = "^1.6.0", features = ["derive"] }
+num-derive = "^0.4.0"
+num-traits = "^0.2.0"

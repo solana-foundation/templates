@@ -1,0 +1,24 @@
+{
+    "name": "@solana/pinocchio-counter-client",
+    "version": "0.0.1",
+    "description": "TypeScript client for Pinocchio Counter Program",
+    "license": "MIT",
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsc"
+    },
+    "peerDependencies": {
+        "@solana/kit": "^5.0.0"
+    }
+}
