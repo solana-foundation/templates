@@ -5,27 +5,18 @@ import { useWallet } from "../lib/wallet/context";
 import { useSendTransaction } from "../lib/hooks/use-send-transaction";
 import { useBalance } from "../lib/hooks/use-balance";
 import { lamportsFromSol, lamportsToSolString } from "../lib/lamports";
-import {
-  AccountRole,
-  getProgramDerivedAddress,
-  getAddressEncoder,
-  getBytesEncoder,
-  type Address,
-} from "@solana/kit";
+import { type Address } from "@solana/kit";
 import { toast } from "sonner";
 import {
-  getDepositInstructionDataEncoder,
-  getWithdrawInstructionDataEncoder,
-  VAULT_PROGRAM_ADDRESS,
+  getDepositInstruction,
+  getWithdrawInstruction,
+  getWithdrawInstructionAsync,
 } from "../generated/vault";
 import { parseTransactionError } from "../lib/errors";
 import { useCluster } from "./cluster-context";
 
-const SYSTEM_PROGRAM_ADDRESS =
-  "11111111111111111111111111111111" as Address<"11111111111111111111111111111111">;
-
 export function VaultCard() {
-  const { wallet, status } = useWallet();
+  const { wallet, signer, status } = useWallet();
   const { send, isSending } = useSendTransaction();
   const { getExplorerUrl } = useCluster();
 
@@ -34,29 +25,30 @@ export function VaultCard() {
 
   const walletAddress = wallet?.account.address;
 
-  // Derive vault PDA when wallet connects
+  // Derive vault PDA from generated IDL client
   useEffect(() => {
+    let cancelled = false;
+
     async function deriveVault() {
-      if (!walletAddress) {
+      if (!signer) {
         setVaultAddress(null);
         return;
       }
 
-      const [pda] = await getProgramDerivedAddress({
-        programAddress: VAULT_PROGRAM_ADDRESS,
-        seeds: [
-          getBytesEncoder().encode(
-            new Uint8Array([118, 97, 117, 108, 116]) // "vault"
-          ),
-          getAddressEncoder().encode(walletAddress),
-        ],
-      });
-
-      setVaultAddress(pda);
+      try {
+        const ix = await getWithdrawInstructionAsync({ signer });
+        const pda = ix.accounts[1]?.address;
+        if (!cancelled) setVaultAddress((pda as Address) ?? null);
+      } catch {
+        if (!cancelled) setVaultAddress(null);
+      }
     }
 
-    deriveVault();
-  }, [walletAddress]);
+    void deriveVault();
+    return () => {
+      cancelled = true;
+    };
+  }, [signer]);
 
   // Get balances
   const walletBalance = useBalance(walletAddress);
@@ -65,7 +57,7 @@ export function VaultCard() {
   const vaultLamports = vaultBalance?.lamports;
 
   const handleDeposit = useCallback(async () => {
-    if (!walletAddress || !vaultAddress || !amount) return;
+    if (!walletAddress || !vaultAddress || !amount || !signer) return;
 
     const depositLamports = lamportsFromSol(parseFloat(amount));
     if (walletLamports != null && walletLamports < depositLamports) {
@@ -76,17 +68,11 @@ export function VaultCard() {
     }
 
     try {
-      const instruction = {
-        programAddress: VAULT_PROGRAM_ADDRESS,
-        accounts: [
-          { address: walletAddress, role: AccountRole.WRITABLE_SIGNER },
-          { address: vaultAddress, role: AccountRole.WRITABLE },
-          { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY },
-        ],
-        data: getDepositInstructionDataEncoder().encode({
-          amount: lamportsFromSol(parseFloat(amount)),
-        }),
-      };
+      const instruction = getDepositInstruction({
+        signer,
+        vault: vaultAddress,
+        amount: lamportsFromSol(parseFloat(amount)),
+      });
 
       const signature = await send({ instructions: [instruction] });
 
@@ -107,21 +93,16 @@ export function VaultCard() {
       console.error("Deposit failed:", err);
       toast.error(parseTransactionError(err));
     }
-  }, [walletAddress, vaultAddress, amount, send, getExplorerUrl]);
+  }, [walletAddress, vaultAddress, amount, signer, send, getExplorerUrl]);
 
   const handleWithdraw = useCallback(async () => {
-    if (!walletAddress || !vaultAddress) return;
+    if (!walletAddress || !vaultAddress || !signer) return;
 
     try {
-      const instruction = {
-        programAddress: VAULT_PROGRAM_ADDRESS,
-        accounts: [
-          { address: walletAddress, role: AccountRole.WRITABLE_SIGNER },
-          { address: vaultAddress, role: AccountRole.WRITABLE },
-          { address: SYSTEM_PROGRAM_ADDRESS, role: AccountRole.READONLY },
-        ],
-        data: getWithdrawInstructionDataEncoder().encode({}),
-      };
+      const instruction = getWithdrawInstruction({
+        signer,
+        vault: vaultAddress,
+      });
 
       const signature = await send({ instructions: [instruction] });
 
@@ -141,7 +122,7 @@ export function VaultCard() {
       console.error("Withdraw failed:", err);
       toast.error(parseTransactionError(err));
     }
-  }, [walletAddress, vaultAddress, send, getExplorerUrl]);
+  }, [walletAddress, vaultAddress, signer, send, getExplorerUrl]);
 
   if (status !== "connected") {
     return (
