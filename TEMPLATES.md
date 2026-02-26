@@ -222,6 +222,14 @@ Templates maintained by the Solana community
 
 `solana` `phantom` `wallet` `embedded-wallet` `react-native` `expo` `mobile` `typescript` `oauth` `authentication`
 
+### [privy-auth](community/privy-auth)
+
+`gh:solana-foundation/templates/community/privy-auth`
+
+> Social login + embedded Solana wallet powered by Privy
+
+`privy` `auth` `social-login` `embedded-wallet` `solana` `nextjs`
+
 ### [solana-chatgpt-kit](community/solana-chatgpt-kit)
 
 `gh:solana-foundation/templates/community/solana-chatgpt-kit`
