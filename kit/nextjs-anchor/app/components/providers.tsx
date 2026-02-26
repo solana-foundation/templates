@@ -5,12 +5,15 @@ import { Toaster } from "sonner";
 import { PropsWithChildren } from "react";
 import { ClusterProvider } from "./cluster-context";
 import { WalletProvider } from "../lib/wallet/context";
+import { SolanaClientProvider } from "../lib/solana-client-context";
 
 export function Providers({ children }: PropsWithChildren) {
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
       <ClusterProvider>
-        <WalletProvider>{children}</WalletProvider>
+        <SolanaClientProvider>
+          <WalletProvider>{children}</WalletProvider>
+        </SolanaClientProvider>
         <Toaster position="bottom-right" richColors />
       </ClusterProvider>
     </ThemeProvider>

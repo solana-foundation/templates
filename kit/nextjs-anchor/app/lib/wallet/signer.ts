@@ -2,6 +2,8 @@ import {
   getTransactionEncoder,
   getTransactionDecoder,
   signatureBytes,
+  type Address,
+  type SignatureBytes,
   type TransactionSigner,
   type TransactionSendingSigner,
   type TransactionPartialSigner,
@@ -41,7 +43,12 @@ function createPartialSigner(session: WalletSession): TransactionPartialSigner {
             encoder.encode(tx as Parameters<(typeof encoder)["encode"]>[0])
           );
           const signedBytes = await session.signTransaction!(wireBytes);
-          return decoder.decode(signedBytes) as typeof tx;
+          const signedTx = decoder.decode(signedBytes);
+          const sigs: Record<Address, SignatureBytes> = {};
+          for (const [addr, sig] of Object.entries(signedTx.signatures)) {
+            if (sig != null) sigs[addr as Address] = sig;
+          }
+          return sigs;
         })
       );
     },

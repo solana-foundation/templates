@@ -4,13 +4,12 @@ import { useState, useCallback } from "react";
 import { useSWRConfig } from "swr";
 import type { Instruction } from "@solana/kit";
 import { sendTransaction } from "../send-transaction";
-import { createClusterRpc } from "../cluster";
 import { useWallet } from "../wallet/context";
-import { useCluster } from "../../components/cluster-context";
+import { useSolanaClient } from "../solana-client-context";
 
 export function useSendTransaction() {
   const { signer } = useWallet();
-  const { cluster } = useCluster();
+  const client = useSolanaClient();
   const { mutate } = useSWRConfig();
   const [isSending, setIsSending] = useState(false);
 
@@ -20,9 +19,8 @@ export function useSendTransaction() {
 
       setIsSending(true);
       try {
-        const rpc = createClusterRpc(cluster);
         const signature = await sendTransaction({
-          rpc,
+          rpc: client.rpc,
           instructions,
           feePayer: signer,
         });
@@ -34,7 +32,7 @@ export function useSendTransaction() {
         setIsSending(false);
       }
     },
-    [signer, cluster, mutate]
+    [signer, client, mutate]
   );
 
   return { send, isSending };

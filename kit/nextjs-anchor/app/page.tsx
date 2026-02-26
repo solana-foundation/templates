@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { lamports as sol } from "@solana/kit";
 import { toast } from "sonner";
 import { useWallet } from "./lib/wallet/context";
 import { useBalance } from "./lib/hooks/use-balance";
-import { lamportsToSolString, lamportsFromSol } from "./lib/lamports";
-import { createClusterRpc } from "./lib/cluster";
+import { lamportsToSolString } from "./lib/lamports";
+import { useSolanaClient } from "./lib/solana-client-context";
 import { ellipsify } from "./lib/explorer";
 import { VaultCard } from "./components/vault-card";
 import { GridBackground } from "./components/grid-background";
@@ -17,6 +18,7 @@ import { useCluster } from "./components/cluster-context";
 export default function Home() {
   const { wallet, status } = useWallet();
   const { cluster, getExplorerUrl } = useCluster();
+  const client = useSolanaClient();
 
   const address = wallet?.account.address;
   const balance = useBalance(address);
@@ -33,10 +35,9 @@ export default function Home() {
     if (!address) return;
     try {
       toast.info("Requesting airdrop...");
-      const rpc = createClusterRpc(cluster);
-      const sig = await rpc.requestAirdrop(address, lamportsFromSol(1)).send();
+      const sig = await client.airdrop(address, sol(1_000_000_000n));
       toast.success("Airdrop received!", {
-        description: (
+        description: sig ? (
           <a
             href={getExplorerUrl(`/tx/${sig}`)}
             target="_blank"
@@ -45,7 +46,7 @@ export default function Home() {
           >
             View transaction
           </a>
-        ),
+        ) : undefined,
       });
     } catch (err) {
       console.error("Airdrop failed:", err);

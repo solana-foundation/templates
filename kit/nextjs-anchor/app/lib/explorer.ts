@@ -1,4 +1,4 @@
-import type { ClusterMoniker } from "./cluster";
+import type { ClusterMoniker } from "./solana-client";
 
 export function getExplorerUrl(path: string, cluster: ClusterMoniker): string {
   const base = "https://explorer.solana.com";

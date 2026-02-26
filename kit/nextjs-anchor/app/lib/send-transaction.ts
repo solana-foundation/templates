@@ -8,14 +8,14 @@ import {
   type Instruction,
   type TransactionSigner,
 } from "@solana/kit";
-import type { createClusterRpc } from "./cluster";
+import type { SolanaClient } from "./solana-client";
 
 export async function sendTransaction({
   rpc,
   instructions,
   feePayer,
 }: {
-  rpc: ReturnType<typeof createClusterRpc>;
+  rpc: SolanaClient["rpc"];
   instructions: readonly Instruction[];
   feePayer: TransactionSigner;
 }): Promise<string> {
