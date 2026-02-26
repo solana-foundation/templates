@@ -1,0 +1,54 @@
+{
+  "name": "privy-auth",
+  "version": "0.1.0",
+  "private": true,
+  "displayName": "Privy Auth",
+  "description": "Next.js + Tailwind template with Privy authentication, social logins, and embedded Solana wallets",
+  "usecase": "Starter",
+  "keywords": [
+    "solana",
+    "privy",
+    "authentication",
+    "social-login",
+    "embedded-wallet",
+    "nextjs",
+    "tailwind",
+    "typescript"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Copy .env.example to .env.local and add your Privy App ID:",
+      "+cp .env.example .env.local",
+      "Get your App ID from https://dashboard.privy.io",
+      "Install dependencies:",
+      "+{pm} install",
+      "Start the dev server:",
+      "+{pm} dev"
+    ]
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@privy-io/react-auth": "^2.0.5",
+    "@solana/spl-token": "^0.4.14",
+    "@solana/web3.js": "^1.98.0",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.16.0",
+    "eslint-config-next": "^15.1.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16",
+    "typescript": "^5.7.0"
+  }
+}

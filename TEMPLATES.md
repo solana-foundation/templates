@@ -222,6 +222,14 @@ Templates maintained by the Solana community
 
 `solana` `phantom` `wallet` `embedded-wallet` `react-native` `expo` `mobile` `typescript` `oauth` `authentication`
 
+### [privy-auth](community/privy-auth)
+
+`gh:solana-foundation/templates/community/privy-auth`
+
+> Next.js + Tailwind template with Privy authentication, social logins, and embedded Solana wallets
+
+`solana` `privy` `authentication` `social-login` `embedded-wallet` `nextjs` `tailwind` `typescript`
+
 ### [solana-chatgpt-kit](community/solana-chatgpt-kit)
 
 `gh:solana-foundation/templates/community/solana-chatgpt-kit`
