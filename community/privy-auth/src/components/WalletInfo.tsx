@@ -1,29 +1,33 @@
 "use client";
 
-import { useSolanaWallets } from "@privy-io/react-auth/solana";
-import { Connection, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import { useWallets } from "@privy-io/react-auth/solana";
+import { createSolanaRpc, address } from "@solana/kit";
 import { useEffect, useState } from "react";
 
-function truncateAddress(address: string): string {
-  return `${address.slice(0, 4)}…${address.slice(-4)}`;
+function truncateAddress(addr: string): string {
+  return `${addr.slice(0, 4)}…${addr.slice(-4)}`;
 }
 
 interface WalletBalanceProps {
-  address: string;
+  walletAddress: string;
   rpcUrl: string;
 }
 
-function WalletBalance({ address, rpcUrl }: WalletBalanceProps) {
+function WalletBalance({ walletAddress, rpcUrl }: WalletBalanceProps) {
   const [balance, setBalance] = useState<number | null>(null);
   const [error, setError] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    const connection = new Connection(rpcUrl);
-    connection
-      .getBalance(new PublicKey(address))
-      .then((lamports) => {
-        if (!cancelled) setBalance(lamports / LAMPORTS_PER_SOL);
+    const rpc = createSolanaRpc(rpcUrl);
+    rpc
+      .getBalance(address(walletAddress), { commitment: "confirmed" })
+      .send()
+      .then((res) => {
+        if (!cancelled) {
+          const sol = Number(res.value) / 1e9;
+          setBalance(sol);
+        }
       })
       .catch(() => {
         if (!cancelled) setError(true);
@@ -31,7 +35,7 @@ function WalletBalance({ address, rpcUrl }: WalletBalanceProps) {
     return () => {
       cancelled = true;
     };
-  }, [address, rpcUrl]);
+  }, [walletAddress, rpcUrl]);
 
   if (error) return <span className="text-xs text-gray-500">Balance unavailable</span>;
   if (balance === null)
@@ -40,7 +44,7 @@ function WalletBalance({ address, rpcUrl }: WalletBalanceProps) {
 }
 
 export default function WalletInfo() {
-  const { wallets } = useSolanaWallets();
+  const { wallets } = useWallets();
   const rpcUrl =
     process.env.NEXT_PUBLIC_SOLANA_RPC_URL ||
     "https://api.mainnet-beta.solana.com";
@@ -72,13 +76,13 @@ export default function WalletInfo() {
                 <code className="text-sm text-white">
                   {truncateAddress(wallet.address)}
                 </code>
-                {wallet.walletClientType === "privy" && (
+                {"walletClientType" in wallet && wallet.walletClientType === "privy" && (
                   <span className="rounded bg-solana-purple/20 px-1.5 py-0.5 text-[10px] font-medium text-solana-purple">
                     EMBEDDED
                   </span>
                 )}
               </div>
-              <WalletBalance address={wallet.address} rpcUrl={rpcUrl} />
+              <WalletBalance walletAddress={wallet.address} rpcUrl={rpcUrl} />
             </div>
             <button
               onClick={() => navigator.clipboard.writeText(wallet.address)}

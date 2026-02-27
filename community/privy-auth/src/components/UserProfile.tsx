@@ -1,74 +1,7 @@
 "use client";
 
 import { usePrivy } from "@privy-io/react-auth";
-import type { LinkedAccount } from "@/types/privy";
-
-/** Maps Privy account types to display-friendly labels and identifiers */
-function parseLinkedAccount(account: Record<string, unknown>): LinkedAccount | null {
-  const type = account.type as string;
-
-  switch (type) {
-    case "email":
-      return {
-        type: "email",
-        identifier: (account.address as string) ?? "Unknown",
-        firstVerifiedAt: account.firstVerifiedAt
-          ? new Date(account.firstVerifiedAt as string)
-          : null,
-        latestVerifiedAt: account.latestVerifiedAt
-          ? new Date(account.latestVerifiedAt as string)
-          : null,
-      };
-    case "google_oauth":
-      return {
-        type: "google_oauth",
-        identifier: (account.email as string) ?? "Google Account",
-        firstVerifiedAt: account.firstVerifiedAt
-          ? new Date(account.firstVerifiedAt as string)
-          : null,
-        latestVerifiedAt: account.latestVerifiedAt
-          ? new Date(account.latestVerifiedAt as string)
-          : null,
-      };
-    case "twitter_oauth":
-      return {
-        type: "twitter_oauth",
-        identifier: (account.username as string)
-          ? `@${account.username as string}`
-          : "X Account",
-        firstVerifiedAt: account.firstVerifiedAt
-          ? new Date(account.firstVerifiedAt as string)
-          : null,
-        latestVerifiedAt: account.latestVerifiedAt
-          ? new Date(account.latestVerifiedAt as string)
-          : null,
-      };
-    case "discord_oauth":
-      return {
-        type: "discord_oauth",
-        identifier: (account.username as string) ?? "Discord Account",
-        firstVerifiedAt: account.firstVerifiedAt
-          ? new Date(account.firstVerifiedAt as string)
-          : null,
-        latestVerifiedAt: account.latestVerifiedAt
-          ? new Date(account.latestVerifiedAt as string)
-          : null,
-      };
-    case "github_oauth":
-      return {
-        type: "github_oauth",
-        identifier: (account.username as string) ?? "GitHub Account",
-        firstVerifiedAt: account.firstVerifiedAt
-          ? new Date(account.firstVerifiedAt as string)
-          : null,
-        latestVerifiedAt: account.latestVerifiedAt
-          ? new Date(account.latestVerifiedAt as string)
-          : null,
-      };
-    default:
-      return null;
-  }
-}
+import type { LinkedAccountWithMetadata } from "@privy-io/react-auth";
 
 const PROVIDER_LABELS: Record<string, string> = {
   email: "Email",
@@ -86,14 +19,32 @@ const PROVIDER_ICONS: Record<string, string> = {
   github_oauth: "⌥",
 };
 
+function getIdentifier(account: LinkedAccountWithMetadata): string {
+  switch (account.type) {
+    case "email":
+      return account.address ?? "Unknown";
+    case "google_oauth":
+      return account.email ?? "Google Account";
+    case "twitter_oauth":
+      return account.username ? `@${account.username}` : "X Account";
+    case "discord_oauth":
+      return account.username ?? "Discord Account";
+    case "github_oauth":
+      return account.username ?? "GitHub Account";
+    default:
+      return account.type;
+  }
+}
+
 export default function UserProfile() {
   const { user } = usePrivy();
 
   if (!user) return null;
 
-  const accounts = (user.linkedAccounts as unknown as Record<string, unknown>[])
-    .map(parseLinkedAccount)
-    .filter((a): a is LinkedAccount => a !== null);
+  const accounts = user.linkedAccounts.filter(
+    (a): a is LinkedAccountWithMetadata =>
+      a.type !== "wallet" && a.type !== "smart_wallet"
+  );
 
   return (
     <div className="rounded-lg border border-gray-800 bg-gray-900 p-4">
@@ -106,7 +57,7 @@ export default function UserProfile() {
         <ul className="space-y-2">
           {accounts.map((account) => (
             <li
-              key={`${account.type}-${account.identifier}`}
+              key={`${account.type}-${getIdentifier(account)}`}
               className="flex items-center gap-3 rounded-md border border-gray-700/50 bg-gray-800/50 px-3 py-2"
             >
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-700 text-xs">
@@ -117,7 +68,7 @@ export default function UserProfile() {
                   {PROVIDER_LABELS[account.type] ?? account.type}
                 </span>
                 <span className="text-sm text-white">
-                  {account.identifier}
+                  {getIdentifier(account)}
                 </span>
               </div>
             </li>

@@ -5,6 +5,8 @@ import AuthStatus from "@/components/AuthStatus";
 import LogoutButton from "@/components/LogoutButton";
 import UserProfile from "@/components/UserProfile";
 import WalletInfo from "@/components/WalletInfo";
+import SignMessage from "@/components/SignMessage";
+import SendTransaction from "@/components/SendTransaction";
 import Link from "next/link";
 
 export default function Dashboard() {
@@ -39,6 +41,8 @@ export default function Dashboard() {
           <div className="grid gap-6 md:grid-cols-2">
             <WalletInfo />
             <UserProfile />
+            <SignMessage />
+            <SendTransaction />
           </div>
         </main>
       </div>
