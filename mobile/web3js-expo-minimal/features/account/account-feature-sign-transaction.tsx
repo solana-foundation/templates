@@ -5,7 +5,7 @@ import { createMemoInstruction } from '@solana/spl-memo'
 import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 
 export function AccountFeatureSignTransaction({ address }: { address: PublicKey }) {
-  const { connection, signAndSendTransaction } = useMobileWallet()
+  const { connection, signAndSendTransactions } = useMobileWallet()
 
   async function submit() {
     try {
@@ -25,7 +25,7 @@ export function AccountFeatureSignTransaction({ address }: { address: PublicKey 
 
       const transaction = new VersionedTransaction(message)
 
-      const signature = await signAndSendTransaction(transaction, minContextSlot)
+      const signature = await signAndSendTransactions(transaction, minContextSlot)
 
       await connection.confirmTransaction({ signature, ...latestBlockhash }, 'confirmed')
 

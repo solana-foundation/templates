@@ -5,7 +5,7 @@ import { useMobileWallet } from '@wallet-ui/react-native-kit'
 import { Address, Instruction } from '@solana/kit'
 
 export function AccountFeatureSignTransaction({ address }: { address: Address }) {
-  const { sendTransaction } = useMobileWallet()
+  const { sendTransactions } = useMobileWallet()
 
   async function submit() {
     console.log('submit')
@@ -15,7 +15,7 @@ export function AccountFeatureSignTransaction({ address }: { address: Address })
         getAddMemoInstruction({ memo: `gm from Mobile Wallet Adapter - ${address}` }),
       ]
 
-      const signature = await sendTransaction(instructions)
+      const signature = await sendTransactions(instructions)
 
       console.log(`Signed transaction: ${signature}!`)
     } catch (e) {
