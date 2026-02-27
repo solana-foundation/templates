@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-counter = "Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe"
+counter = "5WbMMdKQwSVQxSgEZMkQpSus6u7F8gJiVKUzU8JwzeVr"
 
 [registry]
 url = "https://api.apr.dev"
@@ -17,3 +17,5 @@ wallet = "~/.config/solana/id.json"
 
 [scripts]
 test = "../node_modules/.bin/jest --preset ts-jest"
+
+[hooks]

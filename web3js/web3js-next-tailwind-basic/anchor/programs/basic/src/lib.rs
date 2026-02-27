@@ -1,6 +1,9 @@
 use anchor_lang::prelude::*;
 
-declare_id!("JAVuBXeBZqXNtS73azhBDAoYaaAFfo4gWXoZe2e7Jf8H");
+#[cfg(test)]
+mod tests;
+
+declare_id!("C9b6uv2JdjyzAwFvMGsGF6Qp8oXTXXFv67JJZbC4gRRM");
 
 #[program]
 pub mod basic {

@@ -18,12 +18,11 @@ runs:
       uses: actions/cache@v4
       with:
         path: |
-          ~/.cargo/bin/
           ~/.cargo/registry/index/
           ~/.cargo/registry/cache/
           ~/.cargo/git/db/
           ~/.avm/
-        key: ${{ runner.os }}-cargo-avm-0.32.1
+        key: ${{ runner.os }}-cargo-avm-0.32.1-v2
 
     - name: Install AVM
       run: |
