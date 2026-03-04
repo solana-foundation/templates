@@ -8,7 +8,7 @@ import { WalletProvider } from "../lib/wallet/context";
 
 export function Providers({ children }: PropsWithChildren) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="dark">
       <ClusterProvider>
         <WalletProvider>{children}</WalletProvider>
         <Toaster position="bottom-right" richColors />
