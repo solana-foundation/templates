@@ -2,11 +2,9 @@ import {
   getTransactionEncoder,
   getTransactionDecoder,
   signatureBytes,
-  type Address,
-  type SignatureBytes,
   type TransactionSigner,
   type TransactionSendingSigner,
-  type TransactionPartialSigner,
+  type TransactionModifyingSigner,
 } from "@solana/kit";
 import type { WalletSession } from "./types";
 
@@ -31,10 +29,21 @@ function createSendingSigner(
   };
 }
 
-function createPartialSigner(session: WalletSession): TransactionPartialSigner {
+/**
+ * Uses TransactionModifyingSigner so the full signed transaction returned
+ * by the wallet is preserved. This is critical because wallet-standard
+ * signTransaction may return a modified transaction (e.g. added memo,
+ * changed compute budget). Extracting only signatures and applying them
+ * to the original message would cause a signature/message mismatch.
+ */
+function createModifyingSigner(
+  session: WalletSession,
+  chain: string
+): TransactionModifyingSigner {
   return {
     address: session.account.address,
-    signTransactions: async (transactions) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    modifyAndSignTransactions: (async (transactions: readonly unknown[]) => {
       const encoder = getTransactionEncoder();
       const decoder = getTransactionDecoder();
       return Promise.all(
@@ -42,16 +51,25 @@ function createPartialSigner(session: WalletSession): TransactionPartialSigner {
           const wireBytes = new Uint8Array(
             encoder.encode(tx as Parameters<(typeof encoder)["encode"]>[0])
           );
-          const signedBytes = await session.signTransaction!(wireBytes);
+          const signedBytes = await session.signTransaction!(wireBytes, chain);
           const signedTx = decoder.decode(signedBytes);
-          const sigs: Record<Address, SignatureBytes> = {};
-          for (const [addr, sig] of Object.entries(signedTx.signatures)) {
-            if (sig != null) sigs[addr as Address] = sig;
-          }
-          return sigs;
+          // Return the full decoded transaction — preserving whatever the
+          // wallet signed (including any message modifications).
+          // Carry over the lifetimeConstraint from the original transaction
+          // since it's runtime metadata not present in the wire format.
+          return Object.freeze({
+            ...signedTx,
+            ...("lifetimeConstraint" in (tx as Record<string, unknown>)
+              ? {
+                  lifetimeConstraint: (
+                    tx as Record<string, unknown>
+                  ).lifetimeConstraint,
+                }
+              : {}),
+          });
         })
       );
-    },
+    }) as unknown as TransactionModifyingSigner["modifyAndSignTransactions"],
   };
 }
 
@@ -59,11 +77,11 @@ export function createWalletSigner(
   session: WalletSession,
   chain: string
 ): TransactionSigner {
+  if (session.signTransaction) {
+    return createModifyingSigner(session, chain);
+  }
   if (session.sendTransaction) {
     return createSendingSigner(session, chain);
-  }
-  if (session.signTransaction) {
-    return createPartialSigner(session);
   }
   throw new Error("Wallet does not support transaction signing");
 }

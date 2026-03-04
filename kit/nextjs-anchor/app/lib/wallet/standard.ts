@@ -67,13 +67,14 @@ function createConnector(wallet: StandardWallet): WalletConnector {
           }
         },
         signTransaction: hasSignTx
-          ? async (transaction: Uint8Array) => {
+          ? async (transaction: Uint8Array, chain: string) => {
               const feature = wallet.features[
                 SolanaSignTransaction
               ] as SolanaSignTransactionFeature[typeof SolanaSignTransaction];
               const [result] = await feature.signTransaction({
                 account,
                 transaction,
+                chain: chain as `${string}:${string}`,
               });
               return new Uint8Array(result.signedTransaction);
             }

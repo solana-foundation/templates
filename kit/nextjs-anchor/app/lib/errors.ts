@@ -49,6 +49,11 @@ function collectMessages(err: unknown): string {
 }
 
 export function parseTransactionError(err: unknown): string {
+  // Unwrap kit plugin transaction plan errors — the real error is inside
+  // the `transactionPlanResult` attribute, not in the cause chain.
+  const planError = extractPlanError(err);
+  if (planError) return parseTransactionError(planError);
+
   const fullChain = collectMessages(err);
 
   // Check for vault program errors (Anchor custom error codes)
@@ -73,4 +78,54 @@ export function parseTransactionError(err: unknown): string {
   const trimmed =
     rootMessage.length > 200 ? `${rootMessage.slice(0, 200)}…` : rootMessage;
   return trimmed;
+}
+
+/**
+ * Extract the underlying error from a kit plugin transaction plan failure.
+ * The plugin throws a SolanaError with a `transactionPlanResult` attribute
+ * whose single entry has `status: { kind: 'failed', error }`.
+ */
+function extractPlanError(err: unknown): Error | null {
+  if (!(err instanceof Error)) return null;
+
+  const withContext = err as {
+    context?: { transactionPlanResult?: unknown };
+    transactionPlanResult?: unknown;
+  };
+
+  const result =
+    withContext.context?.transactionPlanResult ??
+    withContext.transactionPlanResult;
+  if (typeof result !== "object" || result === null) return null;
+
+  const failed = findFirstFailedPlanResult(result);
+  if (failed?.error instanceof Error) return failed.error;
+
+  return null;
+}
+
+function findFirstFailedPlanResult(
+  result: unknown
+): { error?: unknown; plans?: unknown[] } | null {
+  if (typeof result !== "object" || result === null) return null;
+
+  const candidate = result as {
+    kind?: string;
+    status?: string;
+    error?: unknown;
+    plans?: unknown[];
+  };
+
+  if (candidate.kind === "single" && candidate.status === "failed") {
+    return candidate;
+  }
+
+  if (Array.isArray(candidate.plans)) {
+    for (const plan of candidate.plans) {
+      const failed = findFirstFailedPlanResult(plan);
+      if (failed) return failed;
+    }
+  }
+
+  return null;
 }
