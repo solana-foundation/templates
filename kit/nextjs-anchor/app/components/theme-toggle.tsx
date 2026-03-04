@@ -1,9 +1,18 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
+
+const subscribe = () => () => {};
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
+  const mounted = useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false
+  );
+
   const isDark = resolvedTheme === "dark";
 
   return (
@@ -12,8 +21,8 @@ export function ThemeToggle() {
       className="inline-flex size-9 cursor-pointer items-center justify-center rounded-lg border border-border-low bg-card text-sm transition hover:bg-cream"
       aria-label="Toggle theme"
     >
-      <span suppressHydrationWarning>
-        {isDark ? (
+      {mounted ? (
+        isDark ? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -49,8 +58,10 @@ export function ThemeToggle() {
           >
             <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
           </svg>
-        )}
-      </span>
+        )
+      ) : (
+        <span className="size-4" />
+      )}
     </button>
   );
 }
