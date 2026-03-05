@@ -49,7 +49,7 @@ community/staking/
 | `initialize`                | Admin  | Creates pool, vault, and reward pool accounts |
 | `stake(amount)`             | User   | Transfers tokens from user to vault           |
 | `unstake(amount)`           | User   | Transfers tokens from vault back to user      |
-| `claim`                     | User   | Calculates and transfers proportional rewards |
+| `claim`                     | User   | Calculates rewards and transfers to user token account |
 | `add_rewards(amount, rate)` | Admin  | Funds reward pool and sets emission rate      |
 
 ---
@@ -123,7 +123,7 @@ Rewards are distributed proportionally based on each staker's share of the total
 
 4. **Reward debt tracking** — `staker.reward_debt` accumulates total claimed rewards per user.
 
-> **Note:** The current implementation calculates rewards at claim time based on the snapshot of `last_reward_time`. For production use, consider implementing an accumulator-based model (reward per token stored) to avoid race conditions between multiple claimants.
+5. **State updates after claim** — The program updates `last_reward_time`, decrements `reward_pool`, and increments user `reward_debt` after a successful claim.
 
 ---
 
@@ -134,16 +134,17 @@ Rewards are distributed proportionally based on each staker's share of the total
 - The staking vault uses a `vault_authority` PDA as its token authority, ensuring only the program can sign transfers out of the vault.
 - The reward pool uses a separate `reward_pool_authority` PDA, isolating reward funds from staked funds.
 
-### Input Validation
+### Input Validation & Access Control
 
 - **Insufficient stake check** — `unstake` validates `staker.staked_amount >= amount` before processing, preventing underflow.
 - **Reward pool bounds** — `claim` caps distributed rewards at `min(calculated_rewards, reward_pool_balance)`.
+- **Admin-only reward management** — `add_rewards` enforces `signer == global_state.admin`.
+- **Canonical PDA constraints** — vault and reward pool token accounts are constrained to the expected PDA seeds and authorities.
 
 ### Known Limitations & Production Hardening
 
-- **Admin access control** — The `add_rewards` instruction should verify `signer == global_state.admin` for production deployments.
-- **Overflow protection** — Reward calculations use `u128` intermediate arithmetic to prevent overflow on large values.
-- **Reentrancy** — Anchor's account deserialization provides baseline protection; state mutations happen after CPI calls should be reordered for defense-in-depth.
+- **Overflow protection** — Reward calculations use checked arithmetic and `u128` intermediates where appropriate.
+- **Reward precision** — Integer math can round down very small reward shares; precision scaling can be increased for production.
 - **Rent exemption** — All PDA accounts are initialized with rent-exempt balances.
 
 ### Audit Recommendations
@@ -164,6 +165,9 @@ anchor test
 # Tests cover:
 # ✓ Pool initialization (verifies all GlobalState fields)
 # ✓ Staking tokens (verifies vault balance, staker state, global totals)
+# ✓ Repeated stake accumulation (no state reset on second stake)
+# ✓ Admin-only reward funding (`add_rewards`)
+# ✓ Reward claim flow (tokens transferred to user token account)
 # ✓ Unstake validation (InsufficientStake error on over-withdrawal)
 # ✓ Partial unstake (balance reconciliation)
 ```

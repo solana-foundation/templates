@@ -506,6 +506,24 @@
         "usecase": "Starter"
       },
       {
+        "description": "Full-featured SPL token staking with Anchor smart contract and Next.js frontend. Includes initialize pool, stake, unstake, claim rewards, and admin reward management.",
+        "id": "gh:solana-foundation/templates/community/staking-program",
+        "image": "community/staking-program/og-image.png",
+        "keywords": [
+          "anchor",
+          "staking",
+          "spl-token",
+          "nextjs",
+          "tailwind",
+          "typescript",
+          "defi"
+        ],
+        "name": "staking",
+        "path": "community/staking-program",
+        "displayName": "SPL Token Staking",
+        "usecase": "DeFi"
+      },
+      {
         "description": "Authenticate Solana wallets with Supabase",
         "id": "gh:solana-foundation/templates/community/supabase-auth",
         "image": "community/supabase-auth/og-image.png",

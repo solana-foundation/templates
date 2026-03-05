@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { useAnchorWallet } from '@solana/wallet-adapter-react'
 import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js'
@@ -166,6 +166,7 @@ export function useStakingProgram() {
       // Get user's associated token account for the staking mint
       const globalState = getGlobalStatePda()
       const vault = getVaultPda()
+      const vaultAuthority = getVaultAuthorityPda()
       const stakerPda = getStakerPda(publicKey)
 
       // We need to find the user's token account — fetch globalState to get the mint
@@ -184,6 +185,7 @@ export function useStakingProgram() {
           signer: publicKey,
           userTokenAccount: userTokenAccount,
           vault: vault,
+          vaultAuthority: vaultAuthority,
           staker: stakerPda,
           globalState: globalState,
           systemProgram: SystemProgram.programId,
@@ -248,6 +250,12 @@ export function useStakingProgram() {
     const rewardPool = getRewardPoolPda()
     const rewardPoolAuthority = getRewardPoolAuthorityPda()
     const stakerPda = getStakerPda(publicKey)
+    const gsInfo = await connection.getAccountInfo(globalState)
+    if (!gsInfo) throw new Error('Pool not initialized')
+
+    const mint = new PublicKey(gsInfo.data.slice(8 + 32, 8 + 64))
+    const { getAssociatedTokenAddressSync } = await import('@solana/spl-token')
+    const userRewardTokenAccount = getAssociatedTokenAddressSync(mint, publicKey)
 
     const tx = await program.methods
       .claim()
@@ -255,6 +263,7 @@ export function useStakingProgram() {
         signer: publicKey,
         staker: stakerPda,
         globalState: globalState,
+        userRewardTokenAccount: userRewardTokenAccount,
         rewardPool: rewardPool,
         rewardPoolAuthority: rewardPoolAuthority,
         tokenProgram: TOKEN_PROGRAM_ID,
@@ -265,7 +274,7 @@ export function useStakingProgram() {
     await fetchUserPosition()
 
     return tx
-  }, [getProgram, publicKey, fetchPoolData, fetchUserPosition])
+  }, [getProgram, publicKey, connection, fetchPoolData, fetchUserPosition])
 
   // Poll data
   useEffect(() => {

@@ -7,6 +7,14 @@ pub fn handler(ctx: Context<Unstake<'_>>, amount: u64) -> Result<()> {
     let staker = &mut ctx.accounts.staker;
     let global_state = &mut ctx.accounts.global_state;
 
+    require!(amount > 0, CustomError::InvalidAmount);
+    require!(staker.staked_amount > 0, CustomError::NoStakePosition);
+    require_keys_eq!(
+        staker.address,
+        ctx.accounts.signer.key(),
+        CustomError::InvalidOperation
+    );
+
     require!(
         staker.staked_amount >= amount,
         CustomError::InsufficientStake
@@ -30,8 +38,14 @@ pub fn handler(ctx: Context<Unstake<'_>>, amount: u64) -> Result<()> {
         amount,
     )?;
 
-    staker.staked_amount -= amount;
-    global_state.total_staked -= amount;
+    staker.staked_amount = staker
+        .staked_amount
+        .checked_sub(amount)
+        .ok_or(CustomError::MathOverflow)?;
+    global_state.total_staked = global_state
+        .total_staked
+        .checked_sub(amount)
+        .ok_or(CustomError::MathOverflow)?;
 
     Ok(())
 }

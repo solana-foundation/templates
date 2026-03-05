@@ -7,11 +7,26 @@ use core::mem::size_of;
 pub struct Stake<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
-    #[account(mut)]
+    #[account(
+        mut,
+        token::mint = global_state.staking_token_mint,
+        token::authority = signer
+    )]
     pub user_token_account: Account<'info, TokenAccount>,
 
-    #[account(mut, constraint = vault.mint == global_state.staking_token_mint)]
+    #[account(
+        mut,
+        seeds = [b"staking_vault"],
+        bump,
+        token::mint = global_state.staking_token_mint,
+        token::authority = vault_authority,
+        constraint = vault.key() == global_state.vault
+    )]
     pub vault: Account<'info, TokenAccount>,
+
+    /// CHECK: This account is used as a PDA authority for the vault.
+    #[account(seeds = [b"vault_authority"], bump)]
+    pub vault_authority: AccountInfo<'info>,
 
     #[account(
         init_if_needed,

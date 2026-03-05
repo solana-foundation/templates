@@ -6,10 +6,20 @@ use anchor_spl::token::{Token, TokenAccount};
 pub struct Unstake<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
-    #[account(mut)]
+    #[account(
+        mut,
+        token::mint = global_state.staking_token_mint,
+        token::authority = signer
+    )]
     pub user_token_account: Account<'info, TokenAccount>,
-    /// CHECK: This account is used as a PDA authority for the vault.
-    #[account(mut, constraint = vault.mint == global_state.staking_token_mint)]
+    #[account(
+        mut,
+        seeds = [b"staking_vault"],
+        bump,
+        token::mint = global_state.staking_token_mint,
+        token::authority = vault_authority,
+        constraint = vault.key() == global_state.vault
+    )]
     pub vault: Account<'info, TokenAccount>,
     #[account(mut, seeds = [b"staker", signer.key().as_ref()], bump)]
     pub staker: Account<'info, Staker>,

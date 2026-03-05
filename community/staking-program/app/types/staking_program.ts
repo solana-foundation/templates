@@ -23,6 +23,10 @@ export type StakingProgram = {
           signer: true
         },
         {
+          name: 'adminTokenAccount'
+          writable: true
+        },
+        {
           name: 'globalState'
           writable: true
           pda: {
@@ -30,18 +34,6 @@ export type StakingProgram = {
               {
                 kind: 'const'
                 value: [103, 108, 111, 98, 97, 108, 95, 115, 116, 97, 116, 101]
-              },
-            ]
-          }
-        },
-        {
-          name: 'rewardPool'
-          writable: true
-          pda: {
-            seeds: [
-              {
-                kind: 'const'
-                value: [114, 101, 119, 97, 114, 100, 95, 112, 111, 111, 108]
               },
             ]
           }
@@ -75,6 +67,18 @@ export type StakingProgram = {
                   116,
                   121,
                 ]
+              },
+            ]
+          }
+        },
+        {
+          name: 'rewardPool'
+          writable: true
+          pda: {
+            seeds: [
+              {
+                kind: 'const'
+                value: [114, 101, 119, 97, 114, 100, 95, 112, 111, 111, 108]
               },
             ]
           }
@@ -133,16 +137,8 @@ export type StakingProgram = {
           }
         },
         {
-          name: 'rewardPool'
+          name: 'userRewardTokenAccount'
           writable: true
-          pda: {
-            seeds: [
-              {
-                kind: 'const'
-                value: [114, 101, 119, 97, 114, 100, 95, 112, 111, 111, 108]
-              },
-            ]
-          }
         },
         {
           name: 'rewardPoolAuthority'
@@ -173,6 +169,18 @@ export type StakingProgram = {
                   116,
                   121,
                 ]
+              },
+            ]
+          }
+        },
+        {
+          name: 'rewardPool'
+          writable: true
+          pda: {
+            seeds: [
+              {
+                kind: 'const'
+                value: [114, 101, 119, 97, 114, 100, 95, 112, 111, 111, 108]
               },
             ]
           }
@@ -307,6 +315,25 @@ export type StakingProgram = {
         {
           name: 'vault'
           writable: true
+          pda: {
+            seeds: [
+              {
+                kind: 'const'
+                value: [115, 116, 97, 107, 105, 110, 103, 95, 118, 97, 117, 108, 116]
+              },
+            ]
+          }
+        },
+        {
+          name: 'vaultAuthority'
+          pda: {
+            seeds: [
+              {
+                kind: 'const'
+                value: [118, 97, 117, 108, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              },
+            ]
+          }
         },
         {
           name: 'staker'
@@ -372,6 +399,14 @@ export type StakingProgram = {
         {
           name: 'vault'
           writable: true
+          pda: {
+            seeds: [
+              {
+                kind: 'const'
+                value: [115, 116, 97, 107, 105, 110, 103, 95, 118, 97, 117, 108, 116]
+              },
+            ]
+          }
         },
         {
           name: 'staker'
@@ -443,11 +478,36 @@ export type StakingProgram = {
     },
     {
       code: 6001
+      name: 'unauthorized'
+      msg: 'Only the admin can perform this action.'
+    },
+    {
+      code: 6002
       name: 'emptyRewardPool'
       msg: 'Reward pool is empty.'
     },
     {
-      code: 6002
+      code: 6003
+      name: 'invalidAmount'
+      msg: 'Amount must be greater than zero.'
+    },
+    {
+      code: 6004
+      name: 'noStakePosition'
+      msg: 'No active stake position found.'
+    },
+    {
+      code: 6005
+      name: 'noRewardsAvailable'
+      msg: 'No rewards available to claim yet.'
+    },
+    {
+      code: 6006
+      name: 'mathOverflow'
+      msg: 'Math overflow detected.'
+    },
+    {
+      code: 6007
       name: 'invalidOperation'
       msg: 'Invalid operation.'
     },
