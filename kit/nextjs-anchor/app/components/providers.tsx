@@ -1,15 +1,21 @@
 "use client";
 
-import { SolanaProvider } from "@solana/react-hooks";
+import { ThemeProvider } from "next-themes";
+import { Toaster } from "sonner";
 import { PropsWithChildren } from "react";
-
-import { autoDiscover, createClient } from "@solana/client";
-
-const client = createClient({
-  endpoint: "https://api.devnet.solana.com",
-  walletConnectors: autoDiscover(),
-});
+import { ClusterProvider } from "./cluster-context";
+import { WalletProvider } from "../lib/wallet/context";
+import { SolanaClientProvider } from "../lib/solana-client-context";
 
 export function Providers({ children }: PropsWithChildren) {
-  return <SolanaProvider client={client}>{children}</SolanaProvider>;
+  return (
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+      <ClusterProvider>
+        <SolanaClientProvider>
+          <WalletProvider>{children}</WalletProvider>
+        </SolanaClientProvider>
+        <Toaster position="bottom-right" richColors />
+      </ClusterProvider>
+    </ThemeProvider>
+  );
 }
