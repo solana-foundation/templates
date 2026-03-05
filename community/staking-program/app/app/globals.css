@@ -28,9 +28,29 @@
   --color-success: var(--success);
 }
 
-/* Dark-first oklch theme (matching solana templates convention) */
+/* oklch theme with light + dark modes */
 :root {
   --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --success: oklch(0.723 0.191 149.58);
+}
+
+.dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -71,6 +91,7 @@
     opacity: 0;
     transform: translateY(6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -81,6 +102,7 @@
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
@@ -91,6 +113,7 @@
     opacity: 0;
     transform: translateX(100%);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -102,6 +125,7 @@
     opacity: 1;
     transform: translateX(0);
   }
+
   to {
     opacity: 0;
     transform: translateX(100%);
@@ -112,6 +136,7 @@
   from {
     width: 100%;
   }
+
   to {
     width: 0%;
   }
@@ -134,7 +159,7 @@
 }
 
 .skeleton {
-  background: linear-gradient(90deg, oklch(0.269 0 0) 25%, oklch(0.32 0 0) 50%, oklch(0.269 0 0) 75%);
+  background: linear-gradient(90deg, var(--muted) 25%, var(--accent) 50%, var(--muted) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
   border-radius: var(--radius);
@@ -142,8 +167,8 @@
 
 /* ─── Wallet Adapter Overrides ─── */
 .wallet-adapter-button {
-  background: oklch(0.922 0 0) !important;
-  color: oklch(0.145 0 0) !important;
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
   border-radius: var(--radius) !important;
   font-family: var(--font-sans) !important;
   font-weight: 600 !important;
@@ -158,23 +183,23 @@
 }
 
 .wallet-adapter-button-trigger {
-  background: oklch(0.922 0 0) !important;
-  color: oklch(0.145 0 0) !important;
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
 }
 
 .wallet-adapter-modal-wrapper {
-  background: oklch(0.205 0 0) !important;
-  border: 1px solid oklch(1 0 0 / 10%) !important;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
   border-radius: 0.75rem !important;
 }
 
 .wallet-adapter-modal-button-close {
-  background: oklch(0.269 0 0) !important;
+  background: var(--muted) !important;
 }
 
 .wallet-adapter-modal-title {
   font-family: var(--font-sans) !important;
-  color: oklch(0.985 0 0) !important;
+  color: var(--foreground) !important;
 }
 
 .wallet-adapter-modal-list li {
@@ -182,7 +207,7 @@
 }
 
 .wallet-adapter-modal-list .wallet-adapter-button {
-  background: oklch(0.269 0 0) !important;
-  color: oklch(0.985 0 0) !important;
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
   border-radius: var(--radius) !important;
 }

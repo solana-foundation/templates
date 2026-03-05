@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import WalletContextProvider from '@/components/WalletContextProvider'
 import { ToastProvider } from '@/components/Toast'
+import { ThemeProvider } from 'next-themes'
 
 const inter = Inter({
   variable: '--font-sans',
@@ -22,11 +23,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans`}>
-        <WalletContextProvider>
-          <ToastProvider>{children}</ToastProvider>
-        </WalletContextProvider>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+          <WalletContextProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </WalletContextProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
