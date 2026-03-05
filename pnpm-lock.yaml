@@ -729,6 +729,8 @@ importers:
         specifier: ~5.8.3
         version: 5.8.3
 
+  community/solana-blinks-axum: {}
+
   community/solana-chatgpt-kit:
     dependencies:
       '@bonfida/spl-name-service':
