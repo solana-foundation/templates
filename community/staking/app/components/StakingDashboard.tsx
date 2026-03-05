@@ -6,6 +6,7 @@ import { WalletConnectButton } from './WalletConnectButton'
 import Navbar from './Navbar'
 import { useStakingProgram } from '@/hooks/useStakingProgram'
 import { useToast } from './Toast'
+import { STAKING_CLUSTER_LABEL } from '@/lib/staking-config'
 
 function formatToken(num: number): string {
   return num.toLocaleString(undefined, {
@@ -28,10 +29,15 @@ export default function StakingDashboard() {
 
   const stakedAmount = userPosition?.stakedAmount ?? 0
   const rewardDebt = userPosition?.rewardDebt ?? 0
+  const poolReady = Boolean(poolStats)
 
   const handleStake = useCallback(async () => {
     const num = parseFloat(amount)
     if (!num || num <= 0) return
+    if (!poolReady) {
+      showToast('error', 'Pool not initialized', 'Run node scripts/initialize-pool.js --mint <TOKEN_MINT_ADDRESS>')
+      return
+    }
     setStaking(true)
     try {
       showToast('info', 'Signing transaction...', `Staking ${num} tokens`)
@@ -44,7 +50,7 @@ export default function StakingDashboard() {
     } finally {
       setStaking(false)
     }
-  }, [amount, showToast, stake])
+  }, [amount, poolReady, showToast, stake])
 
   const handleUnstake = useCallback(async () => {
     const num = parseFloat(amount)
@@ -161,7 +167,15 @@ export default function StakingDashboard() {
                   <p className="mt-0.5 text-base font-semibold font-mono">{formatToken(poolStats.rewardPool)}</p>
                 </div>
               </div>
-            ) : null}
+            ) : (
+              <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-100">
+                <p className="font-semibold text-amber-200">Pool not initialized</p>
+                <p className="mt-1 text-xs leading-relaxed text-amber-100/80">
+                  Run <code className="font-mono">node scripts/initialize-pool.js --mint &lt;TOKEN_MINT_ADDRESS&gt;</code>{' '}
+                  before using the staking UI.
+                </p>
+              </div>
+            )}
 
             {/* Amount input */}
             <div className="rounded-lg border border-border bg-card p-4">
@@ -237,7 +251,7 @@ export default function StakingDashboard() {
             ) : (
               <button
                 onClick={handleStake}
-                disabled={isProcessing || !amount || parseFloat(amount) <= 0}
+                disabled={isProcessing || !poolReady || !amount || parseFloat(amount) <= 0}
                 className="w-full rounded-lg bg-foreground px-4 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-85 disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 {staking ? 'Staking...' : 'Stake Tokens'}
@@ -252,7 +266,7 @@ export default function StakingDashboard() {
                   disabled={requesting}
                   className="text-xs text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground disabled:opacity-40"
                 >
-                  {requesting ? 'Minting...' : 'Get test tokens (devnet)'}
+                  {requesting ? 'Minting...' : `Get test tokens (${STAKING_CLUSTER_LABEL})`}
                 </button>
               </div>
             )}
@@ -266,6 +280,13 @@ export default function StakingDashboard() {
                 <div className="flex justify-center">
                   <WalletConnectButton />
                 </div>
+              </div>
+            ) : !poolReady ? (
+              <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-6 text-center">
+                <p className="text-sm font-semibold text-amber-200">Pool not initialized</p>
+                <p className="mt-2 text-xs text-amber-100/80">
+                  Initialize the pool first, then refresh this page to manage positions.
+                </p>
               </div>
             ) : userLoading ? (
               <div className="space-y-3">
@@ -307,7 +328,7 @@ export default function StakingDashboard() {
                     />
                     <button
                       onClick={handleUnstake}
-                      disabled={unstaking || !amount || parseFloat(amount) <= 0}
+                      disabled={unstaking || !poolReady || !amount || parseFloat(amount) <= 0}
                       className="rounded-lg border border-border px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-secondary disabled:opacity-30 disabled:cursor-not-allowed"
                     >
                       {unstaking ? '...' : 'Unstake'}
@@ -318,7 +339,7 @@ export default function StakingDashboard() {
                 {/* Claim */}
                 <button
                   onClick={handleClaim}
-                  disabled={claiming || stakedAmount === 0}
+                  disabled={claiming || !poolReady || stakedAmount === 0}
                   className="w-full rounded-lg bg-foreground px-4 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-85 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   {claiming ? 'Claiming...' : 'Claim Rewards'}

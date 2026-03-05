@@ -6,7 +6,7 @@ pub mod state;
 
 use crate::accounts_context::*;
 
-declare_id!("55UVMV1TKf7qMeY66xffEeTzom9BSt6oeaoVQMZkZXCp");
+declare_id!("Bis7gddjhnCvtYrb9mDEm3G3UPNoDCHjXvn2C9B8GQFG");
 
 #[program]
 pub mod staking_program {

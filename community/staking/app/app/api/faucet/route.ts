@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Connection, Keypair, PublicKey, clusterApiUrl } from '@solana/web3.js'
+import { Connection, Keypair, PublicKey } from '@solana/web3.js'
 import { getOrCreateAssociatedTokenAccount, mintTo } from '@solana/spl-token'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as os from 'os'
+import { STAKING_PROGRAM_ID, STAKING_RPC_ENDPOINT } from '@/lib/staking-config'
 
-const PROGRAM_ID = new PublicKey('55UVMV1TKf7qMeY66xffEeTzom9BSt6oeaoVQMZkZXCp')
 const AMOUNT = 100 // 100 tokens per faucet request
 const GLOBAL_STATE_DISCRIMINATOR = Buffer.from([163, 46, 74, 168, 216, 123, 133, 98])
 
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     }
 
     const recipient = new PublicKey(wallet)
-    const connection = new Connection(clusterApiUrl('devnet'), 'confirmed')
+    const connection = new Connection(STAKING_RPC_ENDPOINT, 'confirmed')
 
     // Load admin keypair (mint authority)
     const keypairPath = process.env.ADMIN_KEYPAIR_PATH || path.join(os.homedir(), '.config', 'solana', 'id.json')
@@ -25,10 +25,10 @@ export async function POST(req: NextRequest) {
     const admin = Keypair.fromSecretKey(Uint8Array.from(keypairData))
 
     // Get mint from GlobalState
-    const [globalState] = PublicKey.findProgramAddressSync([Buffer.from('global_state')], PROGRAM_ID)
+    const [globalState] = PublicKey.findProgramAddressSync([Buffer.from('global_state')], STAKING_PROGRAM_ID)
     const gsInfo = await connection.getAccountInfo(globalState)
     if (!gsInfo) {
-      return NextResponse.json({ error: 'Pool not initialized. Run initialize-pool.ts first.' }, { status: 500 })
+      return NextResponse.json({ error: 'Pool not initialized. Run initialize-pool.js first.' }, { status: 500 })
     }
     if (!gsInfo.data.subarray(0, 8).equals(GLOBAL_STATE_DISCRIMINATOR)) {
       return NextResponse.json(

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useCallback, createContext, useContext } from 'react'
+import { getExplorerClusterParam } from '@/lib/staking-config'
 
 type ToastType = 'success' | 'error' | 'info'
 
@@ -25,6 +26,7 @@ export function useToast() {
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([])
+  const explorerCluster = getExplorerClusterParam()
 
   const showToast = useCallback((type: ToastType, title: string, message?: string, txSignature?: string) => {
     const id = Math.random().toString(36).slice(2)
@@ -100,9 +102,9 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-foreground">{toast.title}</p>
                 {toast.message && <p className="mt-0.5 text-xs text-muted-foreground">{toast.message}</p>}
-                {toast.txSignature && (
+                {toast.txSignature && explorerCluster && (
                   <a
-                    href={`https://explorer.solana.com/tx/${toast.txSignature}?cluster=devnet`}
+                    href={`https://explorer.solana.com/tx/${toast.txSignature}?cluster=${explorerCluster}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"

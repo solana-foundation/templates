@@ -2,11 +2,11 @@
 
 import React, { useMemo } from 'react'
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
-import { clusterApiUrl } from '@solana/web3.js'
 import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+import { STAKING_RPC_ENDPOINT } from '@/lib/staking-config'
 
 export default function WalletContextProvider({ children }: { children: React.ReactNode }) {
-  const endpoint = useMemo(() => clusterApiUrl('devnet'), [])
+  const endpoint = useMemo(() => STAKING_RPC_ENDPOINT, [])
   const wallets = useMemo(() => [new PhantomWalletAdapter(), new SolflareWalletAdapter()], [])
 
   return (

@@ -6,8 +6,7 @@ import { useAnchorWallet } from '@solana/wallet-adapter-react'
 import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js'
 import * as anchor from '@coral-xyz/anchor'
 import idlJson from '@/types/staking_program.json'
-
-const PROGRAM_ID = new PublicKey('55UVMV1TKf7qMeY66xffEeTzom9BSt6oeaoVQMZkZXCp')
+import { STAKING_PROGRAM_ID } from '@/lib/staking-config'
 
 const TOKEN_PROGRAM_ID = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
 const GLOBAL_STATE_DISCRIMINATOR = Buffer.from([163, 46, 74, 168, 216, 123, 133, 98])
@@ -58,27 +57,27 @@ function parseGlobalState(accountData: Buffer): ParsedGlobalState | null {
 
 // PDA derivation helpers
 function getGlobalStatePda(): PublicKey {
-  return PublicKey.findProgramAddressSync([Buffer.from('global_state')], PROGRAM_ID)[0]
+  return PublicKey.findProgramAddressSync([Buffer.from('global_state')], STAKING_PROGRAM_ID)[0]
 }
 
 function getVaultPda(): PublicKey {
-  return PublicKey.findProgramAddressSync([Buffer.from('staking_vault')], PROGRAM_ID)[0]
+  return PublicKey.findProgramAddressSync([Buffer.from('staking_vault')], STAKING_PROGRAM_ID)[0]
 }
 
 function getVaultAuthorityPda(): PublicKey {
-  return PublicKey.findProgramAddressSync([Buffer.from('vault_authority')], PROGRAM_ID)[0]
+  return PublicKey.findProgramAddressSync([Buffer.from('vault_authority')], STAKING_PROGRAM_ID)[0]
 }
 
 function getRewardPoolPda(): PublicKey {
-  return PublicKey.findProgramAddressSync([Buffer.from('reward_pool')], PROGRAM_ID)[0]
+  return PublicKey.findProgramAddressSync([Buffer.from('reward_pool')], STAKING_PROGRAM_ID)[0]
 }
 
 function getRewardPoolAuthorityPda(): PublicKey {
-  return PublicKey.findProgramAddressSync([Buffer.from('reward_pool_authority')], PROGRAM_ID)[0]
+  return PublicKey.findProgramAddressSync([Buffer.from('reward_pool_authority')], STAKING_PROGRAM_ID)[0]
 }
 
 function getStakerPda(wallet: PublicKey): PublicKey {
-  return PublicKey.findProgramAddressSync([Buffer.from('staker'), wallet.toBuffer()], PROGRAM_ID)[0]
+  return PublicKey.findProgramAddressSync([Buffer.from('staker'), wallet.toBuffer()], STAKING_PROGRAM_ID)[0]
 }
 
 export function useStakingProgram() {
@@ -102,7 +101,7 @@ export function useStakingProgram() {
     const provider = new anchor.AnchorProvider(connection, wallet, {
       commitment: 'confirmed',
     })
-    return new anchor.Program(idlJson as anchor.Idl, provider)
+    return new anchor.Program({ ...idlJson, address: STAKING_PROGRAM_ID.toBase58() } as anchor.Idl, provider)
   }, [connection, wallet])
 
   // Fetch pool data
@@ -198,7 +197,9 @@ export function useStakingProgram() {
       if (!gsInfo) throw new Error('Pool not initialized. Admin must call initialize first.')
       const parsed = parseGlobalState(gsInfo.data)
       if (!parsed) {
-        throw new Error('Invalid pool state at the staking PDA. Initialize the pool for this program ID before staking.')
+        throw new Error(
+          'Invalid pool state at the staking PDA. Initialize the pool for this program ID before staking.',
+        )
       }
 
       // Find user's ATA
@@ -244,7 +245,9 @@ export function useStakingProgram() {
       if (!gsInfo) throw new Error('Pool not initialized')
       const parsed = parseGlobalState(gsInfo.data)
       if (!parsed) {
-        throw new Error('Invalid pool state at the staking PDA. Initialize the pool for this program ID before unstaking.')
+        throw new Error(
+          'Invalid pool state at the staking PDA. Initialize the pool for this program ID before unstaking.',
+        )
       }
       const { getAssociatedTokenAddressSync } = await import('@solana/spl-token')
       const userTokenAccount = getAssociatedTokenAddressSync(parsed.mint, publicKey)
@@ -335,6 +338,6 @@ export function useStakingProgram() {
     claim,
     connected,
     publicKey,
-    programId: PROGRAM_ID,
+    programId: STAKING_PROGRAM_ID,
   }
 }
