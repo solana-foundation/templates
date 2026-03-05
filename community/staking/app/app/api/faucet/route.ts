@@ -7,6 +7,7 @@ import * as os from 'os'
 
 const PROGRAM_ID = new PublicKey('55UVMV1TKf7qMeY66xffEeTzom9BSt6oeaoVQMZkZXCp')
 const AMOUNT = 100 // 100 tokens per faucet request
+const GLOBAL_STATE_DISCRIMINATOR = Buffer.from([163, 46, 74, 168, 216, 123, 133, 98])
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,6 +29,12 @@ export async function POST(req: NextRequest) {
     const gsInfo = await connection.getAccountInfo(globalState)
     if (!gsInfo) {
       return NextResponse.json({ error: 'Pool not initialized. Run initialize-pool.ts first.' }, { status: 500 })
+    }
+    if (!gsInfo.data.subarray(0, 8).equals(GLOBAL_STATE_DISCRIMINATOR)) {
+      return NextResponse.json(
+        { error: 'Invalid pool state at the staking PDA. Initialize the pool for this program ID first.' },
+        { status: 500 },
+      )
     }
     const mint = new PublicKey(gsInfo.data.slice(8 + 32, 8 + 64))
 

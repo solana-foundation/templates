@@ -10,6 +10,7 @@ import idlJson from '@/types/staking_program.json'
 const PROGRAM_ID = new PublicKey('55UVMV1TKf7qMeY66xffEeTzom9BSt6oeaoVQMZkZXCp')
 
 const TOKEN_PROGRAM_ID = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
+const GLOBAL_STATE_DISCRIMINATOR = Buffer.from([163, 46, 74, 168, 216, 123, 133, 98])
 
 export interface PoolStats {
   totalStaked: number
@@ -27,6 +28,32 @@ export interface UserPosition {
   rewardDebt: number
   address: string
   exists: boolean
+}
+
+interface ParsedGlobalState {
+  admin: PublicKey
+  mint: PublicKey
+  vault: PublicKey
+  totalStaked: anchor.BN
+  rewardRate: anchor.BN
+  lastRewardTime: anchor.BN
+  rewardPool: anchor.BN
+}
+
+function parseGlobalState(accountData: Buffer): ParsedGlobalState | null {
+  if (accountData.length < 136) return null
+  if (!accountData.subarray(0, 8).equals(GLOBAL_STATE_DISCRIMINATOR)) return null
+
+  const data = accountData.subarray(8)
+  return {
+    admin: new PublicKey(data.subarray(0, 32)),
+    mint: new PublicKey(data.subarray(32, 64)),
+    vault: new PublicKey(data.subarray(64, 96)),
+    totalStaked: new anchor.BN(data.subarray(96, 104), 'le'),
+    rewardRate: new anchor.BN(data.subarray(104, 112), 'le'),
+    lastRewardTime: new anchor.BN(data.subarray(112, 120), 'le'),
+    rewardPool: new anchor.BN(data.subarray(120, 128), 'le'),
+  }
 }
 
 // PDA derivation helpers
@@ -85,23 +112,20 @@ export function useStakingProgram() {
       const accountInfo = await connectionRef.current.getAccountInfo(globalStatePda)
 
       if (accountInfo) {
-        const data = accountInfo.data.slice(8)
-        const admin = new PublicKey(data.slice(0, 32))
-        const mint = new PublicKey(data.slice(32, 64))
-        const vault = new PublicKey(data.slice(64, 96))
-        const totalStaked = new anchor.BN(data.slice(96, 104), 'le')
-        const rewardRate = new anchor.BN(data.slice(104, 112), 'le')
-        const lastRewardTime = new anchor.BN(data.slice(112, 120), 'le')
-        const rewardPool = new anchor.BN(data.slice(120, 128), 'le')
+        const parsed = parseGlobalState(accountInfo.data)
+        if (!parsed) {
+          setPoolStats(null)
+          return
+        }
 
         setPoolStats({
-          totalStaked: totalStaked.toNumber() / 1e6,
-          rewardRate: rewardRate.toNumber(),
-          rewardPool: rewardPool.toNumber() / 1e6,
-          lastRewardTime: lastRewardTime.toNumber(),
-          admin: admin.toBase58(),
-          mint: mint.toBase58(),
-          vault: vault.toBase58(),
+          totalStaked: parsed.totalStaked.toNumber() / 1e6,
+          rewardRate: parsed.rewardRate.toNumber(),
+          rewardPool: parsed.rewardPool.toNumber() / 1e6,
+          lastRewardTime: parsed.lastRewardTime.toNumber(),
+          admin: parsed.admin.toBase58(),
+          mint: parsed.mint.toBase58(),
+          vault: parsed.vault.toBase58(),
           initialized: true,
         })
       } else {
@@ -172,12 +196,14 @@ export function useStakingProgram() {
       // We need to find the user's token account — fetch globalState to get the mint
       const gsInfo = await connection.getAccountInfo(globalState)
       if (!gsInfo) throw new Error('Pool not initialized. Admin must call initialize first.')
-
-      const mint = new PublicKey(gsInfo.data.slice(8 + 32, 8 + 64))
+      const parsed = parseGlobalState(gsInfo.data)
+      if (!parsed) {
+        throw new Error('Invalid pool state at the staking PDA. Initialize the pool for this program ID before staking.')
+      }
 
       // Find user's ATA
       const { getAssociatedTokenAddressSync } = await import('@solana/spl-token')
-      const userTokenAccount = getAssociatedTokenAddressSync(mint, publicKey)
+      const userTokenAccount = getAssociatedTokenAddressSync(parsed.mint, publicKey)
 
       const tx = await program.methods
         .stake(amountBN)
@@ -216,10 +242,12 @@ export function useStakingProgram() {
 
       const gsInfo = await connection.getAccountInfo(globalState)
       if (!gsInfo) throw new Error('Pool not initialized')
-
-      const mint = new PublicKey(gsInfo.data.slice(8 + 32, 8 + 64))
+      const parsed = parseGlobalState(gsInfo.data)
+      if (!parsed) {
+        throw new Error('Invalid pool state at the staking PDA. Initialize the pool for this program ID before unstaking.')
+      }
       const { getAssociatedTokenAddressSync } = await import('@solana/spl-token')
-      const userTokenAccount = getAssociatedTokenAddressSync(mint, publicKey)
+      const userTokenAccount = getAssociatedTokenAddressSync(parsed.mint, publicKey)
 
       const tx = await program.methods
         .unstake(amountBN)
@@ -252,10 +280,12 @@ export function useStakingProgram() {
     const stakerPda = getStakerPda(publicKey)
     const gsInfo = await connection.getAccountInfo(globalState)
     if (!gsInfo) throw new Error('Pool not initialized')
-
-    const mint = new PublicKey(gsInfo.data.slice(8 + 32, 8 + 64))
+    const parsed = parseGlobalState(gsInfo.data)
+    if (!parsed) {
+      throw new Error('Invalid pool state at the staking PDA. Initialize the pool for this program ID before claiming.')
+    }
     const { getAssociatedTokenAddressSync } = await import('@solana/spl-token')
-    const userRewardTokenAccount = getAssociatedTokenAddressSync(mint, publicKey)
+    const userRewardTokenAccount = getAssociatedTokenAddressSync(parsed.mint, publicKey)
 
     const tx = await program.methods
       .claim()
