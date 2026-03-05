@@ -4,10 +4,10 @@ import { appStyles } from '@/constants/app-styles'
 import { toUint8Array, useMobileWallet } from '@wallet-ui/react-native-web3js'
 
 export function AccountFeatureSignMessage({ address }: { address: PublicKey }) {
-  const { signMessage } = useMobileWallet()
+  const { signMessages } = useMobileWallet()
   async function submit() {
     try {
-      await signMessage(toUint8Array(`Signing a message with ${address.toString()}`))
+      await signMessages(toUint8Array(`Signing a message with ${address.toString()}`))
       console.log('Message signed!')
     } catch (e) {
       console.log(`Error signing message: ${e}`)
