@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { WalletConnectButton } from './WalletConnectButton'
 import Navbar from './Navbar'
 import { useStakingProgram } from '@/hooks/useStakingProgram'
 import { useToast } from './Toast'
@@ -232,7 +232,7 @@ export default function StakingDashboard() {
             {/* Action button */}
             {!connected ? (
               <div className="flex justify-center">
-                <WalletMultiButton />
+                <WalletConnectButton />
               </div>
             ) : (
               <button
@@ -264,7 +264,7 @@ export default function StakingDashboard() {
               <div className="rounded-lg border border-border bg-card p-6 text-center">
                 <p className="text-sm text-muted-foreground mb-4">Connect your wallet to manage your position</p>
                 <div className="flex justify-center">
-                  <WalletMultiButton />
+                  <WalletConnectButton />
                 </div>
               </div>
             ) : userLoading ? (

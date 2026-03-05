@@ -3,22 +3,19 @@
 import React from 'react'
 import Link from 'next/link'
 import { useTheme } from 'next-themes'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { WalletConnectButton } from './WalletConnectButton'
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => setMounted(true), [])
-
-  if (!mounted) {
-    return <div className="h-8 w-8" />
-  }
+  if (!mounted) return <div className="h-8 w-8" />
 
   return (
     <button
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className="flex h-8 w-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
+      className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
       aria-label="Toggle theme"
     >
       {theme === 'dark' ? (
@@ -55,21 +52,19 @@ function ThemeToggle() {
 
 export default function Navbar() {
   return (
-    <header className="relative z-50 px-4 py-2 bg-card/50">
-      <div className="mx-auto flex max-w-4xl items-center justify-between">
-        <div className="flex items-baseline gap-4">
-          <Link className="text-xl hover:text-muted-foreground transition-colors" href="/">
-            <span className="font-semibold tracking-tight">Staking</span>
-          </Link>
-        </div>
+    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+      <div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-4">
+        <Link className="text-lg font-semibold tracking-tight transition-colors hover:text-muted-foreground" href="/">
+          Staking
+        </Link>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1">
+          <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border px-2.5">
             <div className="h-1.5 w-1.5 rounded-full bg-success" />
-            <span className="text-xs text-muted-foreground">Devnet</span>
+            <span className="text-xs text-muted-foreground font-medium">Devnet</span>
           </div>
+          <WalletConnectButton />
           <ThemeToggle />
-          <WalletMultiButton />
         </div>
       </div>
     </header>
