@@ -74,9 +74,9 @@ yarn create solana-dapp --template privy-auth
 +-------------------+      +-------------------+      +-------------------+
 | External Wallets  |      |  Sign Messages    |      |  Wallet State     |
 |                   |      |                   |      |                   |
-|  Phantom          |      |  Demo component   |      |  useSolanaWallet  |
-|  Solflare         |      |  to sign with     |      |  hook for easy    |
-|  Backpack         |      |  embedded wallet  |      |  wallet access    |
+|  Phantom          |      |  Demo component   |      |  Privy hooks for  |
+|  Solflare         |      |  to sign with     |      |  easy wallet      |
+|  Backpack         |      |  embedded wallet  |      |  access           |
 |  + more           |      |                   |      |                   |
 +-------------------+      +-------------------+      +-------------------+
 ```
@@ -90,9 +90,8 @@ yarn create solana-dapp --template privy-auth
 | **Framework** | Next.js (App Router) | ^15.3 |
 | **Language** | TypeScript | ^5 |
 | **Styling** | Tailwind CSS | ^4 |
-| **Auth** | Privy React SDK | ^2.24 |
-| **Blockchain** | Solana web3.js | ^1.98 |
-| **Tokens** | SPL Token | ^0.4 |
+| **Auth** | Privy React SDK | ^3.0 |
+| **Blockchain** | Solana Kit | ^6.1 |
 
 ---
 
@@ -167,11 +166,6 @@ privy-auth/
 │   │   ├── wallet-info.tsx ........ Status indicators (green/red dots)
 │   │   └── sign-message.tsx ....... Sign demo with embedded wallet
 │   │
-│   ├── hooks/
-│   │   └── use-solana-wallet.ts ... Extract wallets from Privy user
-│   │
-│   └── types/
-│       └── privy.ts ............... Type helpers for wallet filtering
 │
 ├── middleware.ts ................... Route guard (privy-token cookie)
 ├── .env.example ................... Environment variable template
@@ -273,7 +267,7 @@ appearance: {
 // src/components/providers.tsx
 embeddedWallets: {
   solana: {
-    createOnLogin: "all-users",
+    createOnLogin: "users-without-wallets",
     // "all-users"              — wallet for everyone
     // "users-without-wallets"  — only if no external wallet
     // "off"                    — no auto-creation
@@ -287,14 +281,16 @@ embeddedWallets: {
 <summary><strong>Use the Wallet Hook</strong></summary>
 
 ```tsx
-import { useSolanaWallet } from "@/hooks/use-solana-wallet";
+import { useWallets } from "@privy-io/react-auth/solana";
 
 function MyComponent() {
-  const { embedded, external, all, ready, authenticated } = useSolanaWallet();
+  const { wallets, ready } = useWallets();
 
-  // embedded  — { address, walletClientType, isEmbedded } | null
-  // external  — array of connected external wallets
-  // all       — all Solana wallets combined
+  // wallets — all connected Solana wallets
+  // ready   — boolean (whether wallets are ready)
+
+  const embedded = wallets.find((w) => w.standardWallet.name === "Privy") ?? null;
+  const external = wallets.filter((w) => w.standardWallet.name !== "Privy");
 }
 ```
 
@@ -304,20 +300,24 @@ function MyComponent() {
 <summary><strong>Sign Messages</strong></summary>
 
 ```tsx
-import { useSignMessage } from "@privy-io/react-auth/solana";
-import { useSolanaWallet } from "@/hooks/use-solana-wallet";
+import {
+  useWallets,
+  useSignMessage,
+} from "@privy-io/react-auth/solana";
 
 function MyComponent() {
-  const { embedded } = useSolanaWallet();
+  const { wallets } = useWallets();
   const { signMessage } = useSignMessage();
+  const embedded = wallets.find((w) => w.standardWallet.name === "Privy");
 
   const handleSign = async () => {
+    if (!embedded) return;
     const msg = new TextEncoder().encode("Hello, Solana!");
-    const sig = await signMessage({
+    const { signature } = await signMessage({
       message: msg,
-      options: { address: embedded!.address },
+      wallet: embedded,
     });
-    console.log("Signature:", Buffer.from(sig).toString("base64"));
+    console.log("Signature:", Buffer.from(signature).toString("base64"));
   };
 }
 ```
@@ -399,7 +399,7 @@ Enable the method in **both** places:
 <details>
 <summary><strong>Embedded wallet not created</strong></summary>
 
-Check `embeddedWallets.solana.createOnLogin` is `"all-users"` in `providers.tsx`. Also enable **Embedded Wallets > Solana** in the Privy Dashboard.
+Check `embeddedWallets.solana.createOnLogin` is `"users-without-wallets"` in `providers.tsx`. Also enable **Embedded Wallets > Solana** in the Privy Dashboard.
 
 </details>
 

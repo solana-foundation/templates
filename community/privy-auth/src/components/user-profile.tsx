@@ -1,7 +1,7 @@
 "use client";
 
 import { usePrivy } from "@privy-io/react-auth";
-import { useSolanaWallet } from "@/hooks/use-solana-wallet";
+import { useWallets } from "@privy-io/react-auth/solana";
 import {
   Card,
   CardContent,
@@ -20,7 +20,9 @@ function truncate(str: string) {
 
 export function UserProfile() {
   const { user, logout } = usePrivy();
-  const { embedded, external } = useSolanaWallet();
+  const { wallets } = useWallets();
+  const embedded = wallets.find((w) => w.standardWallet.name === "Privy") ?? null;
+  const external = wallets.filter((w) => w.standardWallet.name !== "Privy");
 
   if (!user) return null;
 
@@ -93,7 +95,7 @@ export function UserProfile() {
                       variant="outline"
                       className="text-[10px] font-normal"
                     >
-                      {w.walletClientType}
+                      {w.standardWallet.name}
                     </Badge>
                   </div>
                 ))}

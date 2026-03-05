@@ -1,7 +1,7 @@
 "use client";
 
 import { usePrivy } from "@privy-io/react-auth";
-import { useSolanaWallet } from "@/hooks/use-solana-wallet";
+import { useWallets } from "@privy-io/react-auth/solana";
 import {
   Card,
   CardContent,
@@ -24,8 +24,9 @@ function StatusDot({ active }: { active: boolean }) {
 }
 
 export function WalletInfo() {
-  const { ready, authenticated } = usePrivy();
-  const { embedded, all } = useSolanaWallet();
+  const { authenticated } = usePrivy();
+  const { wallets, ready } = useWallets();
+  const embedded = wallets.find((w) => w.standardWallet.name === "Privy") ?? null;
 
   if (!ready) {
     return (
@@ -61,9 +62,9 @@ export function WalletInfo() {
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <StatusDot active={all.length > 0} />
+          <StatusDot active={wallets.length > 0} />
           <span className="text-sm">
-            {all.length} wallet{all.length !== 1 ? "s" : ""} connected
+            {wallets.length} wallet{wallets.length !== 1 ? "s" : ""} connected
           </span>
         </div>
       </CardContent>

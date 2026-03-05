@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSignMessage } from "@privy-io/react-auth/solana";
-import { useSolanaWallet } from "@/hooks/use-solana-wallet";
+import { useWallets, useSignMessage } from "@privy-io/react-auth/solana";
 import {
   Card,
   CardContent,
@@ -15,8 +14,9 @@ import { toast } from "sonner";
 import { PenLine, Copy, Loader2 } from "lucide-react";
 
 export function SignMessage() {
-  const { embedded } = useSolanaWallet();
+  const { wallets } = useWallets();
   const { signMessage } = useSignMessage();
+  const embedded = wallets.find((w) => w.standardWallet.name === "Privy") ?? null;
   const [signature, setSignature] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -31,9 +31,9 @@ export function SignMessage() {
         "Hello from privy-auth! This is a demo message signed with your embedded Solana wallet.",
       );
 
-      const result = await signMessage({
+      const { signature: result } = await signMessage({
         message,
-        options: { address: embedded.address },
+        wallet: embedded,
       });
 
       const sig = Buffer.from(result).toString("base64");
