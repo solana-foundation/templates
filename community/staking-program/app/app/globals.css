@@ -21,40 +21,47 @@
   --color-primary: var(--primary);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --color-success: var(--success);
 }
 
-/* Pure black & white — template neutral */
+/* Dark-first oklch theme (matching solana templates convention) */
 :root {
-  --background: #000000;
-  --foreground: #ffffff;
-  --card: #111111;
-  --card-foreground: #ffffff;
-  --primary: #ffffff;
-  --primary-foreground: #000000;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #ffffff;
-  --muted: #1a1a1a;
-  --muted-foreground: #737373;
-  --accent: #222222;
-  --accent-foreground: #ffffff;
-  --destructive: #ef4444;
-  --border: #262626;
-  --input: #262626;
-  --ring: #ffffff;
-  --radius: 0.75rem;
-  --success: #22c55e;
+  --radius: 0.625rem;
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --success: oklch(0.723 0.191 149.58);
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border outline-ring/50;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
   }
 }
 
@@ -62,9 +69,8 @@
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -75,7 +81,6 @@
   0% {
     background-position: -200% 0;
   }
-
   100% {
     background-position: 200% 0;
   }
@@ -86,7 +91,6 @@
     opacity: 0;
     transform: translateX(100%);
   }
-
   to {
     opacity: 1;
     transform: translateX(0);
@@ -98,7 +102,6 @@
     opacity: 1;
     transform: translateX(0);
   }
-
   to {
     opacity: 0;
     transform: translateX(100%);
@@ -109,14 +112,13 @@
   from {
     width: 100%;
   }
-
   to {
     width: 0%;
   }
 }
 
 .animate-fade-in {
-  animation: fade-in 0.4s ease-out forwards;
+  animation: fade-in 0.35s ease-out both;
 }
 
 .animate-slide-in-right {
@@ -132,7 +134,7 @@
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #1a1a1a 25%, #262626 50%, #1a1a1a 75%);
+  background: linear-gradient(90deg, oklch(0.269 0 0) 25%, oklch(0.32 0 0) 50%, oklch(0.269 0 0) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
   border-radius: var(--radius);
@@ -140,39 +142,39 @@
 
 /* ─── Wallet Adapter Overrides ─── */
 .wallet-adapter-button {
-  background: #ffffff !important;
-  color: #000000 !important;
+  background: oklch(0.922 0 0) !important;
+  color: oklch(0.145 0 0) !important;
   border-radius: var(--radius) !important;
   font-family: var(--font-sans) !important;
   font-weight: 600 !important;
-  font-size: 0.875rem !important;
-  height: 2.75rem !important;
-  padding: 0 1.5rem !important;
-  transition: all 0.15s ease !important;
+  font-size: 0.8125rem !important;
+  height: 2.5rem !important;
+  padding: 0 1.25rem !important;
+  transition: opacity 0.15s ease !important;
 }
 
 .wallet-adapter-button:hover {
-  opacity: 0.85 !important;
+  opacity: 0.8 !important;
 }
 
 .wallet-adapter-button-trigger {
-  background: #ffffff !important;
-  color: #000000 !important;
+  background: oklch(0.922 0 0) !important;
+  color: oklch(0.145 0 0) !important;
 }
 
 .wallet-adapter-modal-wrapper {
-  background: #111111 !important;
-  border: 1px solid #262626 !important;
-  border-radius: 1rem !important;
+  background: oklch(0.205 0 0) !important;
+  border: 1px solid oklch(1 0 0 / 10%) !important;
+  border-radius: 0.75rem !important;
 }
 
 .wallet-adapter-modal-button-close {
-  background: #262626 !important;
+  background: oklch(0.269 0 0) !important;
 }
 
 .wallet-adapter-modal-title {
   font-family: var(--font-sans) !important;
-  color: #ffffff !important;
+  color: oklch(0.985 0 0) !important;
 }
 
 .wallet-adapter-modal-list li {
@@ -180,7 +182,7 @@
 }
 
 .wallet-adapter-modal-list .wallet-adapter-button {
-  background: #1a1a1a !important;
-  color: #ffffff !important;
+  background: oklch(0.269 0 0) !important;
+  color: oklch(0.985 0 0) !important;
   border-radius: var(--radius) !important;
 }
