@@ -1,0 +1,49 @@
+{
+  "name": "privy-auth",
+  "displayName": "Privy + Solana Auth",
+  "description": "Next.js app with Privy auth (Google, Discord, Twitter) and embedded Solana wallets",
+  "usecase": "Starter",
+  "keywords": ["privy", "solana", "nextjs", "auth", "embedded-wallet", "web3"],
+  "version": "0.1.0",
+  "create-solana-dapp": {
+    "instructions": [
+      "Privy + Solana Auth template",
+      "",
+      "1. Get a Privy App ID from https://dashboard.privy.io",
+      "2. Copy .env.example to .env.local and add:",
+      "   NEXT_PUBLIC_PRIVY_APP_ID=your_privy_app_id",
+      "",
+      "Install dependencies:",
+      "+{pm} install",
+      "",
+      "Start the development server:",
+      "+{pm} dev",
+      "",
+      "Open http://localhost:3000 and sign in with Google, Discord, or Twitter."
+    ]
+  },
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@privy-io/react-auth": "^3.15.0",
+    "@solana/web3.js": "^1.98.4",
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
