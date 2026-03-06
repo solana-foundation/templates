@@ -169,7 +169,7 @@ export default function Home() {
 
                     <div className="bg-white/60 border border-purple-200 rounded-lg p-3">
                       <p className="text-xs text-gray-700">
-                        This wallet is controlled by you and secured by Privy's infrastructure
+                        This wallet is controlled by you and secured by Privy&apos;s infrastructure
                       </p>
                     </div>
                   </div>

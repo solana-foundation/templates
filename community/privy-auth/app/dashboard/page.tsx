@@ -1,14 +1,20 @@
 "use client";
 
 import { usePrivy } from "@privy-io/react-auth";
+import { useSignAndSendTransaction, useWallets } from "@privy-io/react-auth/solana";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import bs58 from "bs58";
 import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from "@solana/web3.js";
 
+type SolanaWalletAccount = { type: "wallet"; chainType: "solana"; address: string; walletClientType?: string; imported?: boolean };
+
 export default function Dashboard() {
-  const { authenticated, ready, user, logout, getAccessToken, sendTransaction } = usePrivy();
+  const { authenticated, ready, user, logout, getAccessToken } = usePrivy();
+  const { signAndSendTransaction } = useSignAndSendTransaction();
+  const { wallets } = useWallets();
   const router = useRouter();
   const [balance, setBalance] = useState<number | null>(null);
   const [loadingBalance, setLoadingBalance] = useState(false);
@@ -23,9 +29,12 @@ export default function Dashboard() {
     }
   }, [ready, authenticated, router]);
 
-  const solanaWallet = user?.linkedAccounts?.find(
+  const rawSolanaWallet = user?.linkedAccounts?.find(
     (account) => account.type === "wallet" && account.chainType === "solana"
   );
+  const solanaWallet = rawSolanaWallet && "address" in rawSolanaWallet
+    ? (rawSolanaWallet as SolanaWalletAccount)
+    : undefined;
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -75,6 +84,13 @@ export default function Dashboard() {
       return;
     }
 
+    const solanaWalletFromHook = wallets.find((w) => w.address === solanaWallet.address);
+
+    if (!solanaWalletFromHook) {
+      alert("Solana wallet not ready. Please try again.");
+      return;
+    }
+
     setIsSending(true);
     setTxSignature(null);
 
@@ -84,12 +100,12 @@ export default function Dashboard() {
       const toPubkey = new PublicKey(recipientAddress);
       const lamports = parseFloat(amount) * LAMPORTS_PER_SOL;
 
-      const { blockhash } = await connection.getLatestBlockhash();
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
 
       const transaction = new Transaction({
         feePayer: fromPubkey,
         blockhash,
-        lastValidBlockHeight: (await connection.getLatestBlockhash()).lastValidBlockHeight,
+        lastValidBlockHeight,
       }).add(
         SystemProgram.transfer({
           fromPubkey,
@@ -98,23 +114,30 @@ export default function Dashboard() {
         })
       );
 
-      const uiConfig = {
-        header: "Send SOL",
-        description: `Send ${amount} SOL to ${recipientAddress.slice(0, 4)}...${recipientAddress.slice(-4)}`,
-        buttonText: "Sign & Send",
-      };
+      const serialized = transaction.serialize({
+        requireAllSignatures: false,
+        verifySignatures: false,
+      });
 
-      const signature = await sendTransaction(transaction, "solana:devnet", uiConfig);
-      
-      setTxSignature(signature);
+      const result = await signAndSendTransaction({
+        transaction: new Uint8Array(serialized),
+        wallet: solanaWalletFromHook,
+        chain: "solana:devnet",
+      });
+
+      const signatureStr = typeof result.signature === "string"
+        ? result.signature
+        : bs58.encode(result.signature as Uint8Array);
+
+      setTxSignature(signatureStr);
       setRecipientAddress("");
       setAmount("");
 
       const balanceInLamports = await connection.getBalance(fromPubkey);
       setBalance(balanceInLamports / LAMPORTS_PER_SOL);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Transaction error:", error);
-      alert(error.message || "Transaction failed");
+      alert(error instanceof Error ? error.message : "Transaction failed");
     } finally {
       setIsSending(false);
     }
@@ -302,7 +325,7 @@ export default function Dashboard() {
 
                 <div className="bg-white/80 border border-purple-200 rounded-lg p-3">
                   <p className="text-xs text-gray-700">
-                    This wallet was automatically created when you signed in. It's non-custodial and controlled by you.
+                    This wallet was automatically created when you signed in. It&apos;s non-custodial and controlled by you.
                   </p>
                 </div>
               </div>
