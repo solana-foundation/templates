@@ -576,6 +576,25 @@
         "path": "community/zk-compression-airdrop",
         "displayName": "ZK Compression Airdrop",
         "usecase": "Airdrop"
+      },
+      {
+        "description": "Full-featured Solana staking application with Anchor smart contract and Next.js + Tailwind + TypeScript frontend",
+        "id": "gh:solana-foundation/templates/community/staking",
+        "image": "community/staking/og-image.png",
+        "keywords": [
+          "solana",
+          "staking",
+          "anchor",
+          "nextjs",
+          "tailwind",
+          "typescript",
+          "defi",
+          "wallet-adapter"
+        ],
+        "name": "staking",
+        "path": "community/staking",
+        "displayName": "Solana Staking",
+        "usecase": "DeFi"
       }
     ]
   },
