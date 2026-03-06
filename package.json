@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "clean": "tsx scripts/clean.ts",
-    "create-image": "tsx scripts/create-image.ts",
+    "create-image": "pnpm exec tsx scripts/create-image.ts",
     "generate": "tsx scripts/generate.ts && automd",
     "format": "prettier --write .",
     "lint": "tsx scripts/lint.ts && prettier --check .",
