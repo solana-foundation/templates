@@ -1,0 +1,16 @@
+[workspace]
+members = ["programs/*"]
+resolver = "2"
+
+[patch.crates-io]
+blake3 = { git = "https://github.com/BLAKE3-team/BLAKE3", tag = "1.5.5" }
+
+[profile.release]
+overflow-checks = true
+lto = "fat"
+codegen-units = 1
+
+[profile.release.build-override]
+opt-level = 3
+incremental = false
+codegen-units = 1
