@@ -5,7 +5,7 @@ import { createTransaction } from './create-transaction'
 import { useGetBalanceInvalidate } from './use-get-balance'
 
 export function useTransferSol({ address }: { address: PublicKey }) {
-  const { connection, signAndSendTransaction } = useMobileWallet()
+  const { connection, signAndSendTransactions } = useMobileWallet()
   const invalidateBalance = useGetBalanceInvalidate({ address })
 
   return useMutation({
@@ -21,7 +21,7 @@ export function useTransferSol({ address }: { address: PublicKey }) {
         })
 
         // Send transaction and await for signature
-        signature = await signAndSendTransaction(transaction, minContextSlot)
+        signature = await signAndSendTransactions(transaction, minContextSlot)
 
         // Send transaction and await for signature
         await connection.confirmTransaction({ signature, ...latestBlockhash }, 'confirmed')

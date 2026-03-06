@@ -5,11 +5,11 @@ import { useMobileWallet } from '@wallet-ui/react-native-kit'
 import { Address } from '@solana/kit'
 
 export function AccountFeatureSignMessage({ address }: { address: Address }) {
-  const { signMessage } = useMobileWallet()
+  const { signMessages } = useMobileWallet()
   const [title, setTitle] = useState('Sign Message')
   async function submit() {
     try {
-      await signMessage(new TextEncoder().encode(`Signing a message with ${address}`))
+      await signMessages(new TextEncoder().encode(`Signing a message with ${address}`))
       setTitle('Message Signed!')
       console.log('Message signed!')
     } catch (e) {

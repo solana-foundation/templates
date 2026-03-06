@@ -1,11 +1,11 @@
 import { createContext, type PropsWithChildren, use, useMemo } from 'react'
-import { Account, useMobileWallet } from '@wallet-ui/react-native-web3js'
+import { SignInOutput, useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { AppConfig } from '@/constants/app-config'
 import { useMutation } from '@tanstack/react-query'
 
 export interface AuthState {
   isAuthenticated: boolean
-  signIn: () => Promise<Account>
+  signIn: () => Promise<SignInOutput>
   signOut: () => Promise<void>
 }
 

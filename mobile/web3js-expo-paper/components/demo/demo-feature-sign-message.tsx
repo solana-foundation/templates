@@ -9,17 +9,17 @@ import { useMobileWallet } from '@wallet-ui/react-native-web3js'
 import { ellipsify } from '@/utils/ellipsify'
 import { useAppTheme } from '@/components/app-theme'
 
-function useSignMessage({ address }: { address: PublicKey }) {
-  const { signMessage } = useMobileWallet()
+function useSignMessage() {
+  const { signMessages } = useMobileWallet()
   return useMutation({
     mutationFn: async (input: { message: string }) => {
-      return signMessage(new TextEncoder().encode(input.message)).then((signature) => signature.toString())
+      return signMessages(new TextEncoder().encode(input.message)).then((signature) => signature.toString())
     },
   })
 }
 
 export function DemoFeatureSignMessage({ address }: { address: PublicKey }) {
-  const signMessage = useSignMessage({ address })
+  const signMessagesMutation = useSignMessage()
   const [message, setMessage] = useState('Hello world')
   const [showSnackbar, setShowSnackbar] = React.useState(false)
   const { theme } = useAppTheme()
@@ -37,13 +37,13 @@ export function DemoFeatureSignMessage({ address }: { address: PublicKey }) {
       <View style={{ gap: 16 }}>
         <AppText>Message</AppText>
         <TextInput value={message} onChangeText={setMessage} />
-        {signMessage.isPending ? (
+        {signMessagesMutation.isPending ? (
           <ActivityIndicator />
         ) : (
           <Button
-            disabled={signMessage.isPending || message?.trim() === ''}
+            disabled={signMessagesMutation.isPending || message?.trim() === ''}
             onPress={() => {
-              signMessage
+              signMessagesMutation
                 .mutateAsync({ message })
                 .then(() => {
                   console.log(`Signed message: ${message} with ${address.toString()}`)
@@ -58,8 +58,8 @@ export function DemoFeatureSignMessage({ address }: { address: PublicKey }) {
           </Button>
         )}
       </View>
-      {signMessage.isError ? (
-        <AppText style={{ color: 'red', fontSize: 12 }}>{`${signMessage.error.message}`}</AppText>
+      {signMessagesMutation.isError ? (
+        <AppText style={{ color: 'red', fontSize: 12 }}>{`${signMessagesMutation.error.message}`}</AppText>
       ) : null}
     </AppView>
   )
