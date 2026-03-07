@@ -1,10 +1,21 @@
 {
   "compilerOptions": {
-    "types": ["mocha", "chai"],
-    "typeRoots": ["./node_modules/@types"],
-    "lib": ["es2015"],
-    "module": "commonjs",
-    "target": "es6",
-    "esModuleInterop": true
-  }
+    "target": "ES2022",
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@client/*": ["./web/client/*"]
+    }
+  },
+  "include": ["tests/**/*"],
+  "exclude": ["node_modules", "dist", "target"]
 }

@@ -1,5 +1,5 @@
 {
-  "idl": "./target/idl/staking.json",
+  "idl": "./target/idl/staking_template.json",
   "scripts": {
     "js": [
       {
