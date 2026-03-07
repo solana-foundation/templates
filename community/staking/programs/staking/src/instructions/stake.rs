@@ -12,12 +12,15 @@ use crate::{
     state::{StakeAccount, StakeConfig, UserAccount},
 };
 
+/// Locks SOL in the vault and mints receipt tokens to the user.
+/// A unique `id` allows a user to have multiple concurrent stakes.
 #[derive(Accounts)]
 #[instruction(id: u64)]
 pub struct Stake<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
+    /// created on first stake, reused on subsequent ones
     #[account(
         init_if_needed,
         payer = user,
@@ -27,6 +30,7 @@ pub struct Stake<'info> {
     )]
     pub user_account: Account<'info, UserAccount>,
 
+    /// one per stake — seed includes `id` so users can stake multiple times
     #[account(
         init,
         payer = user,
@@ -72,11 +76,16 @@ pub struct Stake<'info> {
 
 impl<'info> Stake<'info> {
     pub fn stake(&mut self, amount: u64, bumps: &StakeBumps) -> Result<()> {
+        // reject zero-amount stakes (they'd earn time-based rewards for free)
+        require!(amount > 0, StakeError::ZeroStakeAmount);
+
+        // enforce per-user cap
         require!(
             self.user_account.amount_staked + amount <= self.config.max_stake,
             StakeError::StakeOverflow
         );
 
+        // first-time setup for this wallet
         if !self.user_account.is_initialized {
             self.user_account.set_inner(UserAccount {
                 owner: self.user.key(),
@@ -86,6 +95,9 @@ impl<'info> Stake<'info> {
                 is_initialized: true,
                 bump: bumps.user_account,
             });
+        } else {
+            // subsequent stakes: keep the running total up to date
+            self.user_account.amount_staked += amount;
         }
 
         self.stake_account.set_inner(StakeAccount {
@@ -95,6 +107,7 @@ impl<'info> Stake<'info> {
             bump: bumps.stake_account,
         });
 
+        // move SOL into the vault
         let cpi_accounts = Transfer {
             from: self.user.to_account_info(),
             to: self.vault.to_account_info(),
@@ -102,19 +115,28 @@ impl<'info> Stake<'info> {
         let cpi_ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
 
         transfer(cpi_ctx, amount)?;
+        // mint receipt tokens 1:1 with staked lamports
         self.mint(amount)?;
 
         Ok(())
     }
 
+    /// helper: mint receipt SPL tokens to the user's ATA
+    /// uses config PDA as signer since it's the mint authority
     pub fn mint(&mut self, amount: u64) -> Result<()> {
+        let signer_seeds: &[&[&[u8]]] = &[&[b"config".as_ref(), &[self.config.bump]]];
+
         let cpi_accounts = MintTo {
             mint: self.token_mint.to_account_info(),
             to: self.user_token_account.to_account_info(),
-            authority: self.user.to_account_info(),
+            authority: self.config.to_account_info(),
         };
 
-        let cpi_ctx = CpiContext::new(self.token_program.to_account_info(), cpi_accounts);
+        let cpi_ctx = CpiContext::new_with_signer(
+            self.token_program.to_account_info(),
+            cpi_accounts,
+            signer_seeds,
+        );
 
         mint_to(cpi_ctx, amount)
     }

@@ -1,3 +1,6 @@
+//! SOL staking program — users lock SOL, receive SPL receipt tokens,
+//! and earn time-based rewards they can claim later.
+
 use anchor_lang::prelude::*;
 
 mod errors;
@@ -8,6 +11,7 @@ use instructions::*;
 
 declare_id!("CeaaMUokgzecLqzTnqukBx5T7VsBan7QcJpuWpj4ejfD");
 
+/// Entrypoint handlers — thin wrappers that delegate to each instruction module.
 #[program]
 pub mod staking_template {
     use super::*;
@@ -22,15 +26,15 @@ pub mod staking_template {
             .initialize_pool(rewards_per_stake, max_stake, freeze_period, &ctx.bumps)
     }
 
-    pub fn stake(ctx: Context<Stake>, amount: u64) -> Result<()> {
+    pub fn stake(ctx: Context<Stake>, _id: u64, amount: u64) -> Result<()> {
         ctx.accounts.stake(amount, &ctx.bumps)
     }
 
-    pub fn unstake(ctx: Context<Unstake>) -> Result<()> {
+    pub fn unstake(ctx: Context<Unstake>, _id: u64) -> Result<()> {
         ctx.accounts.unstake(&ctx.bumps)
     }
 
     pub fn claim(ctx: Context<Claim>, amount: u64) -> Result<()> {
-        ctx.accounts.claim(amount)
+        ctx.accounts.claim(amount, &ctx.bumps)
     }
 }

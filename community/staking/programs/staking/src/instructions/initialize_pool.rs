@@ -6,11 +6,14 @@ use anchor_spl::token::{Mint, Token};
 
 use crate::state::StakeConfig;
 
+/// Sets up the staking pool — should be called once by the admin.
+/// Creates the reward mint, SOL vault, and config PDA.
 #[derive(Accounts)]
 pub struct InitPool<'info> {
     #[account(mut)]
     pub admin: Signer<'info>,
 
+    /// reward / receipt mint — authority is the config PDA
     #[account(
         init,
         payer = admin,
@@ -21,6 +24,7 @@ pub struct InitPool<'info> {
     )]
     pub token_mint: Account<'info, Mint>,
 
+    /// SOL vault PDA — holds all staked lamports
     #[account(
         mut,
         seeds = [b"vault".as_ref()],
@@ -49,6 +53,7 @@ impl<'info> InitPool<'info> {
         freeze_period: i64,
         bumps: &InitPoolBumps,
     ) -> Result<()> {
+        // fund vault with rent-exempt minimum so it stays alive on-chain
         let rent = Rent::get()?;
         let vault_lamports = rent.minimum_balance(0);
 

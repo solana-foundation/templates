@@ -12,6 +12,8 @@ use crate::{
     state::{StakeAccount, StakeConfig, UserAccount},
 };
 
+/// Withdraws a specific stake: burns receipt tokens, returns SOL,
+/// credits time-based rewards, and closes the stake account.
 #[derive(Accounts)]
 #[instruction(id: u64)]
 pub struct Unstake<'info> {
@@ -20,14 +22,17 @@ pub struct Unstake<'info> {
 
     #[account(
         mut,
+        constraint = user_account.owner == user.key() @ StakeError::InvalidClaim,
         seeds = [b"user".as_ref(), user.key().as_ref()],
         bump,
     )]
     pub user_account: Account<'info, UserAccount>,
 
+    /// closed here — rent returned to user
     #[account(
         mut,
         close = user,
+        constraint = stake_account.owner == user.key() @ StakeError::InvalidClaim,
         seeds = [b"stake".as_ref(), user.key().as_ref(), id.to_le_bytes().as_ref()],
         bump
     )]
@@ -76,10 +81,12 @@ impl<'info> Unstake<'info> {
             StakeError::FreezePeriodNotPassed
         );
 
-        // 1. Calculate Rewards (Time is already in seconds)
+        // 1. Calculate Rewards (checked to prevent overflow)
         let staked_amount = self.stake_account.amount;
-        let rewards_for_stake = staked_amount * (self.config.rewards_per_stake as u64);
-        let total_rewards = rewards_for_stake * (time_elapsed as u64);
+        let total_rewards = staked_amount
+            .checked_mul(self.config.rewards_per_stake as u64)
+            .and_then(|r| r.checked_mul(time_elapsed as u64))
+            .ok_or(StakeError::RewardOverflow)?;
 
         // 2. Burn the tokens from the user (Optional but recommended)
         let cpi_accounts = Burn {
