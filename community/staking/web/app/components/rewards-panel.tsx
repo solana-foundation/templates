@@ -12,7 +12,7 @@ import { useWalletSession, useSendTransaction } from '@solana/react-hooks'
 import { createWalletTransactionSigner } from '@solana/client'
 import type { StakingState } from '@/app/hooks/use-staking'
 import { lamportsToSol } from '@/app/lib/format'
-import { getClaimInstructionAsync } from '@/client/vault/index'
+import { getClaimInstructionAsync } from '@/client/index'
 
 type Props = Pick<StakingState, 'user' | 'refresh'>
 

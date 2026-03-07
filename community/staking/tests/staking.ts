@@ -28,7 +28,7 @@ import {
   fetchUserAccount,
   fetchStakeAccount,
   fetchMaybeStakeAccount,
-} from '@client/vault/index.ts'
+} from '@client/index.ts'
 
 // ─────────────────────────────────────────────────────
 // Test-wide constants

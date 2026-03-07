@@ -12,7 +12,7 @@ import { useWalletSession, useSendTransaction } from '@solana/react-hooks'
 import { createWalletTransactionSigner } from '@solana/client'
 import type { StakeEntry } from '@/app/hooks/use-staking'
 import { lamportsToSol, timeAgo } from '@/app/lib/format'
-import { getUnstakeInstructionAsync } from '@/client/vault/index'
+import { getUnstakeInstructionAsync } from '@/client/index'
 
 interface Props {
   stake: StakeEntry

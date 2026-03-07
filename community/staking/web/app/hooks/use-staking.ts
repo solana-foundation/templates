@@ -23,7 +23,7 @@ import {
   type StakeConfig,
   type UserAccount,
   type StakeAccount,
-} from '@/client/vault/index'
+} from '@/client/index'
 
 // ── Types ───────────────────────────────────────────
 

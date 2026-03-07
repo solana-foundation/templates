@@ -11,7 +11,7 @@
 import { useState } from 'react'
 import { useWalletSession, useSendTransaction } from '@solana/react-hooks'
 import { createWalletTransactionSigner } from '@solana/client'
-import { getInitializePoolInstructionAsync } from '@/client/vault/index'
+import { getInitializePoolInstructionAsync } from '@/client/index'
 
 interface Props {
   /** Called after successful initialization to refresh state. */

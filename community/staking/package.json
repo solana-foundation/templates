@@ -33,7 +33,7 @@
   "scripts": {
     "fmt": "prettier tests/staking.ts --check",
     "fmt:fix": "prettier tests/staking.ts -w",
-    "test": "tsx -r tsconfig-paths/register --test tests/**/*.ts",
+    "test": "tsx --test tests/**/*.ts",
     "gen-client": "codama run js"
   },
   "dependencies": {
@@ -45,7 +45,6 @@
   },
   "devDependencies": {
     "prettier": "^3.6.2",
-    "tsconfig-paths": "^4.2.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.3"
   }
