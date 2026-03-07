@@ -11,7 +11,7 @@
  * staked yet) return null instead of throwing.
  */
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSolanaClient, useWalletSession } from "@solana/react-hooks";
 import {
   type Address,
@@ -119,14 +119,18 @@ export function useStaking(): StakingState {
   const [stakes, setStakes] = useState<StakeEntry[]>([]);
   const [pdas, setPDAs] = useState<StakingState["pdas"]>(null);
   const [loading, setLoading] = useState(true);
+  const initialLoadDone = useRef(false);
 
   const refresh = useCallback(async () => {
     if (!client) return;
     const rpc = client.runtime.rpc;
 
-    setLoading(true);
+    // Only show the loading spinner on the very first fetch.
+    // Subsequent refreshes update state in-place without blanking the UI.
+    if (!initialLoadDone.current) setLoading(true);
+
     try {
-      // 1. Derive global PDAs
+      // 1. Derive global PDAs (cheap, no RPC)
       const [configAddr] = await deriveConfigPDA();
       const [vaultAddr] = await deriveVaultPDA();
       const [tokenMintAddr] = await deriveTokenMintPDA();
@@ -144,17 +148,18 @@ export function useStaking(): StakingState {
         const maybeUser = await fetchMaybeUserAccount(rpc, userAccountAddr);
         setUser(maybeUser.exists ? maybeUser.data : null);
 
-        // Scan stake IDs 1..MAX_SCAN_IDS to find active entries
-        const activeStakes: StakeEntry[] = [];
-        for (let i = 1; i <= MAX_SCAN_IDS; i++) {
-          const id = BigInt(i);
+        // Derive all stake PDAs then fetch in parallel
+        const stakePromises = Array.from({ length: MAX_SCAN_IDS }, async (_, i) => {
+          const id = BigInt(i + 1);
           const [stakePDA] = await deriveStakeAccountPDA(walletAddress as Address, id);
           const maybeStake = await fetchMaybeStakeAccount(rpc, stakePDA);
-          if (maybeStake.exists) {
-            activeStakes.push({ ...maybeStake.data, id, pda: stakePDA });
-          }
-        }
-        setStakes(activeStakes);
+          return maybeStake.exists
+            ? { ...maybeStake.data, id, pda: stakePDA } as StakeEntry
+            : null;
+        });
+
+        const results = await Promise.all(stakePromises);
+        setStakes(results.filter((s): s is StakeEntry => s !== null));
       } else {
         setUser(null);
         setStakes([]);
@@ -163,6 +168,7 @@ export function useStaking(): StakingState {
       console.error("Failed to fetch staking state:", err);
     } finally {
       setLoading(false);
+      initialLoadDone.current = true;
     }
   }, [client, session?.account?.address]);
 

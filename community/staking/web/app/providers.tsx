@@ -16,7 +16,7 @@ import type { ReactNode } from "react";
 
 const CLUSTER =
   (process.env.NEXT_PUBLIC_CLUSTER as "localnet" | "devnet" | "mainnet-beta") ??
-  "localnet";
+  "devnet";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
