@@ -26,7 +26,7 @@ export function InitializePool({ onInitialized }: Props) {
   const { send, isSending, error, reset } = useSendTransaction();
 
   const [rewardsPerStake, setRewardsPerStake] = useState("1");
-  const [maxStake, setMaxStake] = useState("1_000_000");
+  const [maxStake, setMaxStake] = useState("1000000");
   const [freezePeriod, setFreezePeriod] = useState("0");
 
   async function handleInitialize() {

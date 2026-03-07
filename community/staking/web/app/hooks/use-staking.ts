@@ -124,7 +124,6 @@ export function useStaking(): StakingState {
   const refresh = useCallback(async () => {
     if (!client) return;
     const rpc = client.runtime.rpc;
-
     // Only show the loading spinner on the very first fetch.
     // Subsequent refreshes update state in-place without blanking the UI.
     if (!initialLoadDone.current) setLoading(true);
