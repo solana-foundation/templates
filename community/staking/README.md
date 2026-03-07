@@ -1,43 +1,6 @@
 # SOL Staking Program
 
-An Anchor-based Solana program that lets users stake SOL, receive SPL receipt tokens, and earn time-based rewards. Includes a **Next.js + Tailwind** frontend with wallet integration via [`@solana/react-hooks`](https://github.com/anza-xyz/solana-web3.js).
-
-## Architecture Overview
-
-```
-┌────────────────────────────────────────────────────────┐
-│                    Program (lib.rs)                     │
-│  initialize_pool · stake · unstake · claim             │
-└────────┬──────────┬──────────┬──────────┬──────────────┘
-         │          │          │          │
-         ▼          ▼          ▼          ▼
-   ┌──────────┐ ┌───────┐ ┌────────┐ ┌───────┐
-   │ InitPool │ │ Stake │ │Unstake │ │ Claim │  ← instructions/
-   └────┬─────┘ └───┬───┘ └───┬────┘ └───┬───┘
-        │           │         │           │
-        ▼           ▼         ▼           ▼
-   ┌─────────────────────────────────────────┐
-   │              State (PDAs)               │  ← state/
-   │  StakeConfig · UserAccount · StakeAcct  │
-   └─────────────────────────────────────────┘
-```
-
-### PDAs & Seeds
-
-| Account        | Seeds                          | Purpose                              |
-| -------------- | ------------------------------ | ------------------------------------ |
-| `StakeConfig`  | `"config"`                     | Global pool params (one per prog)    |
-| `Vault`        | `"vault"`                      | SOL escrow (SystemAccount PDA)       |
-| `TokenMint`    | `"token_mint"`                 | SPL receipt/reward mint              |
-| `UserAccount`  | `"user"` + wallet pubkey       | Per-user lifetime totals             |
-| `StakeAccount` | `"stake"` + wallet pubkey + id | Per-stake record (closed on unstake) |
-
-### Flow
-
-1. **initialize_pool** - Admin creates the config, mint, and funds the vault with rent-exempt SOL.
-2. **stake(amount, id)** - User sends SOL to vault, gets receipt tokens minted 1:1. A `StakeAccount` is created per stake.
-3. **unstake(id)** - After the freeze period, burns receipt tokens, returns SOL, calculates `rewards = amount × rewards_per_stake × elapsed_seconds`, and credits `UserAccount.accumulated_rewards`. Closes the `StakeAccount`.
-4. **claim(amount)** - Transfers earned rewards from vault to user.
+An Anchor-based Solana program that lets users stake SOL, receive SPL receipt tokens, and earn time-based rewards. Includes a **Next.js + Tailwind** frontend with wallet integration via `@solana/react-hooks`.
 
 ## Quick Start
 
@@ -45,15 +8,21 @@ An Anchor-based Solana program that lets users stake SOL, receive SPL receipt to
 # Install dependencies
 npm install
 
+# Generate new keys for the program
+anchor keys sync
+
 # Build the program and generate the TypeScript client
 anchor build
 npm gen-client
 
-# Run the full test suite
-anchor test
+# Deploy the program to devnet
+anchor deploy --provider.cluster devnet
 
-# Start the frontend
-cd web && npm dev
+# Install the frontend dependencies
+cd web && npm install
+
+# Run the app locally
+npm dev
 ```
 
 ## Testing
@@ -69,11 +38,12 @@ Tests live in `tests/staking.ts` and exercise the complete program lifecycle:
 
 Tests are **sequential** - each suite depends on state created by the one before it.
 
-**Stack:** [`node:test`](https://nodejs.org/api/test.html) · [`solana-kite`](https://github.com/nicklascook/solana-kite) · [`@solana/kit`](https://github.com/anza-xyz/solana-web3.js) · [Codama](https://github.com/codama-idl/codama)-generated client · [tsx](https://github.com/privatenumber/tsx)
-
 ```bash
-# Run tests directly (without anchor build)
-npm test
+# Build anchor program
+anchor build
+
+# Run the tests
+anchor test
 ```
 
 ## Project Layout
@@ -102,6 +72,23 @@ web/                        # Next.js + Tailwind frontend
 │   └── lib/                # formatting helpers
 └── client/vault/           # Codama-generated TypeScript client
 ```
+
+### PDAs & Seeds
+
+| Account        | Seeds                          | Purpose                              |
+| -------------- | ------------------------------ | ------------------------------------ |
+| `StakeConfig`  | `"config"`                     | Global pool params (one per prog)    |
+| `Vault`        | `"vault"`                      | SOL escrow (SystemAccount PDA)       |
+| `TokenMint`    | `"token_mint"`                 | SPL receipt/reward mint              |
+| `UserAccount`  | `"user"` + wallet pubkey       | Per-user lifetime totals             |
+| `StakeAccount` | `"stake"` + wallet pubkey + id | Per-stake record (closed on unstake) |
+
+### Flow
+
+1. **initialize_pool** - Admin creates the config, mint, and funds the vault with rent-exempt SOL.
+2. **stake(amount, id)** - User sends SOL to vault, gets receipt tokens minted 1:1. A `StakeAccount` is created per stake.
+3. **unstake(id)** - After the freeze period, burns receipt tokens, returns SOL, calculates `rewards = amount × rewards_per_stake × elapsed_seconds`, and credits `UserAccount.accumulated_rewards`. Closes the `StakeAccount`.
+4. **claim(amount)** - Transfers earned rewards from vault to user.
 
 ## Security
 
