@@ -42,8 +42,32 @@ An Anchor-based Solana program that lets users stake SOL, receive SPL receipt to
 ## Quick Start
 
 ```bash
+# Install dependencies
+yarn install
+
+# Build the program and run the full test suite
 anchor build
 anchor test
+```
+
+## Testing
+
+Tests live in `tests/staking.ts` and exercise the complete program lifecycle:
+
+| # | Suite            | What it covers                                                    |
+|---|------------------|-------------------------------------------------------------------|
+| 1 | Initialize Pool  | Admin creates config, reward mint, and rent-funded SOL vault      |
+| 2 | Stake            | First stake, repeat stake, and zero-amount rejection              |
+| 3 | Unstake          | Burns receipt tokens, returns SOL, credits rewards, closes PDA    |
+| 4 | Claim            | Admin seeds the vault with reward funds, user withdraws rewards   |
+
+Tests are **sequential** — each suite depends on state created by the one before it.
+
+**Stack:** [`node:test`](https://nodejs.org/api/test.html) · [`solana-kite`](https://github.com/nicklascook/solana-kite) · [`@solana/kit`](https://github.com/anza-xyz/solana-web3.js) · [Codama](https://github.com/codama-idl/codama)-generated client · [tsx](https://github.com/privatenumber/tsx)
+
+```bash
+# Run tests directly (without anchor build)
+yarn test
 ```
 
 ## Project Layout
@@ -61,6 +85,11 @@ programs/staking/src/
     ├── stake_config.rs     # global config PDA
     ├── user_account.rs     # per-user aggregate state
     └── stake_account.rs    # per-stake lock record
+
+tests/
+└── staking.ts              # integration tests (node:test + solana-kite)
+
+web/client/vault/           # codama-generated TypeScript client
 ```
 
 ## Security
