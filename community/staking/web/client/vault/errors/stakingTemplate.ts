@@ -11,21 +11,21 @@ import {
   type Address,
   type SOLANA_ERROR__INSTRUCTION_ERROR__CUSTOM,
   type SolanaError,
-} from '@solana/kit'
-import { STAKING_TEMPLATE_PROGRAM_ADDRESS } from '../programs'
+} from "@solana/kit";
+import { STAKING_TEMPLATE_PROGRAM_ADDRESS } from "../programs";
 
 /** StakeOverflow: This stake will take your total staked amount over the max allowed */
-export const STAKING_TEMPLATE_ERROR__STAKE_OVERFLOW = 0x1770 // 6000
+export const STAKING_TEMPLATE_ERROR__STAKE_OVERFLOW = 0x1770; // 6000
 /** FreezePeriodNotPassed: You are trying to unstake before the freeze period is over */
-export const STAKING_TEMPLATE_ERROR__FREEZE_PERIOD_NOT_PASSED = 0x1771 // 6001
+export const STAKING_TEMPLATE_ERROR__FREEZE_PERIOD_NOT_PASSED = 0x1771; // 6001
 /** ClaimExceeded: Can't claim more than accumulated rewards */
-export const STAKING_TEMPLATE_ERROR__CLAIM_EXCEEDED = 0x1772 // 6002
+export const STAKING_TEMPLATE_ERROR__CLAIM_EXCEEDED = 0x1772; // 6002
 /** InvalidClaim: You cannot claim rewards from this user account */
-export const STAKING_TEMPLATE_ERROR__INVALID_CLAIM = 0x1773 // 6003
+export const STAKING_TEMPLATE_ERROR__INVALID_CLAIM = 0x1773; // 6003
 /** ZeroStakeAmount: Stake amount must be greater than zero */
-export const STAKING_TEMPLATE_ERROR__ZERO_STAKE_AMOUNT = 0x1774 // 6004
+export const STAKING_TEMPLATE_ERROR__ZERO_STAKE_AMOUNT = 0x1774; // 6004
 /** RewardOverflow: Reward calculation overflowed */
-export const STAKING_TEMPLATE_ERROR__REWARD_OVERFLOW = 0x1775 // 6005
+export const STAKING_TEMPLATE_ERROR__REWARD_OVERFLOW = 0x1775; // 6005
 
 export type StakingTemplateError =
   | typeof STAKING_TEMPLATE_ERROR__CLAIM_EXCEEDED
@@ -33,10 +33,12 @@ export type StakingTemplateError =
   | typeof STAKING_TEMPLATE_ERROR__INVALID_CLAIM
   | typeof STAKING_TEMPLATE_ERROR__REWARD_OVERFLOW
   | typeof STAKING_TEMPLATE_ERROR__STAKE_OVERFLOW
-  | typeof STAKING_TEMPLATE_ERROR__ZERO_STAKE_AMOUNT
+  | typeof STAKING_TEMPLATE_ERROR__ZERO_STAKE_AMOUNT;
 
-let stakingTemplateErrorMessages: Record<StakingTemplateError, string> | undefined
-if (process.env.NODE_ENV !== 'production') {
+let stakingTemplateErrorMessages:
+  | Record<StakingTemplateError, string>
+  | undefined;
+if (process.env.NODE_ENV !== "production") {
   stakingTemplateErrorMessages = {
     [STAKING_TEMPLATE_ERROR__CLAIM_EXCEEDED]: `Can't claim more than accumulated rewards`,
     [STAKING_TEMPLATE_ERROR__FREEZE_PERIOD_NOT_PASSED]: `You are trying to unstake before the freeze period is over`,
@@ -44,24 +46,35 @@ if (process.env.NODE_ENV !== 'production') {
     [STAKING_TEMPLATE_ERROR__REWARD_OVERFLOW]: `Reward calculation overflowed`,
     [STAKING_TEMPLATE_ERROR__STAKE_OVERFLOW]: `This stake will take your total staked amount over the max allowed`,
     [STAKING_TEMPLATE_ERROR__ZERO_STAKE_AMOUNT]: `Stake amount must be greater than zero`,
-  }
+  };
 }
 
-export function getStakingTemplateErrorMessage(code: StakingTemplateError): string {
-  if (process.env.NODE_ENV !== 'production') {
-    return (stakingTemplateErrorMessages as Record<StakingTemplateError, string>)[code]
+export function getStakingTemplateErrorMessage(
+  code: StakingTemplateError,
+): string {
+  if (process.env.NODE_ENV !== "production") {
+    return (
+      stakingTemplateErrorMessages as Record<StakingTemplateError, string>
+    )[code];
   }
 
-  return 'Error message not available in production bundles.'
+  return "Error message not available in production bundles.";
 }
 
-export function isStakingTemplateError<TProgramErrorCode extends StakingTemplateError>(
+export function isStakingTemplateError<
+  TProgramErrorCode extends StakingTemplateError,
+>(
   error: unknown,
   transactionMessage: {
-    instructions: Record<number, { programAddress: Address }>
+    instructions: Record<number, { programAddress: Address }>;
   },
   code?: TProgramErrorCode,
 ): error is SolanaError<typeof SOLANA_ERROR__INSTRUCTION_ERROR__CUSTOM> &
   Readonly<{ context: Readonly<{ code: TProgramErrorCode }> }> {
-  return isProgramError<TProgramErrorCode>(error, transactionMessage, STAKING_TEMPLATE_PROGRAM_ADDRESS, code)
+  return isProgramError<TProgramErrorCode>(
+    error,
+    transactionMessage,
+    STAKING_TEMPLATE_PROGRAM_ADDRESS,
+    code,
+  );
 }

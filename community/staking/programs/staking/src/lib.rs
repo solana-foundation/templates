@@ -9,7 +9,7 @@ mod state;
 
 use instructions::*;
 
-declare_id!("CeaaMUokgzecLqzTnqukBx5T7VsBan7QcJpuWpj4ejfD");
+declare_id!("8nBhKSAXpUH9qTwaqj2fbEsKv5321biBKFygRtaMCehC");
 
 /// Entrypoint handlers — thin wrappers that delegate to each instruction module.
 #[program]

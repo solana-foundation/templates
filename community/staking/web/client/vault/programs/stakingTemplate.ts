@@ -15,7 +15,7 @@ import {
   type Instruction,
   type InstructionWithData,
   type ReadonlyUint8Array,
-} from '@solana/kit'
+} from "@solana/kit";
 import {
   parseClaimInstruction,
   parseInitializePoolInstruction,
@@ -25,10 +25,10 @@ import {
   type ParsedInitializePoolInstruction,
   type ParsedStakeInstruction,
   type ParsedUnstakeInstruction,
-} from '../instructions'
+} from "../instructions";
 
 export const STAKING_TEMPLATE_PROGRAM_ADDRESS =
-  'CeaaMUokgzecLqzTnqukBx5T7VsBan7QcJpuWpj4ejfD' as Address<'CeaaMUokgzecLqzTnqukBx5T7VsBan7QcJpuWpj4ejfD'>
+  "8nBhKSAXpUH9qTwaqj2fbEsKv5321biBKFygRtaMCehC" as Address<"8nBhKSAXpUH9qTwaqj2fbEsKv5321biBKFygRtaMCehC">;
 
 export enum StakingTemplateAccount {
   StakeAccount,
@@ -39,35 +39,43 @@ export enum StakingTemplateAccount {
 export function identifyStakingTemplateAccount(
   account: { data: ReadonlyUint8Array } | ReadonlyUint8Array,
 ): StakingTemplateAccount {
-  const data = 'data' in account ? account.data : account
+  const data = "data" in account ? account.data : account;
   if (
     containsBytes(
       data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(new Uint8Array([80, 158, 67, 124, 50, 189, 192, 255])),
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([80, 158, 67, 124, 50, 189, 192, 255]),
+      ),
       0,
     )
   ) {
-    return StakingTemplateAccount.StakeAccount
+    return StakingTemplateAccount.StakeAccount;
   }
   if (
     containsBytes(
       data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(new Uint8Array([238, 151, 43, 3, 11, 151, 63, 176])),
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([238, 151, 43, 3, 11, 151, 63, 176]),
+      ),
       0,
     )
   ) {
-    return StakingTemplateAccount.StakeConfig
+    return StakingTemplateAccount.StakeConfig;
   }
   if (
     containsBytes(
       data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(new Uint8Array([211, 33, 136, 16, 186, 110, 242, 127])),
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([211, 33, 136, 16, 186, 110, 242, 127]),
+      ),
       0,
     )
   ) {
-    return StakingTemplateAccount.UserAccount
+    return StakingTemplateAccount.UserAccount;
   }
-  throw new Error('The provided account could not be identified as a stakingTemplate account.')
+  throw new Error(
+    "The provided account could not be identified as a stakingTemplate account.",
+  );
 }
 
 export enum StakingTemplateInstruction {
@@ -80,95 +88,108 @@ export enum StakingTemplateInstruction {
 export function identifyStakingTemplateInstruction(
   instruction: { data: ReadonlyUint8Array } | ReadonlyUint8Array,
 ): StakingTemplateInstruction {
-  const data = 'data' in instruction ? instruction.data : instruction
+  const data = "data" in instruction ? instruction.data : instruction;
   if (
     containsBytes(
       data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(new Uint8Array([62, 198, 214, 193, 213, 159, 108, 210])),
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([62, 198, 214, 193, 213, 159, 108, 210]),
+      ),
       0,
     )
   ) {
-    return StakingTemplateInstruction.Claim
+    return StakingTemplateInstruction.Claim;
   }
   if (
     containsBytes(
       data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(new Uint8Array([95, 180, 10, 172, 84, 174, 232, 40])),
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([95, 180, 10, 172, 84, 174, 232, 40]),
+      ),
       0,
     )
   ) {
-    return StakingTemplateInstruction.InitializePool
+    return StakingTemplateInstruction.InitializePool;
   }
   if (
     containsBytes(
       data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(new Uint8Array([206, 176, 202, 18, 200, 209, 179, 108])),
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([206, 176, 202, 18, 200, 209, 179, 108]),
+      ),
       0,
     )
   ) {
-    return StakingTemplateInstruction.Stake
+    return StakingTemplateInstruction.Stake;
   }
   if (
     containsBytes(
       data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(new Uint8Array([90, 95, 107, 42, 205, 124, 50, 225])),
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([90, 95, 107, 42, 205, 124, 50, 225]),
+      ),
       0,
     )
   ) {
-    return StakingTemplateInstruction.Unstake
+    return StakingTemplateInstruction.Unstake;
   }
-  throw new Error('The provided instruction could not be identified as a stakingTemplate instruction.')
+  throw new Error(
+    "The provided instruction could not be identified as a stakingTemplate instruction.",
+  );
 }
 
-export type ParsedStakingTemplateInstruction<TProgram extends string = 'CeaaMUokgzecLqzTnqukBx5T7VsBan7QcJpuWpj4ejfD'> =
-
-    | ({
-        instructionType: StakingTemplateInstruction.Claim
-      } & ParsedClaimInstruction<TProgram>)
-    | ({
-        instructionType: StakingTemplateInstruction.InitializePool
-      } & ParsedInitializePoolInstruction<TProgram>)
-    | ({
-        instructionType: StakingTemplateInstruction.Stake
-      } & ParsedStakeInstruction<TProgram>)
-    | ({
-        instructionType: StakingTemplateInstruction.Unstake
-      } & ParsedUnstakeInstruction<TProgram>)
+export type ParsedStakingTemplateInstruction<
+  TProgram extends string = "8nBhKSAXpUH9qTwaqj2fbEsKv5321biBKFygRtaMCehC",
+> =
+  | ({
+      instructionType: StakingTemplateInstruction.Claim;
+    } & ParsedClaimInstruction<TProgram>)
+  | ({
+      instructionType: StakingTemplateInstruction.InitializePool;
+    } & ParsedInitializePoolInstruction<TProgram>)
+  | ({
+      instructionType: StakingTemplateInstruction.Stake;
+    } & ParsedStakeInstruction<TProgram>)
+  | ({
+      instructionType: StakingTemplateInstruction.Unstake;
+    } & ParsedUnstakeInstruction<TProgram>);
 
 export function parseStakingTemplateInstruction<TProgram extends string>(
   instruction: Instruction<TProgram> & InstructionWithData<ReadonlyUint8Array>,
 ): ParsedStakingTemplateInstruction<TProgram> {
-  const instructionType = identifyStakingTemplateInstruction(instruction)
+  const instructionType = identifyStakingTemplateInstruction(instruction);
   switch (instructionType) {
     case StakingTemplateInstruction.Claim: {
-      assertIsInstructionWithAccounts(instruction)
+      assertIsInstructionWithAccounts(instruction);
       return {
         instructionType: StakingTemplateInstruction.Claim,
         ...parseClaimInstruction(instruction),
-      }
+      };
     }
     case StakingTemplateInstruction.InitializePool: {
-      assertIsInstructionWithAccounts(instruction)
+      assertIsInstructionWithAccounts(instruction);
       return {
         instructionType: StakingTemplateInstruction.InitializePool,
         ...parseInitializePoolInstruction(instruction),
-      }
+      };
     }
     case StakingTemplateInstruction.Stake: {
-      assertIsInstructionWithAccounts(instruction)
+      assertIsInstructionWithAccounts(instruction);
       return {
         instructionType: StakingTemplateInstruction.Stake,
         ...parseStakeInstruction(instruction),
-      }
+      };
     }
     case StakingTemplateInstruction.Unstake: {
-      assertIsInstructionWithAccounts(instruction)
+      assertIsInstructionWithAccounts(instruction);
       return {
         instructionType: StakingTemplateInstruction.Unstake,
         ...parseUnstakeInstruction(instruction),
-      }
+      };
     }
     default:
-      throw new Error(`Unrecognized instruction type: ${instructionType as string}`)
+      throw new Error(
+        `Unrecognized instruction type: ${instructionType as string}`,
+      );
   }
 }

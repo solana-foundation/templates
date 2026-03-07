@@ -39,85 +39,95 @@ import {
   type MaybeAccount,
   type MaybeEncodedAccount,
   type ReadonlyUint8Array,
-} from '@solana/kit'
+} from "@solana/kit";
 
-export const USER_ACCOUNT_DISCRIMINATOR = new Uint8Array([211, 33, 136, 16, 186, 110, 242, 127])
+export const USER_ACCOUNT_DISCRIMINATOR = new Uint8Array([
+  211, 33, 136, 16, 186, 110, 242, 127,
+]);
 
 export function getUserAccountDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(USER_ACCOUNT_DISCRIMINATOR)
+  return fixEncoderSize(getBytesEncoder(), 8).encode(
+    USER_ACCOUNT_DISCRIMINATOR,
+  );
 }
 
 export type UserAccount = {
-  discriminator: ReadonlyUint8Array
-  owner: Address
+  discriminator: ReadonlyUint8Array;
+  owner: Address;
   /** rewards earned but not yet claimed */
-  accumulatedRewards: bigint
+  accumulatedRewards: bigint;
   /** historical total of claimed rewards (bookkeeping) */
-  claimedRewards: bigint
+  claimedRewards: bigint;
   /** running total of lamports currently staked across all stakes */
-  amountStaked: bigint
+  amountStaked: bigint;
   /** guard so we don't re-init on subsequent stakes */
-  isInitialized: boolean
-  bump: number
-}
+  isInitialized: boolean;
+  bump: number;
+};
 
 export type UserAccountArgs = {
-  owner: Address
+  owner: Address;
   /** rewards earned but not yet claimed */
-  accumulatedRewards: number | bigint
+  accumulatedRewards: number | bigint;
   /** historical total of claimed rewards (bookkeeping) */
-  claimedRewards: number | bigint
+  claimedRewards: number | bigint;
   /** running total of lamports currently staked across all stakes */
-  amountStaked: number | bigint
+  amountStaked: number | bigint;
   /** guard so we don't re-init on subsequent stakes */
-  isInitialized: boolean
-  bump: number
-}
+  isInitialized: boolean;
+  bump: number;
+};
 
 /** Gets the encoder for {@link UserAccountArgs} account data. */
 export function getUserAccountEncoder(): FixedSizeEncoder<UserAccountArgs> {
   return transformEncoder(
     getStructEncoder([
-      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
-      ['owner', getAddressEncoder()],
-      ['accumulatedRewards', getU64Encoder()],
-      ['claimedRewards', getU64Encoder()],
-      ['amountStaked', getU64Encoder()],
-      ['isInitialized', getBooleanEncoder()],
-      ['bump', getU8Encoder()],
+      ["discriminator", fixEncoderSize(getBytesEncoder(), 8)],
+      ["owner", getAddressEncoder()],
+      ["accumulatedRewards", getU64Encoder()],
+      ["claimedRewards", getU64Encoder()],
+      ["amountStaked", getU64Encoder()],
+      ["isInitialized", getBooleanEncoder()],
+      ["bump", getU8Encoder()],
     ]),
     (value) => ({ ...value, discriminator: USER_ACCOUNT_DISCRIMINATOR }),
-  )
+  );
 }
 
 /** Gets the decoder for {@link UserAccount} account data. */
 export function getUserAccountDecoder(): FixedSizeDecoder<UserAccount> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
-    ['owner', getAddressDecoder()],
-    ['accumulatedRewards', getU64Decoder()],
-    ['claimedRewards', getU64Decoder()],
-    ['amountStaked', getU64Decoder()],
-    ['isInitialized', getBooleanDecoder()],
-    ['bump', getU8Decoder()],
-  ])
+    ["discriminator", fixDecoderSize(getBytesDecoder(), 8)],
+    ["owner", getAddressDecoder()],
+    ["accumulatedRewards", getU64Decoder()],
+    ["claimedRewards", getU64Decoder()],
+    ["amountStaked", getU64Decoder()],
+    ["isInitialized", getBooleanDecoder()],
+    ["bump", getU8Decoder()],
+  ]);
 }
 
 /** Gets the codec for {@link UserAccount} account data. */
-export function getUserAccountCodec(): FixedSizeCodec<UserAccountArgs, UserAccount> {
-  return combineCodec(getUserAccountEncoder(), getUserAccountDecoder())
+export function getUserAccountCodec(): FixedSizeCodec<
+  UserAccountArgs,
+  UserAccount
+> {
+  return combineCodec(getUserAccountEncoder(), getUserAccountDecoder());
 }
 
 export function decodeUserAccount<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>,
-): Account<UserAccount, TAddress>
+): Account<UserAccount, TAddress>;
 export function decodeUserAccount<TAddress extends string = string>(
   encodedAccount: MaybeEncodedAccount<TAddress>,
-): MaybeAccount<UserAccount, TAddress>
+): MaybeAccount<UserAccount, TAddress>;
 export function decodeUserAccount<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>,
 ): Account<UserAccount, TAddress> | MaybeAccount<UserAccount, TAddress> {
-  return decodeAccount(encodedAccount as MaybeEncodedAccount<TAddress>, getUserAccountDecoder())
+  return decodeAccount(
+    encodedAccount as MaybeEncodedAccount<TAddress>,
+    getUserAccountDecoder(),
+  );
 }
 
 export async function fetchUserAccount<TAddress extends string = string>(
@@ -125,9 +135,9 @@ export async function fetchUserAccount<TAddress extends string = string>(
   address: Address<TAddress>,
   config?: FetchAccountConfig,
 ): Promise<Account<UserAccount, TAddress>> {
-  const maybeAccount = await fetchMaybeUserAccount(rpc, address, config)
-  assertAccountExists(maybeAccount)
-  return maybeAccount
+  const maybeAccount = await fetchMaybeUserAccount(rpc, address, config);
+  assertAccountExists(maybeAccount);
+  return maybeAccount;
 }
 
 export async function fetchMaybeUserAccount<TAddress extends string = string>(
@@ -135,8 +145,8 @@ export async function fetchMaybeUserAccount<TAddress extends string = string>(
   address: Address<TAddress>,
   config?: FetchAccountConfig,
 ): Promise<MaybeAccount<UserAccount, TAddress>> {
-  const maybeAccount = await fetchEncodedAccount(rpc, address, config)
-  return decodeUserAccount(maybeAccount)
+  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
+  return decodeUserAccount(maybeAccount);
 }
 
 export async function fetchAllUserAccount(
@@ -144,9 +154,9 @@ export async function fetchAllUserAccount(
   addresses: Array<Address>,
   config?: FetchAccountsConfig,
 ): Promise<Account<UserAccount>[]> {
-  const maybeAccounts = await fetchAllMaybeUserAccount(rpc, addresses, config)
-  assertAccountsExist(maybeAccounts)
-  return maybeAccounts
+  const maybeAccounts = await fetchAllMaybeUserAccount(rpc, addresses, config);
+  assertAccountsExist(maybeAccounts);
+  return maybeAccounts;
 }
 
 export async function fetchAllMaybeUserAccount(
@@ -154,10 +164,10 @@ export async function fetchAllMaybeUserAccount(
   addresses: Array<Address>,
   config?: FetchAccountsConfig,
 ): Promise<MaybeAccount<UserAccount>[]> {
-  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config)
-  return maybeAccounts.map((maybeAccount) => decodeUserAccount(maybeAccount))
+  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
+  return maybeAccounts.map((maybeAccount) => decodeUserAccount(maybeAccount));
 }
 
 export function getUserAccountSize(): number {
-  return 66
+  return 66;
 }

@@ -33,14 +33,21 @@ import {
   type TransactionSigner,
   type WritableAccount,
   type WritableSignerAccount,
-} from '@solana/kit'
-import { STAKING_TEMPLATE_PROGRAM_ADDRESS } from '../programs'
-import { expectAddress, expectSome, getAccountMetaFactory, type ResolvedAccount } from '../shared'
+} from "@solana/kit";
+import { STAKING_TEMPLATE_PROGRAM_ADDRESS } from "../programs";
+import {
+  expectAddress,
+  expectSome,
+  getAccountMetaFactory,
+  type ResolvedAccount,
+} from "../shared";
 
-export const UNSTAKE_DISCRIMINATOR = new Uint8Array([90, 95, 107, 42, 205, 124, 50, 225])
+export const UNSTAKE_DISCRIMINATOR = new Uint8Array([
+  90, 95, 107, 42, 205, 124, 50, 225,
+]);
 
 export function getUnstakeDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(UNSTAKE_DISCRIMINATOR)
+  return fixEncoderSize(getBytesEncoder(), 8).encode(UNSTAKE_DISCRIMINATOR);
 }
 
 export type UnstakeInstruction<
@@ -52,9 +59,12 @@ export type UnstakeInstruction<
   TAccountTokenMint extends string | AccountMeta<string> = string,
   TAccountVault extends string | AccountMeta<string> = string,
   TAccountConfig extends string | AccountMeta<string> = string,
-  TAccountTokenProgram extends string | AccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAssociatedTokenProgram extends string | AccountMeta<string> = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  TAccountSystemProgram extends string | AccountMeta<string> = '11111111111111111111111111111111',
+  TAccountTokenProgram extends string | AccountMeta<string> =
+    "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+  TAccountAssociatedTokenProgram extends string | AccountMeta<string> =
+    "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+  TAccountSystemProgram extends string | AccountMeta<string> =
+    "11111111111111111111111111111111",
   TRemainingAccounts extends readonly AccountMeta<string>[] = [],
 > = Instruction<TProgram> &
   InstructionWithData<ReadonlyUint8Array> &
@@ -63,47 +73,69 @@ export type UnstakeInstruction<
       TAccountUser extends string
         ? WritableSignerAccount<TAccountUser> & AccountSignerMeta<TAccountUser>
         : TAccountUser,
-      TAccountUserAccount extends string ? WritableAccount<TAccountUserAccount> : TAccountUserAccount,
-      TAccountStakeAccount extends string ? WritableAccount<TAccountStakeAccount> : TAccountStakeAccount,
-      TAccountUserTokenAccount extends string ? WritableAccount<TAccountUserTokenAccount> : TAccountUserTokenAccount,
-      TAccountTokenMint extends string ? WritableAccount<TAccountTokenMint> : TAccountTokenMint,
-      TAccountVault extends string ? WritableAccount<TAccountVault> : TAccountVault,
-      TAccountConfig extends string ? ReadonlyAccount<TAccountConfig> : TAccountConfig,
-      TAccountTokenProgram extends string ? ReadonlyAccount<TAccountTokenProgram> : TAccountTokenProgram,
+      TAccountUserAccount extends string
+        ? WritableAccount<TAccountUserAccount>
+        : TAccountUserAccount,
+      TAccountStakeAccount extends string
+        ? WritableAccount<TAccountStakeAccount>
+        : TAccountStakeAccount,
+      TAccountUserTokenAccount extends string
+        ? WritableAccount<TAccountUserTokenAccount>
+        : TAccountUserTokenAccount,
+      TAccountTokenMint extends string
+        ? WritableAccount<TAccountTokenMint>
+        : TAccountTokenMint,
+      TAccountVault extends string
+        ? WritableAccount<TAccountVault>
+        : TAccountVault,
+      TAccountConfig extends string
+        ? ReadonlyAccount<TAccountConfig>
+        : TAccountConfig,
+      TAccountTokenProgram extends string
+        ? ReadonlyAccount<TAccountTokenProgram>
+        : TAccountTokenProgram,
       TAccountAssociatedTokenProgram extends string
         ? ReadonlyAccount<TAccountAssociatedTokenProgram>
         : TAccountAssociatedTokenProgram,
-      TAccountSystemProgram extends string ? ReadonlyAccount<TAccountSystemProgram> : TAccountSystemProgram,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
       ...TRemainingAccounts,
     ]
-  >
+  >;
 
 export type UnstakeInstructionData = {
-  discriminator: ReadonlyUint8Array
-  id: bigint
-}
+  discriminator: ReadonlyUint8Array;
+  id: bigint;
+};
 
-export type UnstakeInstructionDataArgs = { id: number | bigint }
+export type UnstakeInstructionDataArgs = { id: number | bigint };
 
 export function getUnstakeInstructionDataEncoder(): FixedSizeEncoder<UnstakeInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
-      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
-      ['id', getU64Encoder()],
+      ["discriminator", fixEncoderSize(getBytesEncoder(), 8)],
+      ["id", getU64Encoder()],
     ]),
     (value) => ({ ...value, discriminator: UNSTAKE_DISCRIMINATOR }),
-  )
+  );
 }
 
 export function getUnstakeInstructionDataDecoder(): FixedSizeDecoder<UnstakeInstructionData> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
-    ['id', getU64Decoder()],
-  ])
+    ["discriminator", fixDecoderSize(getBytesDecoder(), 8)],
+    ["id", getU64Decoder()],
+  ]);
 }
 
-export function getUnstakeInstructionDataCodec(): FixedSizeCodec<UnstakeInstructionDataArgs, UnstakeInstructionData> {
-  return combineCodec(getUnstakeInstructionDataEncoder(), getUnstakeInstructionDataDecoder())
+export function getUnstakeInstructionDataCodec(): FixedSizeCodec<
+  UnstakeInstructionDataArgs,
+  UnstakeInstructionData
+> {
+  return combineCodec(
+    getUnstakeInstructionDataEncoder(),
+    getUnstakeInstructionDataDecoder(),
+  );
 }
 
 export type UnstakeAsyncInput<
@@ -118,19 +150,19 @@ export type UnstakeAsyncInput<
   TAccountAssociatedTokenProgram extends string = string,
   TAccountSystemProgram extends string = string,
 > = {
-  user: TransactionSigner<TAccountUser>
-  userAccount?: Address<TAccountUserAccount>
+  user: TransactionSigner<TAccountUser>;
+  userAccount?: Address<TAccountUserAccount>;
   /** closed here — rent returned to user */
-  stakeAccount?: Address<TAccountStakeAccount>
-  userTokenAccount?: Address<TAccountUserTokenAccount>
-  tokenMint?: Address<TAccountTokenMint>
-  vault?: Address<TAccountVault>
-  config?: Address<TAccountConfig>
-  tokenProgram?: Address<TAccountTokenProgram>
-  associatedTokenProgram?: Address<TAccountAssociatedTokenProgram>
-  systemProgram?: Address<TAccountSystemProgram>
-  id: UnstakeInstructionDataArgs['id']
-}
+  stakeAccount?: Address<TAccountStakeAccount>;
+  userTokenAccount?: Address<TAccountUserTokenAccount>;
+  tokenMint?: Address<TAccountTokenMint>;
+  vault?: Address<TAccountVault>;
+  config?: Address<TAccountConfig>;
+  tokenProgram?: Address<TAccountTokenProgram>;
+  associatedTokenProgram?: Address<TAccountAssociatedTokenProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
+  id: UnstakeInstructionDataArgs["id"];
+};
 
 export async function getUnstakeInstructionAsync<
   TAccountUser extends string,
@@ -174,7 +206,8 @@ export async function getUnstakeInstructionAsync<
   >
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? STAKING_TEMPLATE_PROGRAM_ADDRESS
+  const programAddress =
+    config?.programAddress ?? STAKING_TEMPLATE_PROGRAM_ADDRESS;
 
   // Original accounts.
   const originalAccounts = {
@@ -194,11 +227,14 @@ export async function getUnstakeInstructionAsync<
       isWritable: false,
     },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
-  }
-  const accounts = originalAccounts as Record<keyof typeof originalAccounts, ResolvedAccount>
+  };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
-  const args = { ...input }
+  const args = { ...input };
 
   // Resolve default values.
   if (!accounts.userAccount.value) {
@@ -208,7 +244,7 @@ export async function getUnstakeInstructionAsync<
         getBytesEncoder().encode(new Uint8Array([117, 115, 101, 114])),
         getAddressEncoder().encode(expectAddress(accounts.user.value)),
       ],
-    })
+    });
   }
   if (!accounts.stakeAccount.value) {
     accounts.stakeAccount.value = await getProgramDerivedAddress({
@@ -218,50 +254,59 @@ export async function getUnstakeInstructionAsync<
         getAddressEncoder().encode(expectAddress(accounts.user.value)),
         getU64Encoder().encode(expectSome(args.id)),
       ],
-    })
+    });
   }
   if (!accounts.tokenProgram.value) {
     accounts.tokenProgram.value =
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>
+      "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" as Address<"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA">;
   }
   if (!accounts.tokenMint.value) {
     accounts.tokenMint.value = await getProgramDerivedAddress({
       programAddress,
-      seeds: [getBytesEncoder().encode(new Uint8Array([116, 111, 107, 101, 110, 95, 109, 105, 110, 116]))],
-    })
+      seeds: [
+        getBytesEncoder().encode(
+          new Uint8Array([116, 111, 107, 101, 110, 95, 109, 105, 110, 116]),
+        ),
+      ],
+    });
   }
   if (!accounts.userTokenAccount.value) {
     accounts.userTokenAccount.value = await getProgramDerivedAddress({
       programAddress:
-        'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>,
+        "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL" as Address<"ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL">,
       seeds: [
         getAddressEncoder().encode(expectAddress(accounts.user.value)),
         getAddressEncoder().encode(expectAddress(accounts.tokenProgram.value)),
         getAddressEncoder().encode(expectAddress(accounts.tokenMint.value)),
       ],
-    })
+    });
   }
   if (!accounts.vault.value) {
     accounts.vault.value = await getProgramDerivedAddress({
       programAddress,
-      seeds: [getBytesEncoder().encode(new Uint8Array([118, 97, 117, 108, 116]))],
-    })
+      seeds: [
+        getBytesEncoder().encode(new Uint8Array([118, 97, 117, 108, 116])),
+      ],
+    });
   }
   if (!accounts.config.value) {
     accounts.config.value = await getProgramDerivedAddress({
       programAddress,
-      seeds: [getBytesEncoder().encode(new Uint8Array([99, 111, 110, 102, 105, 103]))],
-    })
+      seeds: [
+        getBytesEncoder().encode(new Uint8Array([99, 111, 110, 102, 105, 103])),
+      ],
+    });
   }
   if (!accounts.associatedTokenProgram.value) {
     accounts.associatedTokenProgram.value =
-      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>
+      "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL" as Address<"ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL">;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>
+    accounts.systemProgram.value =
+      "11111111111111111111111111111111" as Address<"11111111111111111111111111111111">;
   }
 
-  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId')
+  const getAccountMeta = getAccountMetaFactory(programAddress, "programId");
   return Object.freeze({
     accounts: [
       getAccountMeta(accounts.user),
@@ -275,9 +320,23 @@ export async function getUnstakeInstructionAsync<
       getAccountMeta(accounts.associatedTokenProgram),
       getAccountMeta(accounts.systemProgram),
     ],
-    data: getUnstakeInstructionDataEncoder().encode(args as UnstakeInstructionDataArgs),
+    data: getUnstakeInstructionDataEncoder().encode(
+      args as UnstakeInstructionDataArgs,
+    ),
     programAddress,
-  } as UnstakeInstruction<TProgramAddress, TAccountUser, TAccountUserAccount, TAccountStakeAccount, TAccountUserTokenAccount, TAccountTokenMint, TAccountVault, TAccountConfig, TAccountTokenProgram, TAccountAssociatedTokenProgram, TAccountSystemProgram>)
+  } as UnstakeInstruction<
+    TProgramAddress,
+    TAccountUser,
+    TAccountUserAccount,
+    TAccountStakeAccount,
+    TAccountUserTokenAccount,
+    TAccountTokenMint,
+    TAccountVault,
+    TAccountConfig,
+    TAccountTokenProgram,
+    TAccountAssociatedTokenProgram,
+    TAccountSystemProgram
+  >);
 }
 
 export type UnstakeInput<
@@ -292,19 +351,19 @@ export type UnstakeInput<
   TAccountAssociatedTokenProgram extends string = string,
   TAccountSystemProgram extends string = string,
 > = {
-  user: TransactionSigner<TAccountUser>
-  userAccount: Address<TAccountUserAccount>
+  user: TransactionSigner<TAccountUser>;
+  userAccount: Address<TAccountUserAccount>;
   /** closed here — rent returned to user */
-  stakeAccount: Address<TAccountStakeAccount>
-  userTokenAccount: Address<TAccountUserTokenAccount>
-  tokenMint: Address<TAccountTokenMint>
-  vault: Address<TAccountVault>
-  config: Address<TAccountConfig>
-  tokenProgram?: Address<TAccountTokenProgram>
-  associatedTokenProgram?: Address<TAccountAssociatedTokenProgram>
-  systemProgram?: Address<TAccountSystemProgram>
-  id: UnstakeInstructionDataArgs['id']
-}
+  stakeAccount: Address<TAccountStakeAccount>;
+  userTokenAccount: Address<TAccountUserTokenAccount>;
+  tokenMint: Address<TAccountTokenMint>;
+  vault: Address<TAccountVault>;
+  config: Address<TAccountConfig>;
+  tokenProgram?: Address<TAccountTokenProgram>;
+  associatedTokenProgram?: Address<TAccountAssociatedTokenProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
+  id: UnstakeInstructionDataArgs["id"];
+};
 
 export function getUnstakeInstruction<
   TAccountUser extends string,
@@ -346,7 +405,8 @@ export function getUnstakeInstruction<
   TAccountSystemProgram
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? STAKING_TEMPLATE_PROGRAM_ADDRESS
+  const programAddress =
+    config?.programAddress ?? STAKING_TEMPLATE_PROGRAM_ADDRESS;
 
   // Original accounts.
   const originalAccounts = {
@@ -366,26 +426,30 @@ export function getUnstakeInstruction<
       isWritable: false,
     },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
-  }
-  const accounts = originalAccounts as Record<keyof typeof originalAccounts, ResolvedAccount>
+  };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
-  const args = { ...input }
+  const args = { ...input };
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
     accounts.tokenProgram.value =
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>
+      "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" as Address<"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA">;
   }
   if (!accounts.associatedTokenProgram.value) {
     accounts.associatedTokenProgram.value =
-      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>
+      "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL" as Address<"ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL">;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>
+    accounts.systemProgram.value =
+      "11111111111111111111111111111111" as Address<"11111111111111111111111111111111">;
   }
 
-  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId')
+  const getAccountMeta = getAccountMetaFactory(programAddress, "programId");
   return Object.freeze({
     accounts: [
       getAccountMeta(accounts.user),
@@ -399,45 +463,64 @@ export function getUnstakeInstruction<
       getAccountMeta(accounts.associatedTokenProgram),
       getAccountMeta(accounts.systemProgram),
     ],
-    data: getUnstakeInstructionDataEncoder().encode(args as UnstakeInstructionDataArgs),
+    data: getUnstakeInstructionDataEncoder().encode(
+      args as UnstakeInstructionDataArgs,
+    ),
     programAddress,
-  } as UnstakeInstruction<TProgramAddress, TAccountUser, TAccountUserAccount, TAccountStakeAccount, TAccountUserTokenAccount, TAccountTokenMint, TAccountVault, TAccountConfig, TAccountTokenProgram, TAccountAssociatedTokenProgram, TAccountSystemProgram>)
+  } as UnstakeInstruction<
+    TProgramAddress,
+    TAccountUser,
+    TAccountUserAccount,
+    TAccountStakeAccount,
+    TAccountUserTokenAccount,
+    TAccountTokenMint,
+    TAccountVault,
+    TAccountConfig,
+    TAccountTokenProgram,
+    TAccountAssociatedTokenProgram,
+    TAccountSystemProgram
+  >);
 }
 
 export type ParsedUnstakeInstruction<
   TProgram extends string = typeof STAKING_TEMPLATE_PROGRAM_ADDRESS,
   TAccountMetas extends readonly AccountMeta[] = readonly AccountMeta[],
 > = {
-  programAddress: Address<TProgram>
+  programAddress: Address<TProgram>;
   accounts: {
-    user: TAccountMetas[0]
-    userAccount: TAccountMetas[1]
+    user: TAccountMetas[0];
+    userAccount: TAccountMetas[1];
     /** closed here — rent returned to user */
-    stakeAccount: TAccountMetas[2]
-    userTokenAccount: TAccountMetas[3]
-    tokenMint: TAccountMetas[4]
-    vault: TAccountMetas[5]
-    config: TAccountMetas[6]
-    tokenProgram: TAccountMetas[7]
-    associatedTokenProgram: TAccountMetas[8]
-    systemProgram: TAccountMetas[9]
-  }
-  data: UnstakeInstructionData
-}
+    stakeAccount: TAccountMetas[2];
+    userTokenAccount: TAccountMetas[3];
+    tokenMint: TAccountMetas[4];
+    vault: TAccountMetas[5];
+    config: TAccountMetas[6];
+    tokenProgram: TAccountMetas[7];
+    associatedTokenProgram: TAccountMetas[8];
+    systemProgram: TAccountMetas[9];
+  };
+  data: UnstakeInstructionData;
+};
 
-export function parseUnstakeInstruction<TProgram extends string, TAccountMetas extends readonly AccountMeta[]>(
-  instruction: Instruction<TProgram> & InstructionWithAccounts<TAccountMetas> & InstructionWithData<ReadonlyUint8Array>,
+export function parseUnstakeInstruction<
+  TProgram extends string,
+  TAccountMetas extends readonly AccountMeta[],
+>(
+  instruction: Instruction<TProgram> &
+    InstructionWithAccounts<TAccountMetas> &
+    InstructionWithData<ReadonlyUint8Array>,
 ): ParsedUnstakeInstruction<TProgram, TAccountMetas> {
   if (instruction.accounts.length < 10) {
     // TODO: Coded error.
-    throw new Error('Not enough accounts')
+    throw new Error("Not enough accounts");
   }
-  let accountIndex = 0
+  let accountIndex = 0;
   const getNextAccount = () => {
-    const accountMeta = (instruction.accounts as TAccountMetas)[accountIndex]!
-    accountIndex += 1
-    return accountMeta
-  }
+    const accountMeta = (instruction.accounts as TAccountMetas)[accountIndex]!;
+    accountIndex += 1;
+    return accountMeta;
+  };
   return {
     programAddress: instruction.programAddress,
     accounts: {
@@ -453,5 +536,5 @@ export function parseUnstakeInstruction<TProgram extends string, TAccountMetas e
       systemProgram: getNextAccount(),
     },
     data: getUnstakeInstructionDataDecoder().decode(instruction.data),
-  }
+  };
 }

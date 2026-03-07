@@ -36,14 +36,18 @@ import {
   type TransactionSigner,
   type WritableAccount,
   type WritableSignerAccount,
-} from '@solana/kit'
-import { STAKING_TEMPLATE_PROGRAM_ADDRESS } from '../programs'
-import { getAccountMetaFactory, type ResolvedAccount } from '../shared'
+} from "@solana/kit";
+import { STAKING_TEMPLATE_PROGRAM_ADDRESS } from "../programs";
+import { getAccountMetaFactory, type ResolvedAccount } from "../shared";
 
-export const INITIALIZE_POOL_DISCRIMINATOR = new Uint8Array([95, 180, 10, 172, 84, 174, 232, 40])
+export const INITIALIZE_POOL_DISCRIMINATOR = new Uint8Array([
+  95, 180, 10, 172, 84, 174, 232, 40,
+]);
 
 export function getInitializePoolDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(INITIALIZE_POOL_DISCRIMINATOR)
+  return fixEncoderSize(getBytesEncoder(), 8).encode(
+    INITIALIZE_POOL_DISCRIMINATOR,
+  );
 }
 
 export type InitializePoolInstruction<
@@ -52,64 +56,80 @@ export type InitializePoolInstruction<
   TAccountTokenMint extends string | AccountMeta<string> = string,
   TAccountVault extends string | AccountMeta<string> = string,
   TAccountConfig extends string | AccountMeta<string> = string,
-  TAccountTokenProgram extends string | AccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends string | AccountMeta<string> = '11111111111111111111111111111111',
+  TAccountTokenProgram extends string | AccountMeta<string> =
+    "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+  TAccountSystemProgram extends string | AccountMeta<string> =
+    "11111111111111111111111111111111",
   TRemainingAccounts extends readonly AccountMeta<string>[] = [],
 > = Instruction<TProgram> &
   InstructionWithData<ReadonlyUint8Array> &
   InstructionWithAccounts<
     [
       TAccountAdmin extends string
-        ? WritableSignerAccount<TAccountAdmin> & AccountSignerMeta<TAccountAdmin>
+        ? WritableSignerAccount<TAccountAdmin> &
+            AccountSignerMeta<TAccountAdmin>
         : TAccountAdmin,
-      TAccountTokenMint extends string ? WritableAccount<TAccountTokenMint> : TAccountTokenMint,
-      TAccountVault extends string ? WritableAccount<TAccountVault> : TAccountVault,
-      TAccountConfig extends string ? WritableAccount<TAccountConfig> : TAccountConfig,
-      TAccountTokenProgram extends string ? ReadonlyAccount<TAccountTokenProgram> : TAccountTokenProgram,
-      TAccountSystemProgram extends string ? ReadonlyAccount<TAccountSystemProgram> : TAccountSystemProgram,
+      TAccountTokenMint extends string
+        ? WritableAccount<TAccountTokenMint>
+        : TAccountTokenMint,
+      TAccountVault extends string
+        ? WritableAccount<TAccountVault>
+        : TAccountVault,
+      TAccountConfig extends string
+        ? WritableAccount<TAccountConfig>
+        : TAccountConfig,
+      TAccountTokenProgram extends string
+        ? ReadonlyAccount<TAccountTokenProgram>
+        : TAccountTokenProgram,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
       ...TRemainingAccounts,
     ]
-  >
+  >;
 
 export type InitializePoolInstructionData = {
-  discriminator: ReadonlyUint8Array
-  rewardsPerStake: number
-  maxStake: bigint
-  freezePeriod: bigint
-}
+  discriminator: ReadonlyUint8Array;
+  rewardsPerStake: number;
+  maxStake: bigint;
+  freezePeriod: bigint;
+};
 
 export type InitializePoolInstructionDataArgs = {
-  rewardsPerStake: number
-  maxStake: number | bigint
-  freezePeriod: number | bigint
-}
+  rewardsPerStake: number;
+  maxStake: number | bigint;
+  freezePeriod: number | bigint;
+};
 
 export function getInitializePoolInstructionDataEncoder(): FixedSizeEncoder<InitializePoolInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
-      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
-      ['rewardsPerStake', getU8Encoder()],
-      ['maxStake', getU64Encoder()],
-      ['freezePeriod', getI64Encoder()],
+      ["discriminator", fixEncoderSize(getBytesEncoder(), 8)],
+      ["rewardsPerStake", getU8Encoder()],
+      ["maxStake", getU64Encoder()],
+      ["freezePeriod", getI64Encoder()],
     ]),
     (value) => ({ ...value, discriminator: INITIALIZE_POOL_DISCRIMINATOR }),
-  )
+  );
 }
 
 export function getInitializePoolInstructionDataDecoder(): FixedSizeDecoder<InitializePoolInstructionData> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
-    ['rewardsPerStake', getU8Decoder()],
-    ['maxStake', getU64Decoder()],
-    ['freezePeriod', getI64Decoder()],
-  ])
+    ["discriminator", fixDecoderSize(getBytesDecoder(), 8)],
+    ["rewardsPerStake", getU8Decoder()],
+    ["maxStake", getU64Decoder()],
+    ["freezePeriod", getI64Decoder()],
+  ]);
 }
 
 export function getInitializePoolInstructionDataCodec(): FixedSizeCodec<
   InitializePoolInstructionDataArgs,
   InitializePoolInstructionData
 > {
-  return combineCodec(getInitializePoolInstructionDataEncoder(), getInitializePoolInstructionDataDecoder())
+  return combineCodec(
+    getInitializePoolInstructionDataEncoder(),
+    getInitializePoolInstructionDataDecoder(),
+  );
 }
 
 export type InitializePoolAsyncInput<
@@ -120,18 +140,18 @@ export type InitializePoolAsyncInput<
   TAccountTokenProgram extends string = string,
   TAccountSystemProgram extends string = string,
 > = {
-  admin: TransactionSigner<TAccountAdmin>
+  admin: TransactionSigner<TAccountAdmin>;
   /** reward / receipt mint — authority is the config PDA */
-  tokenMint?: Address<TAccountTokenMint>
+  tokenMint?: Address<TAccountTokenMint>;
   /** SOL vault PDA — holds all staked lamports */
-  vault?: Address<TAccountVault>
-  config?: Address<TAccountConfig>
-  tokenProgram?: Address<TAccountTokenProgram>
-  systemProgram?: Address<TAccountSystemProgram>
-  rewardsPerStake: InitializePoolInstructionDataArgs['rewardsPerStake']
-  maxStake: InitializePoolInstructionDataArgs['maxStake']
-  freezePeriod: InitializePoolInstructionDataArgs['freezePeriod']
-}
+  vault?: Address<TAccountVault>;
+  config?: Address<TAccountConfig>;
+  tokenProgram?: Address<TAccountTokenProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
+  rewardsPerStake: InitializePoolInstructionDataArgs["rewardsPerStake"];
+  maxStake: InitializePoolInstructionDataArgs["maxStake"];
+  freezePeriod: InitializePoolInstructionDataArgs["freezePeriod"];
+};
 
 export async function getInitializePoolInstructionAsync<
   TAccountAdmin extends string,
@@ -163,7 +183,8 @@ export async function getInitializePoolInstructionAsync<
   >
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? STAKING_TEMPLATE_PROGRAM_ADDRESS
+  const programAddress =
+    config?.programAddress ?? STAKING_TEMPLATE_PROGRAM_ADDRESS;
 
   // Original accounts.
   const originalAccounts = {
@@ -173,40 +194,52 @@ export async function getInitializePoolInstructionAsync<
     config: { value: input.config ?? null, isWritable: true },
     tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
-  }
-  const accounts = originalAccounts as Record<keyof typeof originalAccounts, ResolvedAccount>
+  };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
-  const args = { ...input }
+  const args = { ...input };
 
   // Resolve default values.
   if (!accounts.tokenMint.value) {
     accounts.tokenMint.value = await getProgramDerivedAddress({
       programAddress,
-      seeds: [getBytesEncoder().encode(new Uint8Array([116, 111, 107, 101, 110, 95, 109, 105, 110, 116]))],
-    })
+      seeds: [
+        getBytesEncoder().encode(
+          new Uint8Array([116, 111, 107, 101, 110, 95, 109, 105, 110, 116]),
+        ),
+      ],
+    });
   }
   if (!accounts.vault.value) {
     accounts.vault.value = await getProgramDerivedAddress({
       programAddress,
-      seeds: [getBytesEncoder().encode(new Uint8Array([118, 97, 117, 108, 116]))],
-    })
+      seeds: [
+        getBytesEncoder().encode(new Uint8Array([118, 97, 117, 108, 116])),
+      ],
+    });
   }
   if (!accounts.config.value) {
     accounts.config.value = await getProgramDerivedAddress({
       programAddress,
-      seeds: [getBytesEncoder().encode(new Uint8Array([99, 111, 110, 102, 105, 103]))],
-    })
+      seeds: [
+        getBytesEncoder().encode(new Uint8Array([99, 111, 110, 102, 105, 103])),
+      ],
+    });
   }
   if (!accounts.tokenProgram.value) {
     accounts.tokenProgram.value =
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>
+      "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" as Address<"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA">;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>
+    accounts.systemProgram.value =
+      "11111111111111111111111111111111" as Address<"11111111111111111111111111111111">;
   }
 
-  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId')
+  const getAccountMeta = getAccountMetaFactory(programAddress, "programId");
   return Object.freeze({
     accounts: [
       getAccountMeta(accounts.admin),
@@ -216,9 +249,19 @@ export async function getInitializePoolInstructionAsync<
       getAccountMeta(accounts.tokenProgram),
       getAccountMeta(accounts.systemProgram),
     ],
-    data: getInitializePoolInstructionDataEncoder().encode(args as InitializePoolInstructionDataArgs),
+    data: getInitializePoolInstructionDataEncoder().encode(
+      args as InitializePoolInstructionDataArgs,
+    ),
     programAddress,
-  } as InitializePoolInstruction<TProgramAddress, TAccountAdmin, TAccountTokenMint, TAccountVault, TAccountConfig, TAccountTokenProgram, TAccountSystemProgram>)
+  } as InitializePoolInstruction<
+    TProgramAddress,
+    TAccountAdmin,
+    TAccountTokenMint,
+    TAccountVault,
+    TAccountConfig,
+    TAccountTokenProgram,
+    TAccountSystemProgram
+  >);
 }
 
 export type InitializePoolInput<
@@ -229,18 +272,18 @@ export type InitializePoolInput<
   TAccountTokenProgram extends string = string,
   TAccountSystemProgram extends string = string,
 > = {
-  admin: TransactionSigner<TAccountAdmin>
+  admin: TransactionSigner<TAccountAdmin>;
   /** reward / receipt mint — authority is the config PDA */
-  tokenMint: Address<TAccountTokenMint>
+  tokenMint: Address<TAccountTokenMint>;
   /** SOL vault PDA — holds all staked lamports */
-  vault: Address<TAccountVault>
-  config: Address<TAccountConfig>
-  tokenProgram?: Address<TAccountTokenProgram>
-  systemProgram?: Address<TAccountSystemProgram>
-  rewardsPerStake: InitializePoolInstructionDataArgs['rewardsPerStake']
-  maxStake: InitializePoolInstructionDataArgs['maxStake']
-  freezePeriod: InitializePoolInstructionDataArgs['freezePeriod']
-}
+  vault: Address<TAccountVault>;
+  config: Address<TAccountConfig>;
+  tokenProgram?: Address<TAccountTokenProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
+  rewardsPerStake: InitializePoolInstructionDataArgs["rewardsPerStake"];
+  maxStake: InitializePoolInstructionDataArgs["maxStake"];
+  freezePeriod: InitializePoolInstructionDataArgs["freezePeriod"];
+};
 
 export function getInitializePoolInstruction<
   TAccountAdmin extends string,
@@ -270,7 +313,8 @@ export function getInitializePoolInstruction<
   TAccountSystemProgram
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? STAKING_TEMPLATE_PROGRAM_ADDRESS
+  const programAddress =
+    config?.programAddress ?? STAKING_TEMPLATE_PROGRAM_ADDRESS;
 
   // Original accounts.
   const originalAccounts = {
@@ -280,22 +324,26 @@ export function getInitializePoolInstruction<
     config: { value: input.config ?? null, isWritable: true },
     tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
-  }
-  const accounts = originalAccounts as Record<keyof typeof originalAccounts, ResolvedAccount>
+  };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
-  const args = { ...input }
+  const args = { ...input };
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
     accounts.tokenProgram.value =
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>
+      "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" as Address<"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA">;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>
+    accounts.systemProgram.value =
+      "11111111111111111111111111111111" as Address<"11111111111111111111111111111111">;
   }
 
-  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId')
+  const getAccountMeta = getAccountMetaFactory(programAddress, "programId");
   return Object.freeze({
     accounts: [
       getAccountMeta(accounts.admin),
@@ -305,42 +353,57 @@ export function getInitializePoolInstruction<
       getAccountMeta(accounts.tokenProgram),
       getAccountMeta(accounts.systemProgram),
     ],
-    data: getInitializePoolInstructionDataEncoder().encode(args as InitializePoolInstructionDataArgs),
+    data: getInitializePoolInstructionDataEncoder().encode(
+      args as InitializePoolInstructionDataArgs,
+    ),
     programAddress,
-  } as InitializePoolInstruction<TProgramAddress, TAccountAdmin, TAccountTokenMint, TAccountVault, TAccountConfig, TAccountTokenProgram, TAccountSystemProgram>)
+  } as InitializePoolInstruction<
+    TProgramAddress,
+    TAccountAdmin,
+    TAccountTokenMint,
+    TAccountVault,
+    TAccountConfig,
+    TAccountTokenProgram,
+    TAccountSystemProgram
+  >);
 }
 
 export type ParsedInitializePoolInstruction<
   TProgram extends string = typeof STAKING_TEMPLATE_PROGRAM_ADDRESS,
   TAccountMetas extends readonly AccountMeta[] = readonly AccountMeta[],
 > = {
-  programAddress: Address<TProgram>
+  programAddress: Address<TProgram>;
   accounts: {
-    admin: TAccountMetas[0]
+    admin: TAccountMetas[0];
     /** reward / receipt mint — authority is the config PDA */
-    tokenMint: TAccountMetas[1]
+    tokenMint: TAccountMetas[1];
     /** SOL vault PDA — holds all staked lamports */
-    vault: TAccountMetas[2]
-    config: TAccountMetas[3]
-    tokenProgram: TAccountMetas[4]
-    systemProgram: TAccountMetas[5]
-  }
-  data: InitializePoolInstructionData
-}
+    vault: TAccountMetas[2];
+    config: TAccountMetas[3];
+    tokenProgram: TAccountMetas[4];
+    systemProgram: TAccountMetas[5];
+  };
+  data: InitializePoolInstructionData;
+};
 
-export function parseInitializePoolInstruction<TProgram extends string, TAccountMetas extends readonly AccountMeta[]>(
-  instruction: Instruction<TProgram> & InstructionWithAccounts<TAccountMetas> & InstructionWithData<ReadonlyUint8Array>,
+export function parseInitializePoolInstruction<
+  TProgram extends string,
+  TAccountMetas extends readonly AccountMeta[],
+>(
+  instruction: Instruction<TProgram> &
+    InstructionWithAccounts<TAccountMetas> &
+    InstructionWithData<ReadonlyUint8Array>,
 ): ParsedInitializePoolInstruction<TProgram, TAccountMetas> {
   if (instruction.accounts.length < 6) {
     // TODO: Coded error.
-    throw new Error('Not enough accounts')
+    throw new Error("Not enough accounts");
   }
-  let accountIndex = 0
+  let accountIndex = 0;
   const getNextAccount = () => {
-    const accountMeta = (instruction.accounts as TAccountMetas)[accountIndex]!
-    accountIndex += 1
-    return accountMeta
-  }
+    const accountMeta = (instruction.accounts as TAccountMetas)[accountIndex]!;
+    accountIndex += 1;
+    return accountMeta;
+  };
   return {
     programAddress: instruction.programAddress,
     accounts: {
@@ -352,5 +415,5 @@ export function parseInitializePoolInstruction<TProgram extends string, TAccount
       systemProgram: getNextAccount(),
     },
     data: getInitializePoolInstructionDataDecoder().decode(instruction.data),
-  }
+  };
 }
