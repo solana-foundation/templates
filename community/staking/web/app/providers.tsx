@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 /**
  * Top-level Solana context provider.
@@ -11,22 +11,20 @@
  * to "devnet" or "mainnet-beta" to switch.
  */
 
-import { SolanaProvider } from "@solana/react-hooks";
-import type { ReactNode } from "react";
+import { SolanaProvider } from '@solana/react-hooks'
+import type { ReactNode } from 'react'
 
-const CLUSTER =
-  (process.env.NEXT_PUBLIC_CLUSTER as "localnet" | "devnet" | "mainnet-beta") ??
-  "devnet";
+const CLUSTER = (process.env.NEXT_PUBLIC_CLUSTER as 'localnet' | 'devnet' | 'mainnet-beta') ?? 'devnet'
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <SolanaProvider
       config={{
         cluster: CLUSTER,
-        walletConnectors: "default",
+        walletConnectors: 'default',
       }}
     >
       {children}
     </SolanaProvider>
-  );
+  )
 }

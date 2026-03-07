@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 /**
  * UserDashboard — top-level panel for a connected wallet.
@@ -11,38 +11,32 @@
  * Uses the `useStaking()` hook to fetch all on-chain state in one pass.
  */
 
-import { useStaking } from "@/app/hooks/use-staking";
-import { useWallet } from "@solana/react-hooks";
-import { lamportsToSol } from "@/app/lib/format";
-import { StakeForm } from "./stake-form";
-import { UnstakeCard } from "./unstake-card";
-import { RewardsPanel } from "./rewards-panel";
+import { useStaking } from '@/app/hooks/use-staking'
+import { useWallet } from '@solana/react-hooks'
+import { lamportsToSol } from '@/app/lib/format'
+import { StakeForm } from './stake-form'
+import { UnstakeCard } from './unstake-card'
+import { RewardsPanel } from './rewards-panel'
 
 export function UserDashboard() {
-  const wallet = useWallet();
-  const { pool, user, stakes, refresh, loading } = useStaking();
+  const wallet = useWallet()
+  const { pool, user, stakes, refresh, loading } = useStaking()
 
   /* ── Not connected ─────────────────────────────────── */
-  if (wallet.status !== "connected") {
+  if (wallet.status !== 'connected') {
     return (
       <section className="rounded border border-dashed border-zinc-300 p-8 text-center dark:border-zinc-700">
-        <p className="text-sm text-zinc-500">
-          Connect your wallet to view your staking dashboard.
-        </p>
+        <p className="text-sm text-zinc-500">Connect your wallet to view your staking dashboard.</p>
       </section>
-    );
+    )
   }
 
   /* ── Loading state ─────────────────────────────────── */
   if (loading) {
-    return (
-      <section className="py-8 text-center text-sm text-zinc-500">
-        Loading on-chain data…
-      </section>
-    );
+    return <section className="py-8 text-center text-sm text-zinc-500">Loading on-chain data…</section>
   }
 
-  const freezePeriod = pool?.freezePeriod ?? 0n;
+  const freezePeriod = pool?.freezePeriod ?? 0n
 
   return (
     <div className="space-y-6">
@@ -54,9 +48,7 @@ export function UserDashboard() {
           <Stat
             label="Claimable Rewards"
             value={`${lamportsToSol(
-              user.accumulatedRewards > user.claimedRewards
-                ? user.accumulatedRewards - user.claimedRewards
-                : 0n,
+              user.accumulatedRewards > user.claimedRewards ? user.accumulatedRewards - user.claimedRewards : 0n,
             )} SOL`}
           />
         </div>
@@ -71,12 +63,7 @@ export function UserDashboard() {
           <h2 className="mb-3 text-lg font-semibold">Active Stakes</h2>
           <div className="space-y-3">
             {stakes.map((s) => (
-              <UnstakeCard
-                key={s.id}
-                stake={s}
-                freezePeriod={freezePeriod}
-                onUnstaked={refresh}
-              />
+              <UnstakeCard key={s.id} stake={s} freezePeriod={freezePeriod} onUnstaked={refresh} />
             ))}
           </div>
         </section>
@@ -85,7 +72,7 @@ export function UserDashboard() {
       {/* ── Rewards ───────────────────────────────────── */}
       <RewardsPanel user={user} refresh={refresh} />
     </div>
-  );
+  )
 }
 
 /* ─── tiny helper ──────────────────────────────────────── */
@@ -95,5 +82,5 @@ function Stat({ label, value }: { label: string; value: string }) {
       <p className="text-xs text-zinc-500">{label}</p>
       <p className="mt-1 font-mono text-lg font-semibold">{value}</p>
     </div>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 /**
  * InitializePool — admin form to create the staking pool.
@@ -8,66 +8,57 @@
  * freeze period) and submits an InitializePool instruction.
  */
 
-import { useState } from "react";
-import {
-  useWalletSession,
-  useSendTransaction,
-} from "@solana/react-hooks";
-import { createWalletTransactionSigner } from "@solana/client";
-import { getInitializePoolInstructionAsync } from "@/client/vault/index";
+import { useState } from 'react'
+import { useWalletSession, useSendTransaction } from '@solana/react-hooks'
+import { createWalletTransactionSigner } from '@solana/client'
+import { getInitializePoolInstructionAsync } from '@/client/vault/index'
 
 interface Props {
   /** Called after successful initialization to refresh state. */
-  onInitialized: () => Promise<void>;
+  onInitialized: () => Promise<void>
 }
 
 export function InitializePool({ onInitialized }: Props) {
-  const session = useWalletSession();
-  const { send, isSending, error, reset } = useSendTransaction();
+  const session = useWalletSession()
+  const { send, isSending, error, reset } = useSendTransaction()
 
-  const [rewardsPerStake, setRewardsPerStake] = useState("1");
-  const [maxStake, setMaxStake] = useState("1000000");
-  const [freezePeriod, setFreezePeriod] = useState("0");
+  const [rewardsPerStake, setRewardsPerStake] = useState('1')
+  const [maxStake, setMaxStake] = useState('1000000')
+  const [freezePeriod, setFreezePeriod] = useState('0')
 
   async function handleInitialize() {
-    if (!session) return;
-    reset();
+    if (!session) return
+    reset()
 
-    const { signer } = createWalletTransactionSigner(session);
+    const { signer } = createWalletTransactionSigner(session)
 
     const ix = await getInitializePoolInstructionAsync({
       admin: signer,
       rewardsPerStake: Number(rewardsPerStake),
       maxStake: BigInt(maxStake),
       freezePeriod: BigInt(freezePeriod),
-    });
+    })
 
     await send({
       instructions: [ix],
       feePayer: signer,
-    });
+    })
 
-    await onInitialized();
+    await onInitialized()
   }
 
   return (
     <section className="rounded border border-zinc-200 p-6 dark:border-zinc-800">
       <h2 className="text-lg font-semibold">Initialize Pool</h2>
-      <p className="mt-1 text-sm text-zinc-500">
-        No staking pool found on-chain. Configure and deploy one below.
-      </p>
+      <p className="mt-1 text-sm text-zinc-500">No staking pool found on-chain. Configure and deploy one below.</p>
 
       {!session ? (
-        <p className="mt-4 text-sm text-zinc-400">
-          Connect your wallet to initialize.
-        </p>
+        <p className="mt-4 text-sm text-zinc-400">Connect your wallet to initialize.</p>
       ) : (
         <div className="mt-4 space-y-3">
           {/* Rewards per stake */}
           <div>
-            <label className="block text-sm font-medium">
-              Rewards per Stake
-            </label>
+            <label className="block text-sm font-medium">Rewards per Stake</label>
             <input
               type="number"
               min="1"
@@ -76,16 +67,12 @@ export function InitializePool({ onInitialized }: Props) {
               className="mt-1 w-full rounded border border-zinc-300 px-3 py-2 text-sm
                 dark:border-zinc-700 dark:bg-zinc-900"
             />
-            <p className="mt-1 text-xs text-zinc-400">
-              Reward tokens minted per stake action (u8).
-            </p>
+            <p className="mt-1 text-xs text-zinc-400">Reward tokens minted per stake action (u8).</p>
           </div>
 
           {/* Max stake */}
           <div>
-            <label className="block text-sm font-medium">
-              Max Stake (lamports)
-            </label>
+            <label className="block text-sm font-medium">Max Stake (lamports)</label>
             <input
               type="text"
               inputMode="numeric"
@@ -101,9 +88,7 @@ export function InitializePool({ onInitialized }: Props) {
 
           {/* Freeze period */}
           <div>
-            <label className="block text-sm font-medium">
-              Freeze Period (seconds)
-            </label>
+            <label className="block text-sm font-medium">Freeze Period (seconds)</label>
             <input
               type="number"
               min="0"
@@ -113,8 +98,7 @@ export function InitializePool({ onInitialized }: Props) {
                 dark:border-zinc-700 dark:bg-zinc-900"
             />
             <p className="mt-1 text-xs text-zinc-400">
-              Seconds a stake must be locked before it can be unstaked. Use 0 for
-              no lock.
+              Seconds a stake must be locked before it can be unstaked. Use 0 for no lock.
             </p>
           </div>
 
@@ -126,16 +110,14 @@ export function InitializePool({ onInitialized }: Props) {
               transition-colors hover:bg-zinc-700 disabled:opacity-50
               dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
           >
-            {isSending ? "Initializing…" : "Initialize Pool"}
+            {isSending ? 'Initializing…' : 'Initialize Pool'}
           </button>
 
           {error ? (
-            <p className="text-xs text-red-600">
-              {error instanceof Error ? error.message : "Transaction failed"}
-            </p>
+            <p className="text-xs text-red-600">{error instanceof Error ? error.message : 'Transaction failed'}</p>
           ) : null}
         </div>
       )}
     </section>
-  );
+  )
 }

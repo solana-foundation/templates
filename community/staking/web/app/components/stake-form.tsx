@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 /**
  * StakeForm — input form for staking SOL.
@@ -8,68 +8,58 @@
  * client, and sends it through the transaction pool.
  */
 
-import { useState } from "react";
-import {
-  useWalletSession,
-  useBalance,
-  useSendTransaction,
-} from "@solana/react-hooks";
-import { createWalletTransactionSigner } from "@solana/client";
-import type { StakingState } from "@/app/hooks/use-staking";
-import { lamportsToSol, solToLamports } from "@/app/lib/format";
-import { getStakeInstructionAsync } from "@/client/vault/index";
+import { useState } from 'react'
+import { useWalletSession, useBalance, useSendTransaction } from '@solana/react-hooks'
+import { createWalletTransactionSigner } from '@solana/client'
+import type { StakingState } from '@/app/hooks/use-staking'
+import { lamportsToSol, solToLamports } from '@/app/lib/format'
+import { getStakeInstructionAsync } from '@/client/vault/index'
 
-type Props = Pick<StakingState, "pool" | "user" | "refresh">;
+type Props = Pick<StakingState, 'pool' | 'user' | 'refresh'>
 
 export function StakeForm({ pool, user, refresh }: Props) {
-  const session = useWalletSession();
-  const { lamports: walletBalance } = useBalance(
-    session?.account?.address ?? undefined,
-    { watch: true },
-  );
-  const { send, isSending, error, reset } = useSendTransaction();
+  const session = useWalletSession()
+  const { lamports: walletBalance } = useBalance(session?.account?.address ?? undefined, { watch: true })
+  const { send, isSending, error, reset } = useSendTransaction()
 
-  const [amount, setAmount] = useState("");
-  const [stakeId, setStakeId] = useState("1");
+  const [amount, setAmount] = useState('')
+  const [stakeId, setStakeId] = useState('1')
 
   if (!session) {
     return (
       <section className="rounded border border-zinc-200 p-6 dark:border-zinc-800">
         <h2 className="text-lg font-semibold">Stake SOL</h2>
-        <p className="mt-2 text-sm text-zinc-500">
-          Connect your wallet to stake.
-        </p>
+        <p className="mt-2 text-sm text-zinc-500">Connect your wallet to stake.</p>
       </section>
-    );
+    )
   }
 
-  const lamportAmount = amount ? solToLamports(amount) : 0n;
-  const currentStaked = user?.amountStaked ?? 0n;
-  const maxStake = pool?.maxStake ?? 0n;
-  const remaining = maxStake > currentStaked ? maxStake - currentStaked : 0n;
-  const overMax = lamportAmount > remaining;
-  const overBalance =
-    walletBalance != null && lamportAmount > walletBalance;
+  const lamportAmount = amount ? solToLamports(amount) : 0n
+  const currentStaked = user?.amountStaked ?? 0n
+  const maxStake = pool?.maxStake ?? 0n
+  const remaining = maxStake > currentStaked ? maxStake - currentStaked : 0n
+  const overMax = lamportAmount > remaining
+  const overBalance = walletBalance != null && lamportAmount > walletBalance
 
   async function handleStake() {
-    if (!session || lamportAmount <= 0n || overMax || overBalance) return;
-    reset();
+    if (!session || lamportAmount <= 0n || overMax || overBalance) return
+    reset()
 
-    const { signer } = createWalletTransactionSigner(session);
+    const { signer } = createWalletTransactionSigner(session)
 
     const ix = await getStakeInstructionAsync({
       user: signer,
       id: BigInt(stakeId),
       amount: lamportAmount,
-    });
+    })
 
     await send({
       instructions: [ix],
       feePayer: signer,
-    });
+    })
 
-    setAmount("");
-    await refresh();
+    setAmount('')
+    await refresh()
   }
 
   return (
@@ -78,8 +68,7 @@ export function StakeForm({ pool, user, refresh }: Props) {
 
       {/* Wallet balance */}
       <p className="mt-1 text-sm text-zinc-500">
-        Wallet:{" "}
-        {walletBalance != null ? `${lamportsToSol(walletBalance)} SOL` : "…"}
+        Wallet: {walletBalance != null ? `${lamportsToSol(walletBalance)} SOL` : '…'}
       </p>
 
       <div className="mt-4 space-y-3">
@@ -96,13 +85,9 @@ export function StakeForm({ pool, user, refresh }: Props) {
               dark:border-zinc-700 dark:bg-zinc-900"
           />
           {overMax && (
-            <p className="mt-1 text-xs text-red-600">
-              Exceeds max stake (remaining: {lamportsToSol(remaining)} SOL)
-            </p>
+            <p className="mt-1 text-xs text-red-600">Exceeds max stake (remaining: {lamportsToSol(remaining)} SOL)</p>
           )}
-          {overBalance && (
-            <p className="mt-1 text-xs text-red-600">Insufficient balance</p>
-          )}
+          {overBalance && <p className="mt-1 text-xs text-red-600">Insufficient balance</p>}
         </div>
 
         {/* Stake ID input */}
@@ -124,25 +109,18 @@ export function StakeForm({ pool, user, refresh }: Props) {
         {/* Submit */}
         <button
           onClick={handleStake}
-          disabled={
-            isSending ||
-            lamportAmount <= 0n ||
-            overMax ||
-            overBalance
-          }
+          disabled={isSending || lamportAmount <= 0n || overMax || overBalance}
           className="w-full rounded bg-zinc-900 py-2 text-sm font-medium text-white
             hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100
             dark:text-zinc-900 dark:hover:bg-zinc-300"
         >
-          {isSending ? "Staking…" : "Stake"}
+          {isSending ? 'Staking…' : 'Stake'}
         </button>
 
         {error ? (
-          <p className="text-xs text-red-600">
-            {error instanceof Error ? error.message : "Transaction failed"}
-          </p>
+          <p className="text-xs text-red-600">{error instanceof Error ? error.message : 'Transaction failed'}</p>
         ) : null}
       </div>
     </section>
-  );
+  )
 }

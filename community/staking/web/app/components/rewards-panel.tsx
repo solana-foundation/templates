@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 /**
  * RewardsPanel — shows accumulated rewards and a Claim button.
@@ -8,46 +8,43 @@
  * a Claim instruction.
  */
 
-import {
-  useWalletSession,
-  useSendTransaction,
-} from "@solana/react-hooks";
-import { createWalletTransactionSigner } from "@solana/client";
-import type { StakingState } from "@/app/hooks/use-staking";
-import { lamportsToSol } from "@/app/lib/format";
-import { getClaimInstructionAsync } from "@/client/vault/index";
+import { useWalletSession, useSendTransaction } from '@solana/react-hooks'
+import { createWalletTransactionSigner } from '@solana/client'
+import type { StakingState } from '@/app/hooks/use-staking'
+import { lamportsToSol } from '@/app/lib/format'
+import { getClaimInstructionAsync } from '@/client/vault/index'
 
-type Props = Pick<StakingState, "user" | "refresh">;
+type Props = Pick<StakingState, 'user' | 'refresh'>
 
 export function RewardsPanel({ user, refresh }: Props) {
-  const session = useWalletSession();
-  const { send, isSending, error, reset } = useSendTransaction();
+  const session = useWalletSession()
+  const { send, isSending, error, reset } = useSendTransaction()
 
-  const accumulated = user?.accumulatedRewards ?? 0n;
-  const claimed = user?.claimedRewards ?? 0n;
-  const claimable = accumulated > claimed ? accumulated - claimed : 0n;
+  const accumulated = user?.accumulatedRewards ?? 0n
+  const claimed = user?.claimedRewards ?? 0n
+  const claimable = accumulated > claimed ? accumulated - claimed : 0n
 
   async function handleClaim() {
-    if (!session || claimable <= 0n) return;
-    reset();
+    if (!session || claimable <= 0n) return
+    reset()
 
-    const { signer } = createWalletTransactionSigner(session);
+    const { signer } = createWalletTransactionSigner(session)
 
     const ix = await getClaimInstructionAsync({
       user: signer,
       amount: claimable,
-    });
+    })
 
     await send({
       instructions: [ix],
       feePayer: signer,
-    });
+    })
 
-    await refresh();
+    await refresh()
   }
 
-  if (!session) return null;
-  if (!user) return null;
+  if (!session) return null
+  if (!user) return null
 
   return (
     <section className="rounded border border-zinc-200 p-6 dark:border-zinc-800">
@@ -75,14 +72,12 @@ export function RewardsPanel({ user, refresh }: Props) {
           hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100
           dark:text-zinc-900 dark:hover:bg-zinc-300"
       >
-        {isSending ? "Claiming…" : "Claim Rewards"}
+        {isSending ? 'Claiming…' : 'Claim Rewards'}
       </button>
 
       {error ? (
-        <p className="mt-2 text-xs text-red-600">
-          {error instanceof Error ? error.message : "Transaction failed"}
-        </p>
+        <p className="mt-2 text-xs text-red-600">{error instanceof Error ? error.message : 'Transaction failed'}</p>
       ) : null}
     </section>
-  );
+  )
 }

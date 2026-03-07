@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 /**
  * PoolStats — read-only overview of the staking pool.
@@ -7,27 +7,25 @@
  * freeze period, and the vault's current SOL balance.
  */
 
-import { useBalance } from "@solana/react-hooks";
-import type { StakingState } from "@/app/hooks/use-staking";
-import { lamportsToSol } from "@/app/lib/format";
+import { useBalance } from '@solana/react-hooks'
+import type { StakingState } from '@/app/hooks/use-staking'
+import { lamportsToSol } from '@/app/lib/format'
 
-type Props = Pick<StakingState, "pool" | "pdas">;
+type Props = Pick<StakingState, 'pool' | 'pdas'>
 
 export function PoolStats({ pool, pdas }: Props) {
   // Watch vault balance in real-time
   const { lamports: vaultBalance } = useBalance(pdas?.vault ?? undefined, {
     watch: true,
-  });
+  })
 
   if (!pool) {
     return (
       <section className="rounded border border-zinc-200 p-6 dark:border-zinc-800">
         <h2 className="text-lg font-semibold">Pool Statistics</h2>
-        <p className="mt-2 text-sm text-zinc-500">
-          Pool not initialized yet.
-        </p>
+        <p className="mt-2 text-sm text-zinc-500">Pool not initialized yet.</p>
       </section>
-    );
+    )
   }
 
   return (
@@ -42,27 +40,21 @@ export function PoolStats({ pool, pdas }: Props) {
 
         <div>
           <dt className="text-zinc-500">Max Stake</dt>
-          <dd className="text-xl font-medium">
-            {lamportsToSol(pool.maxStake)} SOL
-          </dd>
+          <dd className="text-xl font-medium">{lamportsToSol(pool.maxStake)} SOL</dd>
         </div>
 
         <div>
           <dt className="text-zinc-500">Freeze Period</dt>
           <dd className="text-xl font-medium">
-            {pool.freezePeriod === 0n
-              ? "None"
-              : `${pool.freezePeriod.toString()}s`}
+            {pool.freezePeriod === 0n ? 'None' : `${pool.freezePeriod.toString()}s`}
           </dd>
         </div>
 
         <div>
           <dt className="text-zinc-500">Vault Balance</dt>
-          <dd className="text-xl font-medium">
-            {vaultBalance != null ? `${lamportsToSol(vaultBalance)} SOL` : "—"}
-          </dd>
+          <dd className="text-xl font-medium">{vaultBalance != null ? `${lamportsToSol(vaultBalance)} SOL` : '—'}</dd>
         </div>
       </dl>
     </section>
-  );
+  )
 }
