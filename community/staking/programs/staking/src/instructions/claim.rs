@@ -56,6 +56,7 @@ impl<'info> Claim<'info> {
 
         // debit so they can't claim the same rewards twice
         self.user_account.accumulated_rewards -= amount;
+        self.user_account.claimed_rewards += amount;
 
         Ok(())
     }

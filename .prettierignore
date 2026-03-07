@@ -33,3 +33,10 @@ web3js/**/anchor/target/.rustc_info.json
 web3js/**/dist
 web3js/**/node_modules
 web3js/**/tmp
+community/**/target
+community/**/.anchor
+community/**/node_modules
+community/**/.next
+community/**/web/client
+community/**/web/node_modules
+community/**/web/.next

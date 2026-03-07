@@ -32,7 +32,13 @@ export function StakingApp() {
         {/* Show init form when pool doesn't exist yet */}
         {!pool && !staking.loading ? <InitializePool onInitialized={refresh} /> : <PoolStats pool={pool} pdas={pdas} />}
 
-        <UserDashboard />
+        <UserDashboard
+          pool={staking.pool}
+          user={staking.user}
+          stakes={staking.stakes}
+          refresh={staking.refresh}
+          loading={staking.loading}
+        />
       </main>
     </div>
   )

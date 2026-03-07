@@ -8,19 +8,21 @@
  *  - UnstakeCard — one card per active stake
  *  - RewardsPanel — accumulated / claimable rewards
  *
- * Uses the `useStaking()` hook to fetch all on-chain state in one pass.
+ * Receives all on-chain state as props from StakingApp to avoid
+ * duplicate RPC calls.
  */
 
-import { useStaking } from '@/app/hooks/use-staking'
 import { useWallet } from '@solana/react-hooks'
+import type { StakingState } from '@/app/hooks/use-staking'
 import { lamportsToSol } from '@/app/lib/format'
 import { StakeForm } from './stake-form'
 import { UnstakeCard } from './unstake-card'
 import { RewardsPanel } from './rewards-panel'
 
-export function UserDashboard() {
+type Props = Pick<StakingState, 'pool' | 'user' | 'stakes' | 'refresh' | 'loading'>
+
+export function UserDashboard({ pool, user, stakes, refresh, loading }: Props) {
   const wallet = useWallet()
-  const { pool, user, stakes, refresh, loading } = useStaking()
 
   /* ── Not connected ─────────────────────────────────── */
   if (wallet.status !== 'connected') {
@@ -45,12 +47,7 @@ export function UserDashboard() {
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           <Stat label="Total Staked" value={`${lamportsToSol(user.amountStaked)} SOL`} />
           <Stat label="Active Stakes" value={String(stakes.length)} />
-          <Stat
-            label="Claimable Rewards"
-            value={`${lamportsToSol(
-              user.accumulatedRewards > user.claimedRewards ? user.accumulatedRewards - user.claimedRewards : 0n,
-            )} SOL`}
-          />
+          <Stat label="Claimable Rewards" value={`${lamportsToSol(user.accumulatedRewards)} SOL`} />
         </div>
       )}
 

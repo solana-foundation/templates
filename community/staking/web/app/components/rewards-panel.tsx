@@ -20,9 +20,12 @@ export function RewardsPanel({ user, refresh }: Props) {
   const session = useWalletSession()
   const { send, isSending, error, reset } = useSendTransaction()
 
-  const accumulated = user?.accumulatedRewards ?? 0n
+  // On-chain semantics:
+  //   accumulated_rewards = remaining unclaimed rewards (decremented on claim)
+  //   claimed_rewards     = lifetime total claimed (incremented on claim)
+  const claimable = user?.accumulatedRewards ?? 0n
   const claimed = user?.claimedRewards ?? 0n
-  const claimable = accumulated > claimed ? accumulated - claimed : 0n
+  const totalEarned = claimable + claimed
 
   async function handleClaim() {
     if (!session || claimable <= 0n) return
@@ -52,8 +55,8 @@ export function RewardsPanel({ user, refresh }: Props) {
 
       <dl className="mt-3 space-y-2 text-sm">
         <div className="flex justify-between">
-          <dt className="text-zinc-500">Accumulated</dt>
-          <dd className="font-mono">{lamportsToSol(accumulated)} SOL</dd>
+          <dt className="text-zinc-500">Total Earned</dt>
+          <dd className="font-mono">{lamportsToSol(totalEarned)} SOL</dd>
         </div>
         <div className="flex justify-between">
           <dt className="text-zinc-500">Claimed</dt>
