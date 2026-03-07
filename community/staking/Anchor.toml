@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-anchor_nft_staking_q4_25 = "CeaaMUokgzecLqzTnqukBx5T7VsBan7QcJpuWpj4ejfD"
+staking_template = "CeaaMUokgzecLqzTnqukBx5T7VsBan7QcJpuWpj4ejfD"
 
 [registry]
 url = "https://api.apr.dev"

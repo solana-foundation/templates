@@ -6,6 +6,3 @@ pub use stake_config::*;
 
 pub mod stake_account;
 pub use stake_account::*;
-
-pub mod collection_info;
-pub use collection_info::*;

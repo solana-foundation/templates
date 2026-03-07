@@ -1,12 +1,12 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
-import { AnchorNftStakingQ425 } from "../target/types/anchor_nft_staking_q4_25";
+import { AnchorNftStakingQ425 } from "../target/types/staking_template";
 import { PublicKey, Keypair, SystemProgram } from "@solana/web3.js";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { MPL_CORE_PROGRAM_ID } from "@metaplex-foundation/mpl-core";
 import { assert } from "chai";
 
-describe("anchor-nft-staking-q4-25", () => {
+describe("staking-template", () => {
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
 
