@@ -506,6 +506,26 @@
         "usecase": "Starter"
       },
       {
+        "description": "Full-featured SOL staking dApp with Anchor program, reward calculations, and Next.js frontend",
+        "id": "gh:solana-foundation/templates/community/staking",
+        "image": "community/staking/og-image.png",
+        "keywords": [
+          "solana",
+          "anchor",
+          "staking",
+          "defi",
+          "nextjs",
+          "react",
+          "tailwind",
+          "typescript",
+          "@solana/kit"
+        ],
+        "name": "staking",
+        "path": "community/staking",
+        "displayName": "SOL Staking",
+        "usecase": "DeFi"
+      },
+      {
         "description": "Authenticate Solana wallets with Supabase",
         "id": "gh:solana-foundation/templates/community/supabase-auth",
         "image": "community/supabase-auth/og-image.png",

@@ -1,0 +1,51 @@
+{
+  "name": "staking",
+  "displayName": "SOL Staking",
+  "description": "Full-featured SOL staking dApp with Anchor program, reward calculations, and Next.js frontend",
+  "usecase": "DeFi",
+  "keywords": [
+    "solana",
+    "anchor",
+    "staking",
+    "defi",
+    "nextjs",
+    "react",
+    "tailwind",
+    "typescript",
+    "@solana/kit"
+  ],
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "create-solana-dapp": {
+    "instructions": [
+      "Install dependencies:",
+      "+{pm} install",
+      "Build the Anchor program:",
+      "+anchor build",
+      "Generate the TypeScript client from the IDL:",
+      "+{pm} gen-client",
+      "Start the frontend development server:",
+      "+cd web && {pm} dev"
+    ]
+  },
+  "scripts": {
+    "fmt": "prettier tests/staking.ts --check",
+    "fmt:fix": "prettier tests/staking.ts -w",
+    "test": "tsx --test tests/**/*.ts",
+    "gen-client": "codama run js"
+  },
+  "dependencies": {
+    "@codama/nodes-from-anchor": "^1.3.9",
+    "@codama/renderers-js": "^1.5.5",
+    "@solana/kit": "^5.5.1",
+    "codama": "^1.5.1",
+    "solana-kite": "^3.2.1"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.3"
+  }
+}
