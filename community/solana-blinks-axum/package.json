@@ -1,0 +1,29 @@
+{
+  "name": "solana-blinks-axum",
+  "displayName": "Solana Blinks (Axum)",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Solana Actions/Blinks template with Rust Axum backend and Next.js frontend",
+  "usecase": "Starter",
+  "keywords": [
+    "solana",
+    "blinks",
+    "actions",
+    "rust",
+    "axum",
+    "nextjs",
+    "framework-kit"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Set up the backend:",
+      "+cp .env.example .env",
+      "+cargo run",
+      "",
+      "In a separate terminal, set up the frontend:",
+      "+cd frontend && cp .env.local.example .env.local",
+      "+{pm} install",
+      "+{pm} run dev"
+    ]
+  }
+}
