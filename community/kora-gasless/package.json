@@ -1,0 +1,45 @@
+{
+  "name": "kora-gasless",
+  "displayName": "Kora Gasless Transactions",
+  "description": "Gasless transactions using Kora - users pay no SOL fees",
+  "usecase": "Payments",
+  "keywords": ["solana", "kora", "gasless", "paymaster", "nextjs", "typescript"],
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "create-solana-dapp": {
+    "instructions": [
+      "Install dependencies:",
+      "+{pm} install",
+      "Configure your Kora RPC URL:",
+      "+cp .env.example .env.local",
+      "Start development server:",
+      "+{pm} dev"
+    ]
+  },
+  "dependencies": {
+    "@solana/kora": "^0.1.0",
+    "@solana/spl-token": "^0.4.0",
+    "@solana/wallet-adapter-base": "^0.9.23",
+    "@solana/wallet-adapter-react": "^0.15.35",
+    "@solana/wallet-adapter-react-ui": "^0.9.35",
+    "@solana/wallet-adapter-phantom": "^0.9.24",
+    "@solana/web3.js": "^1.98.0",
+    "next": "14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5"
+  }
+}
