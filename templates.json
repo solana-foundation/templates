@@ -480,6 +480,26 @@
         "usecase": "Mobile"
       },
       {
+        "description": "Next.js app with Privy auth (Google, Discord, Twitter) and embedded Solana wallets",
+        "id": "gh:solana-foundation/templates/community/privy-auth",
+        "image": "community/privy-auth/og-image.png",
+        "keywords": [
+          "privy",
+          "authentication",
+          "embedded-wallet",
+          "social-login",
+          "nextjs",
+          "react",
+          "solana",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "privy-auth",
+        "path": "community/privy-auth",
+        "displayName": "Privy + Solana Auth",
+        "usecase": "Auth"
+      },
+      {
         "description": "ChatGPT app with Solana features - Swaps, transfers, staking and data query via natural language. Browser wallets + x402 payments or private key mode",
         "id": "gh:solana-foundation/templates/community/solana-chatgpt-kit",
         "image": "community/solana-chatgpt-kit/og-image.png",
