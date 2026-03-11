@@ -5,7 +5,7 @@ import { colors } from '@/lib/theme'
 /**
  * Home screen - displays welcome message and connect button
  * This is the entry point of the app where users initiate Phantom Connect
- * Updated for SDK v1.0.0-beta.26 with modal support
+ * Updated for SDK v1.0.2 with latest Expo SDK 54
  */
 export default function HomeScreen() {
   /**
