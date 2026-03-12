@@ -1,0 +1,56 @@
+{
+  "name": "staking-program",
+  "displayName": "SPL Token Staking",
+  "description": "Full-featured SPL token staking with Anchor smart contract and Next.js frontend",
+  "usecase": "DeFi",
+  "keywords": [
+    "solana",
+    "anchor",
+    "staking",
+    "spl-token",
+    "nextjs",
+    "defi",
+    "typescript"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Install Anchor program dependencies and sync the program ID for devnet app usage:",
+      "+{pm} install",
+      "+node scripts/sync-program-id.js",
+      "Deploy the synced program to devnet:",
+      "+anchor deploy --provider.cluster devnet",
+      "Create an SPL token mint with the same keypair used by Anchor:",
+      "+spl-token --url https://api.devnet.solana.com create-token --decimals 6",
+      "Initialize the staking pool with your mint address on devnet:",
+      "+ANCHOR_PROVIDER_URL=https://api.devnet.solana.com node scripts/initialize-pool.js --mint <TOKEN_MINT_ADDRESS>",
+      "Fund the reward pool and set an emission rate:",
+      "+ANCHOR_PROVIDER_URL=https://api.devnet.solana.com node scripts/add-rewards.js --amount 1000 --rate 1",
+      "Install frontend dependencies:",
+      "+cd app && {pm} install",
+      "Start the development server:",
+      "+cd app && {pm} dev"
+    ]
+  },
+  "scripts": {
+    "sync:program-id": "node scripts/sync-program-id.js",
+    "init:pool": "node scripts/initialize-pool.js",
+    "add:rewards": "node scripts/add-rewards.js",
+    "lint:fix": "prettier \"**/*.{js,ts}\" -w",
+    "lint": "prettier \"**/*.{js,ts}\" --check"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.32.1",
+    "@solana/spl-token": "^0.4.14",
+    "@solana/web3.js": "^1.98.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^9.0.3",
+    "ts-mocha": "^10.0.0",
+    "@types/bn.js": "^5.1.0",
+    "@types/chai": "^4.3.0",
+    "@types/mocha": "^9.0.0",
+    "typescript": "^5.7.3",
+    "prettier": "^2.6.2"
+  }
+}
