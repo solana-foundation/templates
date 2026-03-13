@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Space_Mono } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -27,10 +28,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${dmSans.variable} ${spaceMono.variable} font-sans antialiased`}>
-        <Providers>{children}</Providers>
-        <Toaster />
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <Providers>{children}</Providers>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
