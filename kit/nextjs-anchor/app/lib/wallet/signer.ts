@@ -61,9 +61,8 @@ function createModifyingSigner(
             ...signedTx,
             ...("lifetimeConstraint" in (tx as Record<string, unknown>)
               ? {
-                  lifetimeConstraint: (
-                    tx as Record<string, unknown>
-                  ).lifetimeConstraint,
+                  lifetimeConstraint: (tx as Record<string, unknown>)
+                    .lifetimeConstraint,
                 }
               : {}),
           });
