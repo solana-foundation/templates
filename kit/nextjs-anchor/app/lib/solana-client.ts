@@ -1,6 +1,5 @@
 import { createEmptyClient } from "@solana/kit";
-import { rpc } from "@solana/kit-plugin-rpc";
-import { airdrop } from "@solana/kit-plugin-airdrop";
+import { rpc, rpcAirdrop } from "@solana/kit-plugin-rpc";
 
 export type ClusterMoniker = "devnet" | "testnet" | "mainnet" | "localnet";
 
@@ -18,21 +17,27 @@ const CLUSTER_URLS: Record<ClusterMoniker, string> = {
   localnet: "http://localhost:8899",
 };
 
+const WS_URLS: Record<ClusterMoniker, string> = {
+  devnet: "wss://api.devnet.solana.com",
+  testnet: "wss://api.testnet.solana.com",
+  mainnet: "wss://api.mainnet-beta.solana.com",
+  localnet: "ws://localhost:8900",
+};
+
 export function getClusterUrl(cluster: ClusterMoniker) {
   return CLUSTER_URLS[cluster];
 }
 
 export function getClusterWsConfig(cluster: ClusterMoniker) {
-  return cluster === "localnet" ? { url: "ws://localhost:8900" } : undefined;
+  return cluster === "localnet" ? { url: WS_URLS[cluster] } : undefined;
 }
 
 export function createSolanaClient(cluster: ClusterMoniker) {
   const url = CLUSTER_URLS[cluster];
-  const rpcSubscriptionsConfig =
-    cluster === "localnet" ? { url: "ws://localhost:8900" } : undefined;
+  const wsUrl = WS_URLS[cluster];
   return createEmptyClient()
-    .use(rpc(url, rpcSubscriptionsConfig))
-    .use(airdrop());
+    .use(rpc(url, { url: wsUrl }))
+    .use(rpcAirdrop());
 }
 
 export type SolanaClient = ReturnType<typeof createSolanaClient>;

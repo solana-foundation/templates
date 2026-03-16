@@ -1,131 +1,52 @@
 import {
+  isSolanaError,
+  SOLANA_ERROR__INSTRUCTION_ERROR__CUSTOM,
+} from "@solana/kit";
+import {
   getVaultErrorMessage,
   VAULT_ERROR__VAULT_ALREADY_EXISTS,
   VAULT_ERROR__INVALID_AMOUNT,
   type VaultError,
 } from "../generated/vault";
 
-const COMMON_ERRORS: Record<string, string> = {
-  "User rejected": "Transaction was rejected by the wallet.",
-  "Attempt to debit an account but found no record of a prior credit":
-    "Account not found. Make sure you have SOL in your wallet.",
-  "insufficient lamports": "Not enough SOL in your wallet.",
-  "custom program error: 0x0": "Insufficient funds for this transaction.",
-  "Transaction simulation failed":
-    "Transaction simulation failed. Check your inputs and try again.",
-};
-
 const VAULT_ERROR_CODES: Record<number, VaultError> = {
   [VAULT_ERROR__VAULT_ALREADY_EXISTS]: VAULT_ERROR__VAULT_ALREADY_EXISTS,
   [VAULT_ERROR__INVALID_AMOUNT]: VAULT_ERROR__INVALID_AMOUNT,
 };
 
-/**
- * Walk the error's cause chain and collect all messages into one string.
- */
-function collectMessages(err: unknown): string {
-  const messages: string[] = [];
-  let current: unknown = err;
-
-  while (current) {
-    if (current instanceof Error) {
-      messages.push(current.message);
-      current = current.cause;
-    } else if (
-      typeof current === "object" &&
-      current !== null &&
-      "message" in current
-    ) {
-      messages.push(String((current as { message: unknown }).message));
-      current =
-        "cause" in current ? (current as { cause: unknown }).cause : undefined;
-    } else {
-      if (messages.length === 0) messages.push(String(current));
-      break;
-    }
+export function parseTransactionError(err: unknown): string {
+  // Wallet rejection (comes from wallet-standard, not a SolanaError)
+  if (err instanceof Error && err.message.includes("User rejected")) {
+    return "Transaction was rejected by the wallet.";
   }
 
-  return messages.join(" → ");
-}
-
-export function parseTransactionError(err: unknown): string {
-  // Unwrap kit plugin transaction plan errors — the real error is inside
-  // the `transactionPlanResult` attribute, not in the cause chain.
-  const planError = extractPlanError(err);
-  if (planError) return parseTransactionError(planError);
-
-  const fullChain = collectMessages(err);
-
-  // Check for vault program errors (Anchor custom error codes)
-  const codeMatch = fullChain.match(/custom program error: 0x([0-9a-fA-F]+)/);
-  if (codeMatch) {
-    const code = parseInt(codeMatch[1], 16);
-    const vaultError = VAULT_ERROR_CODES[code];
+  // Anchor custom program errors — use the Codama-generated error messages
+  if (
+    isSolanaError(err, SOLANA_ERROR__INSTRUCTION_ERROR__CUSTOM) &&
+    typeof err.context?.code === "number"
+  ) {
+    const vaultError = VAULT_ERROR_CODES[err.context.code];
     if (vaultError !== undefined) {
       return getVaultErrorMessage(vaultError);
     }
   }
 
-  // Check for known error patterns across the full cause chain
-  for (const [pattern, friendly] of Object.entries(COMMON_ERRORS)) {
-    if (fullChain.includes(pattern)) {
-      return friendly;
+  // For all other errors, kit's SolanaError already has readable messages.
+  // Walk the cause chain to find the deepest message.
+  const message = getDeepestMessage(err);
+  return message.length > 200 ? `${message.slice(0, 200)}...` : message;
+}
+
+function getDeepestMessage(err: unknown): string {
+  let deepest = err instanceof Error ? err.message : String(err);
+  let current: unknown = err;
+
+  while (current instanceof Error && current.cause) {
+    current = current.cause;
+    if (current instanceof Error) {
+      deepest = current.message;
     }
   }
 
-  // Return the deepest (root cause) message if available, otherwise the top-level
-  const rootMessage = err instanceof Error ? err.message : String(err);
-  const trimmed =
-    rootMessage.length > 200 ? `${rootMessage.slice(0, 200)}…` : rootMessage;
-  return trimmed;
-}
-
-/**
- * Extract the underlying error from a kit plugin transaction plan failure.
- * The plugin throws a SolanaError with a `transactionPlanResult` attribute
- * whose single entry has `status: { kind: 'failed', error }`.
- */
-function extractPlanError(err: unknown): Error | null {
-  if (!(err instanceof Error)) return null;
-
-  const withContext = err as {
-    context?: { transactionPlanResult?: unknown };
-    transactionPlanResult?: unknown;
-  };
-
-  const result =
-    withContext.context?.transactionPlanResult ??
-    withContext.transactionPlanResult;
-  if (typeof result !== "object" || result === null) return null;
-
-  const failed = findFirstFailedPlanResult(result);
-  if (failed?.error instanceof Error) return failed.error;
-
-  return null;
-}
-
-function findFirstFailedPlanResult(
-  result: unknown
-): { error?: unknown; plans?: unknown[] } | null {
-  if (typeof result !== "object" || result === null) return null;
-
-  const candidate = result as {
-    kind?: string;
-    status?: string;
-    error?: unknown;
-    plans?: unknown[];
-  };
-
-  if (candidate.kind === "single" && candidate.status === "failed") {
-    return candidate;
-  }
-
-  if (Array.isArray(candidate.plans)) {
-    for (const plan of candidate.plans) {
-      const failed = findFirstFailedPlanResult(plan);
-      if (failed) return failed;
-    }
-  }
-
-  return null;
+  return deepest;
 }
