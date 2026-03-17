@@ -39,7 +39,7 @@
     "@solana/client": "^1.2.0",
     "@solana/kit": "^5.1.0",
     "@solana/react-hooks": "^1.1.5",
-    "next": "16.0.10",
+    "next": "16.1.7",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "ws": "^8.18.3"
