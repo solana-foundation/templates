@@ -7,7 +7,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "templateexpobasic",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
@@ -16,8 +15,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
-      "package": "com.beeman.web3jsexpopaper"
+      "package": "com.anonymous.web3js_expo_paper"
     },
     "web": {
       "bundler": "metro",
@@ -25,6 +23,7 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "expo-font",
       "expo-router",
       [
         "expo-splash-screen",
@@ -39,8 +38,7 @@
           "resizeMode": "contain"
         }
       ],
-      "expo-web-browser",
-      "expo-font"
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
