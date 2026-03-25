@@ -9,7 +9,8 @@
     "name": "kit-expo-uniwind",
     "slug": "kit-expo-uniwind",
     "android": {
-      "package": "com.anonymous.kitexpouniwind"
-    }
+      "package": "com.anonymous.kit_expo_uniwind"
+    },
+    "plugins": ["expo-router"]
   }
 }
