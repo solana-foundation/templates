@@ -1,13 +1,10 @@
 import '../global.css'
 
 import { Slot } from 'expo-router'
-import { MobileWalletProvider, createSolanaDevnet } from '@wallet-ui/react-native-kit'
+import { AppIdentity, createSolanaDevnet, MobileWalletProvider } from '@wallet-ui/react-native-kit'
 
 const cluster = createSolanaDevnet()
-const identity = {
-  name: 'Kit Expo Uniwind',
-  uri: 'https://github.com/beeman/kit-expo-uniwind',
-}
+const identity: AppIdentity = { name: 'Kit Expo Uniwind' }
 
 export default function Layout() {
   return (

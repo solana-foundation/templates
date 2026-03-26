@@ -43,3 +43,6 @@ next-env.d.ts
 # anchor build artifacts
 /anchor/.anchor/
 /anchor/target/
+
+# solana local validator
+test-ledger/
