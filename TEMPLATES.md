@@ -14,7 +14,7 @@ Kit Templates (using @solana/kit)
 
 `gh:solana-foundation/templates/kit/nextjs-anchor`
 
-> Next.js, Tailwind, @solana/react-hooks, Anchor vault program
+> Next.js, Tailwind, @solana/kit, Anchor vault program
 
 `anchor` `kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
 
