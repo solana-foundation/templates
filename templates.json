@@ -20,7 +20,7 @@
         "path": "kit/nextjs"
       },
       {
-        "description": "Next.js, Tailwind, @solana/react-hooks, Anchor vault program",
+        "description": "Next.js, Tailwind, @solana/kit, Anchor vault program",
         "id": "gh:solana-foundation/templates/kit/nextjs-anchor",
         "image": "kit/nextjs-anchor/og-image.png",
         "keywords": [
