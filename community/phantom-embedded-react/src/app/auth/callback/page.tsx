@@ -15,7 +15,8 @@ import { useRouter } from 'next/navigation'
  */
 export default function AuthCallbackPage() {
   const router = useRouter()
-  const { isConnected, isLoading, connectError } = usePhantom()
+  const { isConnected, isLoading, errors } = usePhantom()
+  const connectError = errors.connect
 
   // Redirect to home once connected
   useEffect(() => {
