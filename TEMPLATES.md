@@ -218,7 +218,7 @@ Templates maintained by the Solana community
 
 `gh:solana-foundation/templates/community/phantom-embedded-react-native`
 
-> A minimal Expo starter template for integrating Phantom's embedded user wallets on Solana for mobile apps
+> Expo starter for Phantom's embedded wallet on Solana. Google or Apple OAuth, no extension needed.
 
 `solana` `phantom` `wallet` `embedded-wallet` `react-native` `expo` `mobile` `typescript` `oauth` `authentication`
 

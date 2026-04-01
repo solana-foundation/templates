@@ -1,7 +1,7 @@
 {
   "name": "phantom-embedded-react-native-starter",
   "version": "1.0.0",
-  "description": "A minimal Expo starter template for integrating Phantom's embedded user wallets on Solana for mobile apps",
+  "description": "Expo starter for Phantom's embedded wallet on Solana. Google or Apple OAuth, no extension needed.",
   "displayName": "Phantom Embedded React Native Starter",
   "usecase": "Mobile",
   "keywords": [
