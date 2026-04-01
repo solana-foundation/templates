@@ -13,7 +13,7 @@ interface ConnectionProviderProps {
 /**
  * ConnectionProvider wraps the app with PhantomProvider for wallet connectivity
  *
- * Phantom Connect SDK v1.0.5
+ * Phantom Connect SDK v1.0.7
  * @see https://docs.phantom.com/sdks/react-sdk
  */
 export default function ConnectionProvider({ children }: ConnectionProviderProps) {

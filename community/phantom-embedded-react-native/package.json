@@ -71,7 +71,7 @@
   "dependencies": {
     "@babel/runtime": "^7.28.4",
     "@expo/vector-icons": "^15.0.3",
-    "@phantom/react-native-sdk": "1.0.5",
+    "@phantom/react-native-sdk": "1.0.7",
     "@solana/web3.js": "^1.95.0",
     "expo": "~54.0.0",
     "expo-auth-session": "~7.0.9",
