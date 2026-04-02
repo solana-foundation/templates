@@ -1,6 +1,6 @@
 # nextjs
 
-Next.js starter with Tailwind CSS, [`@solana/kit`](https://github.com/anza-xyz/kit) and [`@solana/kit-client-rpc`](https://github.com/anza-xyz/kit-plugins) for wallet connection, balance display, and cluster switching.
+Next.js starter with Tailwind CSS, [`@solana/connector`](https://github.com/solana-foundation/connectorkit), and [`@solana/kit`](https://github.com/anza-xyz/kit) for wallet connection, balance display, and cluster switching.
 
 ## Getting Started
 
@@ -15,7 +15,7 @@ npm run dev
 
 ## What's Included
 
-- Wallet connection via [wallet-standard](https://github.com/wallet-standard/wallet-standard) (auto-discovers Phantom, Solflare, etc.)
+- Wallet connection via [`@solana/connector`](https://github.com/solana-foundation/connectorkit) and [wallet-standard](https://github.com/wallet-standard/wallet-standard) (auto-discovers Phantom, Solflare, etc.)
 - Balance display with real-time WebSocket updates
 - Devnet airdrop
 - Cluster switching (devnet, testnet, mainnet, localnet)
@@ -23,14 +23,13 @@ npm run dev
 
 ## Using Your Own RPC
 
-The public mainnet RPC (`api.mainnet-beta.solana.com`) rejects requests from browser origins. To use mainnet, replace the URL in `app/lib/solana-client.ts` with your own RPC provider (e.g. [Helius](https://www.helius.dev/), [Triton](https://triton.one/)).
+The public mainnet RPC (`api.mainnet-beta.solana.com`) rejects requests from browser origins. To use mainnet reliably, configure your own RPC URL in `app/components/providers.tsx` by passing custom clusters to `getDefaultConfig(...)` (for example, from [Helius](https://www.helius.dev/) or [Triton](https://triton.one/)).
 
 ## Stack
 
 - [Next.js](https://nextjs.org/) 16 (App Router)
 - [Tailwind CSS](https://tailwindcss.com/) v4
-- [@solana/kit](https://github.com/anza-xyz/kit) for RPC, signers, and transaction types
-- [@solana/kit-client-rpc](https://github.com/anza-xyz/kit-plugins) for the plugin-based client
-- [SWR](https://swr.vercel.app/) for data fetching
+- [@solana/connector](https://github.com/solana-foundation/connectorkit) for wallet discovery, connection state, and cluster/account hooks
+- [@solana/kit](https://github.com/anza-xyz/kit) for RPC and transaction utilities
 - [sonner](https://sonner.emilkowal.ski/) for toast notifications
 - [next-themes](https://github.com/pacocoursey/next-themes) for dark mode

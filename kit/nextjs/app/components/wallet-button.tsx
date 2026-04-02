@@ -1,23 +1,29 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useWallet } from "../lib/wallet/context";
-import { useBalance } from "../lib/hooks/use-balance";
-import { lamportsToSolString } from "../lib/lamports";
-import { ellipsify } from "../lib/explorer";
-import { useCluster } from "./cluster-context";
+import {
+  useConnector,
+  useAccount,
+  useCluster,
+  BalanceElement,
+} from "@solana/connector";
 
 export function WalletButton() {
-  const { connectors, connect, disconnect, wallet, status, error } =
-    useWallet();
+  const {
+    connectors,
+    connectWallet,
+    disconnectWallet,
+    isConnected,
+    isConnecting,
+    isError,
+    walletError,
+    account,
+  } = useConnector();
 
-  const { getExplorerUrl } = useCluster();
+  const { formatted, copy, copied } = useAccount();
+  const { explorerUrl } = useCluster();
   const [isOpen, setIsOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
-  const address = wallet?.account.address;
-  const balance = useBalance(address);
 
   const open = () => setIsOpen(true);
   const close = () => setIsOpen(false);
@@ -32,14 +38,7 @@ export function WalletButton() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleCopy = async () => {
-    if (!address) return;
-    await navigator.clipboard.writeText(address);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  if (status !== "connected") {
+  if (!isConnected) {
     return (
       <div className="relative" ref={ref}>
         <button
@@ -60,13 +59,13 @@ export function WalletButton() {
                   key={connector.id}
                   onClick={async () => {
                     try {
-                      await connect(connector.id);
+                      await connectWallet(connector.id);
                       close();
                     } catch {
-                      // connection errors are surfaced through context state
+                      // connection errors are surfaced through connector state
                     }
                   }}
-                  disabled={status === "connecting"}
+                  disabled={isConnecting || !connector.ready}
                   className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition hover:bg-cream disabled:opacity-50 disabled:pointer-events-none"
                 >
                   {connector.icon && (
@@ -80,12 +79,12 @@ export function WalletButton() {
                 </button>
               ))}
             </div>
-            {status === "connecting" && (
+            {isConnecting && (
               <p className="mt-2 text-xs text-muted">Connecting...</p>
             )}
-            {error != null && (
+            {isError && walletError && (
               <p className="mt-2 text-xs text-destructive">
-                {error instanceof Error ? error.message : String(error)}
+                {walletError.message}
               </p>
             )}
           </div>
@@ -101,34 +100,40 @@ export function WalletButton() {
         className="flex cursor-pointer items-center gap-2 rounded-lg border border-border-low bg-card px-3 py-2 text-xs font-medium transition hover:bg-cream"
       >
         <span className="h-2 w-2 rounded-full bg-green-500" />
-        <span className="font-mono">{ellipsify(address!, 4)}</span>
+        <span className="font-mono">{formatted}</span>
       </button>
 
       {isOpen && (
         <div className="absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-border-low bg-card p-4 shadow-lg">
           <div className="mb-3">
             <p className="text-xs text-muted">Balance</p>
-            <p className="text-lg font-bold tabular-nums">
-              {balance.lamports != null
-                ? lamportsToSolString(balance.lamports)
-                : "\u2014"}{" "}
-              <span className="text-sm font-normal text-muted">SOL</span>
-            </p>
+            <BalanceElement
+              render={({ solBalance, isLoading }) => (
+                <p className="text-lg font-bold tabular-nums">
+                  {isLoading
+                    ? "..."
+                    : solBalance != null
+                      ? solBalance.toFixed(4)
+                      : "\u2014"}{" "}
+                  <span className="text-sm font-normal text-muted">SOL</span>
+                </p>
+              )}
+            />
           </div>
 
           <div className="mb-3 rounded-lg border border-border-low bg-cream/50 px-3 py-2">
-            <p className="break-all font-mono text-xs">{address}</p>
+            <p className="break-all font-mono text-xs">{account}</p>
           </div>
 
           <div className="flex gap-2">
             <button
-              onClick={handleCopy}
+              onClick={() => copy()}
               className="flex-1 cursor-pointer rounded-lg border border-border-low bg-card px-3 py-2 text-xs font-medium transition hover:bg-cream"
             >
               {copied ? "Copied!" : "Copy address"}
             </button>
             <a
-              href={getExplorerUrl(`/address/${address}`)}
+              href={`${explorerUrl}/address/${account}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 rounded-lg border border-border-low bg-card px-3 py-2 text-center text-xs font-medium transition hover:bg-cream"
@@ -139,7 +144,7 @@ export function WalletButton() {
 
           <button
             onClick={() => {
-              disconnect();
+              disconnectWallet();
               close();
             }}
             className="mt-2 w-full cursor-pointer rounded-lg border border-border-low bg-card px-3 py-2 text-xs font-medium text-destructive transition hover:bg-destructive/10"

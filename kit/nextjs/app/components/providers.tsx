@@ -1,21 +1,41 @@
 "use client";
 
+import { useMemo, PropsWithChildren } from "react";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
-import { PropsWithChildren } from "react";
-import { ClusterProvider } from "./cluster-context";
-import { WalletProvider } from "../lib/wallet/context";
-import { SolanaClientProvider } from "../lib/solana-client-context";
+import { AppProvider } from "@solana/connector/react";
+import {
+  getDefaultConfig,
+  getDefaultMobileConfig,
+} from "@solana/connector/headless";
 
 export function Providers({ children }: PropsWithChildren) {
+  const connectorConfig = useMemo(
+    () =>
+      getDefaultConfig({
+        appName: "Solana dApp Starter",
+        appUrl: "https://solana.com",
+        autoConnect: true,
+        enableMobile: true,
+      }),
+    [],
+  );
+
+  const mobile = useMemo(
+    () =>
+      getDefaultMobileConfig({
+        appName: "Solana dApp Starter",
+        appUrl: "https://solana.com",
+      }),
+    [],
+  );
+
   return (
     <ThemeProvider attribute="class" defaultTheme="dark">
-      <ClusterProvider>
-        <WalletProvider>
-          <SolanaClientProvider>{children}</SolanaClientProvider>
-        </WalletProvider>
+      <AppProvider connectorConfig={connectorConfig} mobile={mobile}>
+        {children}
         <Toaster position="bottom-right" richColors />
-      </ClusterProvider>
+      </AppProvider>
     </ThemeProvider>
   );
 }
