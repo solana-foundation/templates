@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native'
-import { useAccounts, useDisconnect, usePhantom } from '@phantom/react-native-sdk'
+import { useAccounts, useDisconnect, useModal } from '@phantom/react-native-sdk'
 import { useRouter } from 'expo-router'
 import { getBalance } from '@/lib/solana'
 import { truncateAddress, copyToClipboard } from '@/lib/utils'
@@ -9,12 +9,12 @@ import { colors } from '@/lib/theme'
 /**
  * WalletInfo component - Dashboard for connected wallet
  * Displays Solana wallet address, SOL balance, and logout functionality
- * Updated for SDK v1.0.0-beta.26 with modal support
+ * Updated for SDK v1.0.2 with useModal hook
  */
 export function WalletInfo() {
   const { addresses, isConnected } = useAccounts()
   const { disconnect, isDisconnecting } = useDisconnect()
-  const { modal } = usePhantom()
+  const modal = useModal()
   const router = useRouter()
   const [balance, setBalance] = useState<number | null>(null)
   const [isLoadingBalance, setIsLoadingBalance] = useState(false)

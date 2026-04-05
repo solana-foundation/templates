@@ -16,7 +16,7 @@ import { colors } from '@/lib/theme'
  * Root layout component that wraps the entire app
  * Configures PhantomProvider for embedded user wallets
  * Supports both Solana and Ethereum chains (multi-chain)
- * Updated for SDK v1.0.0-beta.26 with modal support
+ * Updated for SDK v1.0.5 with latest Expo SDK 54
  */
 export default function RootLayout() {
   const appId = process.env.EXPO_PUBLIC_PHANTOM_APP_ID || ''

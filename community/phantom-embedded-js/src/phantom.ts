@@ -6,7 +6,6 @@ let connectedAddress: string | null = null
 export function initializeSDK(): BrowserSDK {
   const appId = import.meta.env.VITE_PHANTOM_APP_ID
   const redirectUrl = import.meta.env.VITE_REDIRECT_URL
-  const authUrl = import.meta.env.VITE_PHANTOM_AUTH_URL
 
   if (!appId || appId === 'your-app-id-here') {
     throw new Error(
@@ -20,12 +19,10 @@ export function initializeSDK(): BrowserSDK {
   }
 
   sdk = new BrowserSDK({
-    providerType: 'embedded',
-    embeddedWalletType: 'user-wallet',
+    providers: ['google', 'apple'],
     addressTypes: [AddressType.solana],
     appId: appId,
     authOptions: {
-      authUrl: `${authUrl}/login`,
       redirectUrl: redirectUrl,
     },
   })
