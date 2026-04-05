@@ -1,0 +1,11 @@
+{
+  "idl": "./target/idl/staking_template.json",
+  "scripts": {
+    "js": [
+      {
+        "from": "@codama/renderers-js",
+        "args": ["./web/client/"]
+      }
+    ]
+  }
+}
