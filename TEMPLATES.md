@@ -222,6 +222,14 @@ Templates maintained by the Solana community
 
 `solana` `phantom` `wallet` `embedded-wallet` `react-native` `expo` `mobile` `typescript` `oauth` `authentication`
 
+### [solana-blinks-axum](community/solana-blinks-axum)
+
+`gh:solana-foundation/templates/community/solana-blinks-axum`
+
+> Solana Actions/Blinks template with Rust Axum backend and Next.js frontend
+
+`solana` `blinks` `actions` `rust` `axum` `nextjs` `framework-kit`
+
 ### [solana-chatgpt-kit](community/solana-chatgpt-kit)
 
 `gh:solana-foundation/templates/community/solana-chatgpt-kit`
