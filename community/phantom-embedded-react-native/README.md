@@ -111,12 +111,14 @@ Restart Claude Desktop. On first use, a browser window opens to authenticate you
 ### Available tools (28)
 
 **Wallet & balances**
+
 - `get_connection_status` — Local connection check (no API call)
 - `get_wallet_addresses` — Solana, Ethereum, Bitcoin, and Sui addresses
 - `get_token_balances` — All token balances with live USD prices
 - `get_token_allowance` — ERC-20 allowance for a spender on EVM
 
 **Transactions**
+
 - `send_solana_transaction` — Sign and broadcast a Solana transaction (with simulation preview)
 - `send_evm_transaction` — Sign and broadcast an EVM transaction
 - `transfer_tokens` — Transfer SOL, SPL tokens, or EVM native/tokens
@@ -124,16 +126,19 @@ Restart Claude Desktop. On first use, a browser window opens to authenticate you
 - `simulate_transaction` — Preview asset changes without submitting
 
 **Signing**
+
 - `sign_solana_message` — Sign a UTF-8 message on Solana
 - `sign_evm_personal_message` — EIP-191 personal sign on EVM
 - `sign_evm_typed_data` — EIP-712 typed data (DeFi permits, order signing)
 
 **Auth & misc**
+
 - `phantom_login` — Trigger wallet authentication
 - `pay_api_access` — Pay for API access
 - `portfolio_rebalance` — Rebalance token portfolio
 
 **Perpetuals — Hyperliquid (13 tools)**
+
 - `deposit_to_hyperliquid` — Bridge tokens into your Hyperliquid perp account
 - `get_perp_account` — Account balance and available margin
 - `get_perp_markets` — Markets with price, funding rate, open interest, and max leverage
