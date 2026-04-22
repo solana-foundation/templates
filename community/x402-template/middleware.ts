@@ -1,58 +1,53 @@
-import { Address } from 'viem'
-import { paymentMiddleware, Resource, Network } from 'x402-next'
-import { NextRequest } from 'next/server'
+import { paymentProxy, type Network } from '@x402/next'
+import { HTTPFacilitatorClient, x402ResourceServer } from '@x402/core/server'
+import { registerExactSvmScheme } from '@x402/svm/exact/server'
 
-const address = process.env.NEXT_PUBLIC_RECEIVER_ADDRESS as Address
-const network = process.env.NEXT_PUBLIC_NETWORK as Network
-const facilitatorUrl = process.env.NEXT_PUBLIC_FACILITATOR_URL as Resource
-const cdpClientKey = process.env.NEXT_PUBLIC_CDP_CLIENT_KEY as string
+const payTo = process.env.NEXT_PUBLIC_RECEIVER_ADDRESS
+const network = process.env.NEXT_PUBLIC_NETWORK as Network | undefined
+const facilitatorUrl = process.env.NEXT_PUBLIC_FACILITATOR_URL
 
-const x402PaymentMiddleware = paymentMiddleware(
-  address,
+if (!payTo || !network || !facilitatorUrl) {
+  throw new Error(
+    'Missing required x402 env vars: NEXT_PUBLIC_RECEIVER_ADDRESS, NEXT_PUBLIC_NETWORK, NEXT_PUBLIC_FACILITATOR_URL',
+  )
+}
+
+const facilitatorClient = new HTTPFacilitatorClient({ url: facilitatorUrl })
+const server = new x402ResourceServer(facilitatorClient)
+
+registerExactSvmScheme(server)
+
+export const middleware = paymentProxy(
   {
     '/content/cheap': {
-      price: '$0.01',
-      config: {
-        description: 'Access to cheap content',
-      },
-      network,
+      accepts: [
+        {
+          scheme: 'exact',
+          price: '$0.01',
+          network,
+          payTo,
+        },
+      ],
+      description: 'Access to cheap content',
+      mimeType: 'text/html',
     },
     '/content/expensive': {
-      price: '$0.25',
-      config: {
-        description: 'Access to expensive content',
-      },
-      network,
+      accepts: [
+        {
+          scheme: 'exact',
+          price: '$0.25',
+          network,
+          payTo,
+        },
+      ],
+      description: 'Access to expensive content',
+      mimeType: 'text/html',
     },
   },
-  {
-    url: facilitatorUrl,
-  },
-  {
-    cdpClientKey,
-    appLogo: '/logos/x402-examples.png',
-    appName: 'x402 Demo',
-    sessionTokenEndpoint: '/api/x402/session-token',
-  },
+  server,
 )
-
-export const middleware = (req: NextRequest) => {
-  const delegate = x402PaymentMiddleware as unknown as (
-    request: NextRequest,
-  ) => ReturnType<typeof x402PaymentMiddleware>
-  return delegate(req)
-}
 
 // Configure which paths the middleware should run on
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (metadata files)
-     */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
-    '/', // Include the root path explicitly
-  ],
+  matcher: ['/content/:path*'],
 }
