@@ -524,6 +524,28 @@
         "usecase": "Starter"
       },
       {
+        "description": "Node.js Express backend for server-side Solana signing with Dynamic MPC wallets + gasless relayer example",
+        "id": "gh:solana-foundation/templates/community/solana-node-dynamic",
+        "image": "community/solana-node-dynamic/og-image.png",
+        "keywords": [
+          "solana",
+          "dynamic",
+          "dynamic-xyz",
+          "node",
+          "server-wallet",
+          "mpc",
+          "gasless",
+          "relayer",
+          "backend",
+          "express",
+          "typescript"
+        ],
+        "name": "solana-node-dynamic",
+        "path": "community/solana-node-dynamic",
+        "displayName": "Solana Node + Dynamic Server Wallets",
+        "usecase": "Starter"
+      },
+      {
         "description": "Authenticate Solana wallets with Supabase",
         "id": "gh:solana-foundation/templates/community/supabase-auth",
         "image": "community/supabase-auth/og-image.png",
