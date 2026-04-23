@@ -1,0 +1,54 @@
+{
+  "name": "solana-react-dynamic",
+  "displayName": "Solana React + Vite + Dynamic",
+  "description": "React + Vite starter with Dynamic wallet authentication for Solana",
+  "usecase": "Starter",
+  "keywords": [
+    "solana",
+    "react",
+    "vite",
+    "dynamic",
+    "dynamic-xyz",
+    "wallet",
+    "authentication",
+    "typescript",
+    "tailwind"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Install dependencies:",
+      "+{pm} install",
+      "Copy .env.example to .env and add your Dynamic environment ID:",
+      "+cp .env.example .env",
+      "Get your Environment ID from https://app.dynamic.xyz/dashboard/developer",
+      "Start the development server:",
+      "+{pm} dev"
+    ]
+  },
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@dynamic-labs/sdk-react-core": "4.76.0",
+    "@dynamic-labs/solana": "4.76.0",
+    "@solana/web3.js": "^1.98.0",
+    "@tailwindcss/vite": "^4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwindcss": "^4"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.0.3",
+    "typescript": "^5",
+    "vite": "^7.1.6"
+  }
+}

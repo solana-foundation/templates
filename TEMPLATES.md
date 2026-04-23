@@ -238,6 +238,14 @@ Templates maintained by the Solana community
 
 `solana` `chatgpt` `openai` `mcp` `jupiter` `x402` `payments` `swap` `wallet` `defi` `staking` `nextjs` `typescript` `spl-token` `sns`
 
+### [solana-react-dynamic](community/solana-react-dynamic)
+
+`gh:solana-foundation/templates/community/solana-react-dynamic`
+
+> React + Vite starter with Dynamic wallet authentication for Solana
+
+`solana` `react` `vite` `dynamic` `dynamic-xyz` `wallet` `authentication` `typescript` `tailwind`
+
 ### [supabase-auth](community/supabase-auth)
 
 `gh:solana-foundation/templates/community/supabase-auth`
