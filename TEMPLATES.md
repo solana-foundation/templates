@@ -238,6 +238,14 @@ Templates maintained by the Solana community
 
 `solana` `chatgpt` `openai` `mcp` `jupiter` `x402` `payments` `swap` `wallet` `defi` `staking` `nextjs` `typescript` `spl-token` `sns`
 
+### [solana-react-native-dynamic](community/solana-react-native-dynamic)
+
+`gh:solana-foundation/templates/community/solana-react-native-dynamic`
+
+> Expo + React Native starter with Dynamic embedded wallets + social login for Solana
+
+`solana` `dynamic` `dynamic-xyz` `wallet` `embedded-wallet` `react-native` `expo` `mobile` `typescript` `social-login` `authentication`
+
 ### [supabase-auth](community/supabase-auth)
 
 `gh:solana-foundation/templates/community/supabase-auth`

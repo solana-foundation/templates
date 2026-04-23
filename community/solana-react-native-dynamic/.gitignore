@@ -1,0 +1,43 @@
+node_modules/
+.expo/
+dist/
+web-build/
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+ios/Pods/
+ios/build/
+android/build/
+android/app/build/
+android/.gradle/
+
+# Metro
+.metro-health-check*
+
+# Debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+.pnpm-debug.log*
+
+# macOS
+.DS_Store
+*.pem
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Typescript
+*.tsbuildinfo
+
+# Lock files (use pnpm)
+package-lock.json
+yarn.lock
