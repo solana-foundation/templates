@@ -524,6 +524,26 @@
         "usecase": "Starter"
       },
       {
+        "description": "Next.js starter with Dynamic wallet authentication for Solana",
+        "id": "gh:solana-foundation/templates/community/solana-nextjs-dynamic",
+        "image": "community/solana-nextjs-dynamic/og-image.png",
+        "keywords": [
+          "solana",
+          "nextjs",
+          "dynamic",
+          "dynamic-xyz",
+          "wallet",
+          "authentication",
+          "react",
+          "typescript",
+          "tailwind"
+        ],
+        "name": "solana-nextjs-dynamic",
+        "path": "community/solana-nextjs-dynamic",
+        "displayName": "Solana Next.js + Dynamic",
+        "usecase": "Starter"
+      },
+      {
         "description": "Authenticate Solana wallets with Supabase",
         "id": "gh:solana-foundation/templates/community/supabase-auth",
         "image": "community/supabase-auth/og-image.png",
