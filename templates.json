@@ -524,6 +524,28 @@
         "usecase": "Starter"
       },
       {
+        "description": "Expo + React Native starter with Dynamic embedded wallets + social login for Solana",
+        "id": "gh:solana-foundation/templates/community/solana-react-native-dynamic",
+        "image": "community/solana-react-native-dynamic/og-image.png",
+        "keywords": [
+          "solana",
+          "dynamic",
+          "dynamic-xyz",
+          "wallet",
+          "embedded-wallet",
+          "react-native",
+          "expo",
+          "mobile",
+          "typescript",
+          "social-login",
+          "authentication"
+        ],
+        "name": "solana-react-native-dynamic",
+        "path": "community/solana-react-native-dynamic",
+        "displayName": "Solana Expo + Dynamic",
+        "usecase": "Mobile"
+      },
+      {
         "description": "Authenticate Solana wallets with Supabase",
         "id": "gh:solana-foundation/templates/community/supabase-auth",
         "image": "community/supabase-auth/og-image.png",
