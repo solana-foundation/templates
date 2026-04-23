@@ -1,0 +1,54 @@
+{
+  "name": "solana-node-dynamic",
+  "displayName": "Solana Node + Dynamic Server Wallets",
+  "description": "Node.js Express backend for server-side Solana signing with Dynamic MPC wallets + gasless relayer example",
+  "usecase": "Starter",
+  "keywords": [
+    "solana",
+    "dynamic",
+    "dynamic-xyz",
+    "node",
+    "server-wallet",
+    "mpc",
+    "gasless",
+    "relayer",
+    "backend",
+    "express",
+    "typescript"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Install dependencies:",
+      "+{pm} install",
+      "Copy .env.example to .env and add your Dynamic credentials:",
+      "+cp .env.example .env",
+      "Get your Environment ID + API token from https://app.dynamic.xyz/dashboard/developer",
+      "Start the development server:",
+      "+{pm} dev"
+    ]
+  },
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@dynamic-labs-wallet/node": "^0.0.326",
+    "@dynamic-labs-wallet/node-svm": "^0.0.326",
+    "@solana/web3.js": "^1.95.0",
+    "dotenv": "^16.4.0",
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.0",
+    "@types/node": "^20",
+    "tsx": "^4.19.0",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
