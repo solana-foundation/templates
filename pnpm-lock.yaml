@@ -600,8 +600,8 @@ importers:
   community/phantom-embedded-js:
     dependencies:
       '@phantom/browser-sdk':
-        specifier: ^2.0.1
-        version: 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: ^2.0.2
+        version: 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
       '@solana/web3.js':
         specifier: ^1.95.0
         version: 1.98.4(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
@@ -616,11 +616,11 @@ importers:
   community/phantom-embedded-react:
     dependencies:
       '@phantom/browser-sdk':
-        specifier: ^2.0.1
-        version: 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: ^2.0.2
+        version: 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
       '@phantom/react-sdk':
-        specifier: ^2.0.1
-        version: 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1))(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: ^2.0.2
+        version: 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1))(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
       '@solana/web3.js':
         specifier: ^1.95.0
         version: 1.98.4(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
@@ -674,8 +674,8 @@ importers:
         specifier: ^15.0.3
         version: 15.0.3(expo-font@14.0.11(expo@54.0.32)(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.0.14)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.0.14)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)
       '@phantom/react-native-sdk':
-        specifier: ^2.0.1
-        version: 2.0.1(cb0a6e093eb49ba4b86824b7ba030ddb)
+        specifier: ^2.0.2
+        version: 2.0.2(cb0a6e093eb49ba4b86824b7ba030ddb)
       '@solana/web3.js':
         specifier: ^1.95.0
         version: 1.98.4(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
@@ -783,7 +783,7 @@ importers:
         version: 3.3.1
       x402-solana:
         specifier: ^0.1.1
-        version: 0.1.5(d1f50cd34f0cd3c02227c9611a19597e)
+        version: 0.1.5(0714095febb2497edc293a5c3792c1e5)
       zod:
         specifier: 3.24.2
         version: 3.24.2
@@ -4626,49 +4626,49 @@ packages:
     resolution: {integrity: sha512-IHnV6A+zxU7XwmKFinmYjUcwlyK9+xkG3/s9KcQhI9BjQKycrJ1JRO+FbNYPwZiPKW3je/DR0k7w8/gLa5eaxQ==}
     deprecated: 'The package is now available as "qr": npm install qr'
 
-  '@phantom/api-key-stamper@2.0.1':
-    resolution: {integrity: sha512-Qw8S+ZCmuKLWfja7VZCfi8A+KVhhas50MIvJsGEIAMIBDWrqUvSVPKjgvTktPwxjXkCO/ScWpy/R8HneA79LWQ==}
+  '@phantom/api-key-stamper@2.0.2':
+    resolution: {integrity: sha512-TCjfFN7FrNuIQzHqgQOcBR/Vu32Jfr+y2/9VVwRDdPgRwrm0oNDQPIuCUhd7QAWmlotBtNnrZh9fDxc5DeCo7g==}
 
-  '@phantom/auth2@2.0.1':
-    resolution: {integrity: sha512-Mhi+akTqOi1W5zduYJbdnoahcmgTnT2SBRN4oxEwpd62SX0y0tfacv8llJAXg3oRWVY7lY+whjAF7Mryc5G3yw==}
+  '@phantom/auth2@2.0.2':
+    resolution: {integrity: sha512-0XN/mNxB8s62GeCJwZSJtz8Z2ek4pf643iYXKBjNcl4E8IkQnN3cgC/cg5FDpe197EPx7lKdcgYO78Cle09I5A==}
 
-  '@phantom/base64url@2.0.1':
-    resolution: {integrity: sha512-fJw9Soa4L1eynj03gry8SwjdmBwh4wEo3ElL6+HqEczExOJC6Ag/YD7HMzoXLvk3ToJTmqohGyhtwF35Ebh99g==}
+  '@phantom/base64url@2.0.2':
+    resolution: {integrity: sha512-HnSyXM/8B4KlsbHoSsuDqA0WgBZ5kQRUuTZidAdR2yis1S5HeaYMUXaLfV447h0mFx1BTw1oG01zPsAT1/UPxQ==}
 
-  '@phantom/browser-injected-sdk@2.0.1':
-    resolution: {integrity: sha512-uE7FPVNW4mNtHorySL7YlLVQmvUOT2A7auVLII0rh4qkMVwGdrVqy79XVioyVPz/tsWuokVIOoC7IZJyU1YmmQ==}
+  '@phantom/browser-injected-sdk@2.0.2':
+    resolution: {integrity: sha512-EpxgiT3BLrSjQ/cwX0htaVab46QT9Ye8Vr1WhbLPt4ZDd+zGToKIvCLPnUU5j/3v7DJhgBtA/LaceMB7/0giGQ==}
 
-  '@phantom/browser-sdk@2.0.1':
-    resolution: {integrity: sha512-/TCJuJIuS63ruoEYnSQzlw4UMaLWyp9onlX6ZSWYS6kVD6q5pAEFMj6NV0fRXuufAXXTRKiwqj05eq9gpeGNJA==}
+  '@phantom/browser-sdk@2.0.2':
+    resolution: {integrity: sha512-fGcSR5o355Sl8NHMni8+TAsBJ/nVcVxOtOFiEjjzZHtbriMAC925lLhVprgpg9oRj5qze3lj2jOnpl5plmhEug==}
 
-  '@phantom/chain-interfaces@2.0.1':
-    resolution: {integrity: sha512-fVvExxAokgiF6axaiUvdHoNj08cf7tzCKltHo6UYgshD8zAlnfoDO7bgZF1HLAHbmVCOag64nX5vWr94lfvFkA==}
+  '@phantom/chain-interfaces@2.0.2':
+    resolution: {integrity: sha512-HgWDvODDulbLZZJYBtapUhUwE3CIqLuU6mwlLgu7E/w5dcGzQ+VZCN34bgtJTXc7ggl3f1HkC8JKRjPfPyOdSw==}
 
-  '@phantom/client@2.0.1':
-    resolution: {integrity: sha512-40kf1KPxpA5qaysp6/Wq4kQek/C+EWwq0170MmuFf7m6ASLIuymERN97yJlggR0EUBPNIt9NTjNfKMBNhgBU4w==}
+  '@phantom/client@2.0.2':
+    resolution: {integrity: sha512-jMdkxBEfPpja+6QaTwusqhlHg9/a7achn2mh/WptMe5rX1v3TCwPmPy9vfWIj5U9QygyKe75U/exPB8jggz0gQ==}
 
-  '@phantom/constants@2.0.1':
-    resolution: {integrity: sha512-mXFPwE2PNzcLJnKiYByQQyBmOTPZTRx9b+AhZ7qSgYIhkPjC6CeZYdIpEBkySnElemFqk1+WVqwdg90+IH2LLw==}
+  '@phantom/constants@2.0.2':
+    resolution: {integrity: sha512-/27SINbXbpB98+LFoYSPcbFKD2vNPCzF1fmcs/v/hGds7U36XVvY5yeln4EUSHe6vLciXU5vsJ/yrbtt+vcSjQ==}
 
-  '@phantom/crypto@2.0.1':
-    resolution: {integrity: sha512-VhMZ8kDAjl59K6C3O3WFOh3VgdhA11M70r1hZ/BIasvaNbUrk3e6JS5GusIKI9Cc32G+Tzt8eAONg6PxXeK3kw==}
+  '@phantom/crypto@2.0.2':
+    resolution: {integrity: sha512-guOt2fViWDLyj0xUeOP3xLtPn+Y4fhbmn0JbHSGf+dgU2QD/3Xx1GNFJRttLOZ05BEMPg2UN5j3BePySi6R9Wg==}
 
-  '@phantom/embedded-provider-core@2.0.1':
-    resolution: {integrity: sha512-1wg/e7bFi3F9LZBsHDM6bWESxCp/HHpY/Wf44SvU8xKxjGCjH4PVNu2ZAdxfwc2WFKvmyHIEYQHYQWGZdqo5AA==}
+  '@phantom/embedded-provider-core@2.0.2':
+    resolution: {integrity: sha512-XBONpD1eQ/GvzEVXVpSCidBy8fGZF7KDQWOgfiy4Z/+qzjAZeWYG01W0Flo2SChfGxS+hDGMwPti7/P0hmSe7g==}
     peerDependencies:
       typescript: '>=4.5.0'
 
-  '@phantom/indexed-db-stamper@2.0.1':
-    resolution: {integrity: sha512-VhUdKDN8vp4GKHsJXzKa4iJmbp98DKixczBR2fR6MW3vhF4IbA6Sall5az8s45r8p1sswScC7md0STfG+WeEjg==}
+  '@phantom/indexed-db-stamper@2.0.2':
+    resolution: {integrity: sha512-5onsgIr9ylBLz3d2fTOFH0gYt4IG+ZcyebP4PamNqseLZjHp8ttpR7UVa1lxdA9T5plJB0BpWZQfV8kBkcOyEA==}
 
   '@phantom/openapi-wallet-service@0.1.11':
     resolution: {integrity: sha512-EWu0qpzNjKNuO32tMYoD4Wy5yfsJdJ1OZu1RFBW7BXgFNt34t7oY0EFho5v3OPQ/jFfYDesaf6HG5cB4LYib8Q==}
 
-  '@phantom/parsers@2.0.1':
-    resolution: {integrity: sha512-R+KjueOhXzslKfpniF4wJZGF1ge0Hn3LqbIB6PCJfdXhPixu3VALIQpablG873i9CCfeXdJla49biNlOG+NmNw==}
+  '@phantom/parsers@2.0.2':
+    resolution: {integrity: sha512-HTggfaqI9/fU4IN2Aj/7HaF9vn9R1bE6vhU8EGZqZzaL84mTGUQdr36JHpDrdA38U3J9PRp+LO+erxEEA9BadQ==}
 
-  '@phantom/react-native-sdk@2.0.1':
-    resolution: {integrity: sha512-Hiok7zGTNjUPi7ZSOqDLU8F5BVAeNp3xy/xqq5rHsGfjFllKtV/5Uf2Iq7tH/AOl86tRNL7Vqja8LBq/lkCPBg==}
+  '@phantom/react-native-sdk@2.0.2':
+    resolution: {integrity: sha512-7vDLz82R2IfHzgTS+gmbC0FUuvG821i4vhgIhRvZoTEi3lQs/D8Lkc0K9kPSLWS6VZZ9tj6DgpUsloiZhLoN0A==}
     peerDependencies:
       expo: '>=53.0.0'
       expo-auth-session: '>=5.0.0'
@@ -4679,19 +4679,19 @@ packages:
       react-native-get-random-values: '>=1.8.0'
       react-native-svg: '>=15.0.0'
 
-  '@phantom/react-sdk@2.0.1':
-    resolution: {integrity: sha512-v/8Ym+3vQHShv9kTNQGk/peWFoGJfc+paWOqQnTPPxoObnc/0ROmrQCRc+DLlQiHCrZ2Fe9gVm8RmJQAyEqQeg==}
+  '@phantom/react-sdk@2.0.2':
+    resolution: {integrity: sha512-4J9OSDlxlkdzfMYgBSFaB9l4Z9cYVyVcQ+AC/fJfRRUp75mZoGDh45x7fIxXgMt1K6TwmtyHqx6y/L0xcfnnvw==}
     peerDependencies:
       react: '>=19.0.1'
 
-  '@phantom/sdk-types@2.0.1':
-    resolution: {integrity: sha512-DzJdY2Bgyt4Ub3ZL3UbPS+vUmX/ip9nJpRykT2rsWY3cWADRfuOxcpYmwvGulyx+6j+Q+hJwvwJHzjiT2R9W6g==}
+  '@phantom/sdk-types@2.0.2':
+    resolution: {integrity: sha512-2xvIZZrCDbj4lDcSh4YWf3ODISubym9lha/FiVyrKoyz7aEhvT4YF2qm4Z/K42uBvKyC0FcdBtjAMiQiylyuBQ==}
 
-  '@phantom/utils@2.0.1':
-    resolution: {integrity: sha512-kbZarf+gGj9rMPd7e6cg9bLJOL7c9ZYMcLyTgj7x4WESxvfq0ZMeMrxwyloRqOcT71AjC6bcLYL5BXyzp2DH7g==}
+  '@phantom/utils@2.0.2':
+    resolution: {integrity: sha512-d0/cezg2Dd95lQe0RlZrAWK+jQ3t1KnE30oVmFkJZF3K/X05XIX9MO02wfVnXsPESX+bENuJIr12kRIQbSBA7g==}
 
-  '@phantom/wallet-sdk-ui@2.0.1':
-    resolution: {integrity: sha512-NO4P/LAEmimyQ2l2NDMhL1ey0ikTIRWI36Hnz8YgYMvhS46/UKk8EI+7/u+M47MB8LENXv3czgiUoOp6bZqPcA==}
+  '@phantom/wallet-sdk-ui@2.0.2':
+    resolution: {integrity: sha512-LdBzT+DRIcVM6XbmSZLpm0fMG4fKDl81z+wRWaBewAf/ZQqiCJiUYdV1y/MgTrHae/YcZdnIbpfnDXlay85W5A==}
     peerDependencies:
       react: '>=19.0.0'
       react-native: '>=0.79.0'
@@ -9171,6 +9171,9 @@ packages:
 
   axios@1.13.2:
     resolution: {integrity: sha512-VPk9ebNqPcy5lRGuSlKx752IlDatOjT9paPlm8A7yOuW2Fbvp4X3JznJtT4f0GzGLLiWE9W8onz51SqLYwzGaA==}
+
+  axios@1.15.1:
+    resolution: {integrity: sha512-WOG+Jj8ZOvR0a3rAn+Tuf1UQJRxw5venr6DgdbJzngJE3qG7X0kL83CZGpdHMxEm+ZK3seAbvFsw4FfOfP9vxg==}
 
   axobject-query@4.1.0:
     resolution: {integrity: sha512-qIj0G9wZbMGNLjLmg1PT6v2mE9AH2zlnADJD/2tC6E00hgmhUOfEB6greHPAfLRSufHqROIUTkw6E+M3lH0PTQ==}
@@ -13808,6 +13811,10 @@ packages:
   proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
 
+  proxy-from-env@2.1.0:
+    resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
+    engines: {node: '>=10'}
+
   pstree.remy@1.1.8:
     resolution: {integrity: sha512-77DZwxQmxKnu3aR542U+X8FypNzbfJ+C5XQDk3uWjWxn6151aIMGthWYRXTqT1E5oJvg+ljaa2OJi+VfvCOQ8w==}
 
@@ -16848,7 +16855,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@base-org/account@2.4.0(@types/react@19.1.17)(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(react@19.1.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.0))(utf-8-validate@5.0.10)(zod@3.24.2)':
+  '@base-org/account@2.4.0(@types/react@19.1.17)(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(react@19.1.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.0))(utf-8-validate@5.0.10)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.24.2)':
     dependencies:
       '@coinbase/cdp-sdk': 1.40.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@noble/hashes': 1.4.0
@@ -19928,13 +19935,13 @@ snapshots:
 
   '@paulmillr/qr@0.2.1': {}
 
-  '@phantom/api-key-stamper@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
+  '@phantom/api-key-stamper@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@phantom/base64url': 2.0.1
-      '@phantom/constants': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/crypto': 2.0.1
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      axios: 1.13.2
+      '@phantom/base64url': 2.0.2
+      '@phantom/constants': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/crypto': 2.0.2
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      axios: 1.15.1
       bs58: 6.0.0
       buffer: 6.0.3
     transitivePeerDependencies:
@@ -19944,13 +19951,13 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@phantom/api-key-stamper@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
+  '@phantom/api-key-stamper@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@phantom/base64url': 2.0.1
-      '@phantom/constants': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/crypto': 2.0.1
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      axios: 1.13.2
+      '@phantom/base64url': 2.0.2
+      '@phantom/constants': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/crypto': 2.0.2
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      axios: 1.15.1
       bs58: 6.0.0
       buffer: 6.0.3
     transitivePeerDependencies:
@@ -19960,13 +19967,13 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@phantom/auth2@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
+  '@phantom/auth2@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@phantom/base64url': 2.0.1
-      '@phantom/crypto': 2.0.1
+      '@phantom/base64url': 2.0.2
+      '@phantom/crypto': 2.0.2
       '@phantom/openapi-wallet-service': 0.1.11
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      axios: 1.13.2
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      axios: 1.15.1
       bs58: 6.0.0
       buffer: 6.0.3
       jwt-decode: 4.0.0
@@ -19977,13 +19984,13 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@phantom/auth2@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
+  '@phantom/auth2@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@phantom/base64url': 2.0.1
-      '@phantom/crypto': 2.0.1
+      '@phantom/base64url': 2.0.2
+      '@phantom/crypto': 2.0.2
       '@phantom/openapi-wallet-service': 0.1.11
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      axios: 1.13.2
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      axios: 1.15.1
       bs58: 6.0.0
       buffer: 6.0.3
       jwt-decode: 4.0.0
@@ -19994,13 +20001,13 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@phantom/base64url@2.0.1': {}
+  '@phantom/base64url@2.0.2': {}
 
-  '@phantom/browser-injected-sdk@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@phantom/browser-injected-sdk@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
-      '@phantom/chain-interfaces': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/constants': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/chain-interfaces': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/constants': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - '@gql.tada/svelte-support'
       - '@gql.tada/vue-support'
@@ -20012,19 +20019,19 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@phantom/browser-sdk@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@phantom/browser-sdk@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
-      '@phantom/auth2': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/base64url': 2.0.1
-      '@phantom/browser-injected-sdk': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/chain-interfaces': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/client': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/constants': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/embedded-provider-core': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/indexed-db-stamper': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/parsers': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      axios: 1.13.2
+      '@phantom/auth2': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/base64url': 2.0.2
+      '@phantom/browser-injected-sdk': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/chain-interfaces': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/client': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/constants': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/embedded-provider-core': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/indexed-db-stamper': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/parsers': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      axios: 1.15.1
       bs58: 6.0.0
       buffer: 6.0.3
       eventemitter3: 5.0.1
@@ -20041,11 +20048,11 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@phantom/chain-interfaces@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@phantom/chain-interfaces@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
-      '@phantom/constants': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/parsers': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/constants': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/parsers': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - '@gql.tada/svelte-support'
       - '@gql.tada/vue-support'
@@ -20057,11 +20064,11 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@phantom/chain-interfaces@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
+  '@phantom/chain-interfaces@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@phantom/constants': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/parsers': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/constants': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/parsers': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - '@gql.tada/svelte-support'
       - '@gql.tada/vue-support'
@@ -20073,16 +20080,16 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@phantom/client@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
+  '@phantom/client@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@phantom/api-key-stamper': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/base64url': 2.0.1
-      '@phantom/constants': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/crypto': 2.0.1
+      '@phantom/api-key-stamper': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/base64url': 2.0.2
+      '@phantom/constants': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/crypto': 2.0.2
       '@phantom/openapi-wallet-service': 0.1.11
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/utils': 2.0.1
-      axios: 1.13.2
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/utils': 2.0.2
+      axios: 1.15.1
       bs58: 6.0.0
       buffer: 6.0.3
     transitivePeerDependencies:
@@ -20092,16 +20099,16 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@phantom/client@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
+  '@phantom/client@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@phantom/api-key-stamper': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/base64url': 2.0.1
-      '@phantom/constants': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/crypto': 2.0.1
+      '@phantom/api-key-stamper': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/base64url': 2.0.2
+      '@phantom/constants': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/crypto': 2.0.2
       '@phantom/openapi-wallet-service': 0.1.11
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/utils': 2.0.1
-      axios: 1.13.2
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/utils': 2.0.2
+      axios: 1.15.1
       bs58: 6.0.0
       buffer: 6.0.3
     transitivePeerDependencies:
@@ -20111,9 +20118,9 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@phantom/constants@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
+  '@phantom/constants@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -20121,9 +20128,9 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@phantom/constants@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
+  '@phantom/constants@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -20131,23 +20138,23 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@phantom/crypto@2.0.1':
+  '@phantom/crypto@2.0.2':
     dependencies:
       bs58: 5.0.0
       buffer: 6.0.3
       tweetnacl: 1.0.3
 
-  '@phantom/embedded-provider-core@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@phantom/embedded-provider-core@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
-      '@phantom/api-key-stamper': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/auth2': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/base64url': 2.0.1
-      '@phantom/chain-interfaces': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/client': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/constants': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/parsers': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/utils': 2.0.1
+      '@phantom/api-key-stamper': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/auth2': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/base64url': 2.0.2
+      '@phantom/chain-interfaces': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/client': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/constants': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/parsers': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/utils': 2.0.2
       bs58: 6.0.0
       buffer: 6.0.3
       eventemitter3: 5.0.1
@@ -20162,17 +20169,17 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@phantom/embedded-provider-core@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
+  '@phantom/embedded-provider-core@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@phantom/api-key-stamper': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/auth2': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/base64url': 2.0.1
-      '@phantom/chain-interfaces': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/client': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/constants': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/parsers': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/utils': 2.0.1
+      '@phantom/api-key-stamper': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/auth2': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/base64url': 2.0.2
+      '@phantom/chain-interfaces': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/client': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/constants': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/parsers': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/utils': 2.0.2
       bs58: 6.0.0
       buffer: 6.0.3
       eventemitter3: 5.0.1
@@ -20187,13 +20194,13 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@phantom/indexed-db-stamper@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@phantom/indexed-db-stamper@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
-      '@phantom/base64url': 2.0.1
-      '@phantom/constants': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/crypto': 2.0.1
-      '@phantom/embedded-provider-core': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/base64url': 2.0.2
+      '@phantom/constants': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/crypto': 2.0.2
+      '@phantom/embedded-provider-core': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
       bs58: 6.0.0
       buffer: 6.0.3
     transitivePeerDependencies:
@@ -20209,16 +20216,16 @@ snapshots:
 
   '@phantom/openapi-wallet-service@0.1.11':
     dependencies:
-      axios: 1.13.2
+      axios: 1.15.1
     transitivePeerDependencies:
       - debug
 
-  '@phantom/parsers@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@phantom/parsers@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
-      '@phantom/base64url': 2.0.1
-      '@phantom/constants': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/utils': 2.0.1
+      '@phantom/base64url': 2.0.2
+      '@phantom/constants': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/utils': 2.0.2
       '@solana/transactions': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/web3.js': 1.98.4(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
       bs58: 6.0.0
@@ -20239,12 +20246,12 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@phantom/parsers@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
+  '@phantom/parsers@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@phantom/base64url': 2.0.1
-      '@phantom/constants': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/utils': 2.0.1
+      '@phantom/base64url': 2.0.2
+      '@phantom/constants': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/utils': 2.0.2
       '@solana/transactions': 2.3.0(typescript@5.8.3)
       '@solana/web3.js': 1.98.4(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
       bs58: 6.0.0
@@ -20265,18 +20272,18 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@phantom/react-native-sdk@2.0.1(cb0a6e093eb49ba4b86824b7ba030ddb)':
+  '@phantom/react-native-sdk@2.0.2(cb0a6e093eb49ba4b86824b7ba030ddb)':
     dependencies:
-      '@phantom/api-key-stamper': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/auth2': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/base64url': 2.0.1
-      '@phantom/chain-interfaces': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/client': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/constants': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/crypto': 2.0.1
-      '@phantom/embedded-provider-core': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/sdk-types': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@phantom/wallet-sdk-ui': 2.0.1(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.0.14)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.0.14)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)
+      '@phantom/api-key-stamper': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/auth2': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/base64url': 2.0.2
+      '@phantom/chain-interfaces': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/client': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/constants': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/crypto': 2.0.2
+      '@phantom/embedded-provider-core': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/sdk-types': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@phantom/wallet-sdk-ui': 2.0.2(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.0.14)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.0.14)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)
       '@types/bs58': 5.0.0
       bs58: 6.0.0
       buffer: 6.0.3
@@ -20299,12 +20306,12 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@phantom/react-sdk@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1))(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@phantom/react-sdk@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1))(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
-      '@phantom/browser-sdk': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/chain-interfaces': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@phantom/constants': 2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@phantom/wallet-sdk-ui': 2.0.1(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1))(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1)
+      '@phantom/browser-sdk': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/chain-interfaces': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@phantom/constants': 2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@phantom/wallet-sdk-ui': 2.0.2(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1))(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1)
       react: 19.2.1
     transitivePeerDependencies:
       - '@gql.tada/svelte-support'
@@ -20319,7 +20326,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@phantom/sdk-types@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
+  '@phantom/sdk-types@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@phantom/openapi-wallet-service': 0.1.11
       '@solana/web3.js': 1.98.4(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.8.3)(utf-8-validate@5.0.10)
@@ -20331,7 +20338,7 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@phantom/sdk-types@2.0.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
+  '@phantom/sdk-types@2.0.2(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@phantom/openapi-wallet-service': 0.1.11
       '@solana/web3.js': 1.98.4(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
@@ -20343,16 +20350,16 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@phantom/utils@2.0.1': {}
+  '@phantom/utils@2.0.2': {}
 
-  '@phantom/wallet-sdk-ui@2.0.1(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.0.14)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.0.14)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)':
+  '@phantom/wallet-sdk-ui@2.0.2(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.0.14)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.0.14)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)':
     dependencies:
       react: 19.1.0
     optionalDependencies:
       react-native: 0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.0.14)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10)
       react-native-svg: 15.12.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.0.14)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)
 
-  '@phantom/wallet-sdk-ui@2.0.1(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1))(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1)':
+  '@phantom/wallet-sdk-ui@2.0.2(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1))(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.1)(utf-8-validate@5.0.10))(react@19.2.1)':
     dependencies:
       react: 19.2.1
     optionalDependencies:
@@ -23431,9 +23438,9 @@ snapshots:
   '@solana-commerce/sdk@0.1.0(@tanstack/react-query@5.90.12(react@19.2.3))(fastestsmallesttextencoderdecoder@1.0.22)(react@19.2.3)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
       '@solana-commerce/connector': 0.1.0(react@19.2.3)
-      '@solana-program/compute-budget': 0.8.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
+      '@solana-program/compute-budget': 0.8.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/system': 0.7.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
-      '@solana-program/token': 0.5.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
+      '@solana-program/token': 0.5.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana/keys': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/rpc-types': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
@@ -23597,9 +23604,13 @@ snapshots:
     dependencies:
       '@solana/kit': 6.8.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)
 
-  '@solana-program/compute-budget@0.8.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))':
+  '@solana-program/compute-budget@0.8.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))':
     dependencies:
       '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+
+  '@solana-program/compute-budget@0.8.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)))':
+    dependencies:
+      '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
 
   '@solana-program/stake@0.2.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))':
     dependencies:
@@ -23638,9 +23649,9 @@ snapshots:
       '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/sysvars': 6.8.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
 
-  '@solana-program/token-2022@0.4.2(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(@solana/sysvars@6.8.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))':
+  '@solana-program/token-2022@0.4.2(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(@solana/sysvars@6.8.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))':
     dependencies:
-      '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/sysvars': 6.8.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
 
   '@solana-program/token-2022@0.6.1(@solana/kit@5.5.1(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))(@solana/sysvars@6.8.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))':
@@ -23658,9 +23669,13 @@ snapshots:
       '@solana/kit': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/sysvars': 6.8.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
 
-  '@solana-program/token@0.5.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))':
+  '@solana-program/token@0.5.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))':
     dependencies:
       '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+
+  '@solana-program/token@0.5.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)))':
+    dependencies:
+      '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
 
   '@solana-program/token@0.6.0(@solana/kit@3.0.3(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)))':
     dependencies:
@@ -23899,7 +23914,7 @@ snapshots:
       '@solana-program/token-2022': 0.7.0(@solana/kit@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(@solana/sysvars@6.8.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
       '@solana/codecs-strings': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/kit': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
-      '@solana/transaction-confirmation': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@solana/transaction-confirmation': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/transactions': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/wallet-standard-features': 1.3.0
       '@wallet-standard/app': 1.1.0
@@ -24531,6 +24546,31 @@ snapshots:
       - fastestsmallesttextencoderdecoder
       - ws
 
+  '@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
+    dependencies:
+      '@solana/accounts': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/addresses': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/codecs': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/errors': 2.3.0(typescript@5.9.3)
+      '@solana/functional': 2.3.0(typescript@5.9.3)
+      '@solana/instructions': 2.3.0(typescript@5.9.3)
+      '@solana/keys': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/programs': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/rpc': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/rpc-parsed-types': 2.3.0(typescript@5.9.3)
+      '@solana/rpc-spec-types': 2.3.0(typescript@5.9.3)
+      '@solana/rpc-subscriptions': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@solana/rpc-types': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/signers': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/sysvars': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/transaction-confirmation': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@solana/transaction-messages': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/transactions': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - fastestsmallesttextencoderdecoder
+      - ws
+
   '@solana/kit@3.0.3(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
       '@solana/accounts': 3.0.3(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
@@ -24576,7 +24616,7 @@ snapshots:
       '@solana/rpc-types': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/signers': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/sysvars': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
-      '@solana/transaction-confirmation': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@solana/transaction-confirmation': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/transaction-messages': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/transactions': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       typescript: 5.9.3
@@ -25236,6 +25276,15 @@ snapshots:
       typescript: 5.9.3
       ws: 8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
 
+  '@solana/rpc-subscriptions-channel-websocket@2.3.0(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
+    dependencies:
+      '@solana/errors': 2.3.0(typescript@5.9.3)
+      '@solana/functional': 2.3.0(typescript@5.9.3)
+      '@solana/rpc-subscriptions-spec': 2.3.0(typescript@5.9.3)
+      '@solana/subscribable': 2.3.0(typescript@5.9.3)
+      typescript: 5.9.3
+      ws: 8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+
   '@solana/rpc-subscriptions-channel-websocket@3.0.3(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
       '@solana/errors': 3.0.3(typescript@5.9.3)
@@ -25342,6 +25391,24 @@ snapshots:
       '@solana/rpc-spec-types': 2.3.0(typescript@5.9.3)
       '@solana/rpc-subscriptions-api': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/rpc-subscriptions-channel-websocket': 2.3.0(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@solana/rpc-subscriptions-spec': 2.3.0(typescript@5.9.3)
+      '@solana/rpc-transformers': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/rpc-types': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/subscribable': 2.3.0(typescript@5.9.3)
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - fastestsmallesttextencoderdecoder
+      - ws
+
+  '@solana/rpc-subscriptions@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
+    dependencies:
+      '@solana/errors': 2.3.0(typescript@5.9.3)
+      '@solana/fast-stable-stringify': 2.3.0(typescript@5.9.3)
+      '@solana/functional': 2.3.0(typescript@5.9.3)
+      '@solana/promises': 2.3.0(typescript@5.9.3)
+      '@solana/rpc-spec-types': 2.3.0(typescript@5.9.3)
+      '@solana/rpc-subscriptions-api': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/rpc-subscriptions-channel-websocket': 2.3.0(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/rpc-subscriptions-spec': 2.3.0(typescript@5.9.3)
       '@solana/rpc-transformers': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/rpc-types': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
@@ -25985,6 +26052,23 @@ snapshots:
       - fastestsmallesttextencoderdecoder
       - ws
 
+  '@solana/transaction-confirmation@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
+    dependencies:
+      '@solana/addresses': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/codecs-strings': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/errors': 2.3.0(typescript@5.9.3)
+      '@solana/keys': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/promises': 2.3.0(typescript@5.9.3)
+      '@solana/rpc': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/rpc-subscriptions': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@solana/rpc-types': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/transaction-messages': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/transactions': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - fastestsmallesttextencoderdecoder
+      - ws
+
   '@solana/transaction-confirmation@3.0.3(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
       '@solana/addresses': 3.0.3(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
@@ -25997,6 +26081,23 @@ snapshots:
       '@solana/rpc-types': 3.0.3(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/transaction-messages': 3.0.3(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/transactions': 3.0.3(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - fastestsmallesttextencoderdecoder
+      - ws
+
+  '@solana/transaction-confirmation@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)':
+    dependencies:
+      '@solana/addresses': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/codecs-strings': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/errors': 5.1.0(typescript@5.9.3)
+      '@solana/keys': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/promises': 5.1.0(typescript@5.9.3)
+      '@solana/rpc': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/rpc-subscriptions': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@solana/rpc-types': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/transaction-messages': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
+      '@solana/transactions': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       typescript: 5.9.3
     transitivePeerDependencies:
       - fastestsmallesttextencoderdecoder
@@ -27321,9 +27422,9 @@ snapshots:
 
   '@trezor/blockchain-link@2.6.1(@solana/sysvars@6.8.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(bufferutil@4.0.9)(expo-constants@18.0.13)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.3)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
-      '@solana-program/compute-budget': 0.8.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
+      '@solana-program/compute-budget': 0.8.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/stake': 0.2.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
-      '@solana-program/token': 0.5.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
+      '@solana-program/token': 0.5.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/token-2022': 0.4.2(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(@solana/sysvars@6.8.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
       '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/rpc-types': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
@@ -27402,9 +27503,9 @@ snapshots:
       '@mobily/ts-belt': 3.13.1
       '@noble/hashes': 1.8.0
       '@scure/bip39': 1.6.0
-      '@solana-program/compute-budget': 0.8.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
+      '@solana-program/compute-budget': 0.8.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/system': 0.7.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
-      '@solana-program/token': 0.5.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
+      '@solana-program/token': 0.5.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/token-2022': 0.4.2(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(@solana/sysvars@6.8.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
       '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@trezor/blockchain-link': 2.6.1(@solana/sysvars@6.8.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(bufferutil@4.0.9)(expo-constants@18.0.13)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.2.9)(bufferutil@4.0.9)(react@19.2.3)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
@@ -28399,9 +28500,9 @@ snapshots:
       loupe: 3.2.1
       tinyrainbow: 2.0.0
 
-  '@wagmi/connectors@6.2.0(d8a1dd31509eeeddf9398f393113ac8f)':
+  '@wagmi/connectors@6.2.0(6c74063d51be22573ab0ead29b808628)':
     dependencies:
-      '@base-org/account': 2.4.0(@types/react@19.1.17)(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(react@19.1.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.0))(utf-8-validate@5.0.10)(zod@3.24.2)
+      '@base-org/account': 2.4.0(@types/react@19.1.17)(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(react@19.1.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.0))(utf-8-validate@5.0.10)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.24.2)
       '@coinbase/wallet-sdk': 4.3.6(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.0))(utf-8-validate@5.0.10)(zod@3.24.2)
       '@gemini-wallet/core': 0.3.2(viem@2.42.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.24.2))
       '@metamask/sdk': 0.33.1(bufferutil@4.0.9)(encoding@0.1.13)(utf-8-validate@5.0.10)
@@ -28410,7 +28511,7 @@ snapshots:
       '@wagmi/core': 2.22.1(@tanstack/query-core@5.90.12)(@types/react@19.1.17)(react@19.1.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.0))(viem@2.42.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.24.2))
       '@walletconnect/ethereum-provider': 2.21.1(@react-native-async-storage/async-storage@1.24.0(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10)))(@types/react@19.1.17)(bufferutil@4.0.9)(encoding@0.1.13)(react@19.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.24.2)
       cbw-sdk: '@coinbase/wallet-sdk@3.9.3'
-      porto: 0.2.35(dbae57fc7b9950e50de95e47b36f7789)
+      porto: 0.2.35(d8552ff78ed1f7c80e77819158cad63d)
       viem: 2.42.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.24.2)
     optionalDependencies:
       typescript: 5.9.3
@@ -30383,6 +30484,14 @@ snapshots:
       follow-redirects: 1.15.11(debug@4.3.7)
       form-data: 4.0.5
       proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
+  axios@1.15.1:
+    dependencies:
+      follow-redirects: 1.15.11(debug@4.3.7)
+      form-data: 4.0.5
+      proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
 
@@ -33893,7 +34002,7 @@ snapshots:
   gill@0.10.2(@solana/sysvars@6.8.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
     dependencies:
       '@solana-program/address-lookup-table': 0.7.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
-      '@solana-program/compute-budget': 0.8.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
+      '@solana-program/compute-budget': 0.8.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/system': 0.7.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/token-2022': 0.4.2(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(@solana/sysvars@6.8.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
       '@solana/assertions': 2.3.0(typescript@5.9.3)
@@ -37009,7 +37118,7 @@ snapshots:
       - immer
       - use-sync-external-store
 
-  porto@0.2.35(dbae57fc7b9950e50de95e47b36f7789):
+  porto@0.2.35(d8552ff78ed1f7c80e77819158cad63d):
     dependencies:
       '@wagmi/core': 2.22.1(@tanstack/query-core@5.90.12)(@types/react@19.1.17)(react@19.1.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.0))(viem@2.42.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.24.2))
       hono: 4.11.0
@@ -37027,7 +37136,7 @@ snapshots:
       react: 19.1.0
       react-native: 0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10)
       typescript: 5.9.3
-      wagmi: 2.19.5(7fda333faff7b6b1b88a87f084ed4e25)
+      wagmi: 2.19.5(d9b8317a179ecb9ff98684844dce12c5)
     transitivePeerDependencies:
       - '@types/react'
       - immer
@@ -37200,6 +37309,8 @@ snapshots:
   proxy-compare@2.6.0: {}
 
   proxy-from-env@1.1.0: {}
+
+  proxy-from-env@2.1.0: {}
 
   pstree.remy@1.1.8: {}
 
@@ -40336,10 +40447,10 @@ snapshots:
       - ws
       - zod
 
-  wagmi@2.19.5(7fda333faff7b6b1b88a87f084ed4e25):
+  wagmi@2.19.5(d9b8317a179ecb9ff98684844dce12c5):
     dependencies:
       '@tanstack/react-query': 5.90.12(react@19.1.0)
-      '@wagmi/connectors': 6.2.0(d8a1dd31509eeeddf9398f393113ac8f)
+      '@wagmi/connectors': 6.2.0(6c74063d51be22573ab0ead29b808628)
       '@wagmi/core': 2.22.1(@tanstack/query-core@5.90.12)(@types/react@19.1.17)(react@19.1.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.0))(viem@2.42.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.24.2))
       react: 19.1.0
       use-sync-external-store: 1.4.0(react@19.1.0)
@@ -40598,11 +40709,11 @@ snapshots:
       - utf-8-validate
       - ws
 
-  x402-solana@0.1.5(d1f50cd34f0cd3c02227c9611a19597e):
+  x402-solana@0.1.5(0714095febb2497edc293a5c3792c1e5):
     dependencies:
       '@solana/spl-token': 0.4.14(@solana/web3.js@1.98.4(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@solana/web3.js': 1.98.4(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      x402: 0.6.6(06b33c6385c02a003e0053f369a4fd3d)
+      x402: 0.6.6(bfaab0883352eb06f5648caabe25f3cb)
       zod: 3.24.2
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -40643,16 +40754,16 @@ snapshots:
       - utf-8-validate
       - ws
 
-  x402@0.6.6(06b33c6385c02a003e0053f369a4fd3d):
+  x402@0.6.6(bfaab0883352eb06f5648caabe25f3cb):
     dependencies:
       '@scure/base': 1.2.6
-      '@solana-program/compute-budget': 0.8.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
-      '@solana-program/token': 0.5.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
-      '@solana-program/token-2022': 0.4.2(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(@solana/sysvars@6.8.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
-      '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@solana/transaction-confirmation': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@solana-program/compute-budget': 0.8.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
+      '@solana-program/token': 0.5.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
+      '@solana-program/token-2022': 0.4.2(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(@solana/sysvars@6.8.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
+      '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@solana/transaction-confirmation': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       viem: 2.42.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.24.2)
-      wagmi: 2.19.5(7fda333faff7b6b1b88a87f084ed4e25)
+      wagmi: 2.19.5(d9b8317a179ecb9ff98684844dce12c5)
       zod: 3.24.2
     transitivePeerDependencies:
       - '@azure/app-configuration'
