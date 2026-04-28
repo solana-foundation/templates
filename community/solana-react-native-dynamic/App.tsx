@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import {
   ActivityIndicator,
   Alert,
+  Linking,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -18,6 +19,24 @@ import {
 } from 'react-native'
 
 const ENV_ID = process.env.EXPO_PUBLIC_DYNAMIC_ENVIRONMENT_ID
+
+const COLORS = {
+  bg: '#F9F9F9',
+  surface: '#FFFFFF',
+  border: '#DADADA',
+  primary: '#4779FF',
+  primaryHover: '#3366EE',
+  textPrimary: '#030303',
+  textSecondary: '#606060',
+  errorBg: '#FCE8E6',
+  errorText: '#C5221F',
+}
+
+const FOOTER_LINKS = [
+  { text: 'GitHub', url: 'https://github.com/dynamic-labs-oss' },
+  { text: 'Docs', url: 'https://docs.dynamic.xyz' },
+  { text: 'Dashboard', url: 'https://app.dynamic.xyz' },
+]
 
 export default function App() {
   if (!ENV_ID) {
@@ -123,27 +142,32 @@ function Home() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title}>
-            Solana <Text style={styles.accent}>×</Text> Dynamic
-          </Text>
-          <DynamicWidget />
-        </View>
+      <View style={styles.header}>
+        <Text style={styles.brand}>
+          <Text style={styles.brandSolana}>Solana</Text>
+          <Text style={styles.brandDivider}> × </Text>
+          <Text style={styles.brandDynamic}>Dynamic</Text>
+        </Text>
+        <DynamicWidget />
+      </View>
 
+      <ScrollView contentContainerStyle={styles.content}>
         {!sdkHasLoaded ? (
           <View style={styles.centered}>
-            <ActivityIndicator color="#a78bfa" />
+            <ActivityIndicator color={COLORS.primary} />
           </View>
         ) : !isLoggedIn ? (
           <View style={styles.centered}>
             <Text style={styles.heading}>Sign in with Dynamic</Text>
-            <Text style={styles.body}>Email, SMS, or social login provisions an MPC wallet on Solana.</Text>
+            <Text style={styles.body}>
+              Email, SMS, social login, or any Solana wallet — embedded wallets and 100+ external wallets out of the
+              box.
+            </Text>
           </View>
         ) : (
           <View>
             <View style={styles.card}>
-              <Text style={styles.label}>Wallet</Text>
+              <Text style={styles.label}>WALLET</Text>
               <Text style={styles.address}>{shortAddress}</Text>
               {balance !== null && <Text style={styles.balance}>{balance.toFixed(4)} SOL</Text>}
               <TouchableOpacity style={styles.secondaryBtn} onPress={handleCopy}>
@@ -152,11 +176,11 @@ function Home() {
             </View>
 
             <View style={styles.card}>
-              <Text style={styles.label}>Send SOL</Text>
+              <Text style={styles.label}>SEND SOL</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Recipient address"
-                placeholderTextColor="#6b7280"
+                placeholderTextColor="#9ca3af"
                 autoCapitalize="none"
                 autoCorrect={false}
                 value={recipient}
@@ -165,7 +189,7 @@ function Home() {
               <TextInput
                 style={styles.input}
                 placeholder="Amount (SOL)"
-                placeholderTextColor="#6b7280"
+                placeholderTextColor="#9ca3af"
                 keyboardType="decimal-pad"
                 value={amount}
                 onChangeText={setAmount}
@@ -181,55 +205,81 @@ function Home() {
           </View>
         )}
       </ScrollView>
+
+      <View style={styles.footer}>
+        <Text style={styles.footerPowered}>powered by Dynamic</Text>
+        <View style={styles.footerLinks}>
+          {FOOTER_LINKS.map((link) => (
+            <TouchableOpacity key={link.url} onPress={() => Linking.openURL(link.url)}>
+              <Text style={styles.footerLink}>{link.text}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#030712' },
+  container: { flex: 1, backgroundColor: COLORS.bg },
   content: { padding: 20 },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 24,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: COLORS.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
   },
-  title: { color: '#fff', fontSize: 20, fontWeight: '700' },
-  accent: { color: '#a78bfa' },
-  heading: { color: '#fff', fontSize: 22, fontWeight: '700', marginBottom: 8 },
-  body: { color: '#9ca3af', fontSize: 14, textAlign: 'center' },
+  brand: { fontSize: 18, fontWeight: '700' },
+  brandSolana: { color: COLORS.textPrimary },
+  brandDivider: { color: COLORS.textSecondary },
+  brandDynamic: { color: COLORS.primary },
+  heading: { color: COLORS.textPrimary, fontSize: 24, fontWeight: '700', marginBottom: 8, textAlign: 'center' },
+  body: { color: COLORS.textSecondary, fontSize: 15, textAlign: 'center', lineHeight: 22 },
   centered: { alignItems: 'center', justifyContent: 'center', paddingVertical: 40 },
   card: {
-    backgroundColor: '#111827',
+    backgroundColor: COLORS.surface,
     borderWidth: 1,
-    borderColor: '#1f2937',
+    borderColor: COLORS.border,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
   },
-  label: { color: '#9ca3af', fontSize: 14, marginBottom: 8 },
-  address: { color: '#fff', fontSize: 24, fontFamily: 'Menlo', fontWeight: '700' },
-  balance: { color: '#9ca3af', fontSize: 14, marginTop: 4 },
+  label: {
+    color: COLORS.textSecondary,
+    fontSize: 12,
+    fontWeight: '500',
+    letterSpacing: 0.6,
+    marginBottom: 12,
+  },
+  address: { color: COLORS.textPrimary, fontSize: 22, fontFamily: 'Menlo', fontWeight: '700' },
+  balance: { color: COLORS.textSecondary, fontSize: 14, marginTop: 4 },
   input: {
-    backgroundColor: '#1f2937',
+    backgroundColor: COLORS.surface,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: COLORS.border,
     borderRadius: 8,
-    color: '#fff',
+    color: COLORS.textPrimary,
     paddingHorizontal: 12,
     paddingVertical: 10,
     marginTop: 8,
+    fontSize: 15,
   },
   primaryBtn: {
-    backgroundColor: '#9333ea',
-    paddingVertical: 12,
+    backgroundColor: COLORS.primary,
+    paddingVertical: 14,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 12,
   },
-  primaryBtnText: { color: '#fff', fontWeight: '600' },
+  primaryBtnText: { color: '#fff', fontWeight: '600', fontSize: 15 },
   secondaryBtn: {
-    backgroundColor: '#1f2937',
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: COLORS.border,
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
@@ -237,8 +287,21 @@ const styles = StyleSheet.create({
     marginTop: 12,
     alignSelf: 'flex-start',
   },
-  secondaryBtnText: { color: '#fff', fontSize: 13 },
-  btnDisabled: { backgroundColor: '#374151' },
-  errorTitle: { color: '#f87171', fontSize: 16, fontWeight: '700', textAlign: 'center' },
-  errorBody: { color: '#9ca3af', fontSize: 14, textAlign: 'center', marginTop: 8 },
+  secondaryBtnText: { color: COLORS.textPrimary, fontSize: 13, fontWeight: '500' },
+  btnDisabled: { opacity: 0.5 },
+  errorTitle: { color: COLORS.errorText, fontSize: 16, fontWeight: '700', textAlign: 'center' },
+  errorBody: { color: COLORS.textSecondary, fontSize: 14, textAlign: 'center', marginTop: 8 },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    backgroundColor: COLORS.surface,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
+  },
+  footerPowered: { color: COLORS.textSecondary, fontSize: 12, fontWeight: '500' },
+  footerLinks: { flexDirection: 'row', gap: 16 },
+  footerLink: { color: COLORS.textSecondary, fontSize: 12 },
 })
