@@ -54,7 +54,7 @@ The core setup in `providers.tsx`:
 import { DynamicContextProvider } from '@dynamic-labs/sdk-react-core'
 import { SolanaWalletConnectors } from '@dynamic-labs/solana'
 
-<DynamicContextProvider
+;<DynamicContextProvider
   settings={{
     environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID!,
     walletConnectors: [SolanaWalletConnectors],

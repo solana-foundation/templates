@@ -1,1 +1,35 @@
 @import 'tailwindcss';
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-earn-primary: #4779ff;
+  --color-earn-primary-hover: #3366ee;
+  --color-earn-dark: #282828;
+  --color-earn-light: #f9f9f9;
+  --color-earn-border: #dadada;
+  --color-earn-text-primary: #030303;
+  --color-earn-text-secondary: #606060;
+  --color-earn-active-bg: #e8f0fe;
+  --color-earn-active-text: #1967d2;
+}
+
+@layer base {
+  :root {
+    --background: 249 249 249;
+    --foreground: 3 3 3;
+    --border: 218 218 218;
+    --radius: 0.75rem;
+  }
+
+  html {
+    color-scheme: light;
+    background-color: #f9f9f9;
+  }
+
+  body {
+    background-color: #f9f9f9;
+    color: #030303;
+    -webkit-font-smoothing: antialiased;
+  }
+}
