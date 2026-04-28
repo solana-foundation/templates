@@ -1,7 +1,9 @@
-import { DynamicWidget, useDynamicContext, useIsLoggedIn } from '@dynamic-labs/sdk-react-core'
+import { useDynamicContext, useIsLoggedIn } from '@dynamic-labs/sdk-react-core'
 import { isSolanaWallet } from '@dynamic-labs/solana'
 import { LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from '@solana/web3.js'
 import { useEffect, useState } from 'react'
+import { Header } from './components/header'
+import Footer from './components/footer'
 
 export function App() {
   const isLoggedIn = useIsLoggedIn()
@@ -88,132 +90,142 @@ export function App() {
     ? `${primaryWallet.address.slice(0, 4)}...${primaryWallet.address.slice(-4)}`
     : ''
 
-  return (
-    <div className="min-h-screen bg-gray-950 text-white">
-      <nav className="flex items-center justify-between px-6 py-4 bg-gray-900 border-b border-gray-800">
-        <div className="flex items-center gap-2">
-          <span className="text-xl font-bold">Solana</span>
-          <span className="text-gray-500">×</span>
-          <span className="text-xl font-bold text-purple-400">Dynamic</span>
-          <span className="text-xs text-gray-500 ml-2">(Vite)</span>
-        </div>
-        <DynamicWidget />
-      </nav>
+  const inputClass =
+    'w-full px-4 py-2.5 bg-white rounded-lg text-sm text-[#030303] placeholder-[#9ca3af] outline-none focus:border-[#4779FF] focus:ring-1 focus:ring-[#4779FF]/30 transition-colors'
 
-      <main className="max-w-2xl mx-auto px-6 py-12">
-        {!sdkHasLoaded ? (
-          <div className="text-center text-gray-500">Loading...</div>
-        ) : !isLoggedIn ? (
-          <div className="text-center space-y-6">
-            <h1 className="text-4xl font-bold">Solana + Dynamic</h1>
-            <p className="text-gray-400 text-lg">
-              Connect your Solana wallet using Dynamic&apos;s unified authentication SDK. Supports Phantom, Solflare,
-              and 100+ wallets out of the box.
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 text-left">
-              <a
-                href="https://www.dynamic.xyz/docs"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block p-5 bg-gray-900 border border-gray-800 rounded-xl hover:border-purple-500 transition-colors"
-              >
-                <h2 className="font-semibold mb-1">Docs</h2>
-                <p className="text-sm text-gray-400">Explore the Dynamic documentation</p>
-              </a>
-              <a
-                href="https://app.dynamic.xyz/dashboard/developer"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block p-5 bg-gray-900 border border-gray-800 rounded-xl hover:border-purple-500 transition-colors"
-              >
-                <h2 className="font-semibold mb-1">Dashboard</h2>
-                <p className="text-sm text-gray-400">Manage your environment ID</p>
-              </a>
-              <a
-                href="https://github.com/dynamic-labs-oss"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block p-5 bg-gray-900 border border-gray-800 rounded-xl hover:border-purple-500 transition-colors"
-              >
-                <h2 className="font-semibold mb-1">GitHub</h2>
-                <p className="text-sm text-gray-400">View source and examples</p>
-              </a>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-4">
-              <h2 className="text-lg font-semibold text-gray-300">Wallet</h2>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-mono font-bold">{shortAddress}</p>
-                  {balance !== null && <p className="text-gray-400 mt-1">{balance.toFixed(4)} SOL</p>}
-                </div>
-                <button
-                  onClick={handleCopy}
-                  className="px-3 py-1.5 text-sm bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+  return (
+    <>
+      <Header />
+      <div className="min-h-screen pb-16" style={{ background: 'rgb(249,249,249)' }}>
+        <main className="max-w-2xl mx-auto px-6 py-12">
+          {!sdkHasLoaded ? (
+            <div className="text-center text-[#606060]">Loading...</div>
+          ) : !isLoggedIn ? (
+            <div className="text-center space-y-6">
+              <h1 className="text-4xl font-bold text-[#030303]">Solana + Dynamic</h1>
+              <p className="text-[#606060] text-lg">
+                Connect your Solana wallet using Dynamic&apos;s unified authentication SDK. Supports embedded wallets,
+                Phantom, Solflare, and 100+ wallets out of the box.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 text-left">
+                <a
+                  href="https://docs.dynamic.xyz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block p-5 bg-white rounded-xl transition-colors"
+                  style={{ border: '1px solid #DADADA' }}
                 >
-                  {copied ? 'Copied!' : 'Copy address'}
-                </button>
+                  <h2 className="font-semibold mb-1 text-[#030303]">Docs</h2>
+                  <p className="text-sm text-[#606060]">Explore the Dynamic documentation</p>
+                </a>
+                <a
+                  href="https://app.dynamic.xyz/dashboard/developer"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block p-5 bg-white rounded-xl transition-colors"
+                  style={{ border: '1px solid #DADADA' }}
+                >
+                  <h2 className="font-semibold mb-1 text-[#030303]">Dashboard</h2>
+                  <p className="text-sm text-[#606060]">Manage your environment ID</p>
+                </a>
+                <a
+                  href="https://github.com/dynamic-labs-oss"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block p-5 bg-white rounded-xl transition-colors"
+                  style={{ border: '1px solid #DADADA' }}
+                >
+                  <h2 className="font-semibold mb-1 text-[#030303]">GitHub</h2>
+                  <p className="text-sm text-[#606060]">View source and examples</p>
+                </a>
               </div>
             </div>
+          ) : (
+            <div className="space-y-6">
+              <div
+                className="bg-white rounded-xl p-6 space-y-4"
+                style={{ border: '1px solid #DADADA', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.04)' }}
+              >
+                <h2 className="text-sm font-medium text-[#606060] uppercase tracking-wide">Wallet</h2>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-2xl font-mono font-bold text-[#030303]">{shortAddress}</p>
+                    {balance !== null && <p className="text-[#606060] mt-1">{balance.toFixed(4)} SOL</p>}
+                  </div>
+                  <button
+                    onClick={handleCopy}
+                    className="px-3 py-1.5 text-sm bg-white text-[#030303] rounded-lg transition-colors hover:bg-[#F9F9F9]"
+                    style={{ border: '1px solid #DADADA' }}
+                  >
+                    {copied ? 'Copied!' : 'Copy address'}
+                  </button>
+                </div>
+              </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-              <h2 className="text-lg font-semibold text-gray-300 mb-4">Send SOL</h2>
-              <form onSubmit={handleSend} className="space-y-4">
-                <div>
-                  <label htmlFor="recipient" className="block text-sm text-gray-400 mb-1">
-                    Recipient address
-                  </label>
-                  <input
-                    id="recipient"
-                    type="text"
-                    value={recipient}
-                    onChange={(e) => setRecipient(e.target.value)}
-                    placeholder="Solana public key"
-                    required
-                    className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="amount" className="block text-sm text-gray-400 mb-1">
-                    Amount (SOL)
-                  </label>
-                  <input
-                    id="amount"
-                    type="number"
-                    step="0.001"
-                    min="0.001"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    required
-                    className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500 transition-colors"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={isSending || !recipient}
-                  className="w-full py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-700 disabled:text-gray-500 rounded-lg font-medium transition-colors"
-                >
-                  {isSending ? 'Sending...' : 'Send SOL'}
-                </button>
-              </form>
+              <div
+                className="bg-white rounded-xl p-6"
+                style={{ border: '1px solid #DADADA', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.04)' }}
+              >
+                <h2 className="text-sm font-medium text-[#606060] uppercase tracking-wide mb-4">Send SOL</h2>
+                <form onSubmit={handleSend} className="space-y-4">
+                  <div>
+                    <label htmlFor="recipient" className="block text-sm text-[#606060] mb-1">
+                      Recipient address
+                    </label>
+                    <input
+                      id="recipient"
+                      type="text"
+                      value={recipient}
+                      onChange={(e) => setRecipient(e.target.value)}
+                      placeholder="Solana public key"
+                      required
+                      className={inputClass}
+                      style={{ border: '1px solid #DADADA' }}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="amount" className="block text-sm text-[#606060] mb-1">
+                      Amount (SOL)
+                    </label>
+                    <input
+                      id="amount"
+                      type="number"
+                      step="0.001"
+                      min="0.001"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      required
+                      className={inputClass}
+                      style={{ border: '1px solid #DADADA' }}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isSending || !recipient}
+                    className="w-full py-3 bg-[#4779FF] hover:bg-[#3366ee] disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
+                  >
+                    {isSending ? 'Sending...' : 'Send SOL'}
+                  </button>
+                </form>
 
-              {txStatus && (
-                <div
-                  className={`mt-4 p-3 rounded-lg text-sm break-all ${
-                    txStatus.startsWith('Success')
-                      ? 'bg-green-900/40 text-green-300 border border-green-800'
-                      : 'bg-red-900/40 text-red-300 border border-red-800'
-                  }`}
-                >
-                  {txStatus}
-                </div>
-              )}
+                {txStatus && (
+                  <div
+                    className={`mt-4 p-3 rounded-lg text-sm break-all ${
+                      txStatus.startsWith('Success')
+                        ? 'bg-[#E6F4EA] text-[#137333]'
+                        : 'bg-[#FCE8E6] text-[#C5221F]'
+                    }`}
+                    style={{ border: txStatus.startsWith('Success') ? '1px solid #CEEAD6' : '1px solid #F5C6C2' }}
+                  >
+                    {txStatus}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        )}
-      </main>
-    </div>
+          )}
+        </main>
+      </div>
+      <Footer />
+    </>
   )
 }
