@@ -103,3 +103,4 @@ const signed = await client.solana.signTransaction({ address: wallet.address, tr
 - [Dynamic Node SVM Overview](https://www.dynamic.xyz/docs/node/svm/overview)
 - [Dynamic Server Wallets Docs](https://www.dynamic.xyz/docs/node/overview)
 - [Dynamic Dashboard](https://app.dynamic.xyz)
+- [Dynamic OSS on GitHub](https://github.com/dynamic-labs-oss)
