@@ -17,7 +17,7 @@ const server = new x402ResourceServer(facilitatorClient)
 
 registerExactSvmScheme(server)
 
-export const middleware = paymentProxy(
+export const proxy = paymentProxy(
   {
     '/content/cheap': {
       accepts: [
@@ -47,7 +47,7 @@ export const middleware = paymentProxy(
   server,
 )
 
-// Configure which paths the middleware should run on
+// Configure which paths the proxy should run on
 export const config = {
   matcher: ['/content/:path*'],
 }

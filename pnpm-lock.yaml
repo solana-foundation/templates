@@ -932,7 +932,7 @@ importers:
       viem:
         specifier: ^2.38.5
         version: 2.42.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
-      x402-next:
+      '@x402/next':
         specifier: ^1.1.0
         version: 1.1.0(190c4d3c8a11b0e2f51f25d25f3594aa)
     devDependencies:
@@ -15887,7 +15887,7 @@ packages:
       utf-8-validate:
         optional: true
 
-  x402-next@1.1.0:
+  '@x402/next@1.1.0':
     resolution: {integrity: sha512-zUh5hWFT7lY6UNepcwMPZH/CkrEeVe6QZB380yg1ZtAqqf1f+FHDt+IFBBg2cFHKFqWgm4zYZaxZVksM3RXJfg==}
     peerDependencies:
       next: '>=15.5.9 || >=16.0.10'
@@ -40603,7 +40603,7 @@ snapshots:
       bufferutil: 4.0.9
       utf-8-validate: 5.0.10
 
-  x402-next@1.1.0(190c4d3c8a11b0e2f51f25d25f3594aa):
+  '@x402/next@1.1.0(190c4d3c8a11b0e2f51f25d25f3594aa)':
     dependencies:
       '@coinbase/cdp-sdk': 1.40.1(bufferutil@4.0.9)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.20.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/kit': 5.5.1(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)
