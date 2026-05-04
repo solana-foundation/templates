@@ -1,0 +1,56 @@
+{
+  "name": "solana-nextjs-dynamic",
+  "displayName": "Solana Next.js + Dynamic",
+  "description": "Next.js starter with Dynamic wallet authentication for Solana",
+  "usecase": "Starter",
+  "keywords": [
+    "solana",
+    "nextjs",
+    "dynamic",
+    "dynamic-xyz",
+    "wallet",
+    "authentication",
+    "react",
+    "typescript",
+    "tailwind"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Install dependencies:",
+      "+{pm} install",
+      "Copy .env.example to .env.local and add your Dynamic environment ID:",
+      "+cp .env.example .env.local",
+      "Get your Environment ID from https://app.dynamic.xyz/dashboard/developer",
+      "Start the development server:",
+      "+{pm} dev"
+    ]
+  },
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.20.0",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@dynamic-labs/sdk-react-core": "4.76.0",
+    "@dynamic-labs/solana": "4.76.0",
+    "@solana/web3.js": "1.98.4",
+    "next": "15.5.14",
+    "react": "19.0.4",
+    "react-dom": "19.0.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.2.2",
+    "@types/node": "20.19.37",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "eslint": "9.39.4",
+    "eslint-config-next": "15.5.14",
+    "postcss": "8.5.8",
+    "tailwindcss": "4.2.2",
+    "typescript": "5.9.3"
+  }
+}
