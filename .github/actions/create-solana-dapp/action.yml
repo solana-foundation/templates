@@ -18,7 +18,7 @@ runs:
   using: 'composite'
   steps:
     - name: Setup Environment
-      uses: ./.github/workflows/actions/setup
+      uses: ./.github/actions/setup
       with:
         node-version: ${{ inputs.node-version }}
         package-manager: ${{ inputs.package-manager }}
