@@ -9,3 +9,4 @@
 /coverage
 tmp
 pnpm-lock.yaml
+.agents

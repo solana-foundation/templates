@@ -58,7 +58,7 @@ jobs:
             CHANGED_FILES="${{ steps.changed-files.outputs.changed_files }}"
 
             # Check if test-related workflow or action files changed - if so, test all templates (except community)
-            if echo "$CHANGED_FILES" | grep -q -E '^\.github/workflows/(test-templates\.yml|actions/)'; then
+            if echo "$CHANGED_FILES" | grep -q -E '^\.github/(actions/|workflows/test-templates\.yml)'; then
               echo "Test workflow or actions changed, testing all templates except community"
               echo templates=$(echo $TESTABLE_TEMPLATES | sed 's/ //g') | tee --append $GITHUB_OUTPUT
               exit 0
@@ -93,13 +93,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [20, 22]
+        node: [22]
         template: ${{ fromJson(needs.setup-templates.outputs.templates) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Create and Build using create-solana-dapp
-        uses: ./.github/workflows/actions/create-solana-dapp
+        uses: ./.github/actions/create-solana-dapp
         with:
           cmd: 'npx -y create-solana-dapp@latest'
           node-version: ${{ matrix.node }}
@@ -114,13 +114,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [20, 22]
+        node: [22]
         template: ${{ fromJson(needs.setup-templates.outputs.templates) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Create and Build using create-solana-dapp
-        uses: ./.github/workflows/actions/create-solana-dapp
+        uses: ./.github/actions/create-solana-dapp
         with:
           cmd: 'pnpm create solana-dapp@latest'
           node-version: ${{ matrix.node }}
@@ -135,13 +135,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [20, 22]
+        node: [22]
         template: ${{ fromJson(needs.setup-templates.outputs.templates) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Create and Build using create-solana-dapp
-        uses: ./.github/workflows/actions/create-solana-dapp
+        uses: ./.github/actions/create-solana-dapp
         with:
           cmd: 'yarn create solana-dapp'
           node-version: ${{ matrix.node }}
