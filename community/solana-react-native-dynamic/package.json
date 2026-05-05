@@ -1,0 +1,70 @@
+{
+  "name": "solana-react-native-dynamic",
+  "displayName": "Solana Expo + Dynamic",
+  "description": "Expo + React Native starter with Dynamic embedded wallets + social login for Solana",
+  "usecase": "Mobile",
+  "keywords": [
+    "solana",
+    "dynamic",
+    "dynamic-xyz",
+    "wallet",
+    "embedded-wallet",
+    "react-native",
+    "expo",
+    "mobile",
+    "typescript",
+    "social-login",
+    "authentication"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Your Dynamic Expo + Solana starter is ready!",
+      "",
+      "Next steps:",
+      "+1. Copy .env.example to .env and add your Dynamic Environment ID",
+      "+2. Get your Environment ID at https://app.dynamic.xyz/dashboard/developer",
+      "+3. Read the docs at https://www.dynamic.xyz/docs/react-native/wallets/using-wallets/solana/solana-wallets",
+      "",
+      "Start developing:",
+      "+{pm} start",
+      "",
+      "Important: This template requires a development build and will not work with Expo Go.",
+      "+{pm} run android  # or {pm} run ios",
+      "",
+      "Learn more:",
+      "- React Native SDK Docs: https://www.dynamic.xyz/docs/react-native/overview",
+      "- Expo Development Builds: https://docs.expo.dev/develop/development-builds/introduction/"
+    ]
+  },
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "prebuild": "expo prebuild"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.28.4",
+    "@dynamic-labs/react-native-extension": "4.76.0",
+    "@dynamic-labs/sdk-react-core": "4.76.0",
+    "@dynamic-labs/solana": "4.76.0",
+    "@solana/web3.js": "^1.95.0",
+    "expo": "~54.0.0",
+    "expo-clipboard": "~8.0.7",
+    "expo-secure-store": "~15.0.7",
+    "expo-web-browser": "~15.0.9",
+    "react": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-get-random-values": "~1.11.0",
+    "react-native-safe-area-context": "~5.6.0",
+    "react-native-screens": "~4.16.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "@types/react": "~19.0.14",
+    "typescript": "~5.8.3"
+  },
+  "packageManager": "pnpm@10.20.0"
+}

@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Solana + Dynamic",
+    "slug": "solana-react-native-dynamic",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "scheme": "dynamicsolana",
+    "splash": {
+      "resizeMode": "cover",
+      "backgroundColor": "#0b0b12"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.dynamicsolana"
+    },
+    "android": {
+      "package": "com.example.dynamicsolana"
+    },
+    "plugins": [
+      [
+        "expo-secure-store",
+        {
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to access Face ID biometric data."
+        }
+      ],
+      "expo-web-browser"
+    ]
+  }
+}
