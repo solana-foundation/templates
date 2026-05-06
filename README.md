@@ -67,6 +67,8 @@ pnpm lint        # Validate templates
 pnpm format      # Format code
 ```
 
+AI coding agents should start with [AGENTS.md](AGENTS.md), then use the focused notes in [docs/agents](docs/agents) for repository context, template metadata, validation, and review checks.
+
 ## Contributors
 
 <!-- automd:contributors github="solana-foundation/templates" license="MIT" -->
