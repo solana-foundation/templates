@@ -1,13 +1,13 @@
 # Community Template Contributor Guide
 
-This guide provides comprehensive instructions for contributing community templates to the Solana Templates repository. Community templates are discoverable through `create-solana-dapp` and showcased on https://templates.solana.com.
+This guide explains how to contribute templates under `community/`. Community templates are consumed directly from this repository by `create-solana-dapp` and browsable at https://solana.com/developers/templates.
 
 ## Overview
 
 Community templates are Solana project templates maintained by the community that demonstrate specific use cases, frameworks, or patterns. They are:
 
 - Discoverable through the `create-solana-dapp` CLI
-- Showcased on the official [Solana Templates marketplace](https://templates.solana.com/)
+- Listed on the official [Solana templates gallery](https://solana.com/developers/templates)
 
 When users run `npx create-solana-dapp@latest`, they can select from all available templates, including community contributions.
 
@@ -143,16 +143,16 @@ Include any scripts, dependencies, or other configuration appropriate for your t
 
 Template metadata is automatically generated from your `package.json` and aggregated into `templates.json`, which is consumed by:
 
-1. `create-solana-dapp` CLI for template discovery
-2. Templates website (https://templates.solana.com) for browsing
+1. `create-solana-dapp` when it pulls templates from this repository
+2. The templates gallery (https://solana.com/developers/templates) for browsing
 
 The generation process:
 
-1. Scans all directories in `community/`, `gill/`, `web3js/`, and `mobile/`
+1. Reads template groups from root `package.json` under `repokit.groups`
 2. Reads each template's `package.json`
-3. Extracts required fields (name, displayName, description, usecase, keywords)
-4. Generates unique template IDs in the format: `gh:solana-foundation/templates/community/your-template-name`
-5. Creates `templates.json` and `TEMPLATES.md` with all template metadata
+3. Extracts template fields (name, displayName, description, usecase, keywords)
+4. Generates unique template IDs in the format: `gh:solana-foundation/templates/<group>/<template-name>`
+5. Creates `templates.json`, `TEMPLATES.md`, and `.github/workflows/templates.json` with generated metadata
 
 ## OG Image Generation
 

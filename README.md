@@ -2,7 +2,7 @@
 
 Official templates for [create-solana-dapp](https://github.com/solana-developers/create-solana-dapp).
 
-Browse all templates at https://templates.solana.com
+Browse the public template gallery at https://solana.com/developers/templates.
 
 ## Usage
 
@@ -22,12 +22,12 @@ yarn create solana-dapp
 Or specify a template directly:
 
 ```sh
-npm create solana-dapp@latest -t gill-next-tailwind-basic
+npm create solana-dapp@latest -t gh:solana-foundation/templates/kit/nextjs
 ```
 
 ## Template Categories
 
-- **Gill** - Modern templates using @solana/kit
+- **Kit** - Modern templates using @solana/kit
 - **Web3.js** - Templates using @solana/web3.js (legacy)
 - **Mobile** - React Native templates for Solana Mobile
 - **Community** - Templates maintained by the community
@@ -44,7 +44,7 @@ See the [Community Template Contributor Guide](COMMUNITY_TEMPLATE_GUIDE.md) for 
 
 **Adding a new template:**
 
-1. Create your template in the appropriate directory (gill/, web3js/, mobile/, or community/)
+1. Create community templates under `community/`.
 2. Add required metadata to package.json (see existing templates for examples)
 3. Include displayName, usecase, and og-image.png
 4. Run `pnpm generate` to update templates.json
@@ -66,6 +66,8 @@ pnpm generate    # Generate templates.json and TEMPLATES.md
 pnpm lint        # Validate templates
 pnpm format      # Format code
 ```
+
+AI coding agents should start with [AGENTS.md](AGENTS.md), which links to the focused docs under `docs/agents/`.
 
 ## Contributors
 
