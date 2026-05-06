@@ -1,6 +1,6 @@
 # Repository Map
 
-This repository stores templates consumed by `create-solana-dapp` and surfaced at `templates.solana.com`.
+This repository is the template source consumed directly by `create-solana-dapp`. The public gallery at https://solana.com/developers/templates is a browsing surface, not a separate template source.
 
 ## Root Files
 
@@ -11,13 +11,27 @@ This repository stores templates consumed by `create-solana-dapp` and surfaced a
 - `templates.json` is generated metadata consumed by downstream tooling.
 - `TEMPLATES.md` is generated human-readable template metadata.
 
-## Template Groups
+## Template Roots
 
-- `kit/` contains primary templates using modern Solana libraries.
-- `mobile/` contains React Native and Expo templates.
-- `web3js/` contains legacy `@solana/web3.js` templates.
-- `pinocchio/` contains Pinocchio program templates.
-- `community/` contains community-maintained templates.
+Template roots are configured in root `package.json` under `repokit.groups`. Use that file as the source of truth instead of hard-coding group names in docs or scripts.
+
+Most new externally maintained templates belong under `community/` unless a maintainer asks for a different root.
+
+## Reference Flow
+
+- Use root `package.json` `repokit.groups` to find the current template roots.
+- Use `TEMPLATES.md` for the generated catalog of current templates.
+- Use nearby templates in the same root as examples for scripts, README structure, metadata, and assets.
+- Use `COMMUNITY_TEMPLATE_GUIDE.md` for community submission requirements.
+
+## Agent Docs
+
+- `repository-map.md` explains where repo-level information lives.
+- `template-authoring.md` explains template contents and safety expectations.
+- `template-metadata.md` explains package metadata and generated outputs.
+- `testing-and-ci.md` explains local validation and CI behavior.
+- `review-checklist.md` gives review criteria.
+- `known-gotchas.md` captures edge cases that do not belong in the main guides.
 
 ## Tooling
 

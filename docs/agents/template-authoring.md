@@ -9,7 +9,7 @@ Each template directory scanned by `repokit.groups` must include:
 - `package.json`
 - `og-image.png`
 
-Community templates belong under `community/<template-name>/` unless a maintainer asks for another group.
+Community templates belong under `community/<template-name>/` unless a maintainer asks for another root.
 
 ## Package Metadata
 
@@ -29,7 +29,7 @@ The generator and linter currently enforce `name`, `description`, and non-empty 
 
 - Do not commit `.env` files, private keys, seed phrases, API tokens, or personal wallet addresses.
 - Use `.env.example` for required configuration.
-- Prefer placeholders that are safe to commit, such as `YOUR_API_KEY_HERE`.
+- Use placeholders for sensitive values; safe defaults such as `SOLANA_CLUSTER=devnet` are okay.
 - Avoid dependencies or setup scripts that require hidden local state.
 
 ## Generated Metadata

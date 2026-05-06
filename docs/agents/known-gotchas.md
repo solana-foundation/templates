@@ -16,7 +16,7 @@ Every template needs `og-image.png` at `1200x630` and under the enforced size li
 
 Root `pnpm lint` includes `prettier --check .`, so docs and template files can fail lint even if template metadata is valid.
 
-Generated files and the root `pnpm-lock.yaml` are intentionally ignored by root Prettier rules. Some template lockfiles are tracked, so check existing patterns before adding or removing one.
+Generated files and the root `pnpm-lock.yaml` are intentionally ignored by root Prettier rules. Mobile templates may intentionally ship lockfiles because Expo is dependency-sensitive; check existing patterns before adding or removing one.
 
 ## Template Tests
 

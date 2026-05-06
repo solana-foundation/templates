@@ -19,7 +19,7 @@ Use this checklist for PR review or self-review before submitting a template cha
 ## Security
 
 - No secrets, private keys, seed phrases, personal wallet data, or live credentials are committed.
-- `.env.example` uses placeholders only.
+- `.env.example` uses placeholders only for sensitive data.
 - Dependencies and scripts do not perform unexpected network, wallet, signing, or funding actions.
 - Agent, MCP, wallet, or transaction automation behavior is clearly disclosed.
 

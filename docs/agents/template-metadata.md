@@ -4,15 +4,9 @@ Template metadata is generated from template `package.json` files.
 
 ## Source Of Truth
 
-The source of truth is each template directory's `package.json`. The generator reads template groups from root `package.json` under `repokit.groups`.
+The source of truth is each template directory's `package.json`. The generator reads template roots from root `package.json` under `repokit.groups`; do not maintain a separate hard-coded group list in docs.
 
-Current groups are:
-
-- `kit`
-- `mobile`
-- `web3js`
-- `community`
-- `pinocchio`
+Community templates belong under `community/` unless a maintainer asks for another root.
 
 Generated outputs are:
 
@@ -26,7 +20,7 @@ Generated outputs are:
 
 The generator:
 
-- Reads root `package.json` for `repokit.groups` and `repository.name`.
+- Reads root `package.json` for configured `repokit.groups` and `repository.name`.
 - Scans direct child directories in each configured group.
 - Treats a child directory as a template only when it has a `package.json`.
 - Reads template metadata from that `package.json`.
