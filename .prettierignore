@@ -10,6 +10,20 @@ templates.json
 TEMPLATES.md
 
 # Ignore any dist, tmp, or node_modules directories
+kit/**/.env
+kit/**/.anchor
+kit/**/anchor/src/client/js/generated
+kit/**/anchor/target
+kit/**/anchor/target/debug
+kit/**/anchor/target/deploy
+kit/**/anchor/target/release
+kit/**/anchor/target/sbf-solana-solana
+kit/**/anchor/target/sbpf-solana-solana
+kit/**/anchor/target/test-ledger
+kit/**/anchor/target/.rustc_info.json
+kit/**/dist
+kit/**/node_modules
+kit/**/tmp
 gill/**/.env
 gill/**/.anchor
 gill/**/anchor/src/client/js/generated

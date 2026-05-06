@@ -4,6 +4,9 @@ node_modules
 .pnpm-store/
 
 # We only want a top-level `pnpm-lock.yaml` file.
+kit/**/package-lock.json
+kit/**/pnpm-lock.yaml
+kit/**/yarn.lock
 gill/**/package-lock.json
 gill/**/pnpm-lock.yaml
 gill/**/yarn.lock
@@ -18,6 +21,20 @@ mobile/**/pnpm-lock.yaml
 mobile/**/yarn.lock
 
 # Ignore any dist, tmp, or node_modules directories
+kit/**/.next
+kit/**/.env
+kit/**/.env.local
+kit/**/anchor/target/
+kit/**/anchor/target/debug
+kit/**/anchor/target/deploy
+kit/**/anchor/target/release
+kit/**/anchor/target/sbf-solana-solana
+kit/**/anchor/target/sbpf-solana-solana
+kit/**/anchor/target/test-ledger
+kit/**/anchor/target/.rustc_info.json
+kit/**/dist
+kit/**/node_modules
+kit/**/tmp
 gill/**/.next
 gill/**/.env
 gill/**/.env.local
