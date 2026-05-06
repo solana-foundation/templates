@@ -148,11 +148,11 @@ Template metadata is automatically generated from your `package.json` and aggreg
 
 The generation process:
 
-1. Scans all directories in `community/`, `gill/`, `web3js/`, and `mobile/`
+1. Reads template groups from root `package.json` under `repokit.groups`
 2. Reads each template's `package.json`
-3. Extracts required fields (name, displayName, description, usecase, keywords)
-4. Generates unique template IDs in the format: `gh:solana-foundation/templates/community/your-template-name`
-5. Creates `templates.json` and `TEMPLATES.md` with all template metadata
+3. Extracts template fields (name, displayName, description, usecase, keywords)
+4. Generates unique template IDs in the format: `gh:solana-foundation/templates/<group>/<template-name>`
+5. Creates `templates.json`, `TEMPLATES.md`, and `.github/workflows/templates.json` with generated metadata
 
 ## OG Image Generation
 
