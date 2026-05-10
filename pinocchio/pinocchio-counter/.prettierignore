@@ -3,6 +3,8 @@ idl/
 
 # Generated files
 clients/typescript/src/generated/
+.agents/
+skills-lock.json
 
 # Build outputs
 dist/

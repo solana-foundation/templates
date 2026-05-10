@@ -55,7 +55,7 @@
     }
   },
   "dependencies": {
-    "@phantom/browser-sdk": "1.0.7",
+    "@phantom/browser-sdk": "^2.0.2",
     "@solana/web3.js": "^1.95.0"
   },
   "devDependencies": {

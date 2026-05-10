@@ -36,13 +36,13 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@phantom/browser-sdk": "1.0.7",
-    "@phantom/react-sdk": "1.0.7",
+    "@phantom/browser-sdk": "^2.0.2",
+    "@phantom/react-sdk": "^2.0.2",
     "@solana/web3.js": "^1.95.0",
     "@tailwindcss/postcss": "^4.1.17",
     "lucide-react": "^0.553.0",
     "next": "16.1.7",
-    "postcss": "^8.5.6",
+    "postcss": "^8.5.10",
     "react": "19.2.1",
     "react-dom": "19.2.1"
   },
