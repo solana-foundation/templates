@@ -35,9 +35,9 @@ This template demonstrates a streamlined implementation of the X402 payment prot
 ```
 1. User requests protected content
 2. Server responds with 402 Payment Required
-3. User makes payment via Coinbase Pay or crypto wallet
-4. User proves payment with transaction signature
-5. Server verifies on blockchain and grants access
+3. A compliant x402 client intercepts 402, signs a payment authorization, and retries the request
+4. Facilitator verifies the payment on-chain
+5. Server grants access
 ```
 
 ---
@@ -80,11 +80,10 @@ Visit `http://localhost:3000` to see your app running.
 
 ### Test the Payment Flow
 
-1. Navigate to `http://localhost:3000`
-2. Click on "Access Cheap Content" or "Access Expensive Content"
-3. You'll be presented with a Coinbase Pay payment dialog
-4. Complete the payment
-5. Access is granted and you'll see the protected content
+1. Start the dev server (`pnpm dev`) and configure `.env.local` as in [Configuration](#configuration).
+2. Open `http://localhost:3000` and use the links to the protected routes, or call `/content/cheap` and `/content/expensive` directly.
+3. Complete payment with an x402 v2–capable HTTP client: the proxy responds with **402 Payment Required** until a valid authorization is supplied. Use a wrapper such as [`@x402/axios`](https://www.npmjs.com/package/@x402/axios) or [`@x402/fetch`](https://www.npmjs.com/package/@x402/fetch) to handle the 402 programmatically—sign the payment authorization and retry until the server returns **200**.
+4. After settlement (e.g. on Solana devnet), you receive the protected response and session for that route.
 
 ---
 
@@ -156,7 +155,7 @@ export const config = {
 1. **Request Interception** - Proxy checks if the requested route requires payment
 2. **Payment Check** - If the route is protected, proxy checks for valid payment session
 3. **402 Response** - If no valid payment, returns 402 with payment requirements
-4. **Coinbase Pay Widget** - User sees payment modal powered by Coinbase
+4. **Client payment** - A compliant x402 client signs and submits the payment authorization (no in-app payment widget in this template)
 5. **Payment Verification** - After payment, transaction is verified on Solana blockchain via facilitator
 6. **Session Creation** - Valid payment creates a session token
 7. **Access Granted** - User can now access protected content
@@ -192,7 +191,7 @@ The template uses sensible defaults, but you can customize by creating a `.env.l
 
 ```bash
 # Your Solana wallet address (where payments go)
-NEXT_PUBLIC_WALLET_ADDRESS=your_solana_address_here
+NEXT_PUBLIC_RECEIVER_ADDRESS=your_solana_address_here
 
 # Network (CAIP-2, e.g. solana devnet)
 NEXT_PUBLIC_NETWORK=solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1
@@ -342,7 +341,7 @@ This template uses minimal dependencies:
 
 ### Payment Not Working
 
-1. Check that your wallet address in `proxy.ts` is correct
+1. Check that `NEXT_PUBLIC_RECEIVER_ADDRESS` in `.env.local` is correct
 2. Verify you're using the correct network (devnet vs mainnet)
 3. Check browser console for errors
 4. If your selected facilitator requires a client/API key, ensure it is set and valid
