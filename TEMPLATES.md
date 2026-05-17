@@ -238,6 +238,14 @@ Templates maintained by the Solana community
 
 `solana` `chatgpt` `openai` `mcp` `jupiter` `x402` `payments` `swap` `wallet` `defi` `staking` `nextjs` `typescript` `spl-token` `sns`
 
+### [solana-node-dynamic](community/solana-node-dynamic)
+
+`gh:solana-foundation/templates/community/solana-node-dynamic`
+
+> Node.js Express backend for server-side Solana signing with Dynamic MPC wallets + gasless relayer example
+
+`solana` `dynamic` `dynamic-xyz` `node` `server-wallet` `mpc` `gasless` `relayer` `backend` `express` `typescript`
+
 ### [supabase-auth](community/supabase-auth)
 
 `gh:solana-foundation/templates/community/supabase-auth`
