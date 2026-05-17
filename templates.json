@@ -524,6 +524,26 @@
         "usecase": "Starter"
       },
       {
+        "description": "React + Vite starter with Dynamic wallet authentication for Solana",
+        "id": "gh:solana-foundation/templates/community/solana-react-dynamic",
+        "image": "community/solana-react-dynamic/og-image.png",
+        "keywords": [
+          "solana",
+          "react",
+          "vite",
+          "dynamic",
+          "dynamic-xyz",
+          "wallet",
+          "authentication",
+          "typescript",
+          "tailwind"
+        ],
+        "name": "solana-react-dynamic",
+        "path": "community/solana-react-dynamic",
+        "displayName": "Solana React + Vite + Dynamic",
+        "usecase": "Starter"
+      },
+      {
         "description": "Authenticate Solana wallets with Supabase",
         "id": "gh:solana-foundation/templates/community/supabase-auth",
         "image": "community/supabase-auth/og-image.png",
