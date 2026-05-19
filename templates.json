@@ -104,6 +104,23 @@
         "usecase": "Mobile"
       },
       {
+        "description": "A Solana mobile app with Expo, Privy auth, Solana Kit, and Uniwind.",
+        "id": "gh:solana-foundation/templates/mobile/kit-expo-privy",
+        "image": "mobile/kit-expo-privy/og-image.png",
+        "keywords": [
+          "expo",
+          "privy",
+          "react-native",
+          "solana-kit",
+          "tailwind",
+          "uniwind"
+        ],
+        "name": "kit-expo-privy",
+        "path": "mobile/kit-expo-privy",
+        "displayName": "Privy Mobile Kit Expo example",
+        "usecase": "Mobile"
+      },
+      {
         "description": "A template for building a Solana mobile app with Expo, React Native, Solana Kit, and Uniwind.",
         "id": "gh:solana-foundation/templates/mobile/kit-expo-uniwind",
         "image": "mobile/kit-expo-uniwind/og-image.png",
