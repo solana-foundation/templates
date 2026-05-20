@@ -22,6 +22,7 @@
   "kit/react-vite",
   "kit/react-vite-anchor",
   "mobile/kit-expo-minimal",
+  "mobile/kit-expo-privy",
   "mobile/kit-expo-uniwind",
   "mobile/web3js-expo",
   "mobile/web3js-expo-minimal",
