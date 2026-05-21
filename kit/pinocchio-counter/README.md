@@ -5,7 +5,7 @@ Native Solana program template using [Pinocchio](https://github.com/anza-xyz/pin
 ## Getting Started
 
 ```shell
-npx -y create-solana-dapp@latest -t solana-foundation/templates/pinocchio/pinocchio-counter
+npx -y create-solana-dapp@latest -t solana-foundation/templates/kit/pinocchio-counter
 ```
 
 ### Prerequisites
