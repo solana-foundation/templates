@@ -41,7 +41,7 @@ export default function Home() {
   const [isSending, setIsSending] = useState(false)
 
   // Sign message state
-  const [messageToSign, setMessageToSign] = useState('Hello from Dynamic + Solana!')
+  const [messageToSign, setMessageToSign] = useState('')
   const [signedSig, setSignedSig] = useState('')
   const [isSigning, setIsSigning] = useState(false)
   const [signError, setSignError] = useState('')
@@ -189,10 +189,10 @@ export default function Home() {
     <main className="max-w-2xl mx-auto px-6 py-12 space-y-6">
       {/* User / Wallet overview */}
       <div className={card} style={cardStyle}>
-        <h2 className={label}>Wallet</h2>
+        <h2 className={label}>Account</h2>
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            {user?.email && <p className="text-sm text-[#606060]">{user.email}</p>}
+            <p className="text-sm text-[#606060]">{user?.email ?? 'Wallet user'}</p>
             <p className="text-xl font-mono font-bold text-[#030303]">{shortAddress}</p>
             {balance !== null && (
               <p className="text-[#606060]">{balance.toFixed(4)} SOL {network && <span className="text-xs ml-1 text-[#9ca3af]">({network})</span>}</p>
@@ -226,7 +226,7 @@ export default function Home() {
               {isSigning ? 'Signing…' : 'Sign Message'}
             </button>
           </form>
-          {signedSig && <StatusBadge text={`Signature: ${signedSig.slice(0, 40)}…`} success={true} />}
+          {signedSig && <StatusBadge text={`Signature: ${signedSig.slice(0, 20)}...${signedSig.slice(-20)}`} success={true} />}
           {signError && <StatusBadge text={signError} success={false} />}
         </div>
       )}
