@@ -12,7 +12,11 @@ function WaasBootstrap() {
       if (!user) return
       const missingChains = getChainsMissingWaasWalletAccounts()
       if (missingChains.length > 0) {
-        await createWaasWalletAccounts({ chains: missingChains })
+        try {
+          await createWaasWalletAccounts({ chains: missingChains })
+        } catch (err) {
+          console.error('Failed to create WaaS wallet accounts:', err)
+        }
       }
     },
   })
