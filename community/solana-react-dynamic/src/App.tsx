@@ -1,5 +1,5 @@
 import { useInitStatus, useUser, useWalletAccounts } from '@dynamic-labs-sdk/react-hooks'
-import { getActiveNetworkData } from '@dynamic-labs-sdk/client'
+import { getActiveNetworkData, signMessage } from '@dynamic-labs-sdk/client'
 import { isSolanaWalletAccount, getSolanaConnection, signAndSendTransaction } from '@dynamic-labs-sdk/solana'
 import { LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from '@solana/web3.js'
 import { useEffect, useState } from 'react'
@@ -12,11 +12,19 @@ export function App() {
   const accounts = useWalletAccounts()
 
   const [balance, setBalance] = useState<number | null>(null)
+  const [copied, setCopied] = useState(false)
+
+  // Send SOL state
   const [recipient, setRecipient] = useState('')
   const [amount, setAmount] = useState('0.01')
   const [txStatus, setTxStatus] = useState('')
   const [isSending, setIsSending] = useState(false)
-  const [copied, setCopied] = useState(false)
+
+  // Sign message state
+  const [messageToSign, setMessageToSign] = useState('')
+  const [signature, setSignature] = useState<string | null>(null)
+  const [signError, setSignError] = useState<string | null>(null)
+  const [isSigning, setIsSigning] = useState(false)
 
   const solanaWallet = accounts.find(isSolanaWalletAccount)
 
@@ -48,6 +56,22 @@ export function App() {
     await navigator.clipboard.writeText(solanaWallet.address)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleSign = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!solanaWallet || !messageToSign) return
+    setIsSigning(true)
+    setSignError(null)
+    setSignature(null)
+    try {
+      const result = await signMessage({ walletAccount: solanaWallet, message: messageToSign })
+      setSignature(result.signature)
+    } catch (err) {
+      setSignError(err instanceof Error ? err.message : 'Failed to sign message')
+    } finally {
+      setIsSigning(false)
+    }
   }
 
   const handleSend = async (e: React.FormEvent) => {
@@ -90,8 +114,8 @@ export function App() {
         }),
       )
 
-      const { signature } = await signAndSendTransaction({ walletAccount: solanaWallet, transaction: tx })
-      setTxStatus(`Success! Signature: ${signature}`)
+      const { signature: txSig } = await signAndSendTransaction({ walletAccount: solanaWallet, transaction: tx })
+      setTxStatus(`Success! Signature: ${txSig}`)
       setRecipient('')
       setAmount('0.01')
 
@@ -110,6 +134,11 @@ export function App() {
 
   const inputClass =
     'w-full px-4 py-2.5 bg-white rounded-lg text-sm text-[#030303] placeholder-[#9ca3af] outline-none focus:border-[#4779FF] focus:ring-1 focus:ring-[#4779FF]/30 transition-colors'
+
+  const cardStyle = {
+    border: '1px solid #DADADA',
+    boxShadow: '0 1px 2px 0 rgba(0,0,0,0.04)',
+  }
 
   return (
     <>
@@ -160,15 +189,18 @@ export function App() {
             </div>
           ) : (
             <div className="space-y-6">
-              <div
-                className="bg-white rounded-xl p-6 space-y-4"
-                style={{ border: '1px solid #DADADA', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.04)' }}
-              >
-                <h2 className="text-sm font-medium text-[#606060] uppercase tracking-wide">Wallet</h2>
+              {/* User card */}
+              <div className="bg-white rounded-xl p-6 space-y-4" style={cardStyle}>
+                <h2 className="text-sm font-medium text-[#606060] uppercase tracking-wide">Account</h2>
                 <div className="flex items-center justify-between">
                   <div>
+                    <p className="text-sm text-[#606060] mb-1">
+                      {user.email ?? 'Wallet user'}
+                    </p>
                     <p className="text-2xl font-mono font-bold text-[#030303]">{shortAddress}</p>
-                    {balance !== null && <p className="text-[#606060] mt-1">{balance.toFixed(4)} SOL</p>}
+                    {balance !== null && (
+                      <p className="text-[#606060] mt-1">{balance.toFixed(4)} SOL</p>
+                    )}
                   </div>
                   <button
                     onClick={handleCopy}
@@ -180,10 +212,56 @@ export function App() {
                 </div>
               </div>
 
-              <div
-                className="bg-white rounded-xl p-6"
-                style={{ border: '1px solid #DADADA', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.04)' }}
-              >
+              {/* Sign message card */}
+              <div className="bg-white rounded-xl p-6" style={cardStyle}>
+                <h2 className="text-sm font-medium text-[#606060] uppercase tracking-wide mb-4">Sign Message</h2>
+                <form onSubmit={handleSign} className="space-y-4">
+                  <div>
+                    <label htmlFor="message" className="block text-sm text-[#606060] mb-1">
+                      Message
+                    </label>
+                    <input
+                      id="message"
+                      type="text"
+                      value={messageToSign}
+                      onChange={(e) => setMessageToSign(e.target.value)}
+                      placeholder="Enter a message to sign"
+                      required
+                      className={inputClass}
+                      style={{ border: '1px solid #DADADA' }}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isSigning || !messageToSign}
+                    className="w-full py-3 bg-[#4779FF] hover:bg-[#3366ee] disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
+                  >
+                    {isSigning ? 'Signing...' : 'Sign'}
+                  </button>
+                </form>
+
+                {signError && (
+                  <div
+                    className="mt-4 p-3 rounded-lg text-sm text-[#C5221F] bg-[#FCE8E6] break-all"
+                    style={{ border: '1px solid #F5C6C2' }}
+                  >
+                    {signError}
+                  </div>
+                )}
+
+                {signature && (
+                  <div
+                    className="mt-4 p-3 rounded-lg text-sm text-[#137333] bg-[#E6F4EA] break-all"
+                    style={{ border: '1px solid #CEEAD6' }}
+                  >
+                    <span className="font-medium">Signature: </span>
+                    {signature.slice(0, 20)}...{signature.slice(-20)}
+                  </div>
+                )}
+              </div>
+
+              {/* Send SOL card */}
+              <div className="bg-white rounded-xl p-6" style={cardStyle}>
                 <h2 className="text-sm font-medium text-[#606060] uppercase tracking-wide mb-4">Send SOL</h2>
                 <form onSubmit={handleSend} className="space-y-4">
                   <div>
