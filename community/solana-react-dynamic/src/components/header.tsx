@@ -51,9 +51,13 @@ function ConnectButton() {
             solanaProviders.map((provider) => (
               <button
                 key={provider.key}
-                onClick={() => {
-                  connectWithWalletProvider({ walletProviderKey: provider.key })
+                onClick={async () => {
                   setOpen(false)
+                  try {
+                    await connectWithWalletProvider({ walletProviderKey: provider.key })
+                  } catch {
+                    // User rejected or wallet unavailable — no action needed
+                  }
                 }}
                 className="flex items-center gap-3 w-full px-3 py-2 text-sm text-[#030303] hover:bg-[#F9F9F9] rounded-lg transition-colors"
               >

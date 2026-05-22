@@ -1,8 +1,8 @@
-import { createDynamicClient, initializeClient } from '@dynamic-labs-sdk/client'
-import { addSolanaExtension } from '@dynamic-labs-sdk/solana'
+import { createDynamicClient } from '@dynamic-labs-sdk/client'
+import { addSolanaWalletStandardExtension } from '@dynamic-labs-sdk/solana/walletStandard'
+import { addWaasSolanaExtension } from '@dynamic-labs-sdk/solana/waas'
 
 export const dynamicClient = createDynamicClient({
-  autoInitialize: false,
   environmentId: import.meta.env.VITE_DYNAMIC_ENVIRONMENT_ID,
   metadata: {
     name: 'Solana + Dynamic',
@@ -10,5 +10,5 @@ export const dynamicClient = createDynamicClient({
   },
 })
 
-addSolanaExtension()
-void initializeClient()
+addSolanaWalletStandardExtension()
+addWaasSolanaExtension()

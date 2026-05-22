@@ -41,7 +41,7 @@ export function App() {
     }
 
     fetchBalance()
-  }, [user, accounts])
+  }, [user, accounts, solanaWallet])
 
   const handleCopy = async () => {
     if (!solanaWallet?.address) return
@@ -67,6 +67,13 @@ export function App() {
         return
       }
 
+      const lamports = Math.round(parseFloat(amount) * LAMPORTS_PER_SOL)
+      if (!Number.isFinite(lamports) || lamports <= 0) {
+        setTxStatus('Error: Invalid amount')
+        setIsSending(false)
+        return
+      }
+
       const { networkData } = await getActiveNetworkData({ walletAccount: solanaWallet })
       if (!networkData) throw new Error('No network data available')
       const connection = getSolanaConnection({ networkData })
@@ -79,18 +86,17 @@ export function App() {
         SystemProgram.transfer({
           fromPubkey: new PublicKey(solanaWallet.address),
           toPubkey: recipientPubkey,
-          lamports: Math.round(parseFloat(amount) * LAMPORTS_PER_SOL),
+          lamports,
         }),
       )
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { signature } = await signAndSendTransaction({ walletAccount: solanaWallet, transaction: tx as any })
+      const { signature } = await signAndSendTransaction({ walletAccount: solanaWallet, transaction: tx })
       setTxStatus(`Success! Signature: ${signature}`)
       setRecipient('')
       setAmount('0.01')
 
-      const lamports = await connection.getBalance(new PublicKey(solanaWallet.address))
-      setBalance(lamports / LAMPORTS_PER_SOL)
+      const updatedBalance = await connection.getBalance(new PublicKey(solanaWallet.address))
+      setBalance(updatedBalance / LAMPORTS_PER_SOL)
     } catch (err) {
       setTxStatus(`Error: ${err instanceof Error ? err.message : 'Unknown error'}`)
     } finally {
