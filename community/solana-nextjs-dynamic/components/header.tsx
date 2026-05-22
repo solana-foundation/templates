@@ -219,7 +219,7 @@ function ConnectButton() {
       <div className="flex items-center gap-2">
         {shortAddr && <span className="text-sm font-mono text-[#606060]">{shortAddr}</span>}
         <button
-          onClick={() => logout()}
+          onClick={async () => { try { await logout() } catch (e) { console.error('Logout failed:', e) } }}
           className="px-3 py-1.5 text-sm rounded-lg transition-colors hover:bg-[#F9F9F9]"
           style={{ border: '1px solid #DADADA' }}
         >
