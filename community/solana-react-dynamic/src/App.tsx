@@ -12,6 +12,7 @@ export function App() {
   const accounts = useWalletAccounts()
 
   const [balance, setBalance] = useState<number | null>(null)
+  const [network, setNetwork] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
 
   // Send SOL state
@@ -31,6 +32,7 @@ export function App() {
   useEffect(() => {
     if (!user || !solanaWallet) {
       setBalance(null)
+      setNetwork(null)
       return
     }
 
@@ -39,6 +41,7 @@ export function App() {
       try {
         const { networkData } = await getActiveNetworkData({ walletAccount: solanaWallet })
         if (!networkData) return
+        setNetwork(networkData.name ?? null)
         const connection = getSolanaConnection({ networkData })
         const pubkey = new PublicKey(solanaWallet.address)
         const lamports = await connection.getBalance(pubkey)
@@ -199,7 +202,7 @@ export function App() {
                     </p>
                     <p className="text-2xl font-mono font-bold text-[#030303]">{shortAddress}</p>
                     {balance !== null && (
-                      <p className="text-[#606060] mt-1">{balance.toFixed(4)} SOL</p>
+                      <p className="text-[#606060] mt-1">{balance.toFixed(4)} SOL {network && <span className="text-xs ml-1 text-[#9ca3af]">({network})</span>}</p>
                     )}
                   </div>
                   <button
