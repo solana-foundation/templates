@@ -1,13 +1,15 @@
 'use client'
 
-import { useDynamicContext, useIsLoggedIn } from '@dynamic-labs/sdk-react-core'
-import { isSolanaWallet } from '@dynamic-labs/solana'
+import { useInitStatus, useUser, useWalletAccounts } from '@dynamic-labs-sdk/react-hooks'
+import { getActiveNetworkData } from '@dynamic-labs-sdk/client'
+import { isSolanaWalletAccount, getSolanaConnection, signAndSendTransaction } from '@dynamic-labs-sdk/solana'
 import { LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from '@solana/web3.js'
 import { useEffect, useState } from 'react'
 
 export default function Home() {
-  const isLoggedIn = useIsLoggedIn()
-  const { primaryWallet, sdkHasLoaded } = useDynamicContext()
+  const initStatus = useInitStatus()
+  const user = useUser()
+  const accounts = useWalletAccounts()
 
   const [balance, setBalance] = useState<number | null>(null)
   const [recipient, setRecipient] = useState('')
@@ -16,33 +18,41 @@ export default function Home() {
   const [isSending, setIsSending] = useState(false)
   const [copied, setCopied] = useState(false)
 
+  const solanaWallet = accounts.find(isSolanaWalletAccount)
+
   useEffect(() => {
-    if (!isLoggedIn || !primaryWallet || !isSolanaWallet(primaryWallet)) {
+    if (!user || !solanaWallet) {
       setBalance(null)
       return
     }
 
     async function fetchBalance() {
-      if (!primaryWallet || !isSolanaWallet(primaryWallet)) return
-      const connection = await primaryWallet.getConnection()
-      const pubkey = new PublicKey(primaryWallet.address)
-      const lamports = await connection.getBalance(pubkey)
-      setBalance(lamports / LAMPORTS_PER_SOL)
+      if (!solanaWallet) return
+      try {
+        const { networkData } = await getActiveNetworkData({ walletAccount: solanaWallet })
+        if (!networkData) return
+        const connection = getSolanaConnection({ networkData })
+        const pubkey = new PublicKey(solanaWallet.address)
+        const lamports = await connection.getBalance(pubkey)
+        setBalance(lamports / LAMPORTS_PER_SOL)
+      } catch (err) {
+        console.error('Failed to fetch balance:', err)
+      }
     }
 
     fetchBalance()
-  }, [isLoggedIn, primaryWallet])
+  }, [user, accounts])
 
   const handleCopy = async () => {
-    if (!primaryWallet?.address) return
-    await navigator.clipboard.writeText(primaryWallet.address)
+    if (!solanaWallet?.address) return
+    await navigator.clipboard.writeText(solanaWallet.address)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!primaryWallet || !isSolanaWallet(primaryWallet)) return
+    if (!solanaWallet) return
 
     setIsSending(true)
     setTxStatus('')
@@ -57,27 +67,28 @@ export default function Home() {
         return
       }
 
-      const connection = await primaryWallet.getConnection()
-      const signer = await primaryWallet.getSigner()
+      const { networkData } = await getActiveNetworkData({ walletAccount: solanaWallet })
+      if (!networkData) throw new Error('No network data available')
+      const connection = getSolanaConnection({ networkData })
       const { blockhash } = await connection.getLatestBlockhash()
 
       const tx = new Transaction()
       tx.recentBlockhash = blockhash
-      tx.feePayer = new PublicKey(primaryWallet.address)
+      tx.feePayer = new PublicKey(solanaWallet.address)
       tx.add(
         SystemProgram.transfer({
-          fromPubkey: new PublicKey(primaryWallet.address),
+          fromPubkey: new PublicKey(solanaWallet.address),
           toPubkey: recipientPubkey,
           lamports: Math.round(parseFloat(amount) * LAMPORTS_PER_SOL),
         }),
       )
 
-      const sig = await signer.signAndSendTransaction(tx)
-      setTxStatus(`Success! Signature: ${sig.signature}`)
+      const { signature } = await signAndSendTransaction({ walletAccount: solanaWallet, transaction: tx })
+      setTxStatus(`Success! Signature: ${signature}`)
       setRecipient('')
       setAmount('0.01')
 
-      const lamports = await connection.getBalance(new PublicKey(primaryWallet.address))
+      const lamports = await connection.getBalance(new PublicKey(solanaWallet.address))
       setBalance(lamports / LAMPORTS_PER_SOL)
     } catch (err) {
       setTxStatus(`Error: ${err instanceof Error ? err.message : 'Unknown error'}`)
@@ -86,8 +97,8 @@ export default function Home() {
     }
   }
 
-  const shortAddress = primaryWallet?.address
-    ? `${primaryWallet.address.slice(0, 4)}...${primaryWallet.address.slice(-4)}`
+  const shortAddress = solanaWallet?.address
+    ? `${solanaWallet.address.slice(0, 4)}...${solanaWallet.address.slice(-4)}`
     : ''
 
   const inputClass =
@@ -95,9 +106,9 @@ export default function Home() {
 
   return (
     <main className="max-w-2xl mx-auto px-6 py-12">
-      {!sdkHasLoaded ? (
+      {initStatus !== 'finished' ? (
         <div className="text-center text-[#606060]">Loading...</div>
-      ) : !isLoggedIn ? (
+      ) : !user ? (
         <div className="text-center space-y-6">
           <h1 className="text-4xl font-bold text-[#030303]">Solana + Dynamic</h1>
           <p className="text-[#606060] text-lg">
