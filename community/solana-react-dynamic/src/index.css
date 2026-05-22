@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+button { cursor: pointer; }
+
 @variant dark (&:where(.dark, .dark *));
 
 @theme {
