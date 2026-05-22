@@ -122,8 +122,12 @@ export function App() {
       setRecipient('')
       setAmount('0.01')
 
-      const updatedBalance = await connection.getBalance(new PublicKey(solanaWallet.address))
-      setBalance(updatedBalance / LAMPORTS_PER_SOL)
+      try {
+        const updatedBalance = await connection.getBalance(new PublicKey(solanaWallet.address))
+        setBalance(updatedBalance / LAMPORTS_PER_SOL)
+      } catch {
+        // balance refresh failure does not affect the confirmed transaction
+      }
     } catch (err) {
       setTxStatus(`Error: ${err instanceof Error ? err.message : 'Unknown error'}`)
     } finally {
