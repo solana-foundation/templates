@@ -13,6 +13,7 @@ function ConnectButton() {
   const accounts = useWalletAccounts()
   const providers = useWalletProviders()
   const [open, setOpen] = useState(false)
+  const [connectError, setConnectError] = useState<string | null>(null)
 
   if (initStatus !== 'finished') return null
 
@@ -38,7 +39,10 @@ function ConnectButton() {
   return (
     <div className="relative">
       <button
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => {
+          setOpen((o) => !o)
+          setConnectError(null)
+        }}
         className="px-4 py-2 bg-[#4779FF] hover:bg-[#3366ee] text-white text-sm rounded-lg font-medium transition-colors"
       >
         Connect Wallet
@@ -48,6 +52,9 @@ function ConnectButton() {
           className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-lg p-2 min-w-[200px] z-50"
           style={{ border: '1px solid #DADADA' }}
         >
+          {connectError && (
+            <p className="text-xs text-[#C5221F] px-3 py-2 mb-1 bg-[#FCE8E6] rounded-lg">{connectError}</p>
+          )}
           {solanaProviders.length === 0 ? (
             <p className="text-sm text-[#606060] px-3 py-2">No Solana wallets detected</p>
           ) : (
@@ -55,11 +62,12 @@ function ConnectButton() {
               <button
                 key={provider.key}
                 onClick={async () => {
-                  setOpen(false)
+                  setConnectError(null)
                   try {
                     await connectWithWalletProvider({ walletProviderKey: provider.key })
-                  } catch {
-                    // User rejected or wallet unavailable — no action needed
+                    setOpen(false)
+                  } catch (err) {
+                    setConnectError(err instanceof Error ? err.message : 'Failed to connect wallet')
                   }
                 }}
                 className="flex items-center gap-3 w-full px-3 py-2 text-sm text-[#030303] hover:bg-[#F9F9F9] rounded-lg transition-colors"
