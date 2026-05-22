@@ -1,11 +1,11 @@
 # Solana Next.js + Dynamic
 
-A Next.js starter template integrating [Dynamic](https://www.dynamic.xyz) wallet authentication with Solana. Connect Phantom, Solflare, and 100+ Solana wallets through Dynamic's unified SDK.
+A Next.js starter template integrating [Dynamic](https://www.dynamic.xyz) wallet authentication with Solana. Connect Phantom, Solflare, and 100+ Solana wallets through Dynamic's headless JS SDK.
 
 ## Features
 
-- Wallet connection via [Dynamic Widget](https://docs.dynamic.xyz/react/reference/components/dynamicwidget)
-- Solana wallet detection with `isSolanaWallet`
+- Wallet connection via Dynamic's headless JS SDK — custom connect button, no pre-built widget
+- Solana wallet detection with `isSolanaWalletAccount`
 - SOL balance fetching
 - SOL transfer transactions
 - Tailwind CSS styling
@@ -42,37 +42,59 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Key Files
 
-- `app/providers.tsx` — Sets up `DynamicContextProvider` with `SolanaWalletConnectors`
-- `app/layout.tsx` — Wraps the app with the provider
-- `app/page.tsx` — Demonstrates wallet connection, balance fetching, and SOL transfers
+- `app/dynamicClient.ts` — Creates the Dynamic client singleton and registers Solana extensions
+- `app/providers.tsx` — Wraps the app with `DynamicProvider`
+- `components/header.tsx` — Custom connect button using `useWalletProviders` + `connectWithWalletProvider`
+- `app/page.tsx` — Wallet display, SOL balance, and transfer flow
 
 ## Dynamic SDK
 
-The core setup in `providers.tsx`:
+The core setup in `app/dynamicClient.ts`:
 
-```tsx
-import { DynamicContextProvider } from '@dynamic-labs/sdk-react-core'
-import { SolanaWalletConnectors } from '@dynamic-labs/solana'
+```ts
+import { createDynamicClient } from '@dynamic-labs-sdk/client'
+import { addSolanaWalletStandardExtension } from '@dynamic-labs-sdk/solana/walletStandard'
+import { addWaasSolanaExtension } from '@dynamic-labs-sdk/solana/waas'
 
-;<DynamicContextProvider
-  settings={{
-    environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID!,
-    walletConnectors: [SolanaWalletConnectors],
-  }}
->
-  {children}
-</DynamicContextProvider>
+export const dynamicClient = createDynamicClient({
+  environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID!,
+})
+
+addSolanaWalletStandardExtension()
+addWaasSolanaExtension()
 ```
 
-Key hooks used:
+Provider setup in `app/providers.tsx`:
 
-- `useIsLoggedIn()` — Check if the user is authenticated
-- `useDynamicContext()` — Access `primaryWallet`, `sdkHasLoaded`, and more
-- `isSolanaWallet(wallet)` — Type-narrow to a Solana wallet
+```tsx
+import { DynamicProvider } from '@dynamic-labs-sdk/react-hooks'
+import { dynamicClient } from './dynamicClient'
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return <DynamicProvider client={dynamicClient}>{children}</DynamicProvider>
+}
+```
+
+Key hooks used (from `@dynamic-labs-sdk/react-hooks`):
+
+- `useInitStatus()` — Returns `'uninitialized' | 'in-progress' | 'finished' | 'failed'`
+- `useUser()` — Current user object or `null`
+- `useWalletAccounts()` — Array of connected wallet accounts
+- `useWalletProviders()` — Available wallet providers for connection
+
+Key functions (from `@dynamic-labs-sdk/client`):
+
+- `connectWithWalletProvider({ walletProviderKey })` — Connect a specific wallet
+- `logout()` — Disconnect the current wallet
+
+Solana utilities (from `@dynamic-labs-sdk/solana`):
+
+- `isSolanaWalletAccount(account)` — Type guard for Solana wallet accounts
+- `getSolanaConnection({ networkData })` — Get a `@solana/web3.js` Connection
+- `signAndSendTransaction({ walletAccount, transaction })` — Sign and broadcast a transaction
 
 ## Resources
 
-- [Dynamic Docs](https://docs.dynamic.xyz)
-- [Dynamic React Quickstart](https://docs.dynamic.xyz/react-quickstart)
-- [Solana Wallets with Dynamic](https://docs.dynamic.xyz/wallets/using-wallets/solana/solana-wallets)
+- [Dynamic JS SDK Docs](https://www.dynamic.xyz/docs/javascript/reference/react-quickstart)
+- [Dynamic Solana Extension Docs](https://www.dynamic.xyz/docs/javascript/reference/solana)
 - [Dynamic Dashboard](https://app.dynamic.xyz)
