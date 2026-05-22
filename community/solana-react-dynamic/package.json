@@ -36,8 +36,9 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@dynamic-labs/sdk-react-core": "4.76.0",
-    "@dynamic-labs/solana": "4.76.0",
+    "@dynamic-labs-sdk/client": "1.2.1",
+    "@dynamic-labs-sdk/react-hooks": "0.26.5",
+    "@dynamic-labs-sdk/solana": "1.2.1",
     "@solana/web3.js": "1.98.4",
     "@tailwindcss/vite": "4.1.18",
     "react": "19.2.3",

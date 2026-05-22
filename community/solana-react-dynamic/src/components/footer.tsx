@@ -27,8 +27,8 @@ export default function Footer({
             <DynamicLogo width={75} height={15} className="text-[#030303]" />
           </div>
           <ul className="flex gap-4">
-            {bottomLinks.map((link, linkIdx) => (
-              <li key={linkIdx}>
+            {bottomLinks.map((link) => (
+              <li key={link.url}>
                 <a
                   href={link.url}
                   className="hover:text-[#030303] transition-colors duration-200"
