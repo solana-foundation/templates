@@ -138,6 +138,22 @@
         "usecase": "Mobile"
       },
       {
+        "description": "A native Android template for building a Solana mobile app with Kotlin and Jetpack Compose.",
+        "id": "gh:solana-foundation/templates/mobile/kotlin-compose",
+        "image": "mobile/kotlin-compose/og-image.png",
+        "keywords": [
+          "android",
+          "clientlib-ktx",
+          "jetpack-compose",
+          "kotlin",
+          "mobile-wallet-adapter"
+        ],
+        "name": "kotlin-compose",
+        "path": "mobile/kotlin-compose",
+        "displayName": "Kotlin Compose Mobile example",
+        "usecase": "Mobile"
+      },
+      {
         "description": "A template for building a Solana mobile app with Expo and React Native.",
         "id": "gh:solana-foundation/templates/mobile/web3js-expo",
         "image": "mobile/web3js-expo/og-image.png",

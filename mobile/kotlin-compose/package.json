@@ -1,0 +1,29 @@
+{
+  "create-solana-dapp": {
+    "instructions": [
+      "Open this project in Android Studio, or build it from the command line:",
+      "+./gradlew build"
+    ],
+    "versions": {
+      "adb": "33.0.0"
+    }
+  },
+  "description": "A native Android template for building a Solana mobile app with Kotlin and Jetpack Compose.",
+  "displayName": "Kotlin Compose Mobile example",
+  "keywords": [
+    "android",
+    "clientlib-ktx",
+    "jetpack-compose",
+    "kotlin",
+    "mobile-wallet-adapter"
+  ],
+  "name": "kotlin-compose",
+  "private": true,
+  "scripts": {
+    "build": "./gradlew build",
+    "ci": "npm run build",
+    "test": "./gradlew test"
+  },
+  "usecase": "Mobile",
+  "version": "1.0.0"
+}
