@@ -42,7 +42,7 @@
     "next": "16.2.6",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
-    "ws": "^8.18.3"
+    "ws": "^8.20.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",

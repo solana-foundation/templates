@@ -36,7 +36,7 @@
     "next": "16.2.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "ws": "^8.18.3"
+    "ws": "^8.20.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
