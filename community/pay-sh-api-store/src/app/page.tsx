@@ -23,7 +23,7 @@ const endpoints = [
     name: 'Usage report',
     path: '/api/report',
     price: '$0.02',
-    description: 'A metered API report with usage totals, revenue, latency, and gateway health.',
+    description: 'A metered API report with usage totals, paid requests, revenue, and p95 latency.',
     method: 'GET',
     status: 'Metered',
     command: 'PAY_API_URL=http://localhost:3000 pay --sandbox curl http://127.0.0.1:1402/api/report',
