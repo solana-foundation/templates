@@ -1,0 +1,41 @@
+name: pay-sh-api-store
+subdomain: pay-sh-api-store
+title: 'Pay.sh API Store'
+description: 'Sandbox paid API endpoints backed by a Next.js App Router service.'
+category: data
+version: v1
+routing:
+  type: proxy
+  url: http://localhost:3000/
+operator:
+  currencies:
+    usd: ['USDC', 'USDT']
+  network: localnet
+  fee_payer: true
+endpoints:
+  - method: GET
+    path: 'api/insights'
+    resource: 'insights'
+    description: 'Return a compact paid API insight brief.'
+    metering:
+      dimensions:
+        - direction: usage
+          unit: requests
+          scale: 1
+          tiers:
+            - price_usd: 0.01
+  - method: GET
+    path: 'api/report'
+    resource: 'report'
+    description: 'Return a paid usage and revenue report.'
+    metering:
+      dimensions:
+        - direction: usage
+          unit: requests
+          scale: 1
+          tiers:
+            - price_usd: 0.02
+  - method: GET
+    path: 'api/health'
+    resource: 'health'
+    description: 'Free health check exposed through the Pay.sh gateway.'

@@ -419,6 +419,25 @@
         "usecase": "Payments"
       },
       {
+        "description": "Next.js paid API storefront using Pay.sh sandbox gateways",
+        "id": "gh:solana-foundation/templates/community/pay-sh-api-store",
+        "image": "community/pay-sh-api-store/og-image.png",
+        "keywords": [
+          "pay.sh",
+          "pay",
+          "http-402",
+          "payments",
+          "api",
+          "nextjs",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "pay-sh-api-store",
+        "path": "community/pay-sh-api-store",
+        "displayName": "Pay.sh API Store",
+        "usecase": "Payments"
+      },
+      {
         "description": "Vite + vanilla JavaScript template for integrating Phantom's embedded user wallets on Solana",
         "id": "gh:solana-foundation/templates/community/phantom-embedded-js",
         "image": "community/phantom-embedded-js/og-image.png",

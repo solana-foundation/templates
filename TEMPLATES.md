@@ -198,6 +198,14 @@ Templates maintained by the Solana community
 
 `x402` `moneymq` `payments` `micropayments` `solana` `api-monetization` `kora` `facilitator` `typescript`
 
+### [pay-sh-api-store](community/pay-sh-api-store)
+
+`gh:solana-foundation/templates/community/pay-sh-api-store`
+
+> Next.js paid API storefront using Pay.sh sandbox gateways
+
+`pay.sh` `pay` `http-402` `payments` `api` `nextjs` `tailwind` `typescript`
+
 ### [phantom-embedded-js](community/phantom-embedded-js)
 
 `gh:solana-foundation/templates/community/phantom-embedded-js`
