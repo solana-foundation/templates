@@ -36,6 +36,21 @@
         "path": "kit/nextjs-anchor"
       },
       {
+        "description": "Pinocchio Counter Program",
+        "id": "gh:solana-foundation/templates/kit/pinocchio-counter",
+        "image": "kit/pinocchio-counter/og-image.png",
+        "keywords": [
+          "pinocchio",
+          "counter",
+          "native",
+          "solana-program"
+        ],
+        "name": "pinocchio-counter",
+        "path": "kit/pinocchio-counter",
+        "displayName": "Pinocchio Counter",
+        "usecase": "Program Development"
+      },
+      {
         "description": "React + Vite, Tailwind, @solana/react-hooks",
         "id": "gh:solana-foundation/templates/kit/react-vite",
         "image": "kit/react-vite/og-image.png",
@@ -86,6 +101,23 @@
         "name": "kit-expo-minimal",
         "path": "mobile/kit-expo-minimal",
         "displayName": "Minimal Mobile Kit Expo example",
+        "usecase": "Mobile"
+      },
+      {
+        "description": "A Solana mobile app with Expo, Privy auth, Solana Kit, and Uniwind.",
+        "id": "gh:solana-foundation/templates/mobile/kit-expo-privy",
+        "image": "mobile/kit-expo-privy/og-image.png",
+        "keywords": [
+          "expo",
+          "privy",
+          "react-native",
+          "solana-kit",
+          "tailwind",
+          "uniwind"
+        ],
+        "name": "kit-expo-privy",
+        "path": "mobile/kit-expo-privy",
+        "displayName": "Privy Mobile Kit Expo example",
         "usecase": "Mobile"
       },
       {
@@ -613,28 +645,6 @@
         "path": "community/zk-compression-airdrop",
         "displayName": "ZK Compression Airdrop",
         "usecase": "Airdrop"
-      }
-    ]
-  },
-  {
-    "description": "Pinocchio-based program templates",
-    "name": "Pinocchio",
-    "path": "pinocchio",
-    "templates": [
-      {
-        "description": "Pinocchio Counter Program",
-        "id": "gh:solana-foundation/templates/pinocchio/pinocchio-counter",
-        "image": "pinocchio/pinocchio-counter/og-image.png",
-        "keywords": [
-          "pinocchio",
-          "counter",
-          "native",
-          "solana-program"
-        ],
-        "name": "pinocchio-counter",
-        "path": "pinocchio/pinocchio-counter",
-        "displayName": "Pinocchio Counter",
-        "usecase": "Program Development"
       }
     ]
   }

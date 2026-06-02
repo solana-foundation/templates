@@ -8,6 +8,7 @@ pnpm-lock.yaml
 # Generated files
 templates.json
 TEMPLATES.md
+uniwind-types.d.ts
 
 # Ignore any dist, tmp, or node_modules directories
 kit/**/.env

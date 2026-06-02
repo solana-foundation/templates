@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "scheme": "kit-expo-privy",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "web": {
+      "output": "static"
+    },
+    "name": "kit-expo-privy",
+    "slug": "kit-expo-privy",
+    "android": {
+      "package": "com.anonymous.kit_expo_privy"
+    },
+    "plugins": ["expo-router", "expo-secure-store", "expo-web-browser"]
+  }
+}
