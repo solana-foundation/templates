@@ -1,6 +1,6 @@
 'use client'
 
-import { Check, Copy } from 'lucide-react'
+import { Check, Copy, TriangleAlert } from 'lucide-react'
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -11,18 +11,30 @@ type CopyCommandButtonProps = {
 }
 
 export function CopyCommandButton({ command, label = 'Copy command' }: CopyCommandButtonProps) {
-  const [copied, setCopied] = useState(false)
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle')
 
   async function copyCommand() {
-    await navigator.clipboard.writeText(command)
-    setCopied(true)
-    window.setTimeout(() => setCopied(false), 1600)
+    try {
+      await navigator.clipboard.writeText(command)
+      setCopyState('copied')
+    } catch {
+      setCopyState('failed')
+    }
+
+    window.setTimeout(() => setCopyState('idle'), 1600)
   }
+
+  const isCopied = copyState === 'copied'
+  const isFailed = copyState === 'failed'
 
   return (
     <Button type="button" variant="outline" size="sm" onClick={copyCommand} aria-label={label}>
-      {copied ? <Check className="size-3.5" aria-hidden="true" /> : <Copy className="size-3.5" aria-hidden="true" />}
-      {copied ? 'Copied' : 'Copy'}
+      {isCopied ? <Check className="size-3.5" aria-hidden="true" /> : null}
+      {isFailed ? <TriangleAlert className="size-3.5" aria-hidden="true" /> : null}
+      {!isCopied && !isFailed ? <Copy className="size-3.5" aria-hidden="true" /> : null}
+      {isCopied ? 'Copied' : null}
+      {isFailed ? 'Failed' : null}
+      {!isCopied && !isFailed ? 'Copy' : null}
     </Button>
   )
 }
