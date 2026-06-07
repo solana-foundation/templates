@@ -113,7 +113,7 @@ export default function Home() {
                 <p className="text-sm leading-relaxed text-foreground/40">
                   The vault is an{" "}
                   <a
-                    href="https://www.anchor-lang.com/docs/introduction"
+                    href="https://www.anchor-lang.com/docs/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="underline underline-offset-2"
@@ -134,7 +134,7 @@ export default function Home() {
                     <span aria-hidden="true">&rarr;</span>
                   </a>
                   <a
-                    href="https://www.anchor-lang.com/docs/introduction"
+                    href="https://www.anchor-lang.com/docs/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-sm font-medium text-foreground/70 underline underline-offset-4 transition-colors hover:text-foreground"

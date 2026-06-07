@@ -48,7 +48,7 @@ export default function App() {
               <div>
                 <a
                   className="font-medium underline underline-offset-2"
-                  href="https://www.anchor-lang.com/docs/introduction"
+                  href="https://www.anchor-lang.com/docs/"
                   target="_blank"
                   rel="noreferrer"
                 >

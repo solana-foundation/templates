@@ -1,12 +1,6 @@
 "use client";
 import { useWalletConnection } from "@solana/react-hooks";
 
-export default function Home() {
-  const { connectors, connect, disconnect, wallet, status } =
-    useWalletConnection();
-
-  const address = wallet?.account.address.toString();
-
   return (
     <div className="relative min-h-screen overflow-x-clip bg-bg1 text-foreground">
       <main className="relative z-10 mx-auto flex min-h-screen max-w-4xl flex-col gap-10 border-x border-border-low px-6 py-16">
@@ -49,7 +43,7 @@ export default function Home() {
               <div>
                 <a
                   className="font-medium underline underline-offset-2"
-                  href="https://www.anchor-lang.com/docs/introduction"
+                  href="https://www.anchor-lang.com/docs/"
                   target="_blank"
                   rel="noreferrer"
                 >
