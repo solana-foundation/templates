@@ -342,6 +342,28 @@
         "usecase": "DeFi"
       },
       {
+        "description": "Create an MPC-controlled Solana account with an Ika ED25519 dWallet, then sign and broadcast a real devnet transaction. React + Vite + Tailwind + shadcn/ui.",
+        "id": "gh:solana-foundation/templates/community/ika-template",
+        "image": "community/ika-template/og-image.png",
+        "keywords": [
+          "solana",
+          "ika",
+          "dwallet",
+          "mpc",
+          "2pc-mpc",
+          "ed25519",
+          "threshold-signature",
+          "vite",
+          "react",
+          "typescript",
+          "tailwind"
+        ],
+        "name": "ika-template",
+        "path": "community/ika-template",
+        "displayName": "Ika dWallet (MPC Solana account)",
+        "usecase": "Wallet"
+      },
+      {
         "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit",
         "id": "gh:solana-foundation/templates/community/kit-node-solanax402",
         "image": "community/kit-node-solanax402/og-image.png",

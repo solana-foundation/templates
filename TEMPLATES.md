@@ -166,6 +166,14 @@ Templates maintained by the Solana community
 
 `drift` `defi` `perps` `nextjs` `tailwind` `typescript` `solana` `wallet-adapter`
 
+### [ika-template](community/ika-template)
+
+`gh:solana-foundation/templates/community/ika-template`
+
+> Create an MPC-controlled Solana account with an Ika ED25519 dWallet, then sign and broadcast a real devnet transaction. React + Vite + Tailwind + shadcn/ui.
+
+`solana` `ika` `dwallet` `mpc` `2pc-mpc` `ed25519` `threshold-signature` `vite` `react` `typescript` `tailwind`
+
 ### [kit-node-solanax402](community/kit-node-solanax402)
 
 `gh:solana-foundation/templates/community/kit-node-solanax402`
