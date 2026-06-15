@@ -17,14 +17,12 @@
   "private": true,
   "create-solana-dapp": {
     "instructions": [
-      "Install dependencies:",
-      "+{pm} install",
       "Confirm the Pay.sh CLI is installed:",
       "pay --help",
       "Start the Next.js upstream API:",
       "+{pm} dev",
       "In another terminal, start the Pay.sh sandbox gateway:",
-      "pay --sandbox server start pay-provider.yml --bind 127.0.0.1:1402 --debugger",
+      "+{pm} gateway",
       "Call a paid endpoint through Pay.sh:",
       "PAY_API_URL=http://localhost:3000 pay --sandbox curl http://127.0.0.1:1402/api/insights"
     ],
@@ -40,6 +38,7 @@
   },
   "scripts": {
     "dev": "next dev",
+    "gateway": "pay --sandbox server start pay-provider.yml --bind 127.0.0.1:1402 --debugger",
     "build": "next build",
     "ci": "npm run build && npm run lint && npm run format:check",
     "format": "prettier --write .",

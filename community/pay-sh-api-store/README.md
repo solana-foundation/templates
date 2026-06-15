@@ -50,8 +50,10 @@ pnpm dev
 In another terminal, start the Pay.sh sandbox gateway:
 
 ```bash
-pay --sandbox server start pay-provider.yml --bind 127.0.0.1:1402 --debugger
+pnpm gateway
 ```
+
+This runs `pay --sandbox server start pay-provider.yml --bind 127.0.0.1:1402 --debugger` under the hood.
 
 Call a free endpoint through the gateway:
 
