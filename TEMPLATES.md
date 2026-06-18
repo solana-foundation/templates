@@ -18,6 +18,14 @@ Kit Templates (using @solana/kit)
 
 `anchor` `kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
 
+### [nextjs-subscriptions](kit/nextjs-subscriptions)
+
+`gh:solana-foundation/templates/kit/nextjs-subscriptions`
+
+> Next.js, Tailwind, @solana/kit, Solana subscriptions program
+
+`kit` `nextjs` `react` `solana-kit` `subscriptions` `recurring-payments` `token-delegation` `tailwind` `typescript`
+
 ### [pinocchio-counter](kit/pinocchio-counter)
 
 `gh:solana-foundation/templates/kit/pinocchio-counter`

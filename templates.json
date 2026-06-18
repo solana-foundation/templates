@@ -36,6 +36,24 @@
         "path": "kit/nextjs-anchor"
       },
       {
+        "description": "Next.js, Tailwind, @solana/kit, Solana subscriptions program",
+        "id": "gh:solana-foundation/templates/kit/nextjs-subscriptions",
+        "image": "kit/nextjs-subscriptions/og-image.png",
+        "keywords": [
+          "kit",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "subscriptions",
+          "recurring-payments",
+          "token-delegation",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "nextjs-subscriptions",
+        "path": "kit/nextjs-subscriptions"
+      },
+      {
         "description": "Pinocchio Counter Program",
         "id": "gh:solana-foundation/templates/kit/pinocchio-counter",
         "image": "kit/pinocchio-counter/og-image.png",
