@@ -1245,18 +1245,12 @@ importers:
 
   kit/nextjs-subscriptions:
     dependencies:
-      '@solana-program/system':
-        specifier: ^0.12.2
-        version: 0.12.2(@solana/kit@6.9.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))
       '@solana-program/token':
         specifier: ^0.13.0
         version: 0.13.0(@solana/kit@6.9.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))
       '@solana/kit':
         specifier: 6.9.0
         version: 6.9.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@solana/kit-client-rpc':
-        specifier: ^0.11.1
-        version: 0.11.1(@solana/kit@6.9.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))
       '@solana/kit-plugin-rpc':
         specifier: ^0.11.1
         version: 0.11.1(@solana/kit@6.9.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))
@@ -6719,11 +6713,6 @@ packages:
       typescript:
         optional: true
 
-  '@solana/kit-client-rpc@0.11.1':
-    resolution: {integrity: sha512-pk2hwyxJL2b4Qy9sqBK9iTFz6laKn/VLOLaEJlLyk6wUSfJIxlxSDLTAdSYusVBWw3q+qYc0j7vNqbwNYil4Ew==}
-    peerDependencies:
-      '@solana/kit': ^6.8.0
-
   '@solana/kit-client-rpc@0.7.0':
     resolution: {integrity: sha512-Lg0DmxQw1nI5A9HAgtF1mZVMTrRDDxWOHABq4P/UA6/QHs62TEuYNaI5IvfbnsoWp4/Bswa0Jmd63day6dattg==}
     peerDependencies:
@@ -6738,11 +6727,6 @@ packages:
     resolution: {integrity: sha512-bXSdE/dy5lizE/7Qop1+zHJJFtu8eooAXXyJfmgpGIqJI97+9NJd+3LGgCA0HDpJHHXhqVcot1X5HtHsqDUvNg==}
     peerDependencies:
       '@solana/kit': ^6.3.0
-
-  '@solana/kit-plugin-payer@0.10.0':
-    resolution: {integrity: sha512-IzGl44lM865TyQZWBdtOreg1xx4aqbgpJlsDn1HdtS4I6gk6sETfYGtI/YLeuSsOEz5WW7ukVcI9TgLSGEAxnQ==}
-    peerDependencies:
-      '@solana/kit': ^6.8.0
 
   '@solana/kit-plugin-payer@0.6.0':
     resolution: {integrity: sha512-dtPpzhGtv0RaFGJWtXM/LYrDrM9a2AJK7X1/0rXMmFNAFxQE9M8H7TO0bczaFpZ6HFHYcp3XjOYQh/aBakaE4g==}
@@ -19013,7 +18997,6 @@ snapshots:
       - graphql
       - supports-color
       - utf-8-validate
-    optional: true
 
   '@expo/cli@54.0.22(bufferutil@4.0.9)(expo-router@6.0.22)(expo@54.0.32)(graphql@16.12.0)(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)':
     dependencies:
@@ -19512,7 +19495,6 @@ snapshots:
       expo-font: 14.0.11(expo@54.0.32)(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)
       react: 19.1.0
       react-native: 0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10)
-    optional: true
 
   '@expo/vector-icons@15.0.3(expo-font@14.0.11(expo@54.0.32)(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0))(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)':
     dependencies:
@@ -25674,13 +25656,6 @@ snapshots:
     transitivePeerDependencies:
       - fastestsmallesttextencoderdecoder
 
-  '@solana/kit-client-rpc@0.11.1(@solana/kit@6.9.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))':
-    dependencies:
-      '@solana/kit': 6.9.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@solana/kit-plugin-instruction-plan': 0.10.0(@solana/kit@6.9.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))
-      '@solana/kit-plugin-payer': 0.10.0(@solana/kit@6.9.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))
-      '@solana/kit-plugin-rpc': 0.11.1(@solana/kit@6.9.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))
-
   '@solana/kit-client-rpc@0.7.0(@solana/kit@6.8.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))':
     dependencies:
       '@solana/kit': 6.8.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)
@@ -25695,10 +25670,6 @@ snapshots:
   '@solana/kit-plugin-instruction-plan@0.7.0(@solana/kit@6.8.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))':
     dependencies:
       '@solana/kit': 6.8.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)
-
-  '@solana/kit-plugin-payer@0.10.0(@solana/kit@6.9.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))':
-    dependencies:
-      '@solana/kit': 6.9.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)
 
   '@solana/kit-plugin-payer@0.6.0(@solana/kit@6.8.0(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))':
     dependencies:
@@ -34339,7 +34310,6 @@ snapshots:
       react-native: 0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - supports-color
-    optional: true
 
   expo-asset@12.0.12(expo@54.0.32)(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0):
     dependencies:
@@ -34438,7 +34408,6 @@ snapshots:
       react-native: 0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - supports-color
-    optional: true
 
   expo-constants@18.0.13(expo@54.0.32)(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)):
     dependencies:
@@ -34467,7 +34436,7 @@ snapshots:
   expo-crypto@15.0.8(expo@54.0.32):
     dependencies:
       base64-js: 1.5.1
-      expo: 54.0.32(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(bufferutil@4.0.9)(expo-router@6.0.22)(graphql@16.12.0)(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.0.14)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)(utf-8-validate@5.0.10)
+      expo: 54.0.32(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(bufferutil@4.0.9)(expo-router@6.0.22)(graphql@16.12.0)(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)(utf-8-validate@5.0.10)
 
   expo-file-system@19.0.21(expo@54.0.31)(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10)):
     dependencies:
@@ -34483,7 +34452,6 @@ snapshots:
     dependencies:
       expo: 54.0.32(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(bufferutil@4.0.9)(expo-router@6.0.22)(graphql@16.12.0)(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)(utf-8-validate@5.0.10)
       react-native: 0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10)
-    optional: true
 
   expo-file-system@19.0.21(expo@54.0.32)(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)):
     dependencies:
@@ -34516,7 +34484,6 @@ snapshots:
       fontfaceobserver: 2.3.0
       react: 19.1.0
       react-native: 0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10)
-    optional: true
 
   expo-font@14.0.11(expo@54.0.32)(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0):
     dependencies:
@@ -35037,7 +35004,6 @@ snapshots:
       - graphql
       - supports-color
       - utf-8-validate
-    optional: true
 
   expo@54.0.32(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(bufferutil@4.0.9)(expo-router@6.0.22)(graphql@16.12.0)(react-native@0.81.5(@babel/core@7.28.5)(@react-native/metro-config@0.81.0(@babel/core@7.28.5)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(utf-8-validate@5.0.10):
     dependencies:

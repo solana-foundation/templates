@@ -20,8 +20,6 @@ function subscribe(callback: () => void) {
 const getSnapshot = () => localStorage.getItem(STORAGE_KEY);
 const getServerSnapshot = () => null;
 
-// Resolves the merchant from localStorage (set by the demo button) and falls
-// back to NEXT_PUBLIC_MERCHANT_ADDRESS for real deployments.
 export function useMerchant() {
   const stored = useSyncExternalStore(
     subscribe,
@@ -30,6 +28,8 @@ export function useMerchant() {
   );
 
   const merchant = useMemo<Address | null>(() => {
+    if (MERCHANT_ADDRESS) return MERCHANT_ADDRESS;
+
     if (stored) {
       try {
         return address(stored);

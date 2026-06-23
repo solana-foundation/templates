@@ -64,7 +64,7 @@ export function SubscribeCard({
     );
 
   const handleSubscribe = async () => {
-    if (!client || !me) return;
+    if (!client || !me || authority === undefined) return;
     setBusy(true);
     try {
       if (!authority?.initialized) {
@@ -86,7 +86,6 @@ export function SubscribeCard({
         subscriber: me,
       });
       setOptimisticActive(true);
-      revalidate();
       toast.success("Subscribed", {
         description: (
           <a
@@ -108,6 +107,7 @@ export function SubscribeCard({
         toast.error(parseTransactionError(err));
       }
     } finally {
+      revalidate();
       setBusy(false);
     }
   };

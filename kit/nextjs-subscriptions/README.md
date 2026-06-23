@@ -2,7 +2,7 @@
 
 Subscriber-facing "Subscribe with Solana" starter, built with `@solana/kit` and the [Subscriptions program](https://github.com/solana-foundation/subscriptions).
 
-This is the half every app integrating subscriptions has to build itself: let **your users** subscribe to **your** plans and manage their subscriptions. Plan creation and payment collection are merchant/backend concerns (kept out of the UI); a one-click **Create demo plan** button seeds one locally so you can try the flow.
+This is the half every app integrating subscriptions has to build itself: let your users subscribe to your plans and manage their subscriptions. Plan creation and payment collection are merchant/backend concerns (kept out of the UI); a one-click "Create demo plan" button seeds one locally so you can try the flow.
 
 ## Getting Started
 
