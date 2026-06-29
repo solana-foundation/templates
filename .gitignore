@@ -93,3 +93,6 @@ web3js/**/tmp
 
 # AI
 **/.claude/
+
+# templates health check output
+health-reports/

@@ -8,6 +8,8 @@
     "create-image": "tsx scripts/create-image.ts",
     "generate": "tsx scripts/generate.ts && automd",
     "format": "prettier --write .",
+    "health": "tsx scripts/health-check.ts",
+    "health:test": "tsx --test scripts/health/*.test.ts",
     "lint": "tsx scripts/lint.ts && prettier --check .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "update-deps": "pnpm -r update --latest",
