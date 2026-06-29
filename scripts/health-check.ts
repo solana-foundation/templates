@@ -16,7 +16,7 @@
  *   pnpm health --group community        # one group
  *   pnpm health --boot                   # also boot web dev servers
  *   pnpm health --no-build               # install + deps/audit only (fast)
- *   pnpm health --baseline health-reports/2026-06-20.json
+ *   pnpm health --baseline health-reports/2026-06-20T09-00-00.json
  *   pnpm health --out health-reports --concurrency 4
  *
  * Read-only on the repo. Never touches mainnet, real funds, or real keys.
@@ -60,6 +60,13 @@ const parseArgs = (argv: string[]): Cli => {
     baseline: null,
     keep: 10,
   }
+  // Keep the default when a numeric flag is missing its value or gets a non-number
+  // (e.g. another flag). A NaN concurrency would otherwise spin up zero workers and
+  // produce an empty, falsely-successful report.
+  const numArg = (raw: string | undefined, fallback: number, min: number): number => {
+    const n = Number(raw)
+    return Number.isFinite(n) && n >= min ? Math.floor(n) : fallback
+  }
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
     const next = () => argv[++i]
@@ -73,9 +80,9 @@ const parseArgs = (argv: string[]): Cli => {
     else if (a === '--cargo-test') cli.cargoTest = true
     else if (a === '--pm') cli.pm = next()
     else if (a === '--out') cli.out = next()
-    else if (a === '--concurrency') cli.concurrency = Number(next())
+    else if (a === '--concurrency') cli.concurrency = numArg(next(), 3, 1)
     else if (a === '--baseline') cli.baseline = next()
-    else if (a === '--keep') cli.keep = Number(next())
+    else if (a === '--keep') cli.keep = numArg(next(), 10, 0)
     else if (a === '--help' || a === '-h') {
       printHelp()
       process.exit(0)
@@ -139,22 +146,23 @@ const pool = async <T, R>(items: T[], limit: number, fn: (item: T, index: number
   return results
 }
 
-/** Keep only the n most recent dated reports (json + md pairs) in the output dir. */
+/** Keep only the n most recent timestamped reports (json + md pairs) in the output dir. */
 const pruneReports = (outDir: string, keep: number): number => {
   if (keep <= 0 || !existsSync(outDir)) return 0
-  const dates = [
+  const stampRe = /^(\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2})\.(json|md)$/
+  const stamps = [
     ...new Set(
       readdirSync(outDir)
-        .filter((f) => /^\d{4}-\d{2}-\d{2}\.(json|md)$/.test(f))
-        .map((f) => f.slice(0, 10)),
+        .map((f) => f.match(stampRe)?.[1])
+        .filter((s): s is string => Boolean(s)),
     ),
   ]
     .sort()
     .reverse()
   let removed = 0
-  for (const date of dates.slice(keep)) {
+  for (const stamp of stamps.slice(keep)) {
     for (const ext of ['json', 'md']) {
-      const p = join(outDir, `${date}.${ext}`)
+      const p = join(outDir, `${stamp}.${ext}`)
       if (existsSync(p)) {
         rmSync(p, { force: true })
         removed++
@@ -245,19 +253,30 @@ const main = async () => {
     templates: reports,
   }
 
+  // Read the baseline BEFORE writing anything, so a baseline that points at today's report
+  // is not overwritten by the current run and then diffed against itself.
+  let diffMd = ''
+  if (cli.baseline) {
+    if (existsSync(cli.baseline)) {
+      const baseline = JSON.parse(readFileSync(cli.baseline, 'utf-8')) as HealthReport
+      diffMd = '\n' + diffToMarkdown(diffReports(report, baseline))
+    } else {
+      console.error(`Baseline not found, skipping diff: ${cli.baseline}`)
+    }
+  }
+
   if (!existsSync(cli.out)) mkdirSync(cli.out, { recursive: true })
-  const stamp = report.generatedAt.slice(0, 10)
+  // Full timestamp (not just the date) so multiple runs on the same day don't overwrite.
+  const stamp = report.generatedAt.slice(0, 19).replace(/:/g, '-')
   const jsonPath = join(cli.out, `${stamp}.json`)
   const mdPath = join(cli.out, `${stamp}.md`)
 
-  writeJsonFile(jsonPath, report)
-
-  let md = toMarkdown(report)
-  if (cli.baseline && existsSync(cli.baseline)) {
-    const baseline = JSON.parse(readFileSync(cli.baseline, 'utf-8')) as HealthReport
-    md += '\n' + diffToMarkdown(diffReports(report, baseline))
+  const jsonWrite = writeJsonFile(jsonPath, report)
+  const mdWrite = writeFile(mdPath, toMarkdown(report) + diffMd)
+  if (!jsonWrite.ok || !mdWrite.ok) {
+    console.error(`Failed to write report to ${cli.out}: ${!jsonWrite.ok ? jsonWrite.error : mdWrite.error}`)
+    process.exit(1)
   }
-  writeFile(mdPath, md)
 
   // Temp build artifacts are already gone (each template's copy is removed as it finishes);
   // here we just trim the report history so dated files don't accumulate forever.

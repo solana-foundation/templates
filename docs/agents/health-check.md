@@ -22,10 +22,10 @@ pnpm health --group community     # one repokit group (kit|web3js|mobile|communi
 pnpm health --boot                # also boot web templates and confirm the dev server responds
 pnpm health --no-build            # install + deps/audit only (fast inventory pass)
 pnpm health --concurrency 4       # how many templates to check in parallel (default 3)
-pnpm health --baseline health-reports/2026-06-20.json   # diff against a previous run
+pnpm health --baseline health-reports/2026-06-20T09-00-00.json   # diff against a previous run
 ```
 
-Output lands in `health-reports/<date>.json` and `health-reports/<date>.md` (gitignored). The JSON is the source of truth; the Markdown is rendered from it. Exit code is non-zero when any template **fails**, so CI can gate on it.
+Output lands in `health-reports/<timestamp>.json` and `health-reports/<timestamp>.md` (gitignored), one pair per run. The JSON is the source of truth; the Markdown is rendered from it. Exit code is non-zero when any template **fails**, so CI can gate on it.
 
 The script is read-only on the repo, copies each template to a temp dir before installing (never mutates the working tree), and never touches mainnet, real funds, or real keys.
 

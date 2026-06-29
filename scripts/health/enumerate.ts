@@ -5,7 +5,7 @@
  */
 
 import { existsSync, readFileSync, readdirSync, statSync } from 'fs'
-import { join } from 'path'
+import { dirname, join } from 'path'
 import type { TemplateKind, TemplateRef } from './types.js'
 
 type AnyPkg = {
@@ -57,28 +57,63 @@ const classify = (dir: string, pkg: AnyPkg | null): TemplateKind => {
 
 /**
  * Locate the buildable Cargo manifest and decide whether it's an on-chain program.
- * A scaffolder like x402-solana-rust (only a Cargo.toml.template) has no manifest at
- * rest and correctly gets no cargo check.
+ * Covers the common layouts: a root Cargo.toml, a pinocchio-style `program/`, and an
+ * Anchor-style `anchor/` workspace. A scaffolder like x402-solana-rust (only a
+ * Cargo.toml.template) has no manifest at rest and correctly gets no cargo check.
  */
 const detectCargo = (dir: string): { cargoManifestDir: string | null; isProgram: boolean } => {
-  const rootManifest = join(dir, 'Cargo.toml')
-  const programManifest = join(dir, 'program', 'Cargo.toml')
-  const cargoManifestDir = existsSync(rootManifest) ? dir : existsSync(programManifest) ? join(dir, 'program') : null
-  if (!cargoManifestDir) return { cargoManifestDir: null, isProgram: false }
+  const manifest = [
+    join(dir, 'Cargo.toml'),
+    join(dir, 'program', 'Cargo.toml'),
+    join(dir, 'anchor', 'Cargo.toml'),
+  ].find((f) => existsSync(f))
+  if (!manifest) return { cargoManifestDir: null, isProgram: false }
+  const cargoManifestDir = dirname(manifest)
 
-  const blob = [rootManifest, programManifest]
+  // Scan the chosen manifest plus any member program crates for on-chain markers.
+  const blob = [manifest, ...memberManifests(cargoManifestDir)]
     .filter((f) => existsSync(f))
     .map((f) => readFileSync(f, 'utf-8').toLowerCase())
     .join('\n')
-  // cdylib / pinocchio / anchor / solana-program / a `program` workspace member all mean SBF.
+  // A manifest under anchor/ or program/, or any program marker, means an SBF program.
   const isProgram =
+    /[/\\](anchor|program)$/.test(cargoManifestDir) ||
     /\bcdylib\b|\bpinocchio\b|\banchor-lang\b|\bsolana-program\b|build-sbf/.test(blob) ||
-    /members\s*=\s*\[[^\]]*["']program/.test(blob)
+    /members\s*=\s*\[[^\]]*["'](program|programs)/.test(blob)
   return { cargoManifestDir, isProgram }
 }
 
-/** Templates that obviously can't run end-to-end without a key/service. */
-const SECRET_HINTS = ['supabase', 'privy', 'credential', 'api key', 'api_key', 'apikey', 'secret', 'token', 'rpc url']
+/** Cargo.toml of immediate `program/` and `programs/<name>/` members under a workspace dir. */
+const memberManifests = (workspaceDir: string): string[] => {
+  const out: string[] = [join(workspaceDir, 'program', 'Cargo.toml')]
+  const programsDir = join(workspaceDir, 'programs')
+  if (existsSync(programsDir)) {
+    try {
+      for (const name of readdirSync(programsDir)) out.push(join(programsDir, name, 'Cargo.toml'))
+    } catch {
+      /* not readable */
+    }
+  }
+  return out
+}
+
+/**
+ * Hints that a template needs real credentials/services to run. Kept reasonably specific:
+ * we avoid generic words like "token" that legitimately appear in non-credential .env keys
+ * (e.g. a token mint address), because a false positive here would wrongly turn a real
+ * build failure into a "skip".
+ */
+const SECRET_HINTS = [
+  'supabase',
+  'privy',
+  'credential',
+  'api key',
+  'api_key',
+  'apikey',
+  'secret',
+  'private key',
+  'private_key',
+]
 
 const detectSecrets = (dir: string, pkg: AnyPkg | null): { needs: boolean; reason?: string } => {
   // An .env.example with real-looking keys is the strongest signal.

@@ -69,7 +69,9 @@ const run = (command: string, args: string[], cwd: string, timeoutMs: number): P
 // Every scaffold copy this process creates lives under tmpdir()/health-*. We track the
 // active ones so a Ctrl-C can wipe them, and sweep orphans (from a previously killed run)
 // at startup — so the install/build artifacts never pile up across runs.
-const TEMP_PREFIX = 'health-'
+// Specific enough that the startup sweep won't touch unrelated `health-*` temp data
+// belonging to other tools on a shared CI runner or dev machine.
+const TEMP_PREFIX = 'sf-templates-health-'
 const activeTempDirs = new Set<string>()
 
 /** Copy a template into a fresh temp dir, dropping anything we'd rather install fresh. */
@@ -205,7 +207,7 @@ const buildResult = (phase: BuildResult['phase'], command: string, exec: Exec): 
 // ---------- dimension 2: dependency freshness ----------
 
 export const checkOutdated = async (workDir: string, pm: string): Promise<DepsResult> => {
-  if (pm !== 'npm') {
+  if (pm !== 'npm' && pm !== 'pnpm') {
     return {
       status: 'skip',
       available: false,
@@ -214,11 +216,13 @@ export const checkOutdated = async (workDir: string, pm: string): Promise<DepsRe
       minor: 0,
       patch: 0,
       outdated: [],
-      note: `outdated parsing only implemented for npm (ran with ${pm})`,
+      note: `dependency freshness supports npm and pnpm (ran with ${pm})`,
     }
   }
-  // `npm outdated` exits 1 when anything is outdated - that's not an error for us.
-  const r = await run('npm', ['outdated', '--json'], workDir, 120_000)
+  // Both exit non-zero when something is outdated - that's not an error for us. npm and pnpm
+  // emit a package-keyed JSON object with { current, latest }, so one parser handles both.
+  const args = pm === 'pnpm' ? ['outdated', '--format', 'json'] : ['outdated', '--json']
+  const r = await run(pm, args, workDir, 120_000)
   let parsed: Record<string, { current?: string; latest?: string }>
   try {
     parsed = JSON.parse(r.output || '{}')
@@ -231,7 +235,7 @@ export const checkOutdated = async (workDir: string, pm: string): Promise<DepsRe
       minor: 0,
       patch: 0,
       outdated: [],
-      note: 'could not parse npm outdated output',
+      note: `could not parse ${pm} outdated output`,
     }
   }
   const outdated: OutdatedDep[] = Object.entries(parsed)
@@ -254,7 +258,7 @@ export const checkOutdated = async (workDir: string, pm: string): Promise<DepsRe
 // ---------- dimension 2b: known vulnerabilities (snapshot, overlaps dependabot) ----------
 
 export const checkAudit = async (workDir: string, pm: string): Promise<AuditResult> => {
-  if (pm !== 'npm') {
+  if (pm !== 'npm' && pm !== 'pnpm') {
     return {
       status: 'skip',
       available: false,
@@ -263,10 +267,11 @@ export const checkAudit = async (workDir: string, pm: string): Promise<AuditResu
       moderate: 0,
       low: 0,
       info: 0,
-      note: `audit parsing only implemented for npm (ran with ${pm})`,
+      note: `audit supports npm and pnpm (ran with ${pm})`,
     }
   }
-  const r = await run('npm', ['audit', '--json'], workDir, 120_000)
+  // npm and pnpm both expose metadata.vulnerabilities in their --json audit output.
+  const r = await run(pm, ['audit', '--json'], workDir, 120_000)
   try {
     const j = JSON.parse(r.output || '{}') as { metadata?: { vulnerabilities?: Record<string, number> } }
     const v = j.metadata?.vulnerabilities ?? {}
@@ -286,7 +291,7 @@ export const checkAudit = async (workDir: string, pm: string): Promise<AuditResu
       moderate: 0,
       low: 0,
       info: 0,
-      note: 'could not parse npm audit output',
+      note: `could not parse ${pm} audit output`,
     }
   }
 }
@@ -337,10 +342,14 @@ export const checkBoot = async (workDir: string, ref: TemplateRef, opts: RunOpti
   const start = Date.now()
   const child = spawn(opts.packageManager, ['run', 'dev'], { cwd: workDir, env: { ...process.env, FORCE_COLOR: '0' } })
   let out = ''
+  let exited = false
   child.stdout.on('data', (b) => (out += b.toString()))
   child.stderr.on('data', (b) => (out += b.toString()))
+  child.on('exit', () => (exited = true))
 
-  const candidates = ref.kind === 'vite' ? [5173, 4321, 3000] : [3000, 3001]
+  // Match only the URL the dev server announces for itself. We never probe guessed ports,
+  // since an unrelated service already listening on 3000/5173 would otherwise read as a pass.
+  const urlRe = /https?:\/\/(?:localhost|127\.0\.0\.1):(\d+)/
   const deadline = Date.now() + 60_000
   const kill = () => {
     try {
@@ -352,25 +361,31 @@ export const checkBoot = async (workDir: string, ref: TemplateRef, opts: RunOpti
 
   try {
     while (Date.now() < deadline) {
-      // Prefer a URL the dev server actually printed.
-      const printed = out.match(/https?:\/\/localhost:(\d+)/)
-      const ports = printed ? [Number(printed[1]), ...candidates] : candidates
-      for (const port of ports) {
-        const url = `http://localhost:${port}`
+      if (exited) {
+        return {
+          status: 'fail',
+          available: true,
+          durationMs: Date.now() - start,
+          note: `dev server exited before responding\n${tail(out, 15)}`,
+        }
+      }
+      const printed = out.match(urlRe)
+      if (printed) {
+        const url = `http://localhost:${printed[1]}`
         const res = await tryFetch(url)
         if (res !== null) {
-          kill()
           return { status: 'pass', available: true, url, httpStatus: res, durationMs: Date.now() - start }
         }
       }
       await sleep(1500)
     }
-    kill()
     return {
       status: 'fail',
       available: true,
       durationMs: Date.now() - start,
-      note: `dev server did not respond within 60s\n${tail(out, 15)}`,
+      note: urlRe.test(out)
+        ? `dev server printed a URL but did not respond within 60s\n${tail(out, 15)}`
+        : `dev server did not print a localhost URL within 60s\n${tail(out, 15)}`,
     }
   } finally {
     kill()
