@@ -2,6 +2,14 @@
 
 Kit Templates (using @solana/kit)
 
+### [keychain-express](kit/keychain-express)
+
+`gh:solana-foundation/templates/kit/keychain-express`
+
+> Express signing API using @solana/keychain — one signer interface, 13 pluggable key backends (memory, KMS, MPC, custodial)
+
+`kit` `solana-kit` `keychain` `signers` `express` `kms` `mpc` `typescript`
+
 ### [nextjs](kit/nextjs)
 
 `gh:solana-foundation/templates/kit/nextjs`

@@ -5,6 +5,25 @@
     "path": "kit",
     "templates": [
       {
+        "description": "Express signing API using @solana/keychain — one signer interface, 13 pluggable key backends (memory, KMS, MPC, custodial)",
+        "id": "gh:solana-foundation/templates/kit/keychain-express",
+        "image": "kit/keychain-express/og-image.png",
+        "keywords": [
+          "kit",
+          "solana-kit",
+          "keychain",
+          "signers",
+          "express",
+          "kms",
+          "mpc",
+          "typescript"
+        ],
+        "name": "keychain-express",
+        "path": "kit/keychain-express",
+        "displayName": "Keychain Express API",
+        "usecase": "Auth"
+      },
+      {
         "description": "Next.js, Tailwind, @solana/react-hooks",
         "id": "gh:solana-foundation/templates/kit/nextjs",
         "image": "kit/nextjs/og-image.png",
