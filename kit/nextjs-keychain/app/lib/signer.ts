@@ -20,6 +20,7 @@ export function getSigner(backend?: string): Promise<SolanaSigner> {
   if (!signer) {
     signer = signerConfigFor(name).then(createKeychainSigner);
     signers.set(name, signer);
+    signer.catch(() => signers.delete(name));
   }
   return signer;
 }

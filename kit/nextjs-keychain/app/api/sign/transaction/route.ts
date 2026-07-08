@@ -29,11 +29,19 @@ export async function POST(request: Request) {
   } catch (error) {
     return Response.json({ error: String(error) }, { status: 400 });
   }
+  let transaction;
   try {
     const transactionBytes = getBase64Encoder().encode(wireTransaction);
-    const transaction = getTransactionDecoder().decode(
+    transaction = getTransactionDecoder().decode(
       transactionBytes
     ) as Transaction & TransactionWithinSizeLimit & TransactionWithLifetime;
+  } catch {
+    return Response.json(
+      { error: "Invalid base64 wire transaction" },
+      { status: 400 }
+    );
+  }
+  try {
     const [signatures] = await signer.signTransactions([transaction]);
     const signedTransaction = {
       ...transaction,
