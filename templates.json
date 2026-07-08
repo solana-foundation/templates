@@ -5,25 +5,6 @@
     "path": "kit",
     "templates": [
       {
-        "description": "Express signing API using @solana/keychain — one signer interface, 13 pluggable key backends (memory, KMS, MPC, custodial)",
-        "id": "gh:solana-foundation/templates/kit/keychain-express",
-        "image": "kit/keychain-express/og-image.png",
-        "keywords": [
-          "kit",
-          "solana-kit",
-          "keychain",
-          "signers",
-          "express",
-          "kms",
-          "mpc",
-          "typescript"
-        ],
-        "name": "keychain-express",
-        "path": "kit/keychain-express",
-        "displayName": "Keychain Express API",
-        "usecase": "Auth"
-      },
-      {
         "description": "Next.js, Tailwind, @solana/react-hooks",
         "id": "gh:solana-foundation/templates/kit/nextjs",
         "image": "kit/nextjs/og-image.png",
@@ -53,6 +34,27 @@
         ],
         "name": "nextjs-anchor",
         "path": "kit/nextjs-anchor"
+      },
+      {
+        "description": "Next.js, Tailwind, @solana/keychain — server-side signing with pluggable key backends (memory, KMS, MPC, custodial)",
+        "id": "gh:solana-foundation/templates/kit/nextjs-keychain",
+        "image": "kit/nextjs-keychain/og-image.png",
+        "keywords": [
+          "kit",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "keychain",
+          "signers",
+          "kms",
+          "mpc",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "nextjs-keychain",
+        "path": "kit/nextjs-keychain",
+        "displayName": "Next.js Keychain",
+        "usecase": "Starter"
       },
       {
         "description": "Next.js, Tailwind, @solana/kit, Solana subscriptions program",

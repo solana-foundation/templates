@@ -2,14 +2,6 @@
 
 Kit Templates (using @solana/kit)
 
-### [keychain-express](kit/keychain-express)
-
-`gh:solana-foundation/templates/kit/keychain-express`
-
-> Express signing API using @solana/keychain — one signer interface, 13 pluggable key backends (memory, KMS, MPC, custodial)
-
-`kit` `solana-kit` `keychain` `signers` `express` `kms` `mpc` `typescript`
-
 ### [nextjs](kit/nextjs)
 
 `gh:solana-foundation/templates/kit/nextjs`
@@ -25,6 +17,14 @@ Kit Templates (using @solana/kit)
 > Next.js, Tailwind, @solana/kit, Anchor vault program
 
 `anchor` `kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
+
+### [nextjs-keychain](kit/nextjs-keychain)
+
+`gh:solana-foundation/templates/kit/nextjs-keychain`
+
+> Next.js, Tailwind, @solana/keychain — server-side signing with pluggable key backends (memory, KMS, MPC, custodial)
+
+`kit` `nextjs` `react` `solana-kit` `keychain` `signers` `kms` `mpc` `tailwind` `typescript`
 
 ### [nextjs-subscriptions](kit/nextjs-subscriptions)
 
