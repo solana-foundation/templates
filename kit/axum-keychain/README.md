@@ -31,12 +31,12 @@ The routes only sign — they never submit transactions to the network. Broadcas
 
 ## Adding backends
 
-Copy `.env.example` to `.env.local` (or export the variables) and fill in the variables for a backend; every fully-configured backend appears in the registry and the demo UI's signer picker. The `memory` backend is always available.
+Copy `.env.example` to `.env.local` (or export the variables) and fill in the variables for any backend; every fully-configured backend appears in the registry and the demo UI's signer picker — no code changes. The `memory` backend is always available.
 
-This template compiles the `memory` and `vault` backends. `solana-keychain` also supports aws-kms, gcp-kms, turnkey, privy, fireblocks, dfns, para, cdp, crossmint, openfort, and utila — enable the matching Cargo feature and add a constructor arm in `src/signers.rs`:
+All `solana-keychain` backends are compiled in (the `all` feature). To slim the dependency tree and build time, replace `all` in `Cargo.toml` with just the features you use, e.g.:
 
 ```toml
-solana-keychain = { version = "1.4", default-features = false, features = ["memory", "vault", "privy", "sdk-v2"] }
+solana-keychain = { version = "1.4", default-features = false, features = ["memory", "vault", "sdk-v2"] }
 ```
 
 ## Local demo with Vault

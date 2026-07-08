@@ -21,7 +21,7 @@ async fn main() {
         Err(_) => 8080,
     };
 
-    let registry = Arc::new(signers::build());
+    let registry = Arc::new(signers::build().await);
     for (backend, entry) in registry.iter() {
         match entry {
             Ok(signer) => println!("signer {backend}: {}", signer.pubkey()),
