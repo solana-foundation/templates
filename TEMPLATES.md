@@ -2,6 +2,14 @@
 
 Kit Templates (using @solana/kit)
 
+### [axum-keychain](kit/axum-keychain)
+
+`gh:solana-foundation/templates/kit/axum-keychain`
+
+> Axum Rust signing API with a Next.js frontend using solana-keychain — one signer interface, pluggable key backends (memory, KMS, MPC, custodial)
+
+`kit` `axum` `rust` `nextjs` `solana-kit` `keychain` `signers` `tailwind` `typescript`
+
 ### [nextjs](kit/nextjs)
 
 `gh:solana-foundation/templates/kit/nextjs`

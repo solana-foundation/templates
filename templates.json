@@ -5,6 +5,26 @@
     "path": "kit",
     "templates": [
       {
+        "description": "Axum Rust signing API with a Next.js frontend using solana-keychain — one signer interface, pluggable key backends (memory, KMS, MPC, custodial)",
+        "id": "gh:solana-foundation/templates/kit/axum-keychain",
+        "image": "kit/axum-keychain/og-image.png",
+        "keywords": [
+          "kit",
+          "axum",
+          "rust",
+          "nextjs",
+          "solana-kit",
+          "keychain",
+          "signers",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "axum-keychain",
+        "path": "kit/axum-keychain",
+        "displayName": "Axum Keychain",
+        "usecase": "Starter"
+      },
+      {
         "description": "Next.js, Tailwind, @solana/react-hooks",
         "id": "gh:solana-foundation/templates/kit/nextjs",
         "image": "kit/nextjs/og-image.png",
