@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 type Health = {
   available: boolean;
@@ -15,6 +15,10 @@ type SignResult = {
   error?: string;
 };
 
+async function fetchHealth(): Promise<Health> {
+  return (await fetch("/api/health")).json();
+}
+
 export default function Home() {
   const [health, setHealth] = useState<Health | null>(null);
   const [message, setMessage] = useState("hello solana");
@@ -25,18 +29,24 @@ export default function Home() {
   );
   const [busy, setBusy] = useState<string | null>(null);
 
-  const loadHealth = useCallback(async () => {
+  useEffect(() => {
+    let cancelled = false;
+    fetchHealth().then((data) => {
+      if (!cancelled) setHealth(data);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function refreshHealth() {
     setBusy("health");
     try {
-      setHealth(await (await fetch("/api/health")).json());
+      setHealth(await fetchHealth());
     } finally {
       setBusy(null);
     }
-  }, []);
-
-  useEffect(() => {
-    void loadHealth();
-  }, [loadHealth]);
+  }
 
   async function signMessage() {
     setBusy("message");
@@ -110,7 +120,7 @@ export default function Home() {
               {health?.address ?? health?.error ?? "—"}
             </span>
             <button
-              onClick={() => void loadHealth()}
+              onClick={() => void refreshHealth()}
               disabled={busy !== null}
               className="inline-flex items-center gap-2 rounded-lg border border-border-low bg-card px-3 py-2 font-medium transition hover:-translate-y-0.5 hover:shadow-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
             >
