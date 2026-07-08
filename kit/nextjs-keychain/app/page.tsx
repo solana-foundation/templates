@@ -1,10 +1,18 @@
 "use client";
 import { useEffect, useState } from "react";
 
-type Health = {
-  available: boolean;
+import { address } from "@solana/kit";
+
+import {
+  buildDemoTransaction,
+  decodeSignedTransaction,
+  type DecodedSignedTransaction,
+} from "./lib/demo-transaction";
+
+type SignerInfo = {
   backend: string;
   address?: string;
+  available: boolean;
   error?: string;
 };
 
@@ -15,34 +23,44 @@ type SignResult = {
   error?: string;
 };
 
-async function fetchHealth(): Promise<Health> {
-  return (await fetch("/api/health")).json();
+type CoSignResult = {
+  decoded?: DecodedSignedTransaction;
+  raw?: string;
+  error?: string;
+};
+
+async function fetchSigners(): Promise<SignerInfo[]> {
+  const body = await (await fetch("/api/signers")).json();
+  return body.signers ?? [];
 }
 
 export default function Home() {
-  const [health, setHealth] = useState<Health | null>(null);
+  const [signers, setSigners] = useState<SignerInfo[] | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
   const [message, setMessage] = useState("hello solana");
   const [messageResult, setMessageResult] = useState<SignResult | null>(null);
-  const [wireTransaction, setWireTransaction] = useState("");
-  const [transactionResult, setTransactionResult] = useState<SignResult | null>(
-    null
-  );
+  const [memo, setMemo] = useState("hello keychain");
+  const [coSignResult, setCoSignResult] = useState<CoSignResult | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    fetchHealth().then((data) => {
-      if (!cancelled) setHealth(data);
+    fetchSigners().then((list) => {
+      if (cancelled) return;
+      setSigners(list);
+      setSelected((current) => current ?? list[0]?.backend ?? null);
     });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  async function refreshHealth() {
-    setBusy("health");
+  const selectedSigner = signers?.find((s) => s.backend === selected) ?? null;
+
+  async function refreshSigners() {
+    setBusy("signers");
     try {
-      setHealth(await fetchHealth());
+      setSigners(await fetchSigners());
     } finally {
       setBusy(null);
     }
@@ -54,7 +72,7 @@ export default function Home() {
       const res = await fetch("/api/sign/message", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message, backend: selected }),
       });
       setMessageResult(await res.json());
     } finally {
@@ -62,15 +80,33 @@ export default function Home() {
     }
   }
 
-  async function signTransaction() {
+  async function coSignTransaction() {
+    if (!selectedSigner?.address) return;
     setBusy("transaction");
     try {
+      const wireTransaction = buildDemoTransaction(
+        address(selectedSigner.address),
+        memo
+      );
       const res = await fetch("/api/sign/transaction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transaction: wireTransaction }),
+        body: JSON.stringify({
+          transaction: wireTransaction,
+          backend: selected,
+        }),
       });
-      setTransactionResult(await res.json());
+      const result: SignResult = await res.json();
+      if (!res.ok || !result.transaction) {
+        setCoSignResult({ error: result.error ?? "Signing failed" });
+        return;
+      }
+      setCoSignResult({
+        decoded: await decodeSignedTransaction(result.transaction),
+        raw: result.transaction,
+      });
+    } catch (error) {
+      setCoSignResult({ error: String(error) });
     } finally {
       setBusy(null);
     }
@@ -87,12 +123,11 @@ export default function Home() {
             Server-side signing, pluggable key backends
           </h1>
           <p className="max-w-3xl text-base leading-relaxed text-muted">
-            The signer lives in Next.js API routes powered by{" "}
-            <code className="font-mono">@solana/keychain</code> — the private
-            key never reaches the browser. Switch between a local keypair, cloud
-            KMS, MPC custody, or wallet APIs by changing{" "}
-            <code className="font-mono">KEYCHAIN_BACKEND</code> in your
-            environment. See <code className="font-mono">.env.example</code> for
+            Signers live in Next.js API routes powered by{" "}
+            <code className="font-mono">@solana/keychain</code> — private keys
+            never reach the browser. Every backend configured in your
+            environment appears in the registry below and can be picked per
+            request. See <code className="font-mono">.env.example</code> for
             every backend&apos;s variables.
           </p>
         </header>
@@ -100,33 +135,51 @@ export default function Home() {
         <section className="w-full max-w-3xl space-y-4 rounded-2xl border border-border-low bg-card p-6 shadow-[0_20px_80px_-50px_rgba(0,0,0,0.35)]">
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-1">
-              <p className="text-lg font-semibold">Signer</p>
+              <p className="text-lg font-semibold">Signers</p>
               <p className="text-sm text-muted">
-                Served by <code className="font-mono">GET /api/health</code>{" "}
-                using the signer&apos;s{" "}
-                <code className="font-mono">isAvailable()</code> check.
+                Served by <code className="font-mono">GET /api/signers</code> —
+                one entry per configured backend, checked with{" "}
+                <code className="font-mono">isAvailable()</code>. Pick the one
+                to sign with.
               </p>
             </div>
-            <span className="rounded-full bg-cream px-3 py-1 text-xs font-semibold uppercase tracking-wide text-foreground/80">
-              {health === null
-                ? "Loading…"
-                : health.available
-                  ? `${health.backend} · available`
-                  : `${health.backend} · unavailable`}
-            </span>
-          </div>
-          <div className="flex flex-wrap items-center gap-3 text-sm">
-            <span className="break-all rounded-lg border border-border-low bg-cream px-3 py-2 font-mono text-xs">
-              {health?.address ?? health?.error ?? "—"}
-            </span>
             <button
-              onClick={() => void refreshHealth()}
+              onClick={() => void refreshSigners()}
               disabled={busy !== null}
-              className="inline-flex items-center gap-2 rounded-lg border border-border-low bg-card px-3 py-2 font-medium transition hover:-translate-y-0.5 hover:shadow-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-lg border border-border-low bg-card px-3 py-2 text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
             >
               Refresh
             </button>
           </div>
+          <div className="space-y-2">
+            {signers === null && <p className="text-sm text-muted">Loading…</p>}
+            {signers?.map((signer) => (
+              <label
+                key={signer.backend}
+                className="flex cursor-pointer flex-wrap items-center gap-3 rounded-lg border border-border-low bg-cream px-3 py-2 text-sm has-checked:border-foreground/40"
+              >
+                <input
+                  type="radio"
+                  name="signer"
+                  checked={selected === signer.backend}
+                  onChange={() => setSelected(signer.backend)}
+                  className="accent-foreground"
+                />
+                <span className="font-semibold">{signer.backend}</span>
+                <span className="break-all font-mono text-xs text-muted">
+                  {signer.address ?? signer.error ?? "—"}
+                </span>
+                <span className="ml-auto rounded-full bg-card px-2 py-0.5 text-xs font-semibold uppercase tracking-wide">
+                  {signer.available ? "available" : "unavailable"}
+                </span>
+              </label>
+            ))}
+          </div>
+          <p className="text-xs text-muted">
+            Only <code className="font-mono">memory</code>? Add credentials for
+            any backend in <code className="font-mono">.env.local</code> and it
+            shows up here — no code changes.
+          </p>
         </section>
 
         <section className="w-full max-w-3xl space-y-4 rounded-2xl border border-border-low bg-card p-6 shadow-[0_20px_80px_-50px_rgba(0,0,0,0.35)]">
@@ -134,7 +187,7 @@ export default function Home() {
             <p className="text-lg font-semibold">Sign a message</p>
             <p className="text-sm text-muted">
               Posts to <code className="font-mono">POST /api/sign/message</code>{" "}
-              and returns a base58 Ed25519 signature.
+              with the selected backend and returns a base58 Ed25519 signature.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -146,10 +199,10 @@ export default function Home() {
             />
             <button
               onClick={() => void signMessage()}
-              disabled={busy !== null || message.length === 0}
+              disabled={busy !== null || message.length === 0 || !selected}
               className="inline-flex items-center gap-2 rounded-lg border border-border-low bg-card px-3 py-2 text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {busy === "message" ? "Signing…" : "Sign"}
+              {busy === "message" ? "Signing…" : `Sign with ${selected ?? "…"}`}
             </button>
           </div>
           {messageResult && (
@@ -163,35 +216,73 @@ export default function Home() {
           <div className="space-y-1">
             <p className="text-lg font-semibold">Co-sign a transaction</p>
             <p className="text-sm text-muted">
-              Paste a base64-encoded wire transaction;{" "}
-              <code className="font-mono">POST /api/sign/transaction</code> adds
-              this signer&apos;s signature and returns the signed wire
-              transaction. Nothing is submitted to the network.
+              Builds a memo transaction in your browser (placeholder blockhash),
+              sends it to{" "}
+              <code className="font-mono">POST /api/sign/transaction</code> for
+              the selected backend, then decodes the signed result and verifies
+              the signature. Nothing is submitted to the network.
             </p>
           </div>
-          <textarea
-            value={wireTransaction}
-            onChange={(event) => setWireTransaction(event.target.value)}
-            placeholder="Base64 wire transaction"
-            rows={4}
-            className="w-full rounded-lg border border-border-low bg-cream px-3 py-2 font-mono text-xs outline-none"
-          />
-          <button
-            onClick={() => void signTransaction()}
-            disabled={busy !== null || wireTransaction.length === 0}
-            className="inline-flex items-center gap-2 rounded-lg border border-border-low bg-card px-3 py-2 text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {busy === "transaction" ? "Signing…" : "Co-sign"}
-          </button>
-          {transactionResult && (
+          <div className="flex flex-wrap gap-3">
+            <input
+              value={memo}
+              onChange={(event) => setMemo(event.target.value)}
+              placeholder="Memo for the demo transaction"
+              className="min-w-0 flex-1 rounded-lg border border-border-low bg-cream px-3 py-2 font-mono text-sm outline-none"
+            />
+            <button
+              onClick={() => void coSignTransaction()}
+              disabled={
+                busy !== null || memo.length === 0 || !selectedSigner?.address
+              }
+              className="inline-flex items-center gap-2 rounded-lg border border-border-low bg-card px-3 py-2 text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {busy === "transaction" ? "Signing…" : "Build & co-sign"}
+            </button>
+          </div>
+          {coSignResult?.error && (
+            <p className="break-all rounded-lg border border-border-low bg-cream px-3 py-2 font-mono text-xs">
+              {coSignResult.error}
+            </p>
+          )}
+          {coSignResult?.decoded && (
             <div className="space-y-2">
-              <p className="break-all rounded-lg border border-border-low bg-cream px-3 py-2 font-mono text-xs">
-                {transactionResult.signature ?? transactionResult.error}
-              </p>
-              {transactionResult.transaction && (
-                <p className="break-all rounded-lg border border-border-low bg-cream px-3 py-2 font-mono text-xs">
-                  {transactionResult.transaction}
-                </p>
+              <dl className="grid gap-2 rounded-lg border border-border-low bg-cream px-3 py-2 text-xs sm:grid-cols-[8rem_1fr]">
+                <dt className="font-semibold">Fee payer</dt>
+                <dd className="break-all font-mono">
+                  {coSignResult.decoded.feePayer}
+                </dd>
+                <dt className="font-semibold">Blockhash</dt>
+                <dd className="break-all font-mono">
+                  {coSignResult.decoded.blockhash}
+                </dd>
+                <dt className="font-semibold">Memo</dt>
+                <dd className="break-all font-mono">
+                  {coSignResult.decoded.memo}
+                </dd>
+                <dt className="font-semibold">Signature</dt>
+                <dd className="break-all font-mono">
+                  {coSignResult.decoded.signature}{" "}
+                  <span
+                    className={
+                      coSignResult.decoded.signatureValid
+                        ? "font-sans font-semibold text-green-600"
+                        : "font-sans font-semibold text-red-600"
+                    }
+                  >
+                    {coSignResult.decoded.signatureValid
+                      ? "✓ valid"
+                      : "✗ invalid"}
+                  </span>
+                </dd>
+              </dl>
+              {coSignResult.raw && (
+                <details className="rounded-lg border border-border-low bg-cream px-3 py-2 text-xs">
+                  <summary className="cursor-pointer font-semibold">
+                    Raw signed transaction (base64)
+                  </summary>
+                  <p className="mt-2 break-all font-mono">{coSignResult.raw}</p>
+                </details>
               )}
             </div>
           )}
@@ -207,7 +298,7 @@ export default function Home() {
           >
             @solana/keychain
           </a>{" "}
-          — the same signer plugs into any{" "}
+          — the same signers plug into any{" "}
           <code className="font-mono">@solana/kit</code> transaction pipeline.
         </footer>
       </main>

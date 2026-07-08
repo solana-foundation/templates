@@ -1,11 +1,67 @@
 import {
   normalizePrivateKeyPem,
+  type BackendName,
   type KeychainSignerConfig,
 } from "@solana/keychain";
 import { generateKeyPair } from "@solana/kit";
 
-export async function signerConfigFromEnv(): Promise<KeychainSignerConfig> {
-  const backend = process.env.KEYCHAIN_BACKEND ?? "memory";
+const REQUIRED_ENV: Record<Exclude<BackendName, "memory">, string[]> = {
+  "aws-kms": ["AWS_KMS_KEY_ID", "AWS_KMS_PUBLIC_KEY"],
+  cdp: [
+    "CDP_ADDRESS",
+    "CDP_API_KEY_ID",
+    "CDP_API_KEY_SECRET",
+    "CDP_WALLET_SECRET",
+  ],
+  crossmint: ["CROSSMINT_API_KEY", "CROSSMINT_WALLET_LOCATOR"],
+  dfns: [
+    "DFNS_AUTH_TOKEN",
+    "DFNS_CRED_ID",
+    "DFNS_PRIVATE_KEY_PEM",
+    "DFNS_WALLET_ID",
+  ],
+  fireblocks: [
+    "FIREBLOCKS_API_KEY",
+    "FIREBLOCKS_PRIVATE_KEY_PEM",
+    "FIREBLOCKS_VAULT_ACCOUNT_ID",
+  ],
+  "gcp-kms": ["GCP_KMS_KEY_NAME", "GCP_KMS_PUBLIC_KEY"],
+  openfort: [
+    "OPENFORT_ACCOUNT_ID",
+    "OPENFORT_SECRET_KEY",
+    "OPENFORT_WALLET_SECRET",
+  ],
+  para: ["PARA_API_KEY", "PARA_WALLET_ID"],
+  privy: ["PRIVY_APP_ID", "PRIVY_APP_SECRET", "PRIVY_WALLET_ID"],
+  turnkey: [
+    "TURNKEY_API_PRIVATE_KEY",
+    "TURNKEY_API_PUBLIC_KEY",
+    "TURNKEY_ORGANIZATION_ID",
+    "TURNKEY_PRIVATE_KEY_ID",
+    "TURNKEY_PUBLIC_KEY",
+  ],
+  utila: [
+    "UTILA_NETWORK",
+    "UTILA_SERVICE_ACCOUNT_EMAIL",
+    "UTILA_SERVICE_ACCOUNT_PRIVATE_KEY_PEM",
+    "UTILA_VAULT_ID",
+    "UTILA_WALLET_ID",
+  ],
+  vault: ["VAULT_ADDR", "VAULT_TOKEN", "VAULT_KEY_NAME", "VAULT_PUBLIC_KEY"],
+};
+
+export function configuredBackends(): BackendName[] {
+  const configured = (
+    Object.keys(REQUIRED_ENV) as (keyof typeof REQUIRED_ENV)[]
+  ).filter((backend) =>
+    REQUIRED_ENV[backend].every((name) => process.env[name])
+  );
+  return ["memory", ...configured];
+}
+
+export async function signerConfigFor(
+  backend: BackendName
+): Promise<KeychainSignerConfig> {
   switch (backend) {
     case "memory":
       return memoryConfig();
@@ -109,10 +165,6 @@ export async function signerConfigFromEnv(): Promise<KeychainSignerConfig> {
         vaultId: requireEnv("UTILA_VAULT_ID"),
         walletId: requireEnv("UTILA_WALLET_ID"),
       };
-    default:
-      throw new Error(
-        `Unknown KEYCHAIN_BACKEND "${backend}". Valid backends: memory, vault, aws-kms, gcp-kms, turnkey, privy, fireblocks, dfns, para, cdp, crossmint, openfort, utila`
-      );
   }
 }
 
@@ -138,9 +190,7 @@ async function memoryConfig(): Promise<KeychainSignerConfig> {
 function requireEnv(name: string): string {
   const value = process.env[name];
   if (!value) {
-    throw new Error(
-      `Missing env var ${name} (required by KEYCHAIN_BACKEND=${process.env.KEYCHAIN_BACKEND})`
-    );
+    throw new Error(`Missing env var ${name}`);
   }
   return value;
 }

@@ -1,12 +1,25 @@
-import { createKeychainSigner, type SolanaSigner } from "@solana/keychain";
+import {
+  createKeychainSigner,
+  type BackendName,
+  type SolanaSigner,
+} from "@solana/keychain";
 
-import { signerConfigFromEnv } from "./config";
+import { configuredBackends, signerConfigFor } from "./config";
 
-export const backendName = process.env.KEYCHAIN_BACKEND ?? "memory";
+const signers = new Map<BackendName, Promise<SolanaSigner>>();
 
-let signerPromise: Promise<SolanaSigner> | undefined;
-
-export function getSigner(): Promise<SolanaSigner> {
-  signerPromise ??= signerConfigFromEnv().then(createKeychainSigner);
-  return signerPromise;
+export function getSigner(backend?: string): Promise<SolanaSigner> {
+  const backends = configuredBackends();
+  const name = (backend ?? backends[0]) as BackendName;
+  if (!backends.includes(name)) {
+    throw new Error(
+      `Backend "${name}" is not configured. Configured backends: ${backends.join(", ")}`
+    );
+  }
+  let signer = signers.get(name);
+  if (!signer) {
+    signer = signerConfigFor(name).then(createKeychainSigner);
+    signers.set(name, signer);
+  }
+  return signer;
 }
