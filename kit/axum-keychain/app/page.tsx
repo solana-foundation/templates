@@ -45,11 +45,15 @@ export default function Home() {
 
   useEffect(() => {
     let cancelled = false;
-    fetchSigners().then((list) => {
-      if (cancelled) return;
-      setSigners(list);
-      setSelected((current) => current ?? list[0]?.backend ?? null);
-    });
+    fetchSigners()
+      .then((list) => {
+        if (cancelled) return;
+        setSigners(list);
+        setSelected((current) => current ?? list[0]?.backend ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setSigners([]);
+      });
     return () => {
       cancelled = true;
     };
@@ -61,6 +65,8 @@ export default function Home() {
     setBusy("signers");
     try {
       setSigners(await fetchSigners());
+    } catch {
+      // keep the current list on transient failures
     } finally {
       setBusy(null);
     }
@@ -75,6 +81,8 @@ export default function Home() {
         body: JSON.stringify({ message, backend: selected }),
       });
       setMessageResult(await res.json());
+    } catch (error) {
+      setMessageResult({ error: String(error) });
     } finally {
       setBusy(null);
     }
@@ -123,12 +131,13 @@ export default function Home() {
             Server-side signing, pluggable key backends
           </h1>
           <p className="max-w-3xl text-base leading-relaxed text-muted">
-            Signers live in Next.js API routes powered by{" "}
-            <code className="font-mono">@solana/keychain</code> — private keys
-            never reach the browser. Every backend configured in your
-            environment appears in the registry below and can be picked per
-            request. See <code className="font-mono">.env.example</code> for
-            every backend&apos;s variables.
+            Signers live in the Axum (Rust) service powered by{" "}
+            <code className="font-mono">solana-keychain</code> — private keys
+            never reach the browser. The Next.js frontend proxies{" "}
+            <code className="font-mono">/api/*</code> to the Rust service, and
+            every backend configured in your environment appears in the registry
+            below. See <code className="font-mono">.env.example</code> for every
+            backend&apos;s variables.
           </p>
         </header>
 

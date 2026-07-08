@@ -14,10 +14,10 @@ async fn main() {
     dotenvy::from_filename(".env.local").ok();
     dotenvy::dotenv().ok();
 
-    let port: u16 = match env::var("PORT") {
+    let port: u16 = match env::var("BACKEND_PORT") {
         Ok(value) => value
             .parse()
-            .unwrap_or_else(|_| panic!("Invalid PORT value \"{value}\"")),
+            .unwrap_or_else(|_| panic!("Invalid BACKEND_PORT value \"{value}\"")),
         Err(_) => 8080,
     };
 

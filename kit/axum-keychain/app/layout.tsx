@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Solana Keychain Starter",
   description:
-    "Next.js starter with server-side signing via @solana/keychain — one signer interface, pluggable key backends",
+    "Axum (Rust) signing API with a Next.js frontend using solana-keychain — one signer interface, pluggable key backends",
   icons: {
     icon: "/icon.svg",
     shortcut: "/icon.svg",
