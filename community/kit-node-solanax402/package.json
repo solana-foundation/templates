@@ -1,5 +1,5 @@
 {
-  "name": "{{project-name}}",
+  "name": "kit-node-solanax402",
   "displayName": "x402 Express Server",
   "usecase": "Payments",
   "version": "1.0.0",
@@ -10,10 +10,24 @@
     "node": ">=22.0.0"
   },
   "create-solana-dapp": {
-    "instructions": "## Quick Start\n\n1. Generate facilitator keypair:\n   ```\n   solana-keygen new --outfile facilitator-keypair.json\n   ```\n\n2. Copy and configure environment:\n   ```\n   cp env.example .env\n   ```\n   Update FACILITATOR_PRIVATE_KEY and MERCHANT_SOLANA_ADDRESS\n\n3. Fund facilitator on devnet:\n   ```\n   solana airdrop 2 <FACILITATOR_PUBLIC_KEY> --url devnet\n   ```\n\n4. Build and start:\n   ```\n   npm run build\n   npm start\n   ```\n\n5. Generate test client:\n   ```\n   npm run generate:client\n   ```\n   Fund it: `solana airdrop 1 <CLIENT_KEY> --url devnet`\n\n6. Run tests:\n   ```\n   npm test\n   ```\n\nSee README.md and SETUP.md for detailed documentation.",
-    "rename": {
-      "x402-solana-protocol": "{{project-name}}"
-    }
+    "instructions": [
+      "Generate facilitator keypair:",
+      "+solana-keygen new --outfile facilitator-keypair.json",
+      "Copy and configure environment:",
+      "+cp env.example .env",
+      "Update FACILITATOR_PRIVATE_KEY and MERCHANT_SOLANA_ADDRESS.",
+      "Fund facilitator on devnet:",
+      "+solana airdrop 2 <FACILITATOR_PUBLIC_KEY> --url devnet",
+      "Build and start:",
+      "+{pm} run build",
+      "+{pm} start",
+      "Generate and fund a test client:",
+      "+{pm} run generate:client",
+      "+solana airdrop 1 <CLIENT_KEY> --url devnet",
+      "Run tests:",
+      "+{pm} test",
+      "See README.md and SETUP.md for detailed documentation."
+    ]
   },
   "scripts": {
     "build": "tsc",
