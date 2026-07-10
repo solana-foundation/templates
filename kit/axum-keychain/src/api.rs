@@ -114,6 +114,51 @@ pub async fn sign_transaction(
     })))
 }
 
+#[derive(Deserialize, Default)]
+pub struct DemoTransactionRequest {
+    memo: Option<String>,
+    backend: Option<String>,
+}
+
+pub async fn demo_transaction(
+    State(registry): State<SharedRegistry>,
+    body: Option<Json<DemoTransactionRequest>>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let Json(request) = body.unwrap_or_default();
+    let memo = match request.memo.as_deref() {
+        Some(memo) if !memo.is_empty() => memo.to_string(),
+        _ => {
+            return Err(bad_request(
+                "Body must be { memo: string, backend?: string }",
+            ))
+        }
+    };
+    let signer = find_signer(&registry, request.backend.as_deref())?;
+    let payer = signer.pubkey();
+    let instruction = spl_memo::build_memo(memo.as_bytes(), &[]);
+    let mut transaction = Transaction::new_with_payer(&[instruction], Some(&payer));
+    let (signed_transaction, signature) = signer
+        .sign_transaction(&mut transaction)
+        .await
+        .map_err(internal_error)?
+        .into_signed_transaction();
+    let signature_valid = signature.verify(payer.as_ref(), &transaction.message_data());
+    let decoded_memo = transaction
+        .message
+        .instructions
+        .first()
+        .map(|instruction| String::from_utf8_lossy(&instruction.data).to_string())
+        .unwrap_or_default();
+    Ok(Json(json!({
+        "feePayer": payer.to_string(),
+        "blockhash": transaction.message.recent_blockhash.to_string(),
+        "memo": decoded_memo,
+        "signature": signature.to_string(),
+        "signatureValid": signature_valid,
+        "transaction": signed_transaction,
+    })))
+}
+
 fn find_signer<'a>(registry: &'a Registry, backend: Option<&str>) -> Result<&'a Signer, ApiError> {
     let name = backend.unwrap_or(&registry[0].0);
     let configured = registry

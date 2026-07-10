@@ -1,14 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 
-import { address } from "@solana/kit";
-
-import {
-  buildDemoTransaction,
-  decodeSignedTransaction,
-  type DecodedSignedTransaction,
-} from "./lib/demo-transaction";
-
 type SignerInfo = {
   backend: string;
   address?: string;
@@ -21,6 +13,14 @@ type SignResult = {
   signature?: string;
   transaction?: string;
   error?: string;
+};
+
+type DecodedSignedTransaction = {
+  feePayer: string;
+  blockhash: string;
+  memo: string;
+  signature: string;
+  signatureValid: boolean;
 };
 
 type CoSignResult = {
@@ -92,27 +92,19 @@ export default function Home() {
     if (!selectedSigner?.address) return;
     setBusy("transaction");
     try {
-      const wireTransaction = buildDemoTransaction(
-        address(selectedSigner.address),
-        memo
-      );
-      const res = await fetch("/api/sign/transaction", {
+      const res = await fetch("/api/demo/transaction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          transaction: wireTransaction,
-          backend: selected,
-        }),
+        body: JSON.stringify({ memo, backend: selected }),
       });
-      const result: SignResult = await res.json();
+      const result: (DecodedSignedTransaction & { transaction?: string }) & {
+        error?: string;
+      } = await res.json();
       if (!res.ok || !result.transaction) {
         setCoSignResult({ error: result.error ?? "Signing failed" });
         return;
       }
-      setCoSignResult({
-        decoded: await decodeSignedTransaction(result.transaction),
-        raw: result.transaction,
-      });
+      setCoSignResult({ decoded: result, raw: result.transaction });
     } catch (error) {
       setCoSignResult({ error: String(error) });
     } finally {
@@ -225,11 +217,11 @@ export default function Home() {
           <div className="space-y-1">
             <p className="text-lg font-semibold">Co-sign a transaction</p>
             <p className="text-sm text-muted">
-              Builds a memo transaction in your browser (placeholder blockhash),
-              sends it to{" "}
-              <code className="font-mono">POST /api/sign/transaction</code> for
-              the selected backend, then decodes the signed result and verifies
-              the signature. Nothing is submitted to the network.
+              The Rust service builds a memo transaction (placeholder
+              blockhash), signs it with the selected backend via{" "}
+              <code className="font-mono">POST /api/demo/transaction</code>,
+              then decodes the result and verifies the signature server-side.
+              Nothing is submitted to the network.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">

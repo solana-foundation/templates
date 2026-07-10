@@ -16,4 +16,5 @@ solana-keychain = { version = "1.4", default-features = false, features = [
     "sdk-v2",
 ] }
 solana-sdk = "2.3"
+spl-memo = "6"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }

@@ -1,6 +1,6 @@
 # axum-keychain
 
-Axum (Rust) signing API with the same Next.js + Tailwind frontend as `nextjs-keychain`, built on [`solana-keychain`](https://github.com/solana-foundation/solana-keychain) — one `SolanaSigner` trait with pluggable key-management backends. Private keys never reach the browser; the frontend proxies `/api/*` to the Rust service and picks a signer per request.
+Axum (Rust) signing API with a Next.js + Tailwind frontend, built on [`solana-keychain`](https://github.com/solana-foundation/solana-keychain) — one `SolanaSigner` trait with pluggable key-management backends. All signing, transaction building, and verification happens in Rust; the frontend is plain fetch-and-render and picks a signer per request.
 
 ## Getting Started
 
@@ -19,13 +19,14 @@ Requires a [Rust toolchain](https://rustup.rs) alongside Node.js.
 
 ## API routes
 
-Signers are constructed at startup in `src/signers.rs` — one per backend configured in the environment — and served by Axum handlers in `src/api.rs`. The Next.js rewrite in `next.config.ts` proxies `/api/*` to the Rust service, so the frontend is identical to `nextjs-keychain`:
+Signers are constructed at startup in `src/signers.rs` — one per backend configured in the environment — and served by Axum handlers in `src/api.rs`. The Next.js rewrite in `next.config.ts` proxies `/api/*` to the Rust service; all transaction building, decoding, and verification happens in Rust, so the frontend is plain fetch-and-render:
 
-| Method | Path                    | Description                                                                                                                               |
-| ------ | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| GET    | `/api/signers`          | Lists every configured backend with its signer address and availability (`is_available()`)                                                |
-| POST   | `/api/sign/message`     | Signs a UTF-8 message with the given backend (`{ message, backend? }`); returns a base58 signature                                        |
-| POST   | `/api/sign/transaction` | Adds the given backend's signature to a wire transaction (`{ transaction, backend? }`); returns the signed wire transaction and signature |
+| Method | Path                    | Description                                                                                                                                                                      |
+| ------ | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/api/signers`          | Lists every configured backend with its signer address and availability (`is_available()`)                                                                                       |
+| POST   | `/api/sign/message`     | Signs a UTF-8 message with the given backend (`{ message, backend? }`); returns a base58 signature                                                                               |
+| POST   | `/api/sign/transaction` | Adds the given backend's signature to a wire transaction (`{ transaction, backend? }`); returns the signed wire transaction and signature                                        |
+| POST   | `/api/demo/transaction` | Builds a memo transaction with a placeholder blockhash (`{ memo, backend? }`), signs it, verifies the signature, and returns the decoded fields plus the signed wire transaction |
 
 The routes only sign — they never submit transactions to the network. Broadcasting stays with the caller. Transactions use the legacy wire format (`bincode`-serialized `solana_sdk::Transaction`, base64-encoded).
 
@@ -54,7 +55,7 @@ export VAULT_ADDR=http://127.0.0.1:8200 VAULT_TOKEN=<printed root token>
 vault secrets enable transit
 vault write -f transit/keys/demo type=ed25519
 vault read -field=keys -format=json transit/keys/demo   # note the base64 public_key
-node --input-type=module -e "import { getBase58Decoder } from '@solana/kit'; console.log(getBase58Decoder().decode(Buffer.from(process.argv[1], 'base64')))" <base64 public_key>
+node -e "const b=Buffer.from(process.argv[1],'base64');const A='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';let n=BigInt('0x'+b.toString('hex')),o='';while(n>0n){o=A[Number(n%58n)]+o;n/=58n}for(const x of b){if(x)break;o='1'+o}console.log(o)" <base64 public_key>
 ```
 
 Put the connection details in `.env.local`:

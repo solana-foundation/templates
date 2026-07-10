@@ -31,6 +31,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/api/signers", get(api::signers))
+        .route("/api/demo/transaction", post(api::demo_transaction))
         .route("/api/sign/message", post(api::sign_message))
         .route("/api/sign/transaction", post(api::sign_transaction))
         .with_state(registry);
