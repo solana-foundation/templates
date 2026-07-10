@@ -359,6 +359,9 @@ export const checkBoot = async (workDir: string, ref: TemplateRef, opts: RunOpti
     }
   }
 
+  // Error statuses (4xx/5xx) don't pass, but they don't fail immediately either: dev
+  // servers can respond 500 while still compiling, so keep polling until the deadline.
+  let lastErrorStatus: number | null = null
   try {
     while (Date.now() < deadline) {
       if (exited) {
@@ -373,11 +376,23 @@ export const checkBoot = async (workDir: string, ref: TemplateRef, opts: RunOpti
       if (printed) {
         const url = `http://localhost:${printed[1]}`
         const res = await tryFetch(url)
-        if (res !== null) {
+        if (res !== null && res >= 200 && res < 400) {
           return { status: 'pass', available: true, url, httpStatus: res, durationMs: Date.now() - start }
+        }
+        if (res !== null) {
+          lastErrorStatus = res
         }
       }
       await sleep(1500)
+    }
+    if (lastErrorStatus !== null) {
+      return {
+        status: 'fail',
+        available: true,
+        httpStatus: lastErrorStatus,
+        durationMs: Date.now() - start,
+        note: `dev server kept responding with HTTP ${lastErrorStatus} until the 60s deadline\n${tail(out, 15)}`,
+      }
     }
     return {
       status: 'fail',
