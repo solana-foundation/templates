@@ -8,3 +8,4 @@
 pnpm-lock.yaml
 .agents
 src/uniwind-types.d.ts
+agent
