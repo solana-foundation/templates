@@ -1,0 +1,48 @@
+{
+  "name": "axum-keychain",
+  "displayName": "Axum Keychain",
+  "description": "Axum Rust signing API with a Next.js frontend using solana-keychain — one signer interface, pluggable key backends (memory, KMS, MPC, custodial)",
+  "usecase": "Starter",
+  "keywords": [
+    "kit",
+    "axum",
+    "rust",
+    "nextjs",
+    "solana-kit",
+    "keychain",
+    "signers",
+    "tailwind",
+    "typescript"
+  ],
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "build:rust": "cargo build",
+    "ci": "npm run rust:fmt && npm run rust:clippy && npm run build:rust && npm run build && npm run lint && npm run format:check",
+    "dev": "concurrently -n rust,next -c yellow,cyan \"cargo run\" \"next dev\"",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint",
+    "rust:clippy": "cargo clippy --all-targets -- -D warnings",
+    "rust:fmt": "cargo fmt --check",
+    "start": "concurrently -n rust,next \"cargo run --release\" \"next start\""
+  },
+  "dependencies": {
+    "next": "16.2.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "concurrently": "^9.1.2",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

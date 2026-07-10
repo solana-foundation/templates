@@ -16,6 +16,7 @@
   "community/x402-solana-rust",
   "community/x402-template",
   "community/zk-compression-airdrop",
+  "kit/axum-keychain",
   "kit/nextjs",
   "kit/nextjs-anchor",
   "kit/nextjs-keychain",
