@@ -18,6 +18,14 @@ Kit Templates (using @solana/kit)
 
 `anchor` `kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
 
+### [nextjs-keychain](kit/nextjs-keychain)
+
+`gh:solana-foundation/templates/kit/nextjs-keychain`
+
+> Next.js, Tailwind, @solana/keychain — server-side signing with pluggable key backends (memory, KMS, MPC, custodial)
+
+`kit` `nextjs` `react` `solana-kit` `keychain` `signers` `kms` `mpc` `tailwind` `typescript`
+
 ### [nextjs-subscriptions](kit/nextjs-subscriptions)
 
 `gh:solana-foundation/templates/kit/nextjs-subscriptions`

@@ -1,0 +1,48 @@
+{
+  "name": "nextjs-keychain",
+  "displayName": "Next.js Keychain",
+  "description": "Next.js, Tailwind, @solana/keychain — server-side signing with pluggable key backends (memory, KMS, MPC, custodial)",
+  "usecase": "Starter",
+  "keywords": [
+    "kit",
+    "nextjs",
+    "react",
+    "solana-kit",
+    "keychain",
+    "signers",
+    "kms",
+    "mpc",
+    "tailwind",
+    "typescript"
+  ],
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "ci": "npm run build && npm run lint && npm run format:check",
+    "dev": "next dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@solana-program/memo": "^0.11.0",
+    "@solana/keychain": "^1.4.0",
+    "@solana/kit": "^6.9.0",
+    "next": "16.2.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.10",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

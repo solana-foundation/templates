@@ -18,6 +18,7 @@
   "community/zk-compression-airdrop",
   "kit/nextjs",
   "kit/nextjs-anchor",
+  "kit/nextjs-keychain",
   "kit/nextjs-subscriptions",
   "kit/pinocchio-counter",
   "kit/react-vite",

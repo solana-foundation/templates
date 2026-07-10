@@ -36,6 +36,27 @@
         "path": "kit/nextjs-anchor"
       },
       {
+        "description": "Next.js, Tailwind, @solana/keychain — server-side signing with pluggable key backends (memory, KMS, MPC, custodial)",
+        "id": "gh:solana-foundation/templates/kit/nextjs-keychain",
+        "image": "kit/nextjs-keychain/og-image.png",
+        "keywords": [
+          "kit",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "keychain",
+          "signers",
+          "kms",
+          "mpc",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "nextjs-keychain",
+        "path": "kit/nextjs-keychain",
+        "displayName": "Next.js Keychain",
+        "usecase": "Starter"
+      },
+      {
         "description": "Next.js, Tailwind, @solana/kit, Solana subscriptions program",
         "id": "gh:solana-foundation/templates/kit/nextjs-subscriptions",
         "image": "kit/nextjs-subscriptions/og-image.png",
