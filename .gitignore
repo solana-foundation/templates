@@ -61,6 +61,7 @@ community/**/tmp
 mobile/**/.next
 mobile/**/.env
 mobile/**/.env.local
+mobile/**/.kotlin/
 mobile/**/anchor/target/debug
 mobile/**/anchor/target/deploy
 mobile/**/anchor/target/release

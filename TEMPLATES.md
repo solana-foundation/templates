@@ -94,6 +94,14 @@ Solana Mobile Templates
 
 `expo` `mobile-wallet-adapter` `react-native` `solana-kit` `uniwind` `tailwind`
 
+### [kotlin-compose](mobile/kotlin-compose)
+
+`gh:solana-foundation/templates/mobile/kotlin-compose`
+
+> A native Android template for building a Solana mobile app with Kotlin and Jetpack Compose.
+
+`android` `clientlib-ktx` `jetpack-compose` `kotlin` `mobile-wallet-adapter`
+
 ### [web3js-expo](mobile/web3js-expo)
 
 `gh:solana-foundation/templates/mobile/web3js-expo`

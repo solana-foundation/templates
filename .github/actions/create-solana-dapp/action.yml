@@ -23,6 +23,21 @@ runs:
         node-version: ${{ inputs.node-version }}
         package-manager: ${{ inputs.package-manager }}
 
+    - name: Setup Java
+      if: ${{ startsWith(inputs.template, 'mobile/kotlin-') }}
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: '21'
+
+    - name: Setup Android SDK
+      if: ${{ startsWith(inputs.template, 'mobile/kotlin-') }}
+      uses: android-actions/setup-android@v3
+
+    - name: Setup Gradle
+      if: ${{ startsWith(inputs.template, 'mobile/kotlin-') }}
+      uses: gradle/actions/setup-gradle@v4
+
     - name: Create and Build using create-solana-dapp
       run: |
         cd $(mktemp -d)
