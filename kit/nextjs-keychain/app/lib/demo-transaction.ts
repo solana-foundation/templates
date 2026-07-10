@@ -1,24 +1,24 @@
 import {
-  address,
+  getAddMemoInstruction,
+  getAddMemoInstructionDataDecoder,
+} from "@solana-program/memo";
+import {
   appendTransactionMessageInstruction,
   blockhash,
   compileTransaction,
   createTransactionMessage,
   getBase58Decoder,
-  getBase58Encoder,
   getBase64Encoder,
   getBase64EncodedWireTransaction,
   getCompiledTransactionMessageDecoder,
+  getPublicKeyFromAddress,
   getTransactionDecoder,
   pipe,
   setTransactionMessageFeePayer,
   setTransactionMessageLifetimeUsingBlockhash,
+  verifySignature,
   type Address,
 } from "@solana/kit";
-
-const MEMO_PROGRAM_ADDRESS = address(
-  "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
-);
 
 const DEMO_BLOCKHASH = blockhash("11111111111111111111111111111111");
 
@@ -32,13 +32,7 @@ export function buildDemoTransaction(feePayer: Address, memo: string): string {
         tx
       ),
     (tx) =>
-      appendTransactionMessageInstruction(
-        {
-          programAddress: MEMO_PROGRAM_ADDRESS,
-          data: new TextEncoder().encode(memo),
-        },
-        tx
-      )
+      appendTransactionMessageInstruction(getAddMemoInstruction({ memo }), tx)
   );
   return getBase64EncodedWireTransaction(
     compileTransaction(transactionMessage)
@@ -68,23 +62,16 @@ export async function decodeSignedTransaction(
   const feePayer = compiled.staticAccounts[0];
   const memoInstruction = compiled.instructions[0];
   const memo = memoInstruction?.data
-    ? new TextDecoder().decode(memoInstruction.data)
+    ? getAddMemoInstructionDataDecoder().decode(memoInstruction.data).memo
     : "";
   const signatureBytes = transaction.signatures[feePayer];
   let signatureValid = false;
   if (signatureBytes) {
-    const publicKey = await crypto.subtle.importKey(
-      "raw",
-      new Uint8Array(getBase58Encoder().encode(feePayer)),
-      "Ed25519",
-      true,
-      ["verify"]
-    );
-    signatureValid = await crypto.subtle.verify(
-      "Ed25519",
+    const publicKey = await getPublicKeyFromAddress(feePayer);
+    signatureValid = await verifySignature(
       publicKey,
-      new Uint8Array(signatureBytes),
-      new Uint8Array(transaction.messageBytes)
+      signatureBytes,
+      transaction.messageBytes
     );
   }
   return {

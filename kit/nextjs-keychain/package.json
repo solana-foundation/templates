@@ -27,6 +27,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@solana-program/memo": "^0.11.0",
     "@solana/keychain": "^1.4.0",
     "@solana/kit": "^6.9.0",
     "next": "16.2.6",
