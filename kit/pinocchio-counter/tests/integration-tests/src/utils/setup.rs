@@ -12,6 +12,7 @@ use pinocchio_counter_client::PINOCCHIO_COUNTER_ID;
 
 const MIN_LAMPORTS: u64 = 500_000_000;
 const CU_TRACKING_ENV_VAR: &str = "CU_TRACKING";
+const TX_LOGS_ENV_VAR: &str = "TX_LOGS";
 
 pub struct TestContext {
     pub svm: LiteSVM,
@@ -82,8 +83,16 @@ impl TestContext {
         instruction: Instruction,
         signers: &[&Keypair],
     ) -> Result<u64, Box<dyn std::error::Error>> {
-        self.send_transaction_inner(instruction, signers)
-            .map_err(|e| format!("Transaction failed: {:?}", e).into())
+        match self.send_transaction_inner(instruction, signers) {
+            Ok((compute_units, logs)) => {
+                print_transaction_logs("TX OK", &logs);
+                Ok(compute_units)
+            }
+            Err((err, logs)) => {
+                print_transaction_logs("TX ERR", &logs);
+                Err(format!("Transaction failed: {:?}", err).into())
+            }
+        }
     }
 
     pub fn send_transaction_expect_error(
@@ -91,15 +100,23 @@ impl TestContext {
         instruction: Instruction,
         signers: &[&Keypair],
     ) -> TransactionError {
-        self.send_transaction_inner(instruction, signers)
-            .expect_err("Transaction should fail")
+        match self.send_transaction_inner(instruction, signers) {
+            Ok((_, logs)) => {
+                print_transaction_logs("TX OK - unexpected", &logs);
+                panic!("Transaction should fail");
+            }
+            Err((err, logs)) => {
+                print_transaction_logs("TX ERR", &logs);
+                err
+            }
+        }
     }
 
     fn send_transaction_inner(
         &mut self,
         instruction: Instruction,
         signers: &[&Keypair],
-    ) -> Result<u64, TransactionError> {
+    ) -> Result<(u64, Vec<String>), (TransactionError, Vec<String>)> {
         let mut all_signers = vec![&self.payer as &dyn Signer];
         all_signers.extend(signers.iter().map(|k| *k as &dyn Signer));
 
@@ -112,8 +129,8 @@ impl TestContext {
 
         self.svm
             .send_transaction(transaction)
-            .map(|meta| meta.compute_units_consumed)
-            .map_err(|e| e.err)
+            .map(|meta| (meta.compute_units_consumed, meta.logs))
+            .map_err(|e| (e.err, e.meta.logs))
     }
 
     pub fn get_account(&self, address: &Address) -> Option<Account> {
@@ -154,5 +171,11 @@ impl TestContext {
 impl Default for TestContext {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+fn print_transaction_logs(label: &str, logs: &[String]) {
+    if std::env::var(TX_LOGS_ENV_VAR).is_ok_and(|value| value == "1") {
+        println!("[{}] logs:\n{}", label, logs.join("\n"));
     }
 }
