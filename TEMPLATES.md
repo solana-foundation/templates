@@ -190,6 +190,14 @@ Templates maintained by the Solana community
 
 `drift` `defi` `perps` `nextjs` `tailwind` `typescript` `solana` `wallet-adapter`
 
+### [eve-pay](community/eve-pay)
+
+`gh:solana-foundation/templates/community/eve-pay`
+
+> Approval-gated Eve agent that buys sandbox API access with Pay.sh
+
+`solana` `pay.sh` `x402` `mpp` `eve` `vercel` `ai-agent` `payments` `typescript`
+
 ### [kit-node-solanax402](community/kit-node-solanax402)
 
 `gh:solana-foundation/templates/community/kit-node-solanax402`

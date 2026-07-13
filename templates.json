@@ -401,6 +401,26 @@
         "usecase": "DeFi"
       },
       {
+        "description": "Approval-gated Eve agent that buys sandbox API access with Pay.sh",
+        "id": "gh:solana-foundation/templates/community/eve-pay",
+        "image": "community/eve-pay/og-image.png",
+        "keywords": [
+          "solana",
+          "pay.sh",
+          "x402",
+          "mpp",
+          "eve",
+          "vercel",
+          "ai-agent",
+          "payments",
+          "typescript"
+        ],
+        "name": "eve-pay",
+        "path": "community/eve-pay",
+        "displayName": "Eve + Pay.sh Agent",
+        "usecase": "Payments"
+      },
+      {
         "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit",
         "id": "gh:solana-foundation/templates/community/kit-node-solanax402",
         "image": "community/kit-node-solanax402/og-image.png",
