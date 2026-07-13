@@ -1,3 +1,4 @@
+import { isAddress } from '@solana/addresses'
 import { z } from 'zod'
 
 export const tickerSchema = z
@@ -6,14 +7,18 @@ export const tickerSchema = z
   .toUpperCase()
   .regex(/^[A-Z]{1,5}$/, 'Use a 1-5 letter US stock ticker')
 
+export const tokenAmountSchema = z.string().regex(/^\d+$/).max(20)
+
+export const solanaAddressSchema = z.string().refine(isAddress, 'Use a valid base58-encoded Solana address')
+
 const challengeSchema = z.object({
-  amount: z.string().regex(/^\d+$/),
-  currency: z.string().min(32),
+  amount: tokenAmountSchema,
+  currency: solanaAddressSchema,
   methodDetails: z.object({
     decimals: z.number().int().nonnegative(),
     network: z.literal('localnet'),
   }),
-  recipient: z.string().min(32),
+  recipient: solanaAddressSchema,
 })
 
 export type PaymentQuote = {

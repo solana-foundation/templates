@@ -1,14 +1,20 @@
 import { defineTool } from 'eve/tools'
 import { always } from 'eve/tools/approval'
 import { z } from 'zod'
-import { inspectPaymentQuote, quoteUrl, tickerSchema } from '../lib/payment-challenge'
+import {
+  inspectPaymentQuote,
+  quoteUrl,
+  solanaAddressSchema,
+  tickerSchema,
+  tokenAmountSchema,
+} from '../lib/payment-challenge'
 
 const approvedQuoteSchema = z.object({
-  amount: z.string().regex(/^\d+$/).describe('Approved token amount in base units'),
-  currencyMint: z.string().min(32).describe('Approved payment token mint'),
+  amount: tokenAmountSchema.describe('Approved token amount in base units'),
+  currencyMint: solanaAddressSchema.describe('Approved payment token mint'),
   decimals: z.number().int().nonnegative().describe('Approved token decimals'),
   network: z.literal('localnet').describe('Approved Solana network'),
-  recipient: z.string().min(32).describe('Approved payment recipient'),
+  recipient: solanaAddressSchema.describe('Approved payment recipient'),
   ticker: tickerSchema.describe('The inspected stock ticker'),
 })
 

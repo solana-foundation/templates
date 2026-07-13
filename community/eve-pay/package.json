@@ -42,6 +42,7 @@
     ]
   },
   "dependencies": {
+    "@solana/addresses": "6.9.0",
     "ai": "7.0.22",
     "eve": "0.22.5",
     "zod": "^4.4.3"
