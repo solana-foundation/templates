@@ -273,8 +273,9 @@ const main = async () => {
 
   const jsonWrite = writeJsonFile(jsonPath, report)
   const mdWrite = writeFile(mdPath, toMarkdown(report) + diffMd)
-  if (!jsonWrite.ok || !mdWrite.ok) {
-    console.error(`Failed to write report to ${cli.out}: ${!jsonWrite.ok ? jsonWrite.error : mdWrite.error}`)
+  const writeError = !jsonWrite.ok ? jsonWrite.error : !mdWrite.ok ? mdWrite.error : null
+  if (writeError !== null) {
+    console.error(`Failed to write report to ${cli.out}: ${writeError}`)
     process.exit(1)
   }
 

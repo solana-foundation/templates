@@ -33,6 +33,9 @@ export type RunOptions = {
   readonly buildTimeoutMs: number
 }
 
+/** RunOptions after checkTemplate has picked the effective package manager for a template. */
+type ResolvedRunOptions = RunOptions & { readonly packageManager: string }
+
 type Exec = { code: number | null; output: string; timedOut: boolean; durationMs: number }
 
 const TAIL_LINES = 30
@@ -49,7 +52,11 @@ const tail = (s: string, n = TAIL_LINES): string => stripAnsi(s).trim().split('\
 const run = (command: string, args: string[], cwd: string, timeoutMs: number): Promise<Exec> =>
   new Promise((resolve) => {
     const start = Date.now()
-    const child = spawn(command, args, { cwd, env: { ...process.env, CI: '1', FORCE_COLOR: '0', NO_COLOR: '1' }, shell: false })
+    const child = spawn(command, args, {
+      cwd,
+      env: { ...process.env, CI: '1', FORCE_COLOR: '0', NO_COLOR: '1' },
+      shell: false,
+    })
     let output = ''
     let timedOut = false
     const cap = (buf: Buffer) => {
@@ -153,7 +160,7 @@ export const extractDeprecations = (installOutput: string, directDeps: readonly 
 export const runBuild = async (
   workDir: string,
   ref: TemplateRef,
-  opts: RunOptions,
+  opts: ResolvedRunOptions,
 ): Promise<{ build: BuildResult; deprecation: DeprecationResult }> => {
   const pm = opts.packageManager
   const install = await run(pm, ['install'], workDir, opts.installTimeoutMs)
@@ -338,7 +345,7 @@ export const checkDocDrift = (ref: TemplateRef): DocDriftResult => {
 
 // ---------- dimension 3: runtime boot (web templates, opt-in) ----------
 
-export const checkBoot = async (workDir: string, ref: TemplateRef, opts: RunOptions): Promise<BootResult> => {
+export const checkBoot = async (workDir: string, ref: TemplateRef, opts: ResolvedRunOptions): Promise<BootResult> => {
   if (ref.kind !== 'next' && ref.kind !== 'vite') {
     return { status: 'skip', available: false, note: `boot check only applies to web templates (kind: ${ref.kind})` }
   }
@@ -346,7 +353,10 @@ export const checkBoot = async (workDir: string, ref: TemplateRef, opts: RunOpti
     return { status: 'skip', available: false, note: 'no dev script' }
   }
   const start = Date.now()
-  const child = spawn(opts.packageManager, ['run', 'dev'], { cwd: workDir, env: { ...process.env, FORCE_COLOR: '0', NO_COLOR: '1' } })
+  const child = spawn(opts.packageManager, ['run', 'dev'], {
+    cwd: workDir,
+    env: { ...process.env, FORCE_COLOR: '0', NO_COLOR: '1' },
+  })
   let out = ''
   let exited = false
   child.stdout.on('data', (b) => (out += b.toString()))
@@ -529,7 +539,7 @@ export const checkTemplate = async (ref: TemplateRef, opts: RunOptions) => {
       pmNote = `${pm} not installed — fell back to npm`
       pm = 'npm'
     }
-    const effOpts: RunOptions = { ...opts, packageManager: pm }
+    const effOpts: ResolvedRunOptions = { ...opts, packageManager: pm }
 
     let { build, deprecation } = await runBuild(workDir, ref, effOpts)
     const installed = build.phase !== 'install' || build.status === 'pass'
