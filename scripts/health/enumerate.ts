@@ -27,10 +27,10 @@ const resolvePackageManager = (pkg: AnyPkg | null): string => {
 }
 
 const readPkg = (dir: string): AnyPkg | null => {
-  const p = join(dir, 'package.json')
-  if (!existsSync(p)) return null
+  const pkgPath = join(dir, 'package.json')
+  if (!existsSync(pkgPath)) return null
   try {
-    return JSON.parse(readFileSync(p, 'utf-8')) as AnyPkg
+    return JSON.parse(readFileSync(pkgPath, 'utf-8')) as AnyPkg
   } catch {
     return null
   }
@@ -66,14 +66,14 @@ const detectCargo = (dir: string): { cargoManifestDir: string | null; isProgram:
     join(dir, 'Cargo.toml'),
     join(dir, 'program', 'Cargo.toml'),
     join(dir, 'anchor', 'Cargo.toml'),
-  ].find((f) => existsSync(f))
+  ].find((file) => existsSync(file))
   if (!manifest) return { cargoManifestDir: null, isProgram: false }
   const cargoManifestDir = dirname(manifest)
 
   // Scan the chosen manifest plus any member program crates for on-chain markers.
   const blob = [manifest, ...memberManifests(cargoManifestDir)]
-    .filter((f) => existsSync(f))
-    .map((f) => readFileSync(f, 'utf-8').toLowerCase())
+    .filter((file) => existsSync(file))
+    .map((file) => readFileSync(file, 'utf-8').toLowerCase())
     .join('\n')
   // A manifest under anchor/ or program/, or any program marker, means an SBF program.
   const isProgram =
@@ -98,10 +98,10 @@ const memberManifests = (workspaceDir: string): string[] => {
 }
 
 /**
- * Hints that a template needs real credentials/services to run. Kept reasonably specific:
- * we avoid generic words like "token" that legitimately appear in non-credential .env keys
- * (e.g. a token mint address), because a false positive here would wrongly turn a real
- * build failure into a "skip".
+ * Hints that a template's SETUP INSTRUCTIONS point at real credentials/services.
+ * Only matched against create-solana-dapp instruction prose, never against
+ * .env.example content — env files are matched by variable NAME below, so a word
+ * like "secret" in an env comment can't turn a real build failure into a "skip".
  */
 const SECRET_HINTS = [
   'supabase',
@@ -115,20 +115,41 @@ const SECRET_HINTS = [
   'private_key',
 ]
 
+/** Env variable names that mean "you need a real credential to run this". */
+const CREDENTIAL_KEY_PATTERN = /(API_?KEY|SECRET|PASSWORD|CREDENTIAL|PRIVATE_?KEY|SUPABASE|PRIVY)/i
+/** Names that look credential-ish but are public config (mint addresses, RPC endpoints, ...). */
+const NON_CREDENTIAL_KEY_PATTERN = /(MINT|PROGRAM|ADDRESS|RPC|URL|PUBKEY|PUBLIC_KEY)/i
+
+/**
+ * Extract the variable names in an .env.example that require real credentials.
+ * Parses line by line and matches names only, so comments and values never count.
+ */
+export const envKeysRequiringCredentials = (envBody: string): string[] =>
+  envBody
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && !line.startsWith('#'))
+    .map((line) => line.split('=')[0]?.trim() ?? '')
+    .filter((key) => CREDENTIAL_KEY_PATTERN.test(key) && !NON_CREDENTIAL_KEY_PATTERN.test(key))
+
 const detectSecrets = (dir: string, pkg: AnyPkg | null): { needs: boolean; reason?: string } => {
-  // An .env.example with real-looking keys is the strongest signal.
+  // An .env.example with credential-looking variable names is the strongest signal.
   const envExample = join(dir, '.env.example')
   if (existsSync(envExample)) {
-    const body = readFileSync(envExample, 'utf-8').toLowerCase()
-    if (SECRET_HINTS.some((h) => body.includes(h.replace(' ', '_')) || body.includes(h))) {
-      return { needs: true, reason: '.env.example requires real credentials' }
+    const credentialKeys = envKeysRequiringCredentials(readFileSync(envExample, 'utf-8'))
+    if (credentialKeys.length > 0) {
+      return { needs: true, reason: `.env.example requires credentials (${credentialKeys.slice(0, 3).join(', ')})` }
     }
   }
-  const rawInstr = pkg?.['create-solana-dapp']?.instructions
+  const rawInstructions = pkg?.['create-solana-dapp']?.instructions
   const instructions = (
-    Array.isArray(rawInstr) ? rawInstr.join(' ') : typeof rawInstr === 'string' ? rawInstr : ''
+    Array.isArray(rawInstructions)
+      ? rawInstructions.join(' ')
+      : typeof rawInstructions === 'string'
+        ? rawInstructions
+        : ''
   ).toLowerCase()
-  const hit = SECRET_HINTS.find((h) => instructions.includes(h))
+  const hit = SECRET_HINTS.find((hint) => instructions.includes(hint))
   if (hit) return { needs: true, reason: `setup instructions mention "${hit}"` }
   return { needs: false }
 }
@@ -145,9 +166,12 @@ const templateDirsIn = (groupDir: string): string[] => {
   if (!existsSync(groupDir)) return []
   return readdirSync(groupDir)
     .map((name) => join(groupDir, name))
-    .filter((p) => {
+    .filter((candidate) => {
       try {
-        return statSync(p).isDirectory() && (existsSync(join(p, 'package.json')) || existsSync(join(p, 'Cargo.toml')))
+        return (
+          statSync(candidate).isDirectory() &&
+          (existsSync(join(candidate, 'package.json')) || existsSync(join(candidate, 'Cargo.toml')))
+        )
       } catch {
         return false
       }
@@ -181,5 +205,5 @@ export const enumerateTemplates = (root: string): TemplateRef[] => {
     }
   }
 
-  return refs.sort((a, b) => a.id.localeCompare(b.id))
+  return refs.sort((left, right) => left.id.localeCompare(right.id))
 }

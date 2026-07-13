@@ -4,7 +4,7 @@
  * the working tree or hits mainnet.
  */
 
-import { spawn, spawnSync } from 'child_process'
+import { spawn, spawnSync, type ChildProcess } from 'child_process'
 import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'fs'
 import { tmpdir } from 'os'
 import { join, relative } from 'path'
@@ -36,19 +36,49 @@ export type RunOptions = {
 /** RunOptions after checkTemplate has picked the effective package manager for a template. */
 type ResolvedRunOptions = RunOptions & { readonly packageManager: string }
 
-type Exec = { code: number | null; output: string; timedOut: boolean; durationMs: number }
+type Exec = {
+  code: number | null
+  /** combined stdout+stderr, for human-facing notes */
+  output: string
+  /** stdout alone, for parsing JSON output (stderr warnings would corrupt the parse) */
+  stdout: string
+  timedOut: boolean
+  durationMs: number
+}
 
 const TAIL_LINES = 30
+const MAX_CAPTURE_BYTES = 1_000_000
 
 // Tools like Next.js hard-code ANSI colors into their error strings even with
 // FORCE_COLOR=0/NO_COLOR set, which turns report notes into `[36m` soup. Strip
 // CSI/OSC escape sequences from anything destined for human-facing notes.
 // eslint-disable-next-line no-control-regex
-const stripAnsi = (s: string): string => s.replace(/\x1b(?:\[[0-9;?]*[0-9A-Za-z]|\][^\x07]*(?:\x07|\x1b\\))/g, '')
+const stripAnsi = (text: string): string => text.replace(/\x1b(?:\[[0-9;?]*[0-9A-Za-z]|\][^\x07]*(?:\x07|\x1b\\))/g, '')
 
-const tail = (s: string, n = TAIL_LINES): string => stripAnsi(s).trim().split('\n').slice(-n).join('\n')
+const tail = (text: string, lines = TAIL_LINES): string => stripAnsi(text).trim().split('\n').slice(-lines).join('\n')
 
-/** Spawn a command, capture combined stdout+stderr, enforce a timeout. */
+/**
+ * SIGKILL a child's entire process group. Package managers spawn grandchildren (next dev,
+ * vite, cargo, ...) that a plain child.kill() would orphan — an orphaned dev server holding
+ * a port could then answer a LATER template's boot probe. Process groups are POSIX-only,
+ * which this tool already assumes (see the cp -R note in isolate()).
+ */
+const killProcessTree = (child: ChildProcess): void => {
+  try {
+    if (child.pid) process.kill(-child.pid, 'SIGKILL')
+  } catch {
+    /* group already gone */
+  }
+  try {
+    child.kill('SIGKILL')
+  } catch {
+    /* already dead */
+  }
+}
+
+/** Spawn a command, capture stdout+stderr, enforce a timeout. Spawned detached so the
+ *  command becomes its own process-group leader and killProcessTree can take out its
+ *  whole tree on timeout. */
 const run = (command: string, args: string[], cwd: string, timeoutMs: number): Promise<Exec> =>
   new Promise((resolve) => {
     const start = Date.now()
@@ -56,26 +86,38 @@ const run = (command: string, args: string[], cwd: string, timeoutMs: number): P
       cwd,
       env: { ...process.env, CI: '1', FORCE_COLOR: '0', NO_COLOR: '1' },
       shell: false,
+      detached: true,
     })
     let output = ''
+    let stdout = ''
     let timedOut = false
-    const cap = (buf: Buffer) => {
-      output += buf.toString()
-      if (output.length > 1_000_000) output = output.slice(-1_000_000)
-    }
-    child.stdout.on('data', cap)
-    child.stderr.on('data', cap)
+    child.stdout.on('data', (chunk: Buffer) => {
+      output += chunk.toString()
+      stdout += chunk.toString()
+      if (output.length > MAX_CAPTURE_BYTES) output = output.slice(-MAX_CAPTURE_BYTES)
+      if (stdout.length > MAX_CAPTURE_BYTES) stdout = stdout.slice(-MAX_CAPTURE_BYTES)
+    })
+    child.stderr.on('data', (chunk: Buffer) => {
+      output += chunk.toString()
+      if (output.length > MAX_CAPTURE_BYTES) output = output.slice(-MAX_CAPTURE_BYTES)
+    })
     const timer = setTimeout(() => {
       timedOut = true
-      child.kill('SIGKILL')
+      killProcessTree(child)
     }, timeoutMs)
     child.on('close', (code) => {
       clearTimeout(timer)
-      resolve({ code, output, timedOut, durationMs: Date.now() - start })
+      resolve({ code, output, stdout, timedOut, durationMs: Date.now() - start })
     })
-    child.on('error', (e) => {
+    child.on('error', (spawnError) => {
       clearTimeout(timer)
-      resolve({ code: -1, output: output + `\n${String(e)}`, timedOut, durationMs: Date.now() - start })
+      resolve({
+        code: -1,
+        output: output + `\n${String(spawnError)}`,
+        stdout,
+        timedOut,
+        durationMs: Date.now() - start,
+      })
     })
   })
 
@@ -130,8 +172,8 @@ export const cleanupActiveTempDirs = (): void => {
 
 // Small synchronous cp helper kept separate so isolate() reads cleanly.
 const spawnSyncCp = (src: string, dest: string): boolean => {
-  const r = spawnSync('cp', ['-R', `${src}/.`, dest], { stdio: 'ignore' })
-  return r.status === 0
+  const result = spawnSync('cp', ['-R', `${src}/.`, dest], { stdio: 'ignore' })
+  return result.status === 0
 }
 
 // ---------- deprecation extraction (pure, unit-tested) ----------
@@ -149,9 +191,9 @@ const pkgNameOf = (spec: string): string => {
 export const extractDeprecations = (installOutput: string, directDeps: readonly string[]): string[] => {
   const direct = new Set(directDeps)
   return Array.from(installOutput.matchAll(/deprecated\s+(\S+@[^\s:]+)/gi))
-    .map((m) => m[1])
+    .map((match) => match[1])
     .filter((spec) => direct.has(pkgNameOf(spec)))
-    .filter((v, i, a) => a.indexOf(v) === i)
+    .filter((spec, index, all) => all.indexOf(spec) === index)
     .slice(0, 25)
 }
 
@@ -235,10 +277,11 @@ export const checkOutdated = async (workDir: string, pm: string): Promise<DepsRe
   // Both exit non-zero when something is outdated - that's not an error for us. npm and pnpm
   // emit a package-keyed JSON object with { current, latest }, so one parser handles both.
   const args = pm === 'pnpm' ? ['outdated', '--format', 'json'] : ['outdated', '--json']
-  const r = await run(pm, args, workDir, 120_000)
+  const result = await run(pm, args, workDir, 120_000)
   let parsed: Record<string, { current?: string; latest?: string }>
   try {
-    parsed = JSON.parse(r.output || '{}')
+    // Parse stdout only: npm/pnpm print warnings to stderr, and mixing streams corrupts the JSON.
+    parsed = JSON.parse(result.stdout || '{}')
   } catch {
     return {
       status: 'skip',
@@ -252,11 +295,16 @@ export const checkOutdated = async (workDir: string, pm: string): Promise<DepsRe
     }
   }
   const outdated: OutdatedDep[] = Object.entries(parsed)
-    .filter(([, v]) => v.current && v.latest && v.current !== v.latest)
-    .map(([name, v]) => ({ name, current: v.current!, latest: v.latest!, bump: bumpKind(v.current!, v.latest!) }))
-  const major = outdated.filter((o) => o.bump === 'major').length
-  const minor = outdated.filter((o) => o.bump === 'minor').length
-  const patch = outdated.filter((o) => o.bump === 'patch').length
+    .filter(([, dep]) => dep.current && dep.latest && dep.current !== dep.latest)
+    .map(([name, dep]) => ({
+      name,
+      current: dep.current!,
+      latest: dep.latest!,
+      bump: bumpKind(dep.current!, dep.latest!),
+    }))
+  const major = outdated.filter((dep) => dep.bump === 'major').length
+  const minor = outdated.filter((dep) => dep.bump === 'minor').length
+  const patch = outdated.filter((dep) => dep.bump === 'patch').length
   return {
     status: major > 0 ? 'warn' : 'pass',
     available: true,
@@ -264,7 +312,7 @@ export const checkOutdated = async (workDir: string, pm: string): Promise<DepsRe
     major,
     minor,
     patch,
-    outdated: outdated.sort((a, b) => a.name.localeCompare(b.name)),
+    outdated: outdated.sort((left, right) => left.name.localeCompare(right.name)),
   }
 }
 
@@ -284,15 +332,18 @@ export const checkAudit = async (workDir: string, pm: string): Promise<AuditResu
     }
   }
   // npm and pnpm both expose metadata.vulnerabilities in their --json audit output.
-  const r = await run(pm, ['audit', '--json'], workDir, 120_000)
+  const result = await run(pm, ['audit', '--json'], workDir, 120_000)
   try {
-    const j = JSON.parse(r.output || '{}') as { metadata?: { vulnerabilities?: Record<string, number> } }
-    const v = j.metadata?.vulnerabilities ?? {}
-    const critical = v.critical ?? 0
-    const high = v.high ?? 0
-    const moderate = v.moderate ?? 0
-    const low = v.low ?? 0
-    const info = v.info ?? 0
+    // Parse stdout only: npm/pnpm print warnings to stderr, and mixing streams corrupts the JSON.
+    const auditJson = JSON.parse(result.stdout || '{}') as {
+      metadata?: { vulnerabilities?: Record<string, number> }
+    }
+    const vulnerabilities = auditJson.metadata?.vulnerabilities ?? {}
+    const critical = vulnerabilities.critical ?? 0
+    const high = vulnerabilities.high ?? 0
+    const moderate = vulnerabilities.moderate ?? 0
+    const low = vulnerabilities.low ?? 0
+    const info = vulnerabilities.info ?? 0
     const status: Status = critical > 0 || high > 0 ? 'fail' : moderate > 0 ? 'warn' : 'pass'
     return { status, available: true, critical, high, moderate, low, info }
   } catch {
@@ -328,14 +379,14 @@ export const checkDocDrift = (ref: TemplateRef): DocDriftResult => {
   const text = sources.join('\n')
   // Match `npm run <x>`, `pnpm <x>`, `pnpm run <x>`, `yarn <x>`.
   const referenced = new Set<string>()
-  for (const m of text.matchAll(/\b(?:npm run|pnpm run|yarn run|pnpm|yarn)\s+([a-z][a-z0-9:_-]+)/gi)) {
-    const name = m[1].toLowerCase()
+  for (const match of text.matchAll(/\b(?:npm run|pnpm run|yarn run|pnpm|yarn)\s+([a-z][a-z0-9:_-]+)/gi)) {
+    const name = match[1].toLowerCase()
     // skip package-manager subcommands that aren't user scripts
     if (['install', 'i', 'add', 'create', 'dlx', 'exec', 'why', 'audit', 'outdated', 'update'].includes(name)) continue
     referenced.add(name)
   }
   const scripts = new Set(Object.keys(ref.scripts))
-  const missing = [...referenced].filter((s) => !scripts.has(s)).sort()
+  const missing = [...referenced].filter((script) => !scripts.has(script)).sort()
   return {
     status: missing.length === 0 ? 'pass' : 'warn',
     missingScripts: missing,
@@ -353,27 +404,23 @@ export const checkBoot = async (workDir: string, ref: TemplateRef, opts: Resolve
     return { status: 'skip', available: false, note: 'no dev script' }
   }
   const start = Date.now()
+  // detached: the dev command becomes its own process-group leader, so killProcessTree in
+  // the finally below takes out the whole tree (pm -> next/vite -> workers), not just the pm.
   const child = spawn(opts.packageManager, ['run', 'dev'], {
     cwd: workDir,
     env: { ...process.env, FORCE_COLOR: '0', NO_COLOR: '1' },
+    detached: true,
   })
-  let out = ''
+  let output = ''
   let exited = false
-  child.stdout.on('data', (b) => (out += b.toString()))
-  child.stderr.on('data', (b) => (out += b.toString()))
+  child.stdout.on('data', (chunk: Buffer) => (output += chunk.toString()))
+  child.stderr.on('data', (chunk: Buffer) => (output += chunk.toString()))
   child.on('exit', () => (exited = true))
 
   // Match only the URL the dev server announces for itself. We never probe guessed ports,
   // since an unrelated service already listening on 3000/5173 would otherwise read as a pass.
-  const urlRe = /https?:\/\/(?:localhost|127\.0\.0\.1):(\d+)/
+  const urlPattern = /https?:\/\/(?:localhost|127\.0\.0\.1):(\d+)/
   const deadline = Date.now() + 60_000
-  const kill = () => {
-    try {
-      child.kill('SIGKILL')
-    } catch {
-      /* ignore */
-    }
-  }
 
   // Error statuses (4xx/5xx) don't pass, but they don't fail immediately either: dev
   // servers can respond 500 while still compiling, so keep polling until the deadline.
@@ -385,18 +432,18 @@ export const checkBoot = async (workDir: string, ref: TemplateRef, opts: Resolve
           status: 'fail',
           available: true,
           durationMs: Date.now() - start,
-          note: `dev server exited before responding\n${tail(out, 15)}`,
+          note: `dev server exited before responding\n${tail(output, 15)}`,
         }
       }
-      const printed = out.match(urlRe)
+      const printed = output.match(urlPattern)
       if (printed) {
         const url = `http://localhost:${printed[1]}`
-        const res = await tryFetch(url)
-        if (res !== null && res >= 200 && res < 400) {
-          return { status: 'pass', available: true, url, httpStatus: res, durationMs: Date.now() - start }
+        const httpStatus = await tryFetch(url)
+        if (httpStatus !== null && httpStatus >= 200 && httpStatus < 400) {
+          return { status: 'pass', available: true, url, httpStatus, durationMs: Date.now() - start }
         }
-        if (res !== null) {
-          lastErrorStatus = res
+        if (httpStatus !== null) {
+          lastErrorStatus = httpStatus
         }
       }
       await sleep(1500)
@@ -407,35 +454,35 @@ export const checkBoot = async (workDir: string, ref: TemplateRef, opts: Resolve
         available: true,
         httpStatus: lastErrorStatus,
         durationMs: Date.now() - start,
-        note: `dev server kept responding with HTTP ${lastErrorStatus} until the 60s deadline\n${tail(out, 15)}`,
+        note: `dev server kept responding with HTTP ${lastErrorStatus} until the 60s deadline\n${tail(output, 15)}`,
       }
     }
     return {
       status: 'fail',
       available: true,
       durationMs: Date.now() - start,
-      note: urlRe.test(out)
-        ? `dev server printed a URL but did not respond within 60s\n${tail(out, 15)}`
-        : `dev server did not print a localhost URL within 60s\n${tail(out, 15)}`,
+      note: urlPattern.test(output)
+        ? `dev server printed a URL but did not respond within 60s\n${tail(output, 15)}`
+        : `dev server did not print a localhost URL within 60s\n${tail(output, 15)}`,
     }
   } finally {
-    kill()
+    killProcessTree(child)
   }
 }
 
 const tryFetch = async (url: string): Promise<number | null> => {
   try {
-    const ctrl = new AbortController()
-    const t = setTimeout(() => ctrl.abort(), 2000)
-    const res = await fetch(url, { signal: ctrl.signal })
-    clearTimeout(t)
-    return res.status
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), 2000)
+    const response = await fetch(url, { signal: controller.signal })
+    clearTimeout(timer)
+    return response.status
   } catch {
     return null
   }
 }
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 // ---------- dimension 3b: Rust (cargo) ----------
 
@@ -492,13 +539,13 @@ export const checkRust = async (workDir: string, ref: TemplateRef, opts: RunOpti
 
   // Host binary: a plain cargo test is enough.
   if (!ref.isProgram) {
-    const t = await run('cargo', ['test'], manifestDir, opts.buildTimeoutMs)
+    const testRun = await run('cargo', ['test'], manifestDir, opts.buildTimeoutMs)
     return {
       ...base,
-      status: t.timedOut || t.code !== 0 ? 'fail' : 'pass',
+      status: testRun.timedOut || testRun.code !== 0 ? 'fail' : 'pass',
       command: 'cargo build && cargo test',
-      tail: tail(t.output),
-      durationMs: base.durationMs + t.durationMs,
+      tail: tail(testRun.output),
+      durationMs: base.durationMs + testRun.durationMs,
       tested: true,
     }
   }
@@ -512,13 +559,13 @@ export const checkRust = async (workDir: string, ref: TemplateRef, opts: RunOpti
   if (built.timedOut || built.code !== 0) {
     return { ...base, status: 'fail', command: 'cargo-build-sbf', tail: tail(built.output), tested: true }
   }
-  const t = await run('cargo', ['test'], manifestDir, opts.buildTimeoutMs)
+  const testRun = await run('cargo', ['test'], manifestDir, opts.buildTimeoutMs)
   return {
     ...base,
-    status: t.timedOut || t.code !== 0 ? 'fail' : 'pass',
+    status: testRun.timedOut || testRun.code !== 0 ? 'fail' : 'pass',
     command: 'cargo check && cargo-build-sbf && cargo test',
-    tail: tail(t.output),
-    durationMs: base.durationMs + built.durationMs + t.durationMs,
+    tail: tail(testRun.output),
+    durationMs: base.durationMs + built.durationMs + testRun.durationMs,
     tested: true,
   }
 }

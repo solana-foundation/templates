@@ -19,23 +19,23 @@ test('diff surfaces regressions, fixes, new and removed templates', () => {
     ['community/new', 'warn'], // new
     // web3js/old removed
   ])
-  const d = diffReports(current, baseline)
-  assert.deepEqual(d.regressions, ['kit/nextjs'])
-  assert.deepEqual(d.fixed, ['kit/react-vite'])
-  assert.deepEqual(d.newTemplates, ['community/new'])
-  assert.deepEqual(d.removed, ['web3js/old'])
+  const diff = diffReports(current, baseline)
+  assert.deepEqual(diff.regressions, ['kit/nextjs'])
+  assert.deepEqual(diff.fixed, ['kit/react-vite'])
+  assert.deepEqual(diff.newTemplates, ['community/new'])
+  assert.deepEqual(diff.removed, ['web3js/old'])
 })
 
 test('warn → fail counts as a regression; warn → warn does not', () => {
   const baseline = report([
-    ['a', 'warn'],
-    ['b', 'warn'],
+    ['kit/alpha', 'warn'],
+    ['kit/beta', 'warn'],
   ])
   const current = report([
-    ['a', 'fail'],
-    ['b', 'warn'],
+    ['kit/alpha', 'fail'],
+    ['kit/beta', 'warn'],
   ])
-  const d = diffReports(current, baseline)
-  assert.deepEqual(d.regressions, ['a'])
-  assert.deepEqual(d.fixed, [])
+  const diff = diffReports(current, baseline)
+  assert.deepEqual(diff.regressions, ['kit/alpha'])
+  assert.deepEqual(diff.fixed, [])
 })

@@ -64,26 +64,26 @@ const parseArgs = (argv: string[]): Cli => {
   // (e.g. another flag). A NaN concurrency would otherwise spin up zero workers and
   // produce an empty, falsely-successful report.
   const numArg = (raw: string | undefined, fallback: number, min: number): number => {
-    const n = Number(raw)
-    return Number.isFinite(n) && n >= min ? Math.floor(n) : fallback
+    const parsed = Number(raw)
+    return Number.isFinite(parsed) && parsed >= min ? Math.floor(parsed) : fallback
   }
-  for (let i = 0; i < argv.length; i++) {
-    const a = argv[i]
-    const next = () => argv[++i]
-    if (a === '--only')
+  for (let argIndex = 0; argIndex < argv.length; argIndex++) {
+    const arg = argv[argIndex]
+    const next = () => argv[++argIndex]
+    if (arg === '--only')
       cli.only = next()
         .split(',')
-        .map((s) => s.trim())
-    else if (a === '--group') cli.group = next()
-    else if (a === '--no-build') cli.build = false
-    else if (a === '--boot') cli.boot = true
-    else if (a === '--cargo-test') cli.cargoTest = true
-    else if (a === '--pm') cli.pm = next()
-    else if (a === '--out') cli.out = next()
-    else if (a === '--concurrency') cli.concurrency = numArg(next(), 3, 1)
-    else if (a === '--baseline') cli.baseline = next()
-    else if (a === '--keep') cli.keep = numArg(next(), 10, 0)
-    else if (a === '--help' || a === '-h') {
+        .map((id) => id.trim())
+    else if (arg === '--group') cli.group = next()
+    else if (arg === '--no-build') cli.build = false
+    else if (arg === '--boot') cli.boot = true
+    else if (arg === '--cargo-test') cli.cargoTest = true
+    else if (arg === '--pm') cli.pm = next()
+    else if (arg === '--out') cli.out = next()
+    else if (arg === '--concurrency') cli.concurrency = numArg(next(), 3, 1)
+    else if (arg === '--baseline') cli.baseline = next()
+    else if (arg === '--keep') cli.keep = numArg(next(), 10, 0)
+    else if (arg === '--help' || arg === '-h') {
       printHelp()
       process.exit(0)
     }
@@ -107,28 +107,33 @@ const printHelp = () => {
 `)
 }
 
-const toTemplateReport = (ref: TemplateRef, r: Awaited<ReturnType<typeof checkTemplate>>): TemplateReport => {
-  const functional: Status[] = [r.build.status]
-  if (r.boot) functional.push(r.boot.status)
-  if (r.rust) functional.push(r.rust.status)
-  const advisory: Status[] = [r.deps.status, r.audit.status, r.deprecation.status, r.docDrift.status]
+const toTemplateReport = (ref: TemplateRef, checked: Awaited<ReturnType<typeof checkTemplate>>): TemplateReport => {
+  const functional: Status[] = [checked.build.status]
+  if (checked.boot) functional.push(checked.boot.status)
+  if (checked.rust) functional.push(checked.rust.status)
+  const advisory: Status[] = [
+    checked.deps.status,
+    checked.audit.status,
+    checked.deprecation.status,
+    checked.docDrift.status,
+  ]
   // needs-setup dominates: we couldn't actually validate the template, so it's "skip",
   // not pass/warn from incidental advisory checks.
-  const status: Status = r.needsSetupSkip ? 'skip' : overallStatus(functional, advisory)
+  const status: Status = checked.needsSetupSkip ? 'skip' : overallStatus(functional, advisory)
   return {
     id: ref.id,
     group: ref.group,
     kind: ref.kind,
     status,
     needsSecrets: ref.needsSecrets,
-    packageManager: r.packageManager,
-    build: r.build,
-    deps: r.deps,
-    audit: r.audit,
-    deprecation: r.deprecation,
-    docDrift: r.docDrift,
-    boot: r.boot,
-    rust: r.rust,
+    packageManager: checked.packageManager,
+    build: checked.build,
+    deps: checked.deps,
+    audit: checked.audit,
+    deprecation: checked.deprecation,
+    docDrift: checked.docDrift,
+    boot: checked.boot,
+    rust: checked.rust,
   }
 }
 
@@ -138,8 +143,8 @@ const pool = async <T, R>(items: T[], limit: number, fn: (item: T, index: number
   let cursor = 0
   const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
     while (cursor < items.length) {
-      const i = cursor++
-      results[i] = await fn(items[i], i)
+      const index = cursor++
+      results[index] = await fn(items[index], index)
     }
   })
   await Promise.all(workers)
@@ -153,8 +158,8 @@ const pruneReports = (outDir: string, keep: number): number => {
   const stamps = [
     ...new Set(
       readdirSync(outDir)
-        .map((f) => f.match(stampRe)?.[1])
-        .filter((s): s is string => Boolean(s)),
+        .map((file) => file.match(stampRe)?.[1])
+        .filter((stamp): stamp is string => Boolean(stamp)),
     ),
   ]
     .sort()
@@ -162,9 +167,9 @@ const pruneReports = (outDir: string, keep: number): number => {
   let removed = 0
   for (const stamp of stamps.slice(keep)) {
     for (const ext of ['json', 'md']) {
-      const p = join(outDir, `${stamp}.${ext}`)
-      if (existsSync(p)) {
-        rmSync(p, { force: true })
+      const reportPath = join(outDir, `${stamp}.${ext}`)
+      if (existsSync(reportPath)) {
+        rmSync(reportPath, { force: true })
         removed++
       }
     }
@@ -188,8 +193,8 @@ const main = async () => {
   }
 
   let templates = enumerateTemplates(ROOT)
-  if (cli.group) templates = templates.filter((t) => t.group === cli.group)
-  if (cli.only) templates = templates.filter((t) => cli.only!.includes(t.id))
+  if (cli.group) templates = templates.filter((template) => template.group === cli.group)
+  if (cli.only) templates = templates.filter((template) => cli.only!.includes(template.id))
 
   if (templates.length === 0) {
     console.error('No templates matched the given filters.')
@@ -206,42 +211,44 @@ const main = async () => {
   }
 
   const runTemplate = async (ref: TemplateRef, label: string): Promise<TemplateReport> => {
-    const t0 = Date.now()
+    const startedAt = Date.now()
     try {
-      const r = await checkTemplate(ref, opts)
-      if (r.pmNote) console.error(`    ↳ ${ref.id}: ${r.pmNote}`)
-      const report = toTemplateReport(ref, r)
-      const secs = Math.round((Date.now() - t0) / 1000)
+      const checked = await checkTemplate(ref, opts)
+      if (checked.pmNote) console.error(`    ↳ ${ref.id}: ${checked.pmNote}`)
+      const report = toTemplateReport(ref, checked)
+      const secs = Math.round((Date.now() - startedAt) / 1000)
       console.error(`${label} ${statusIcon(report.status)} ${ref.id} (${secs}s) [${report.packageManager}]`)
       return report
-    } catch (e) {
-      console.error(`${label} 💥 ${ref.id} — ${String(e)}`)
-      return errorReport(ref, String(e))
+    } catch (error) {
+      console.error(`${label} 💥 ${ref.id} — ${String(error)}`)
+      return errorReport(ref, String(error))
     }
   }
 
   console.error(`Checking ${templates.length} template(s) with concurrency ${cli.concurrency}...\n`)
-  const reports = await pool(templates, cli.concurrency, (ref, i) => runTemplate(ref, `[${i + 1}/${templates.length}]`))
+  const reports = await pool(templates, cli.concurrency, (ref, index) =>
+    runTemplate(ref, `[${index + 1}/${templates.length}]`),
+  )
 
   // Stability: re-run each functional failure once, alone (concurrency 1). A template that
   // only fails under load (e.g. 4 concurrent Next builds exhausting memory) passes here and
   // is marked flaky; one that fails again is a real break. This keeps the fail list honest.
-  const failed = reports.map((r, i) => ({ r, i })).filter((x) => x.r.status === 'fail')
+  const failed = reports.map((report, index) => ({ report, index })).filter((entry) => entry.report.status === 'fail')
   if (failed.length) {
     console.error(`\nRetrying ${failed.length} failure(s) in isolation to separate flaky from real...`)
-    for (const { i } of failed) {
-      const retry = await runTemplate(templates[i], '[retry]')
-      reports[i] = retry.status === 'fail' ? retry : { ...retry, flaky: true }
-      if (retry.status !== 'fail') console.error(`    ↳ ${templates[i].id} was flaky (passed alone)`)
+    for (const { index } of failed) {
+      const retry = await runTemplate(templates[index], '[retry]')
+      reports[index] = retry.status === 'fail' ? retry : { ...retry, flaky: true }
+      if (retry.status !== 'fail') console.error(`    ↳ ${templates[index].id} was flaky (passed alone)`)
     }
   }
 
   const summary = {
     total: reports.length,
-    pass: reports.filter((r) => r.status === 'pass').length,
-    warn: reports.filter((r) => r.status === 'warn').length,
-    fail: reports.filter((r) => r.status === 'fail').length,
-    skip: reports.filter((r) => r.status === 'skip').length,
+    pass: reports.filter((report) => report.status === 'pass').length,
+    warn: reports.filter((report) => report.status === 'warn').length,
+    fail: reports.filter((report) => report.status === 'fail').length,
+    skip: reports.filter((report) => report.status === 'skip').length,
   }
 
   const report: HealthReport = {
@@ -292,7 +299,7 @@ const main = async () => {
   process.exit(summary.fail > 0 ? 1 : 0)
 }
 
-const statusIcon = (s: Status) => ({ pass: '✅', warn: '⚠️', fail: '❌', skip: '⏭️' })[s]
+const statusIcon = (status: Status) => ({ pass: '✅', warn: '⚠️', fail: '❌', skip: '⏭️' })[status]
 
 const errorReport = (ref: TemplateRef, message: string): TemplateReport => ({
   id: ref.id,
@@ -334,7 +341,7 @@ const errorReport = (ref: TemplateRef, message: string): TemplateReport => ({
   docDrift: { status: 'skip', missingScripts: [] },
 })
 
-main().catch((e) => {
-  console.error(e)
+main().catch((error) => {
+  console.error(error)
   process.exit(1)
 })

@@ -13,7 +13,7 @@ export const overallStatus = (functional: Status[], advisory: Status[]): Status 
   if (functional.includes('fail')) return 'fail'
   const all = [...functional, ...advisory]
   if (all.includes('warn') || advisory.includes('fail')) return 'warn'
-  if (all.length > 0 && all.every((s) => s === 'skip')) return 'skip'
+  if (all.length > 0 && all.every((status) => status === 'skip')) return 'skip'
   return 'pass'
 }
 

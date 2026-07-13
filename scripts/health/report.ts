@@ -7,17 +7,22 @@ import type { HealthReport, Status, TemplateReport } from './types.js'
 
 const ICON: Record<Status, string> = { pass: '✅', warn: '⚠️', fail: '❌', skip: '⏭️' }
 
-const statusLine = (r: TemplateReport): string => {
+const statusLine = (template: TemplateReport): string => {
   const parts: string[] = []
-  if (r.build.status !== 'skip') parts.push(`build ${ICON[r.build.status]}`)
-  if (r.rust?.available) parts.push(`rust ${ICON[r.rust.status]}${r.rust.tested ? '+test' : ''}`)
-  if (r.deps.available) parts.push(`deps ${ICON[r.deps.status]}(${r.deps.major}M/${r.deps.minor}m/${r.deps.patch}p)`)
-  if (r.audit.available && r.audit.critical + r.audit.high + r.audit.moderate > 0)
-    parts.push(`vuln ${ICON[r.audit.status]}(${r.audit.critical}C/${r.audit.high}H/${r.audit.moderate}M)`)
-  if (r.deprecation.packages.length)
-    parts.push(`deprecated ${ICON[r.deprecation.status]}(${r.deprecation.packages.length})`)
-  if (r.docDrift.missingScripts.length) parts.push(`docs ${ICON[r.docDrift.status]}`)
-  if (r.boot) parts.push(`boot ${ICON[r.boot.status]}`)
+  if (template.build.status !== 'skip') parts.push(`build ${ICON[template.build.status]}`)
+  if (template.rust?.available) parts.push(`rust ${ICON[template.rust.status]}${template.rust.tested ? '+test' : ''}`)
+  if (template.deps.available)
+    parts.push(
+      `deps ${ICON[template.deps.status]}(${template.deps.major}M/${template.deps.minor}m/${template.deps.patch}p)`,
+    )
+  if (template.audit.available && template.audit.critical + template.audit.high + template.audit.moderate > 0)
+    parts.push(
+      `vuln ${ICON[template.audit.status]}(${template.audit.critical}C/${template.audit.high}H/${template.audit.moderate}M)`,
+    )
+  if (template.deprecation.packages.length)
+    parts.push(`deprecated ${ICON[template.deprecation.status]}(${template.deprecation.packages.length})`)
+  if (template.docDrift.missingScripts.length) parts.push(`docs ${ICON[template.docDrift.status]}`)
+  if (template.boot) parts.push(`boot ${ICON[template.boot.status]}`)
   return parts.join(' · ')
 }
 
@@ -35,50 +40,55 @@ export const toMarkdown = (report: HealthReport): string => {
   )
   lines.push('')
 
-  const fails = report.templates.filter((t) => t.status === 'fail')
-  const warns = report.templates.filter((t) => t.status === 'warn')
-  const passes = report.templates.filter((t) => t.status === 'pass')
-  const skips = report.templates.filter((t) => t.status === 'skip')
+  const fails = report.templates.filter((template) => template.status === 'fail')
+  const warns = report.templates.filter((template) => template.status === 'warn')
+  const passes = report.templates.filter((template) => template.status === 'pass')
+  const skips = report.templates.filter((template) => template.status === 'skip')
 
   if (fails.length) {
     lines.push('## ❌ Failures', '')
-    for (const t of fails) lines.push(...failureBlock(t))
+    for (const template of fails) lines.push(...failureBlock(template))
   }
 
   if (warns.length) {
     lines.push('## ⚠️ Warnings', '')
-    for (const t of warns) {
-      lines.push(`### ${t.id}${t.flaky ? ' ⚡ (flaky — failed under load, passed on isolated retry)' : ''}`)
-      lines.push(`- ${statusLine(t)}`)
-      if (t.deps.major > 0)
+    for (const template of warns) {
+      lines.push(
+        `### ${template.id}${template.flaky ? ' ⚡ (flaky — failed under load, passed on isolated retry)' : ''}`,
+      )
+      lines.push(`- ${statusLine(template)}`)
+      if (template.deps.major > 0)
         lines.push(
-          `- ${t.deps.major} major version(s) behind: ${t.deps.outdated
-            .filter((o) => o.bump === 'major')
-            .map((o) => `\`${o.name}\` ${o.current}→${o.latest}`)
+          `- ${template.deps.major} major version(s) behind: ${template.deps.outdated
+            .filter((dep) => dep.bump === 'major')
+            .map((dep) => `\`${dep.name}\` ${dep.current}→${dep.latest}`)
             .join(', ')}`,
         )
-      if (t.deprecation.packages.length)
-        lines.push(`- deprecated: ${t.deprecation.packages.map((p) => `\`${p}\``).join(', ')}`)
-      if (t.docDrift.missingScripts.length)
+      if (template.deprecation.packages.length)
         lines.push(
-          `- README references missing scripts: ${t.docDrift.missingScripts.map((s) => `\`${s}\``).join(', ')}`,
+          `- deprecated: ${template.deprecation.packages.map((packageName) => `\`${packageName}\``).join(', ')}`,
         )
-      if (t.needsSecrets) lines.push(`- ⓘ needs external credentials to fully verify (runtime not checked here)`)
+      if (template.docDrift.missingScripts.length)
+        lines.push(
+          `- README references missing scripts: ${template.docDrift.missingScripts.map((script) => `\`${script}\``).join(', ')}`,
+        )
+      if (template.needsSecrets) lines.push(`- ⓘ needs external credentials to fully verify (runtime not checked here)`)
       lines.push('')
     }
   }
 
   if (passes.length) {
     lines.push('## ✅ Passing', '')
-    for (const t of passes) lines.push(`- **${t.id}** — ${statusLine(t)}${t.flaky ? ' ⚡ flaky' : ''}`)
+    for (const template of passes)
+      lines.push(`- **${template.id}** — ${statusLine(template)}${template.flaky ? ' ⚡ flaky' : ''}`)
     lines.push('')
   }
 
   if (skips.length) {
     lines.push('## ⏭️ Skipped', '')
-    for (const t of skips) {
-      const reason = t.build.tail || t.deps.note || 'see notes'
-      lines.push(`- **${t.id}** (${t.kind}) — ${reason.split('\n')[0]}`)
+    for (const template of skips) {
+      const reason = template.build.tail || template.deps.note || 'see notes'
+      lines.push(`- **${template.id}** (${template.kind}) — ${reason.split('\n')[0]}`)
     }
     lines.push('')
   }
@@ -90,30 +100,30 @@ export const toMarkdown = (report: HealthReport): string => {
   return lines.join('\n') + '\n'
 }
 
-const failureBlock = (t: TemplateReport): string[] => {
+const failureBlock = (template: TemplateReport): string[] => {
   const out: string[] = []
-  out.push(`### ❌ ${t.id}`)
-  out.push(`- **Kind:** ${t.kind} · **PM:** ${t.packageManager}`)
+  out.push(`### ❌ ${template.id}`)
+  out.push(`- **Kind:** ${template.kind} · **PM:** ${template.packageManager}`)
   // Show whichever functional check actually failed (npm build, cargo, or boot).
   const failed =
-    t.rust?.status === 'fail'
-      ? { what: 'rust', command: t.rust.command, tail: t.rust.tail }
-      : t.boot?.status === 'fail'
-        ? { what: 'boot', command: 'dev server', tail: t.boot.note ?? '' }
+    template.rust?.status === 'fail'
+      ? { what: 'rust', command: template.rust.command, tail: template.rust.tail }
+      : template.boot?.status === 'fail'
+        ? { what: 'boot', command: 'dev server', tail: template.boot.note ?? '' }
         : {
-            what: `build (${t.build.phase})${t.build.timedOut ? ' timed out' : ''}`,
-            command: t.build.command,
-            tail: t.build.tail,
+            what: `build (${template.build.phase})${template.build.timedOut ? ' timed out' : ''}`,
+            command: template.build.command,
+            tail: template.build.tail,
           }
   out.push(`- **Failed:** ${failed.what}`)
   out.push(`- **Command:** \`${failed.command}\``)
-  if (t.audit.critical + t.audit.high > 0)
-    out.push(`- **Vulnerabilities:** ${t.audit.critical} critical, ${t.audit.high} high`)
+  if (template.audit.critical + template.audit.high > 0)
+    out.push(`- **Vulnerabilities:** ${template.audit.critical} critical, ${template.audit.high} high`)
   out.push('- **Output:**')
   out.push('```')
   out.push(failed.tail.slice(0, 2500))
   out.push('```')
-  out.push(`- **Repro:** \`pnpm health --only ${t.id}\``)
+  out.push(`- **Repro:** \`pnpm health --only ${template.id}\``)
   out.push('')
   return out
 }
@@ -128,34 +138,34 @@ export type Diff = {
 }
 
 export const diffReports = (current: HealthReport, baseline: HealthReport): Diff => {
-  const prev = new Map(baseline.templates.map((t) => [t.id, t.status]))
-  const cur = new Map(current.templates.map((t) => [t.id, t.status]))
+  const previousById = new Map(baseline.templates.map((template) => [template.id, template.status]))
+  const currentById = new Map(current.templates.map((template) => [template.id, template.status]))
   const regressions: string[] = []
   const fixed: string[] = []
   const newTemplates: string[] = []
 
-  for (const t of current.templates) {
-    const before = prev.get(t.id)
+  for (const template of current.templates) {
+    const before = previousById.get(template.id)
     if (before === undefined) {
-      newTemplates.push(t.id)
+      newTemplates.push(template.id)
       continue
     }
-    if (before !== 'fail' && t.status === 'fail') regressions.push(t.id)
-    if (before === 'fail' && t.status !== 'fail') fixed.push(t.id)
+    if (before !== 'fail' && template.status === 'fail') regressions.push(template.id)
+    if (before === 'fail' && template.status !== 'fail') fixed.push(template.id)
   }
-  const removed = [...prev.keys()].filter((id) => !cur.has(id))
+  const removed = [...previousById.keys()].filter((id) => !currentById.has(id))
   return { regressions, fixed, newTemplates, removed }
 }
 
-export const diffToMarkdown = (d: Diff): string => {
+export const diffToMarkdown = (diff: Diff): string => {
   const lines: string[] = ['## Regressions vs last run', '']
-  if (!d.regressions.length && !d.fixed.length && !d.newTemplates.length && !d.removed.length) {
+  if (!diff.regressions.length && !diff.fixed.length && !diff.newTemplates.length && !diff.removed.length) {
     lines.push('_No changes vs baseline._')
     return lines.join('\n') + '\n'
   }
-  if (d.regressions.length) lines.push(`- 🔴 **Regressed (now failing):** ${d.regressions.join(', ')}`)
-  if (d.fixed.length) lines.push(`- 🟢 **Fixed:** ${d.fixed.join(', ')}`)
-  if (d.newTemplates.length) lines.push(`- 🆕 **New:** ${d.newTemplates.join(', ')}`)
-  if (d.removed.length) lines.push(`- ➖ **Removed:** ${d.removed.join(', ')}`)
+  if (diff.regressions.length) lines.push(`- 🔴 **Regressed (now failing):** ${diff.regressions.join(', ')}`)
+  if (diff.fixed.length) lines.push(`- 🟢 **Fixed:** ${diff.fixed.join(', ')}`)
+  if (diff.newTemplates.length) lines.push(`- 🆕 **New:** ${diff.newTemplates.join(', ')}`)
+  if (diff.removed.length) lines.push(`- ➖ **Removed:** ${diff.removed.join(', ')}`)
   return lines.join('\n') + '\n'
 }
