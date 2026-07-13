@@ -51,7 +51,7 @@ export default defineTool({
     }
 
     return {
-      payment: approved,
+      approvedTerms: approved,
       quote,
       sandbox: true,
     }
