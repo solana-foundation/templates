@@ -8,7 +8,10 @@
     "create-image": "tsx scripts/create-image.ts",
     "generate": "tsx scripts/generate.ts && automd",
     "format": "prettier --write .",
-    "lint": "tsx scripts/lint.ts && prettier --check .",
+    "health": "tsx scripts/health-check.ts",
+    "health:test": "tsx --test scripts/health/*.test.ts",
+    "lint": "tsx scripts/lint.ts && prettier --check . && tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1",
     "update-deps": "pnpm -r update --latest",
     "validate": "tsx scripts/validate.ts"
@@ -18,12 +21,15 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^24.5.2",
+    "@types/react": "^19.2.17",
     "@vercel/og": "^0.7.2",
     "automd": "^0.4.2",
     "prettier": "^3.6.2",
     "puppeteer": "^23.11.1",
+    "react": "^19.2.7",
     "sharp": "^0.33.5",
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.2",
+    "typescript": "^7.0.2"
   },
   "repokit": {
     "groups": [
