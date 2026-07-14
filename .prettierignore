@@ -4,6 +4,8 @@
 /tmp
 pnpm-lock.yaml
 .next
+community/**/.eve
+community/**/.output
 
 # Generated files
 templates.json
