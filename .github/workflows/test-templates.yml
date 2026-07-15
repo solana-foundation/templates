@@ -95,6 +95,10 @@ jobs:
       matrix:
         node: [22, 24]
         template: ${{ fromJson(needs.setup-templates.outputs.templates) }}
+        exclude:
+          # @solana-program/token >=0.14 requires Node >=24
+          - node: 22
+            template: kit/nextjs
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -116,6 +120,10 @@ jobs:
       matrix:
         node: [22, 24]
         template: ${{ fromJson(needs.setup-templates.outputs.templates) }}
+        exclude:
+          # @solana-program/token >=0.14 requires Node >=24
+          - node: 22
+            template: kit/nextjs
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -137,6 +145,10 @@ jobs:
       matrix:
         node: [22, 24]
         template: ${{ fromJson(needs.setup-templates.outputs.templates) }}
+        exclude:
+          # @solana-program/token >=0.14 requires Node >=24
+          - node: 22
+            template: kit/nextjs
     steps:
       - name: Checkout
         uses: actions/checkout@v4
