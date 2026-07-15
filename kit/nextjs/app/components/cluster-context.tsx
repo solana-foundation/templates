@@ -23,9 +23,13 @@ const STORAGE_KEY = "solana-cluster";
 const CLUSTER_EVENT = "cluster-change";
 
 function readStoredCluster(): ClusterMoniker {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored && CLUSTERS.includes(stored as ClusterMoniker)) {
-    return stored as ClusterMoniker;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored && CLUSTERS.includes(stored as ClusterMoniker)) {
+      return stored as ClusterMoniker;
+    }
+  } catch {
+    // localStorage unavailable (e.g. Safari private mode)
   }
   return "devnet";
 }
@@ -53,7 +57,11 @@ export function ClusterProvider({ children }: { children: ReactNode }) {
   );
 
   const setCluster = useCallback((c: ClusterMoniker) => {
-    localStorage.setItem(STORAGE_KEY, c);
+    try {
+      localStorage.setItem(STORAGE_KEY, c);
+    } catch {
+      // localStorage unavailable (e.g. Safari private mode)
+    }
     window.dispatchEvent(new Event(CLUSTER_EVENT));
   }, []);
 
