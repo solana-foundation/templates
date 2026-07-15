@@ -1,6 +1,6 @@
 {
   "name": "nextjs",
-  "description": "Next.js, Tailwind, @solana/react-hooks",
+  "description": "Next.js, Tailwind, @solana/kit wallet + on-chain actions",
   "keywords": [
     "kit",
     "nextjs",
@@ -21,6 +21,9 @@
   },
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "build": "next build",
     "ci": "npm run build && npm run lint && npm run format:check",
@@ -31,11 +34,19 @@
     "start": "next start"
   },
   "dependencies": {
-    "@solana/client": "^1.2.0",
-    "@solana/react-hooks": "^1.1.5",
+    "@solana-program/memo": "^0.12.0",
+    "@solana-program/system": "^0.13.0",
+    "@solana-program/token": "^0.15.0",
+    "@solana/kit": "^7.0.0",
+    "@solana/kit-plugin-rpc": "^0.13.0",
+    "@solana/kit-plugin-wallet": "^0.13.1",
+    "@solana/react": "^7.0.0",
     "next": "16.2.6",
+    "next-themes": "^0.4.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "sonner": "^2.0.7",
+    "swr": "^2.2.0",
     "ws": "^8.18.3"
   },
   "devDependencies": {

@@ -25,7 +25,7 @@
         "usecase": "Starter"
       },
       {
-        "description": "Next.js, Tailwind, @solana/react-hooks",
+        "description": "Next.js, Tailwind, @solana/kit wallet + on-chain actions",
         "id": "gh:solana-foundation/templates/kit/nextjs",
         "image": "kit/nextjs/og-image.png",
         "keywords": [

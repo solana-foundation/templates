@@ -14,7 +14,7 @@ Kit Templates (using @solana/kit)
 
 `gh:solana-foundation/templates/kit/nextjs`
 
-> Next.js, Tailwind, @solana/react-hooks
+> Next.js, Tailwind, @solana/kit wallet + on-chain actions
 
 `kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
 
