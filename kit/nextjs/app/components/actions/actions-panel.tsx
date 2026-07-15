@@ -24,7 +24,7 @@ export function ActionsPanel() {
       {cluster !== "mainnet" && <AirdropCard />}
       <TransferSolCard />
       <MemoCard />
-      <TokenCard />
+      <TokenCard key={cluster} />
     </section>
   );
 }

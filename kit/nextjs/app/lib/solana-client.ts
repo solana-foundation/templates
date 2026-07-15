@@ -1,10 +1,9 @@
 import { createClient, MicroLamports } from "@solana/kit";
 import { walletSigner } from "@solana/kit-plugin-wallet";
-import {
-  solanaRpc,
-  rpcAirdrop,
-} from "@solana/kit-plugin-rpc";
+import { solanaRpc, rpcAirdrop } from "@solana/kit-plugin-rpc";
 import { tokenProgram } from "@solana-program/token";
+import { memoProgram } from "@solana-program/memo";
+import { systemProgram } from "@solana-program/system";
 
 export type ClusterMoniker = "devnet" | "testnet" | "mainnet" | "localnet";
 
@@ -54,12 +53,14 @@ export function createAppClient(cluster: ClusterMoniker) {
         rpcUrl: CLUSTER_URLS[cluster],
         rpcSubscriptionsUrl: WS_URLS[cluster],
         transactionConfig: {
-          microLamportsPerComputeUnit: 1000n as MicroLamports
-        }
+          microLamportsPerComputeUnit: 1000n as MicroLamports,
+        },
       })
     )
     .use(rpcAirdrop())
-    .use(tokenProgram());
+    .use(systemProgram())
+    .use(tokenProgram())
+    .use(memoProgram());
 }
 
 export type AppClient = ReturnType<typeof createAppClient>;

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { getAddMemoInstruction } from "@solana-program/memo";
 import { useConnectedWallet } from "@solana/kit-plugin-wallet/react";
 import { useAppClient } from "../../lib/client-provider";
 import { useSend } from "../../lib/hooks/use-send";
@@ -16,19 +15,21 @@ export function MemoCard() {
     if (!connected?.signer || !memo) return;
     const signer = connected.signer;
 
-    const memoInstruction = getAddMemoInstruction({
-      memo,
-      signers: [signer],
-    });
-    await run(() => client.sendTransaction([memoInstruction]), "Memo posted");
+    await run(
+      () =>
+        client.memo.instructions
+          .addMemo({ memo, signers: [signer] })
+          .sendTransaction(),
+      "Memo posted"
+    );
   };
 
   return (
     <div className="rounded-2xl border border-border-low bg-card p-6">
       <h2 className="text-sm font-semibold">Add memo</h2>
       <p className="mt-1 text-xs text-muted">
-        Attach an on-chain note with the SPL Memo program. Built by hand —
-        @solana-program/memo has no client plugin.
+        Attach an on-chain note with the SPL Memo program via the
+        @solana-program/memo kit plugin.
       </p>
       <div className="mt-4 space-y-3">
         <input

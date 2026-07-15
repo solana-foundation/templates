@@ -2,6 +2,14 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useCluster, CLUSTERS } from "./cluster-context";
+import type { ClusterMoniker } from "../lib/solana-client";
+
+const CLUSTER_COLORS: Record<ClusterMoniker, string> = {
+  mainnet: "#22c55e",
+  devnet: "#3b82f6",
+  testnet: "#eab308",
+  localnet: "#a3a3a3",
+};
 
 export function ClusterSelect() {
   const { cluster, setCluster } = useCluster();
@@ -26,16 +34,7 @@ export function ClusterSelect() {
       >
         <span
           className="h-2 w-2 rounded-full"
-          style={{
-            backgroundColor:
-              cluster === "mainnet"
-                ? "#22c55e"
-                : cluster === "devnet"
-                  ? "#3b82f6"
-                  : cluster === "testnet"
-                    ? "#eab308"
-                    : "#a3a3a3",
-          }}
+          style={{ backgroundColor: CLUSTER_COLORS[cluster] }}
         />
         {cluster}
       </button>
@@ -56,16 +55,7 @@ export function ClusterSelect() {
               >
                 <span
                   className="h-2 w-2 rounded-full"
-                  style={{
-                    backgroundColor:
-                      c === "mainnet"
-                        ? "#22c55e"
-                        : c === "devnet"
-                          ? "#3b82f6"
-                          : c === "testnet"
-                            ? "#eab308"
-                            : "#a3a3a3",
-                  }}
+                  style={{ backgroundColor: CLUSTER_COLORS[c] }}
                 />
                 {c}
               </button>

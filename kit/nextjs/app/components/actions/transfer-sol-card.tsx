@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { address } from "@solana/kit";
-import { getTransferSolInstruction } from "@solana-program/system";
 import { useConnectedWallet } from "@solana/kit-plugin-wallet/react";
 import { toast } from "sonner";
 import { lamportsFromSol } from "../../lib/lamports";
@@ -28,12 +27,17 @@ export function TransferSolCard() {
       return;
     }
 
-    const transfer = getTransferSolInstruction({
-      source: signer,
-      destination,
-      amount: lamportsFromSol(Number(amount)),
-    });
-    await run(() => client.sendTransaction([transfer]), "SOL transfer sent");
+    await run(
+      () =>
+        client.system.instructions
+          .transferSol({
+            source: signer,
+            destination,
+            amount: lamportsFromSol(Number(amount)),
+          })
+          .sendTransaction(),
+      "SOL transfer sent"
+    );
   };
 
   return (

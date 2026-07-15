@@ -46,9 +46,13 @@ export function WalletButton() {
 
   const handleCopy = async () => {
     if (!walletAddress) return;
-    await navigator.clipboard.writeText(walletAddress);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(walletAddress);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard API unavailable (insecure origin) or permission denied.
+    }
   };
 
   if (!connected) {
@@ -83,6 +87,7 @@ export function WalletButton() {
                     className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition hover:bg-cream disabled:opacity-50 disabled:pointer-events-none"
                   >
                     {wallet.icon && (
+                      // eslint-disable-next-line @next/next/no-img-element -- wallet-standard icons are data URIs
                       <img
                         src={wallet.icon}
                         alt=""
