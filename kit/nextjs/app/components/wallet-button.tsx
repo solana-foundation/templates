@@ -13,13 +13,15 @@ import { useBalance } from "../lib/hooks/use-balance";
 import { lamportsToSolString } from "../lib/lamports";
 import { ellipsify } from "../lib/explorer";
 import { useCluster } from "./cluster-context";
+import { useAppClient } from "../lib/client-provider";
 
 export function WalletButton() {
-  const wallets = useWallets();
-  const status = useWalletStatus();
-  const connected = useConnectedWallet();
-  const { dispatch: connect, error } = useConnect();
-  const { dispatch: disconnect } = useDisconnect();
+  const client = useAppClient();
+  const wallets = useWallets(client);
+  const status = useWalletStatus(client);
+  const connected = useConnectedWallet(client);
+  const { dispatch: connect, error } = useConnect(client);
+  const { dispatch: disconnect } = useDisconnect(client);
 
   const { getExplorerUrl } = useCluster();
   const [isOpen, setIsOpen] = useState(false);

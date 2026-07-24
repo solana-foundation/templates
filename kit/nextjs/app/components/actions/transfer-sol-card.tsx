@@ -10,7 +10,7 @@ import { useSend } from "../../lib/hooks/use-send";
 
 export function TransferSolCard() {
   const client = useAppClient();
-  const connected = useConnectedWallet();
+  const connected = useConnectedWallet(client);
   const { run, isSending } = useSend();
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("0.01");

@@ -1,6 +1,7 @@
 "use client";
 
 import { useConnectedWallet } from "@solana/kit-plugin-wallet/react";
+import { useAppClient } from "../../lib/client-provider";
 import { useCluster } from "../cluster-context";
 import { AirdropCard } from "./airdrop-card";
 import { TransferSolCard } from "./transfer-sol-card";
@@ -8,7 +9,8 @@ import { TokenCard } from "./token-card";
 import { MemoCard } from "./memo-card";
 
 export function ActionsPanel() {
-  const connected = useConnectedWallet();
+  const client = useAppClient();
+  const connected = useConnectedWallet(client);
   const { cluster } = useCluster();
 
   if (!connected) {

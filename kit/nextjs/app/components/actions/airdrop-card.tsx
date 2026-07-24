@@ -8,7 +8,7 @@ import { useAppClient } from "../../lib/client-provider";
 
 export function AirdropCard() {
   const client = useAppClient();
-  const connected = useConnectedWallet();
+  const connected = useConnectedWallet(client);
   const [busy, setBusy] = useState(false);
 
   const handleAirdrop = async () => {
