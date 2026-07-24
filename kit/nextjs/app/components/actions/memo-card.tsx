@@ -7,7 +7,7 @@ import { useSend } from "../../lib/hooks/use-send";
 
 export function MemoCard() {
   const client = useAppClient();
-  const connected = useConnectedWallet();
+  const connected = useConnectedWallet(client);
   const { run, isSending } = useSend();
   const [memo, setMemo] = useState("gm from @solana/kit");
 

@@ -17,7 +17,7 @@ function toBaseUnits(amount: string): bigint {
 
 export function TokenCard() {
   const client = useAppClient();
-  const connected = useConnectedWallet();
+  const connected = useConnectedWallet(client);
   const { getExplorerUrl } = useCluster();
   const { run, isSending } = useSend();
 
