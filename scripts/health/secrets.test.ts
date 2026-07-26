@@ -22,6 +22,11 @@ test('public config that mentions tokens or keys is not a credential', () => {
   assert.deepEqual(envKeysRequiringCredentials(body), [])
 })
 
+test('public provider app and client IDs are not credentials', () => {
+  const body = ['EXPO_PUBLIC_PRIVY_APP_ID=', 'EXPO_PUBLIC_PRIVY_CLIENT_ID=', 'PRIVY_APP_SECRET='].join('\n')
+  assert.deepEqual(envKeysRequiringCredentials(body), ['PRIVY_APP_SECRET'])
+})
+
 test('supabase anon key counts even though it is NEXT_PUBLIC prefixed', () => {
   assert.deepEqual(envKeysRequiringCredentials('NEXT_PUBLIC_SUPABASE_ANON_KEY='), ['NEXT_PUBLIC_SUPABASE_ANON_KEY'])
 })

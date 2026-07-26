@@ -117,8 +117,10 @@ const SECRET_HINTS = [
 
 /** Env variable names that mean "you need a real credential to run this". */
 const CREDENTIAL_KEY_PATTERN = /(API_?KEY|SECRET|PASSWORD|CREDENTIAL|PRIVATE_?KEY|SUPABASE|PRIVY)/i
-/** Names that look credential-ish but are public config (mint addresses, RPC endpoints, ...). */
-const NON_CREDENTIAL_KEY_PATTERN = /(MINT|PROGRAM|ADDRESS|RPC|URL|PUBKEY|PUBLIC_KEY)/i
+/** Names that look credential-ish but are public config (mint addresses, RPC endpoints,
+ *  provider app/client IDs like EXPO_PUBLIC_PRIVY_APP_ID, ...). Real secrets keep matching
+ *  because they carry KEY/SECRET/etc. in the name, e.g. NEXT_PUBLIC_SUPABASE_ANON_KEY. */
+const NON_CREDENTIAL_KEY_PATTERN = /(MINT|PROGRAM|ADDRESS|RPC|URL|PUBKEY|PUBLIC_KEY|APP_ID|CLIENT_ID|PROJECT_ID)/i
 
 /**
  * Extract the variable names in an .env.example that require real credentials.
