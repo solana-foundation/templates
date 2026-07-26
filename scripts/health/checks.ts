@@ -125,13 +125,15 @@ const run = (command: string, args: string[], cwd: string, timeoutMs: number): P
 // active ones so a Ctrl-C can wipe them, and sweep orphans (from a previously killed run)
 // at startup — so the install/build artifacts never pile up across runs.
 // Specific enough that the startup sweep won't touch unrelated `health-*` temp data
-// belonging to other tools on a shared CI runner or dev machine.
+// belonging to other tools on a shared CI runner or dev machine. The owning PID is baked
+// into each dir name so the sweep can tell a live concurrent run's dirs from true orphans.
 const TEMP_PREFIX = 'sf-templates-health-'
+const RUN_TEMP_PREFIX = `${TEMP_PREFIX}${process.pid}-`
 const activeTempDirs = new Set<string>()
 
 /** Copy a template into a fresh temp dir, dropping anything we'd rather install fresh. */
 const isolate = (ref: TemplateRef): string => {
-  const dest = mkdtempSync(join(tmpdir(), `${TEMP_PREFIX}${ref.id.replace(/\//g, '-')}-`))
+  const dest = mkdtempSync(join(tmpdir(), `${RUN_TEMP_PREFIX}${ref.id.replace(/\//g, '-')}-`))
   activeTempDirs.add(dest)
   // cp -R copies into dest; trailing /. copies contents.
   // (CI runs on ubuntu, dev on macOS - both have cp -R.)
@@ -148,15 +150,29 @@ const disposeTempDir = (dir: string): void => {
   activeTempDirs.delete(dir)
 }
 
-/** Remove any leftover health-* temp dirs from a prior run that was killed mid-flight. */
+/** True when the process that owns a temp dir is still running (EPERM means it exists). */
+const ownerProcessAlive = (pid: number): boolean => {
+  try {
+    process.kill(pid, 0)
+    return true
+  } catch (error) {
+    return (error as NodeJS.ErrnoException).code === 'EPERM'
+  }
+}
+
+/**
+ * Remove any leftover health-* temp dirs from a prior run that was killed mid-flight.
+ * Dirs whose owning process is still alive belong to a concurrent run and are left alone.
+ */
 export const sweepOrphanTempDirs = (): number => {
   let removed = 0
   try {
     for (const name of readdirSync(tmpdir())) {
-      if (name.startsWith(TEMP_PREFIX)) {
-        rmSync(join(tmpdir(), name), { recursive: true, force: true })
-        removed++
-      }
+      if (!name.startsWith(TEMP_PREFIX)) continue
+      const ownerPid = Number.parseInt(name.slice(TEMP_PREFIX.length), 10)
+      if (Number.isInteger(ownerPid) && ownerPid !== process.pid && ownerProcessAlive(ownerPid)) continue
+      rmSync(join(tmpdir(), name), { recursive: true, force: true })
+      removed++
     }
   } catch {
     /* tmpdir not readable - nothing to sweep */
@@ -396,6 +412,19 @@ export const checkDocDrift = (ref: TemplateRef): DocDriftResult => {
 
 // ---------- dimension 3: runtime boot (web templates, opt-in) ----------
 
+// Boot checks run one at a time even when template checks are parallel: dev servers all
+// want their default port (3000/5173), and a server that hard-exits on EADDRINUSE would
+// read as a broken template. Everything else (install, build, audit) stays concurrent.
+let bootLock: Promise<void> = Promise.resolve()
+const withBootLock = <T>(task: () => Promise<T>): Promise<T> => {
+  const result = bootLock.then(task)
+  bootLock = result.then(
+    () => undefined,
+    () => undefined,
+  )
+  return result
+}
+
 export const checkBoot = async (workDir: string, ref: TemplateRef, opts: ResolvedRunOptions): Promise<BootResult> => {
   if (ref.kind !== 'next' && ref.kind !== 'vite') {
     return { status: 'skip', available: false, note: `boot check only applies to web templates (kind: ${ref.kind})` }
@@ -403,6 +432,10 @@ export const checkBoot = async (workDir: string, ref: TemplateRef, opts: Resolve
   if (!ref.scripts.dev) {
     return { status: 'skip', available: false, note: 'no dev script' }
   }
+  return withBootLock(() => bootDevServer(workDir, opts))
+}
+
+const bootDevServer = async (workDir: string, opts: ResolvedRunOptions): Promise<BootResult> => {
   const start = Date.now()
   // detached: the dev command becomes its own process-group leader, so killProcessTree in
   // the finally below takes out the whole tree (pm -> next/vite -> workers), not just the pm.
