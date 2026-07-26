@@ -294,6 +294,14 @@ Templates maintained by the Solana community
 
 `supabase` `authentication` `solana` `framework-kit`
 
+### [supabase-solana-indexing](community/supabase-solana-indexing)
+
+`gh:solana-foundation/templates/community/supabase-solana-indexing`
+
+> Index Solana program accounts into Supabase with realtime queries
+
+`solana` `supabase` `indexing` `realtime` `nextjs` `typescript`
+
 ### [x402-solana-rust](community/x402-solana-rust)
 
 `gh:solana-foundation/templates/community/x402-solana-rust`

@@ -1,0 +1,61 @@
+{
+  "name": "supabase-solana-indexing",
+  "version": "0.0.0",
+  "private": true,
+  "displayName": "Supabase Solana Indexing",
+  "description": "Index Solana program accounts into Supabase with realtime queries",
+  "usecase": "Infrastructure",
+  "keywords": [
+    "solana",
+    "supabase",
+    "indexing",
+    "realtime",
+    "nextjs",
+    "typescript"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Create a Supabase project and copy .env.example to .env.local",
+      "Run supabase/migrations/20260715000000_create_program_accounts.sql in the SQL editor",
+      "Set your Solana RPC URLs and program ID in .env.local",
+      "Start the indexer in one terminal:",
+      "+{pm} run indexer",
+      "Start the app in another terminal:",
+      "+{pm} run dev"
+    ]
+  },
+  "scripts": {
+    "build": "next build",
+    "ci": "npm run build && npm run lint && npm run format:check && npm run typecheck && npm run test:unit",
+    "dev": "next dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "indexer": "tsx scripts/indexer.ts",
+    "lint": "eslint",
+    "start": "next start",
+    "test:live": "tsx scripts/live-test.ts",
+    "test:unit": "tsx scripts/unit-test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@solana/kit": "^5.5.1",
+    "@supabase/supabase-js": "^2.76.1",
+    "dotenv": "^17.2.3",
+    "next": "16.2.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/node": "^24.5.2",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "eslint": "^9.35.0",
+    "eslint-config-next": "16.2.6",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4.1.13",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.2"
+  }
+}

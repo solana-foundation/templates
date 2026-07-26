@@ -14,6 +14,7 @@
   "community/solana-blinks-axum",
   "community/solana-chatgpt-kit",
   "community/supabase-auth",
+  "community/supabase-solana-indexing",
   "community/x402-solana-rust",
   "community/x402-template",
   "community/zk-compression-airdrop",
