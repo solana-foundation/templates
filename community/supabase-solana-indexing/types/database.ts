@@ -23,9 +23,9 @@ export type IndexedProgramAccountRead = Omit<IndexedProgramAccountRow, 'lamports
 }
 
 type IndexedProgramAccountWrite = Omit<IndexedProgramAccountRow, 'lamports' | 'rent_epoch' | 'slot'> & {
-  lamports: string | number
-  rent_epoch: string | number | null
-  slot: string | number
+  lamports: ExactNumeric
+  rent_epoch: ExactNumeric | null
+  slot: ExactNumeric
 }
 
 export type Database = {
