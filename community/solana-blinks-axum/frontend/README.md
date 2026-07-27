@@ -1,6 +1,6 @@
 # Frontend
 
-Solana Blinks client built with Next.js 15, React 19, and Tailwind CSS 4. Connects to any Wallet Standard-compatible wallet via `@wallet-standard/react` and reads on-chain data with `@solana/kit`.
+Solana Blinks client built with Next.js 16, React 19, and Tailwind CSS 4. Connects to any Wallet Standard-compatible wallet via `@wallet-standard/react` and reads on-chain data with `@solana/kit`.
 
 ## Run
 
