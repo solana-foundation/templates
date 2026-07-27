@@ -40,7 +40,7 @@ Create a `.env.local` file in the project root:
 
 ```bash
 # Helius RPC endpoint (required for ZK compression)
-NEXT_PUBLIC_RPC_ENDPOINT=https://devnet.helius-rpc.com?api-key=YOUR_HELIUS_API_KEY
+RPC_ENDPOINT=https://devnet.helius-rpc.com?api-key=YOUR_HELIUS_API_KEY
 
 # Your wallet's private key (Base58 encoded) - KEEP THIS SECRET!
 DEV_WALLET=your_base58_private_key_here
@@ -50,10 +50,10 @@ DEV_WALLET=your_base58_private_key_here
 >
 > - Get your Helius API key from https://dev.helius.xyz/
 > - To get your Base58 private key from Phantom: Settings → Show Private Key → Copy
-> - `NEXT_PUBLIC_RPC_ENDPOINT` and `DEV_WALLET` both work for scripts and frontend
-> - **Both values are embedded in the browser bundle** (`NEXT_PUBLIC_` by convention, `DEV_WALLET` via `next.config.ts`). Anyone visiting a deployed instance can read them, so use a throwaway devnet wallet and a devnet-only api key. Never reuse mainnet credentials here.
+> - `RPC_ENDPOINT` stays on the server: the browser talks to a same-origin `/api/rpc` proxy (a rewrite in `next.config.ts`), so your Helius api-key is never shipped to visitors. As extra protection you can also set Allowed Domains on the key in the [Helius dashboard](https://www.helius.dev/docs/rpc/protect-your-keys).
+> - **`DEV_WALLET` IS embedded in the browser bundle** (via `next.config.ts`), because this demo signs in the browser. Anyone visiting a deployed instance can read it, so only ever use a throwaway devnet wallet. Never reuse mainnet credentials here.
 > - **Never commit your `.env.local` file!**
-> - `scripts/compressed-mint-config.json` is committed as a working example and never stores your RPC endpoint or api-key - the app reads `NEXT_PUBLIC_RPC_ENDPOINT` from the environment instead, so running `airdrop:setup` can never write your key into a tracked file
+> - `scripts/compressed-mint-config.json` is committed as a working example and never stores your RPC endpoint or api-key - the app reads `RPC_ENDPOINT` from the environment instead, so running `airdrop:setup` can never write your key into a tracked file
 
 ### 3. Get Devnet SOL
 
@@ -214,7 +214,7 @@ maxBatchSize={Math.min(airdropData.recipients.length, 50)} // Change 50 to your 
 
 ## Troubleshooting
 
-### "NEXT_PUBLIC_RPC_ENDPOINT environment variable not set"
+### "RPC_ENDPOINT environment variable not set"
 
 Make sure you've created `.env.local` and added your Helius RPC endpoint.
 
@@ -238,7 +238,7 @@ This is expected! Compressed tokens use Merkle trees. Check the mint address on 
 
 1. **Update recipient list**: Replace test wallets with real addresses
 2. **Secure your keys**: Use environment variables, never commit keys
-3. **Use mainnet RPC**: Update `NEXT_PUBLIC_RPC_ENDPOINT` to Helius mainnet
+3. **Use mainnet RPC**: Update `RPC_ENDPOINT` to Helius mainnet
 4. **Test thoroughly**: Always test on devnet first
 5. **Monitor transactions**: Keep track of successful/failed mints
 

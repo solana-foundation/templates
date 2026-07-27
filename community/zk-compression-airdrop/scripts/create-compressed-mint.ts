@@ -7,18 +7,18 @@ import fs from 'fs'
 import path from 'path'
 
 async function main() {
-  const NEXT_PUBLIC_RPC_ENDPOINT = process.env.NEXT_PUBLIC_RPC_ENDPOINT
-  if (!NEXT_PUBLIC_RPC_ENDPOINT) {
+  const RPC_ENDPOINT = process.env.RPC_ENDPOINT
+  if (!RPC_ENDPOINT) {
     console.error('\nRPC_ENDPOINT environment variable not set')
     console.log('Get a free API key from: https://dev.helius.xyz/')
-    console.log('Then set: NEXT_PUBLIC_RPC_ENDPOINT=https://devnet.helius-rpc.com?api-key=YOUR_KEY\n')
+    console.log('Then set: RPC_ENDPOINT=https://devnet.helius-rpc.com?api-key=YOUR_KEY\n')
     process.exit(1)
   }
 
   // createRpc accepts 3 endpoints: (1) standard Solana RPC, (2) compression API (Photon indexer), (3) prover
   // Helius provides all three services on the same endpoint, so we pass it three times
   // See: https://www.zkcompression.com/learn/node-operators
-  const rpc = createRpc(NEXT_PUBLIC_RPC_ENDPOINT, NEXT_PUBLIC_RPC_ENDPOINT, NEXT_PUBLIC_RPC_ENDPOINT)
+  const rpc = createRpc(RPC_ENDPOINT, RPC_ENDPOINT, RPC_ENDPOINT)
 
   const devWallet = process.env.DEV_WALLET || path.join(__dirname, '..', 'dev-wallet.json')
 
@@ -41,7 +41,7 @@ async function main() {
 
   console.log('Creating compressed token mint...')
   console.log('Authority:', payerKeypair.publicKey.toBase58())
-  console.log('Network:', NEXT_PUBLIC_RPC_ENDPOINT)
+  console.log('Network:', RPC_ENDPOINT)
 
   const balance = await rpc.getBalance(payerKeypair.publicKey)
   console.log('Balance:', (balance / 1e9).toFixed(4), 'SOL\n')
@@ -52,9 +52,9 @@ async function main() {
   console.log('Mint Address:', mint.toBase58())
   console.log('Transaction:', transactionSignature)
 
-  // Deliberately does NOT include NEXT_PUBLIC_RPC_ENDPOINT: this file is committed as a working
-  // example (see .gitignore), and NEXT_PUBLIC_RPC_ENDPOINT contains your Helius api-key. The app
-  // reads the RPC endpoint from process.env.NEXT_PUBLIC_RPC_ENDPOINT at build time instead (see
+  // Deliberately does NOT include RPC_ENDPOINT: this file is committed as a working
+  // example (see .gitignore), and RPC_ENDPOINT contains your Helius api-key. The app
+  // reads the RPC endpoint from process.env.RPC_ENDPOINT at build time instead (see
   // next.config.ts + src/features/airdrop/data-access/use-airdrop.ts), so it never
   // needs to be written to a tracked file.
   const config = {

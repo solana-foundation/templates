@@ -34,14 +34,10 @@ export function useAirdrop(): UseAirdropReturn {
       setError(null)
 
       try {
-        // Read the RPC endpoint from the environment rather than from config: config is a
-        // committed example file and the endpoint carries a Helius api-key that must never
-        // land in a tracked file. The NEXT_PUBLIC_ prefix makes the tradeoff explicit: the
-        // endpoint is inlined into the browser bundle, so visitors can see it. Devnet only.
-        const rpcEndpoint = process.env.NEXT_PUBLIC_RPC_ENDPOINT
-        if (!rpcEndpoint) {
-          throw new Error('NEXT_PUBLIC_RPC_ENDPOINT environment variable not set. Add it to .env.local (see README).')
-        }
+        // Talk to the same-origin /api/rpc proxy instead of the real endpoint: the
+        // next.config.ts rewrite forwards it to RPC_ENDPOINT on the server, so the
+        // Helius api-key never ships in the browser bundle.
+        const rpcEndpoint = new URL('/api/rpc', window.location.origin).toString()
         const rpc = createRpcConnection(rpcEndpoint)
         const mint = new PublicKey(config.mintAddress)
         const { recipients, amounts } = parseRecipients(airdropData)
