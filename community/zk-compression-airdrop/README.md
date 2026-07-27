@@ -51,6 +51,7 @@ DEV_WALLET=your_base58_private_key_here
 > - Get your Helius API key from https://dev.helius.xyz/
 > - To get your Base58 private key from Phantom: Settings → Show Private Key → Copy
 > - `RPC_ENDPOINT` stays on the server: the browser talks to a same-origin `/api/rpc` proxy (a rewrite in `next.config.ts`), so your Helius api-key is never shipped to visitors. As extra protection you can also set Allowed Domains on the key in the [Helius dashboard](https://www.helius.dev/docs/rpc/protect-your-keys).
+> - The `/api/rpc` proxy is intentionally open, anyone who can reach a deployed instance can spend its RPC quota. That is fine for a local devnet demo on a free tier key. Add rate limiting or auth in front of the proxy before deploying anywhere the quota matters.
 > - **`DEV_WALLET` IS embedded in the browser bundle** (via `next.config.ts`), because this demo signs in the browser. Anyone visiting a deployed instance can read it, so only ever use a throwaway devnet wallet. Never reuse mainnet credentials here.
 > - **Never commit your `.env.local` file!**
 > - `scripts/compressed-mint-config.json` is committed as a working example and never stores your RPC endpoint or api-key - the app reads `RPC_ENDPOINT` from the environment instead, so running `airdrop:setup` can never write your key into a tracked file
