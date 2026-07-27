@@ -1,0 +1,10 @@
+onlyBuiltDependencies:
+  - esbuild
+allowBuilds:
+  esbuild: true
+overrides:
+  '@codama/nodes': 1.4.4
+  '@codama/node-types': 1.4.4
+  '@codama/errors': 1.4.4
+  '@codama/visitors-core': 1.4.4
+  '@codama/renderers-core': 1.3.4

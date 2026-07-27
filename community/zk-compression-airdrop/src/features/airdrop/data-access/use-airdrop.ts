@@ -34,7 +34,15 @@ export function useAirdrop(): UseAirdropReturn {
       setError(null)
 
       try {
-        const rpc = createRpcConnection(config.network)
+        // Read the RPC endpoint from the environment rather than from config: config is a
+        // committed example file, and RPC_ENDPOINT contains a Helius api-key that must never
+        // land in a tracked file. next.config.ts exposes RPC_ENDPOINT to this client bundle at
+        // build time (same mechanism used for DEV_WALLET below).
+        const rpcEndpoint = process.env.RPC_ENDPOINT
+        if (!rpcEndpoint) {
+          throw new Error('RPC_ENDPOINT environment variable not set. Add it to .env.local (see README).')
+        }
+        const rpc = createRpcConnection(rpcEndpoint)
         const mint = new PublicKey(config.mintAddress)
         const { recipients, amounts } = parseRecipients(airdropData)
         const totalBatches = calculateBatches(recipients.length, batchSize)

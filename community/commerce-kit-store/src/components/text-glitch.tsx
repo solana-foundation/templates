@@ -18,17 +18,26 @@ export default function TextGlitch({
   glitchProbability = 0.4,
   minInterval = 2000,
   maxInterval = 8000,
-  glitchDuration = Math.floor(Math.random() * (1400 - 500)) + 850,
+  glitchDuration,
 }: TextGlitchProps) {
   const [isGlitching, setIsGlitching] = useState(false)
+  const [offsets, setOffsets] = useState([
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+  ])
+  const [resolvedGlitchDuration] = useState(() => glitchDuration ?? Math.floor(Math.random() * (1400 - 500)) + 850)
 
   useEffect(() => {
     const tryGlitch = () => {
       if (Math.random() < glitchProbability) {
+        setOffsets([
+          { x: Math.random() * 10 - 5, y: Math.random() * 5 - 2.5 },
+          { x: Math.random() * 10 - 5, y: Math.random() * 5 - 2.5 },
+        ])
         setIsGlitching(true)
         setTimeout(() => {
           setIsGlitching(false)
-        }, glitchDuration)
+        }, resolvedGlitchDuration)
       }
     }
 
@@ -44,7 +53,7 @@ export default function TextGlitch({
 
     const timerId = scheduleNextGlitch()
     return () => clearTimeout(timerId)
-  }, [glitchProbability, minInterval, maxInterval, glitchDuration])
+  }, [glitchProbability, minInterval, maxInterval, resolvedGlitchDuration])
 
   return (
     <span
@@ -67,7 +76,7 @@ export default function TextGlitch({
               width: '100%',
               height: '100%',
               clipPath: 'polygon(0 0, 100% 0, 100% 45%, 0 45%)',
-              transform: `translate(${Math.random() * 10 - 5}px, ${Math.random() * 5 - 2.5}px)`,
+              transform: `translate(${offsets[0].x}px, ${offsets[0].y}px)`,
               opacity: 0.8,
               zIndex: 1,
             }}
@@ -84,7 +93,7 @@ export default function TextGlitch({
               width: '100%',
               height: '100%',
               clipPath: 'polygon(0 80%, 100% 20%, 100% 100%, 0 100%)',
-              transform: `translate(${Math.random() * 10 - 5}px, ${Math.random() * 5 - 2.5}px)`,
+              transform: `translate(${offsets[1].x}px, ${offsets[1].y}px)`,
               opacity: 0.8,
               zIndex: 1,
             }}

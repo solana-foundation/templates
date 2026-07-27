@@ -50,8 +50,9 @@ DEV_WALLET=your_base58_private_key_here
 >
 > - Get your Helius API key from https://dev.helius.xyz/
 > - To get your Base58 private key from Phantom: Settings → Show Private Key → Copy
-> - `DEV_WALLET` works for both scripts and frontend (via next.config.ts)
+> - `RPC_ENDPOINT` and `DEV_WALLET` both work for scripts and frontend (via `next.config.ts`)
 > - **Never commit your `.env.local` file!**
+> - `scripts/compressed-mint-config.json` is committed as a working example and never stores your RPC endpoint or api-key - the app reads `RPC_ENDPOINT` from the environment instead, so running `airdrop:setup` can never write your key into a tracked file
 
 ### 3. Get Devnet SOL
 

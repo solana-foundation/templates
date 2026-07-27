@@ -4,11 +4,7 @@ export type DriftUserAccountResponse = UserAccount;
 export type DriftPerpPositionResponse = PerpPosition;
 
 export type DriftTxStatus =
-  | "idle"
-  | "signing"
-  | "pending"
-  | "confirmed"
-  | "error";
+  "idle" | "signing" | "pending" | "confirmed" | "error";
 export type DriftTxAction = "init" | "open" | "deposit";
 
 export interface DriftTransactionState {
