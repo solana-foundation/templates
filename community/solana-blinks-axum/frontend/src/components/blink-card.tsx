@@ -80,6 +80,8 @@ export function BlinkCard({ actionUrl, onRemove }: BlinkCardProps) {
   }, [account])
 
   useEffect(() => {
+    // Refresh on mount and whenever the connected account changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refreshBalance()
   }, [refreshBalance])
 
