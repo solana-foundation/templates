@@ -7,13 +7,18 @@
  */
 
 import {
+  assertIsInstructionWithAccounts,
   containsBytes,
   fixEncoderSize,
   getBytesEncoder,
   type Address,
+  type Instruction,
+  type InstructionWithData,
   type ReadonlyUint8Array,
 } from "@solana/kit";
 import {
+  parseDepositInstruction,
+  parseWithdrawInstruction,
   type ParsedDepositInstruction,
   type ParsedWithdrawInstruction,
 } from "../instructions";
@@ -66,3 +71,29 @@ export type ParsedVaultInstruction<
   | ({
       instructionType: VaultInstruction.Withdraw;
     } & ParsedWithdrawInstruction<TProgram>);
+
+export function parseVaultInstruction<TProgram extends string>(
+  instruction: Instruction<TProgram> & InstructionWithData<ReadonlyUint8Array>
+): ParsedVaultInstruction<TProgram> {
+  const instructionType = identifyVaultInstruction(instruction);
+  switch (instructionType) {
+    case VaultInstruction.Deposit: {
+      assertIsInstructionWithAccounts(instruction);
+      return {
+        instructionType: VaultInstruction.Deposit,
+        ...parseDepositInstruction(instruction),
+      };
+    }
+    case VaultInstruction.Withdraw: {
+      assertIsInstructionWithAccounts(instruction);
+      return {
+        instructionType: VaultInstruction.Withdraw,
+        ...parseWithdrawInstruction(instruction),
+      };
+    }
+    default:
+      throw new Error(
+        `Unrecognized instruction type: ${instructionType as string}`
+      );
+  }
+}
