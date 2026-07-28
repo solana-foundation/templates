@@ -13,6 +13,8 @@ runs:
   steps:
     - name: Install Rust
       uses: dtolnay/rust-toolchain@stable
+      with:
+        components: rustfmt
 
     - name: Cache Cargo and AVM
       uses: actions/cache@v4
