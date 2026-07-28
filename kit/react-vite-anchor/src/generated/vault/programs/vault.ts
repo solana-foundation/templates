@@ -27,16 +27,16 @@ export enum VaultInstruction {
 }
 
 export function identifyVaultInstruction(
-  instruction: { data: ReadonlyUint8Array } | ReadonlyUint8Array,
+  instruction: { data: ReadonlyUint8Array } | ReadonlyUint8Array
 ): VaultInstruction {
   const data = "data" in instruction ? instruction.data : instruction;
   if (
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([242, 35, 198, 137, 82, 225, 242, 182]),
+        new Uint8Array([242, 35, 198, 137, 82, 225, 242, 182])
       ),
-      0,
+      0
     )
   ) {
     return VaultInstruction.Deposit;
@@ -45,15 +45,15 @@ export function identifyVaultInstruction(
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([183, 18, 70, 156, 148, 109, 161, 34]),
+        new Uint8Array([183, 18, 70, 156, 148, 109, 161, 34])
       ),
-      0,
+      0
     )
   ) {
     return VaultInstruction.Withdraw;
   }
   throw new Error(
-    "The provided instruction could not be identified as a vault instruction.",
+    "The provided instruction could not be identified as a vault instruction."
   );
 }
 

@@ -9,16 +9,7 @@
   "instructions": [
     {
       "name": "close",
-      "discriminator": [
-        98,
-        165,
-        201,
-        177,
-        108,
-        65,
-        206,
-        96
-      ],
+      "discriminator": [98, 165, 201, 177, 108, 65, 206, 96],
       "accounts": [
         {
           "name": "payer",
@@ -34,16 +25,7 @@
     },
     {
       "name": "decrement",
-      "discriminator": [
-        106,
-        227,
-        168,
-        59,
-        248,
-        27,
-        150,
-        101
-      ],
+      "discriminator": [106, 227, 168, 59, 248, 27, 150, 101],
       "accounts": [
         {
           "name": "counter",
@@ -54,16 +36,7 @@
     },
     {
       "name": "increment",
-      "discriminator": [
-        11,
-        18,
-        104,
-        9,
-        104,
-        174,
-        59,
-        33
-      ],
+      "discriminator": [11, 18, 104, 9, 104, 174, 59, 33],
       "accounts": [
         {
           "name": "counter",
@@ -74,16 +47,7 @@
     },
     {
       "name": "initialize",
-      "discriminator": [
-        175,
-        175,
-        109,
-        31,
-        13,
-        152,
-        155,
-        237
-      ],
+      "discriminator": [175, 175, 109, 31, 13, 152, 155, 237],
       "accounts": [
         {
           "name": "payer",
@@ -104,16 +68,7 @@
     },
     {
       "name": "set",
-      "discriminator": [
-        198,
-        51,
-        53,
-        241,
-        116,
-        29,
-        126,
-        194
-      ],
+      "discriminator": [198, 51, 53, 241, 116, 29, 126, 194],
       "accounts": [
         {
           "name": "counter",
@@ -131,16 +86,7 @@
   "accounts": [
     {
       "name": "Counter",
-      "discriminator": [
-        255,
-        176,
-        4,
-        245,
-        188,
-        253,
-        124,
-        25
-      ]
+      "discriminator": [255, 176, 4, 245, 188, 253, 124, 25]
     }
   ],
   "types": [
