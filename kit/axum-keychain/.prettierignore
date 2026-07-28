@@ -5,3 +5,4 @@ Cargo.lock
 pnpm-lock.yaml
 .agents
 agent
+pnpm-workspace.yaml
