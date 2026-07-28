@@ -88,7 +88,7 @@ export function getDepositInstructionDataEncoder(): FixedSizeEncoder<DepositInst
       ["discriminator", fixEncoderSize(getBytesEncoder(), 8)],
       ["amount", getU64Encoder()],
     ]),
-    (value) => ({ ...value, discriminator: DEPOSIT_DISCRIMINATOR })
+    (value) => ({ ...value, discriminator: DEPOSIT_DISCRIMINATOR }),
   );
 }
 
@@ -105,7 +105,7 @@ export function getDepositInstructionDataCodec(): FixedSizeCodec<
 > {
   return combineCodec(
     getDepositInstructionDataEncoder(),
-    getDepositInstructionDataDecoder()
+    getDepositInstructionDataDecoder(),
   );
 }
 
@@ -131,7 +131,7 @@ export async function getDepositInstructionAsync<
     TAccountVault,
     TAccountSystemProgram
   >,
-  config?: { programAddress?: TProgramAddress }
+  config?: { programAddress?: TProgramAddress },
 ): Promise<
   DepositInstruction<
     TProgramAddress,
@@ -180,7 +180,7 @@ export async function getDepositInstructionAsync<
       getAccountMeta(accounts.systemProgram),
     ],
     data: getDepositInstructionDataEncoder().encode(
-      args as DepositInstructionDataArgs
+      args as DepositInstructionDataArgs,
     ),
     programAddress,
   } as DepositInstruction<
@@ -209,7 +209,7 @@ export function getDepositInstruction<
   TProgramAddress extends Address = typeof VAULT_PROGRAM_ADDRESS,
 >(
   input: DepositInput<TAccountSigner, TAccountVault, TAccountSystemProgram>,
-  config?: { programAddress?: TProgramAddress }
+  config?: { programAddress?: TProgramAddress },
 ): DepositInstruction<
   TProgramAddress,
   TAccountSigner,
@@ -247,7 +247,7 @@ export function getDepositInstruction<
       getAccountMeta(accounts.systemProgram),
     ],
     data: getDepositInstructionDataEncoder().encode(
-      args as DepositInstructionDataArgs
+      args as DepositInstructionDataArgs,
     ),
     programAddress,
   } as DepositInstruction<
@@ -277,7 +277,7 @@ export function parseDepositInstruction<
 >(
   instruction: Instruction<TProgram> &
     InstructionWithAccounts<TAccountMetas> &
-    InstructionWithData<ReadonlyUint8Array>
+    InstructionWithData<ReadonlyUint8Array>,
 ): ParsedDepositInstruction<TProgram, TAccountMetas> {
   if (instruction.accounts.length < 3) {
     // TODO: Coded error.

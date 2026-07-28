@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::keccak;
+use solana_keccak_hasher as keccak;
 
 declare_id!("111111111111111111111111111111111111");
 

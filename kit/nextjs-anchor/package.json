@@ -23,8 +23,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "anchor-build": "cd anchor && anchor build",
-    "anchor-test": "cd anchor && anchor test --skip-deploy",
+    "anchor-build": "cd anchor && anchor build --ignore-keys",
+    "anchor-test": "cd anchor && anchor build --ignore-keys && cargo test",
     "build": "next build",
     "ci": "npm run build && npm run lint && npm run format:check",
     "codama:js": "codama run js",

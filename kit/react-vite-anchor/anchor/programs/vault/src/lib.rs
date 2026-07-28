@@ -18,7 +18,7 @@ pub mod vault {
 
         transfer(
             CpiContext::new(
-                ctx.accounts.system_program.to_account_info(),
+                System::id(),
                 Transfer {
                     from: ctx.accounts.signer.to_account_info(),
                     to: ctx.accounts.vault.to_account_info(),
@@ -39,7 +39,7 @@ pub mod vault {
 
         transfer(
             CpiContext::new_with_signer(
-                ctx.accounts.system_program.to_account_info(),
+                System::id(),
                 Transfer {
                     from: ctx.accounts.vault.to_account_info(),
                     to: ctx.accounts.signer.to_account_info(),
