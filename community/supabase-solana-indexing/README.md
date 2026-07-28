@@ -1,14 +1,14 @@
 # Supabase + Solana Indexing
 
-A production-minded starter for indexing accounts owned by a Solana program into Supabase. It combines a one-time `getProgramAccounts` backfill with live `programSubscribe` updates, retry and gap recovery, SQL indexes, Realtime updates, and a paginated Next.js dashboard.
+A production-minded starter for indexing accounts owned by a Solana program into Supabase. It combines a `getProgramAccounts` backfill with live `programSubscribe` updates, retry and reconciliation, SQL indexes, Realtime updates, and a paginated Next.js dashboard.
 
 ## Architecture
 
-1. `scripts/indexer.ts` opens a WebSocket program subscription, then fetches every account currently owned by your configured program.
+1. `scripts/indexer.ts` starts consuming a WebSocket program subscription, then fetches every account currently owned by your configured program.
 2. Rows are normalized and upserted into `indexed_program_accounts` in bounded batches, and rows absent from the snapshot are removed.
-3. Notifications queued during the snapshot are applied afterward, closing the startup and reconnect gaps.
+3. Notifications observed while the snapshot is running are buffered and applied afterward; periodic reconciliation covers missed notifications and accounts that change owner.
 4. Live zero-lamport notifications remove closed accounts, and failures or the periodic reconciliation interval restart the subscribe-then-backfill cycle.
-5. The browser queries an RLS-protected read view that casts Solana u64 fields to exact text while retaining a numeric helper for indexed filtering.
+5. The browser queries an RLS-protected read view that casts Solana u64 fields to exact text while retaining a numeric helper for server-side filtering.
 
 The Supabase service-role key is used only by the Node.js worker. Never put it in a `NEXT_PUBLIC_*` variable or browser code.
 
@@ -40,7 +40,7 @@ Fill in `.env.local`:
 - `NEXT_PUBLIC_SOLANA_PROGRAM_ID`: The deployed program whose owned accounts you want to index.
 - `SOLANA_RPC_URL` and `SOLANA_WS_URL`: Matching HTTP and WebSocket endpoints for the selected network.
 
-Public RPC endpoints are useful for a small demo, but providers may limit `getProgramAccounts`, response size, or WebSocket connections. Use a dedicated RPC for large programs.
+Public RPC endpoints are useful for a small demo, but providers may limit `getProgramAccounts`, response size, or WebSocket connections. Use a dedicated RPC for large programs. The indexer accepts `confirmed` or `finalized` commitment; `processed` is intentionally rejected so same-slot updates are not ordered by unstable optimistic state.
 
 ### 4. Start indexing
 
@@ -62,7 +62,7 @@ The dashboard in `components/accounts-dashboard.tsx` demonstrates:
 
 - program and network filtering with `.eq()`;
 - case-sensitive address-prefix filtering with `.like()`;
-- minimum-balance filtering with `.gte()`;
+- minimum-balance filtering with `.gte()` on `lamports_numeric`, a numeric helper that should be used for server-side filters only;
 - newest-first sorting with `.order()`;
 - count-aware pagination with `.range()`;
 - Realtime `postgres_changes` subscriptions.
@@ -84,13 +84,16 @@ const { data, count } = await supabase
 
 The generic worker stores account data as base64 because every Solana program defines a different binary layout. For your program, add a decoder inside `normalizeAccount()` and add typed columns in the SQL migration. Keep the raw base64 field during development so decoder changes can be replayed without re-fetching old account versions.
 
+The starter publishes the base table to Supabase Realtime and grants anonymous read access because all indexed fields come from public on-chain accounts. If you add decoded columns that should not be public, keep them in a separate table or private view and do not add that object to the Realtime publication.
+
 For Anchor programs, compare the account discriminator before decoding. For generated Kit clients, prefer the generated account decoder rather than maintaining offsets by hand.
 
 ## Performance notes
 
 - Keep the composite primary key so repeated backfills are idempotent.
 - Tune `INDEXER_BATCH_SIZE` for your Supabase plan and row size.
-- Tune `INDEXER_RECONCILE_INTERVAL_MS` to trade RPC snapshot cost for faster cleanup of accounts that change owner without a matching notification.
+- Tune `INDEXER_RECONCILE_INTERVAL_MS` to trade RPC snapshot cost for faster cleanup of missed notifications and accounts that change owner without a matching notification.
+- Reconciliation compares the snapshot to existing rows and skips unchanged accounts, avoiding unnecessary Realtime updates during periodic backfills.
 - Keep filters aligned with the included indexes. Add application-specific indexes for decoded columns.
 - Avoid querying unbounded account data in the browser; select only required fields for production views.
 - For very large programs, split backfills with RPC `dataSlice`/filters or use a provider with historical streaming rather than repeatedly fetching the entire program.
@@ -98,9 +101,9 @@ For Anchor programs, compare the account discriminator before decoding. For gene
 ## Reliability and security
 
 - The worker retries Solana reads and Supabase writes with exponential backoff and jitter.
-- The worker subscribes before each backfill so changes during the snapshot are queued, then reconciles rows missing from the snapshot.
+- The worker starts consuming the subscription before each backfill, buffers notifications observed during the snapshot, then reconciles rows missing from the snapshot.
 - A database trigger rejects updates from slots older than the stored row, protecting restarts and concurrent workers from RPC lag.
-- The public read view returns lamports, rent epochs, and slots as text so JavaScript never rounds Solana u64 values; numeric filtering remains server-side.
+- The public read view returns lamports, rent epochs, and slots as text so JavaScript never rounds Solana u64 values; the numeric helper is for server-side filters only and is not selected for display.
 - Closed zero-lamport accounts are removed instead of remaining as stale query results.
 - Anonymous users receive `SELECT` only. Writes use the service role and bypass RLS.
 - `.env*`, logs, and local dependency artifacts are ignored.

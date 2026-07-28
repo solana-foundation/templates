@@ -17,7 +17,10 @@ export type IndexedProgramAccountRow = {
 
 export type IndexedProgramAccountRead = Omit<IndexedProgramAccountRow, 'lamports' | 'rent_epoch' | 'slot'> & {
   lamports: string
-  lamports_numeric: ExactNumeric
+  // PostgREST can serialize numeric values as strings or numbers depending on
+  // client settings. Use this helper for server-side filters only; select
+  // lamports for exact client display.
+  lamports_numeric: string | number
   rent_epoch: string | null
   slot: string
 }

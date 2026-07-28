@@ -55,6 +55,8 @@ async function main() {
       console.log('Waiting for an indexed account to change on Solana after the backfill snapshot...')
       await waitForIndexedSolanaUpdate(BigInt(match[2]))
       console.log('PASS: a post-snapshot Solana account change reached Supabase')
+    } else {
+      await assertReconciliationSkipsUnchangedRows(indexer, indexed.row)
     }
 
     await assertAnonymousWritesAreBlocked(indexed.row)
@@ -68,6 +70,41 @@ async function main() {
     await stopIndexer(indexer)
     await Promise.all([anonymous.removeAllChannels(), service.removeAllChannels()])
   }
+}
+
+async function assertReconciliationSkipsUnchangedRows(
+  indexer: ChildProcessWithoutNullStreams,
+  row: Pick<AccountRow, 'account_address'>,
+) {
+  await stopIndexer(indexer)
+
+  const before = await readAccountUpdatedAt(row.account_address)
+  const reconcileIndexer = startIndexer()
+  try {
+    await waitForIndexer(reconcileIndexer)
+  } finally {
+    await stopIndexer(reconcileIndexer)
+  }
+
+  const after = await readAccountUpdatedAt(row.account_address)
+  if (after.updated_at !== before.updated_at) {
+    throw new Error('Reconciliation rewrote an unchanged row; unchanged accounts should not emit Realtime noise.')
+  }
+
+  console.log('PASS: reconciliation skips unchanged rows')
+}
+
+async function readAccountUpdatedAt(accountAddress: string) {
+  const { data, error } = await service
+    .from('indexed_program_accounts')
+    .select('updated_at')
+    .eq('network', config.network)
+    .eq('program_id', config.programId)
+    .eq('account_address', accountAddress)
+    .single()
+
+  if (error) throw new Error(`Reconciliation fixture query failed: ${error.message}`)
+  return data
 }
 
 async function assertMigrationApplied() {

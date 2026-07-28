@@ -15,10 +15,16 @@ type EncodedAccount = {
 }
 
 type AccountRow = Database['public']['Tables']['indexed_program_accounts']['Insert']
+type ExistingAccountSnapshot = Pick<
+  Database['public']['Views']['indexed_program_accounts_read']['Row'],
+  'account_address' | 'owner' | 'lamports' | 'executable' | 'rent_epoch' | 'data_base64' | 'data_size'
+>
 
 loadEnv({ path: '.env.local', quiet: true })
 loadEnv({ quiet: true })
 
+const MIN_STABLE_CONNECTION_MS = 30_000
+const ADDRESS_FILTER_BATCH_SIZE = 100
 const config = loadConfig()
 const rpc = createSolanaRpc(config.rpcUrl)
 const subscriptions = createSolanaRpcSubscriptions(config.wsUrl)
@@ -35,16 +41,13 @@ async function main() {
 
   let reconnectAttempt = 0
   while (!shutdown.signal.aborted) {
+    const cycleStartedAt = Date.now()
     try {
-      await synchronize(shutdown.signal, () => {
-        // A successful subscription and snapshot ends the consecutive-failure
-        // streak even if this live connection later drops.
-        reconnectAttempt = 0
-      })
+      await synchronize(shutdown.signal)
       reconnectAttempt = 0
     } catch (error) {
       if (shutdown.signal.aborted) break
-      reconnectAttempt += 1
+      reconnectAttempt = Date.now() - cycleStartedAt >= MIN_STABLE_CONNECTION_MS ? 1 : reconnectAttempt + 1
       const delay = exponentialBackoffDelay(reconnectAttempt)
       console.error(`Synchronization failed; reconnecting in ${delay}ms`, error)
       await waitForDelay(delay, shutdown.signal)
@@ -52,11 +55,12 @@ async function main() {
   }
 }
 
-async function synchronize(shutdownSignal: AbortSignal, onSynchronized: () => void) {
+async function synchronize(shutdownSignal: AbortSignal) {
   const cycle = new AbortController()
   const stopCycle = () => cycle.abort()
   let reconciliationRequested = false
   let reconciliationTimer: NodeJS.Timeout | undefined
+  let streamTask: Promise<void> | undefined
   shutdownSignal.addEventListener('abort', stopCycle, { once: true })
 
   try {
@@ -67,43 +71,75 @@ async function synchronize(shutdownSignal: AbortSignal, onSynchronized: () => vo
       })
       .subscribe({ abortSignal: cycle.signal })
 
-    // Subscribe before taking the snapshot. Notifications that arrive during
-    // the backfill remain queued and are applied afterward, closing the gap
-    // between the snapshot and the live stream.
+    type ProgramNotification = typeof notifications extends AsyncIterable<infer T> ? T : never
+    const queuedNotifications: ProgramNotification[] = []
+    let bufferingNotifications = true
+    const snapshot = { slot: undefined as bigint | undefined }
+    let streamEnded = false
+    let streamError: unknown
+
+    async function applyNotification(notification: ProgramNotification) {
+      if (snapshot.slot === undefined)
+        throw new Error('Received a notification before the backfill snapshot was ready.')
+
+      // getProgramAccounts already contains the final state at snapshotSlot.
+      // Replaying older queued events would regress or incorrectly delete it.
+      if (!isNotificationNewerThanSnapshot(notification.context.slot, snapshot.slot)) return
+
+      const account = notification.value.account as EncodedAccount
+      if (account.lamports === 0n) {
+        await deleteAccount(notification.value.pubkey, notification.context.slot)
+        return
+      }
+
+      const row = normalizeAccount(notification.value.pubkey, account, notification.context.slot)
+      await upsertRows([row])
+    }
+
+    streamTask = (async () => {
+      try {
+        for await (const notification of notifications) {
+          if (bufferingNotifications) {
+            queuedNotifications.push(notification)
+            continue
+          }
+          await applyNotification(notification)
+        }
+        streamEnded = true
+      } catch (error) {
+        streamError = error
+        cycle.abort()
+      }
+    })()
+
+    // Start consuming the async iterable before taking the snapshot. Kit's
+    // subscription listener is registered when iteration begins, so this
+    // explicit buffer keeps notifications observed during backfill instead of
+    // relying on the iterable to queue them before the first pull.
     console.log('WebSocket subscription active')
-    const snapshotSlot = await backfill()
-    onSynchronized()
+    snapshot.slot = await backfill()
+
+    while (queuedNotifications.length > 0) {
+      await applyNotification(queuedNotifications.shift()!)
+    }
+    bufferingNotifications = false
 
     reconciliationTimer = setTimeout(() => {
       reconciliationRequested = true
       cycle.abort()
     }, config.reconcileIntervalMs)
 
-    try {
-      for await (const notification of notifications) {
-        // getProgramAccounts already contains the final state at snapshotSlot.
-        // Replaying older queued events would regress or incorrectly delete it.
-        if (!isNotificationNewerThanSnapshot(notification.context.slot, snapshotSlot)) continue
-
-        const account = notification.value.account as EncodedAccount
-        if (account.lamports === 0n) {
-          await deleteAccount(notification.value.pubkey, notification.context.slot)
-          continue
-        }
-
-        const row = normalizeAccount(notification.value.pubkey, account, notification.context.slot)
-        await upsertRows([row])
-      }
-
-      if (!reconciliationRequested && !shutdownSignal.aborted) {
-        throw new Error('Solana subscription ended unexpectedly')
-      }
-    } catch (error) {
-      if (!reconciliationRequested) throw error
+    await streamTask
+    if (streamError && !reconciliationRequested && !shutdownSignal.aborted) {
+      throw streamError
+    }
+    if (streamEnded && !reconciliationRequested && !shutdownSignal.aborted) {
+      throw new Error('Solana subscription ended unexpectedly')
     }
   } finally {
     clearTimeout(reconciliationTimer)
     cycle.abort()
+    await streamTask?.catch(() => undefined)
     shutdownSignal.removeEventListener('abort', stopCycle)
   }
 }
@@ -126,10 +162,13 @@ async function backfill() {
   )
 
   for (let start = 0; start < rows.length; start += config.batchSize) {
-    await upsertRows(rows.slice(start, start + config.batchSize))
+    await upsertChangedRows(rows.slice(start, start + config.batchSize))
   }
 
-  await deleteRowsOlderThan(response.context.slot)
+  await deleteRowsMissingFromSnapshot(
+    rows.map((row) => row.account_address),
+    response.context.slot,
+  )
   console.log(`Backfill complete: ${rows.length} accounts at slot ${response.context.slot}`)
   return response.context.slot
 }
@@ -163,6 +202,54 @@ async function upsertRows(rows: AccountRow[]) {
   )
 }
 
+async function upsertChangedRows(rows: AccountRow[]) {
+  if (rows.length === 0) return
+  const existingRows = await readExistingRowsInBatches(rows.map((row) => row.account_address))
+  const existingByAddress = new Map(existingRows.map((row) => [row.account_address, row]))
+  const changedRows = rows.filter((row) => {
+    const existing = existingByAddress.get(row.account_address)
+    return !existing || hasAccountDataChanged(row, existing)
+  })
+  await upsertRows(changedRows)
+}
+
+async function readExistingRowsInBatches(accountAddresses: string[]) {
+  const rows: ExistingAccountSnapshot[] = []
+  for (let start = 0; start < accountAddresses.length; start += ADDRESS_FILTER_BATCH_SIZE) {
+    rows.push(...(await readExistingRows(accountAddresses.slice(start, start + ADDRESS_FILTER_BATCH_SIZE))))
+  }
+  return rows
+}
+
+async function readExistingRows(accountAddresses: string[]) {
+  if (accountAddresses.length === 0) return []
+  return await withRetry(
+    async () => {
+      const { data, error } = await supabase
+        .from('indexed_program_accounts_read')
+        .select('account_address,owner,lamports,executable,rent_epoch,data_base64,data_size')
+        .eq('network', config.network)
+        .eq('program_id', config.programId)
+        .in('account_address', accountAddresses)
+        .returns<ExistingAccountSnapshot[]>()
+      if (error) throw error
+      return data
+    },
+    { label: 'Supabase existing-row lookup' },
+  )
+}
+
+function hasAccountDataChanged(row: AccountRow, existing: ExistingAccountSnapshot) {
+  return (
+    row.owner !== existing.owner ||
+    row.lamports !== existing.lamports ||
+    row.executable !== existing.executable ||
+    row.rent_epoch !== existing.rent_epoch ||
+    row.data_base64 !== existing.data_base64 ||
+    row.data_size !== existing.data_size
+  )
+}
+
 async function deleteAccount(accountAddress: Address, notificationSlot: bigint) {
   await withRetry(
     async () => {
@@ -179,18 +266,53 @@ async function deleteAccount(accountAddress: Address, notificationSlot: bigint) 
   )
 }
 
-async function deleteRowsOlderThan(snapshotSlot: bigint) {
+async function readExistingAccountAddresses() {
+  const addresses: string[] = []
+  const pageSize = 1_000
+
+  for (let start = 0; ; start += pageSize) {
+    const page = await withRetry(
+      async () => {
+        const { data, error } = await supabase
+          .from('indexed_program_accounts')
+          .select('account_address')
+          .eq('network', config.network)
+          .eq('program_id', config.programId)
+          .order('account_address')
+          .range(start, start + pageSize - 1)
+          .returns<Pick<AccountRow, 'account_address'>[]>()
+        if (error) throw error
+        return data
+      },
+      { label: 'Supabase existing-address lookup' },
+    )
+
+    addresses.push(...page.map((row) => row.account_address))
+    if (page.length < pageSize) break
+  }
+
+  return addresses
+}
+
+async function deleteRowsMissingFromSnapshot(snapshotAddresses: string[], snapshotSlot: bigint) {
+  const snapshotAddressSet = new Set(snapshotAddresses)
+  const missingAddresses = (await readExistingAccountAddresses()).filter((address) => !snapshotAddressSet.has(address))
+  for (let start = 0; start < missingAddresses.length; start += ADDRESS_FILTER_BATCH_SIZE) {
+    await deleteRowsByAddress(missingAddresses.slice(start, start + ADDRESS_FILTER_BATCH_SIZE), snapshotSlot)
+  }
+}
+
+async function deleteRowsByAddress(accountAddresses: string[], snapshotSlot: bigint) {
+  if (accountAddresses.length === 0) return
   await withRetry(
     async () => {
-      // Every account present in this snapshot was just stamped with its slot.
-      // Older scoped rows were absent from getProgramAccounts and are stale.
-      // Rows newer than the snapshot are preserved for multi-worker safety.
       const { error } = await supabase
         .from('indexed_program_accounts')
         .delete()
         .eq('network', config.network)
         .eq('program_id', config.programId)
-        .lt('slot', snapshotSlot.toString())
+        .in('account_address', accountAddresses)
+        .lte('slot', snapshotSlot.toString())
       if (error) throw error
     },
     { label: 'Supabase stale-row reconciliation' },
@@ -208,8 +330,8 @@ function loadConfig() {
   const programId = required('NEXT_PUBLIC_SOLANA_PROGRAM_ID')
   const commitment = (process.env.INDEXER_COMMITMENT ?? 'confirmed') as Commitment
 
-  if (!(['processed', 'confirmed', 'finalized'] as string[]).includes(commitment)) {
-    throw new Error('INDEXER_COMMITMENT must be processed, confirmed, or finalized')
+  if (!(['confirmed', 'finalized'] as string[]).includes(commitment)) {
+    throw new Error('INDEXER_COMMITMENT must be confirmed or finalized')
   }
 
   return {

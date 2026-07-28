@@ -67,6 +67,9 @@ select
   updated_at
 from public.indexed_program_accounts;
 
+comment on column public.indexed_program_accounts_read.lamports_numeric is
+  'Numeric helper for server-side filtering only. Select lamports for exact client display.';
+
 revoke all on public.indexed_program_accounts_read from public;
 grant select on public.indexed_program_accounts_read to anon, authenticated, service_role;
 
@@ -83,6 +86,9 @@ create policy "Indexed accounts are publicly readable"
 
 -- The service-role client used by scripts/indexer.ts bypasses RLS. Do not add
 -- anonymous insert/update policies or expose the service key to the browser.
+-- This table is public because it mirrors public on-chain account data and is
+-- used by Supabase Realtime. Keep any private decoded fields in a separate
+-- table or private view that is not added to the Realtime publication.
 
 alter table public.indexed_program_accounts replica identity full;
 
