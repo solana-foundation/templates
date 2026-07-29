@@ -52,13 +52,17 @@ async function main() {
   console.log('Mint Address:', mint.toBase58())
   console.log('Transaction:', transactionSignature)
 
+  // Deliberately does NOT include RPC_ENDPOINT: this file is committed as a working
+  // example (see .gitignore), and RPC_ENDPOINT contains your Helius api-key. The app
+  // reads the RPC endpoint from process.env.RPC_ENDPOINT at build time instead (see
+  // next.config.ts + src/features/airdrop/data-access/use-airdrop.ts), so it never
+  // needs to be written to a tracked file.
   const config = {
     mintAddress: mint.toBase58(),
     authority: payerKeypair.publicKey.toBase58(),
     decimals: 9,
     name: 'My Airdrop Token',
     symbol: 'AIRDROP',
-    network: RPC_ENDPOINT,
     createdAt: new Date().toISOString(),
   }
 

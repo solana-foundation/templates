@@ -40,6 +40,10 @@ export function useCart() {
   const [isInitialized, setIsInitialized] = useState(false)
 
   useEffect(() => {
+    // Reads from localStorage (a browser-only external system) once on mount.
+    // Kept as an effect rather than a lazy state initializer so the server-rendered
+    // markup (empty cart) matches the first client render and avoids a hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setItems(getStoredCart())
     setIsInitialized(true)
   }, [])

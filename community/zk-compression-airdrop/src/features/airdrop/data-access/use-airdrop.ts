@@ -34,7 +34,11 @@ export function useAirdrop(): UseAirdropReturn {
       setError(null)
 
       try {
-        const rpc = createRpcConnection(config.network)
+        // Talk to the same-origin /api/rpc proxy instead of the real endpoint: the
+        // next.config.ts rewrite forwards it to RPC_ENDPOINT on the server, so the
+        // Helius api-key never ships in the browser bundle.
+        const rpcEndpoint = new URL('/api/rpc', window.location.origin).toString()
+        const rpc = createRpcConnection(rpcEndpoint)
         const mint = new PublicKey(config.mintAddress)
         const { recipients, amounts } = parseRecipients(airdropData)
         const totalBatches = calculateBatches(recipients.length, batchSize)

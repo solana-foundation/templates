@@ -50,8 +50,6 @@ export function useDrift() {
 
   useEffect(() => {
     if (!wallet || !sdk) {
-      setDriftClient(null);
-      setUserAccount(null);
       return;
     }
 
@@ -83,7 +81,7 @@ export function useDrift() {
         setDriftClient(client);
 
         try {
-          setUserAccount(client.getUserAccount());
+          setUserAccount(client.getUserAccount() ?? null);
         } catch {
           setUserAccount(null);
         }
@@ -97,13 +95,15 @@ export function useDrift() {
     return () => {
       cancelled = true;
       client.unsubscribe();
+      setDriftClient(null);
+      setUserAccount(null);
     };
   }, [connection, sdk, wallet]);
 
   const refreshUserAccount = useCallback(() => {
     if (!driftClient) return;
     try {
-      setUserAccount(driftClient.getUserAccount());
+      setUserAccount(driftClient.getUserAccount() ?? null);
     } catch {
       setUserAccount(null);
     }
@@ -123,7 +123,8 @@ export function useDrift() {
     try {
       // Drift derives a user PDA from seeds ["user", authority, subAccountId].
       // initializeUserAccount handles the PDA derivation and account creation on-chain.
-      const signature = await driftClient.initializeUserAccount(SUB_ACCOUNT_ID);
+      const [signature] =
+        await driftClient.initializeUserAccount(SUB_ACCOUNT_ID);
       const { blockhash, lastValidBlockHeight } =
         await connection.getLatestBlockhash();
       setTxState({ action: "init", status: "pending", signature });
@@ -210,14 +211,7 @@ export function useDrift() {
         });
       }
     },
-    [
-      connection,
-      driftClient,
-      refreshUserAccount,
-      sdk,
-      userAccount,
-      wallet?.publicKey,
-    ]
+    [connection, driftClient, refreshUserAccount, sdk, userAccount, wallet]
   );
 
   const openPosition = useCallback(

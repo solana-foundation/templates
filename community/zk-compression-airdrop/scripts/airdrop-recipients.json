@@ -1,0 +1,24 @@
+{
+  "mint": "4xnt3SpQxVhsJK1G93JiztSkqb4pk6jZeDhH5Wkh99pd",
+  "decimals": 9,
+  "totalRecipients": 3,
+  "totalAmount": "600000000000",
+  "recipients": [
+    {
+      "recipient": "75NRhS2YAeDjBfG89gyWUDfQxmSnVhmESirdgJ3Z3s6S",
+      "amount": "100000000000",
+      "index": 0
+    },
+    {
+      "recipient": "8f6meKDm21LG73K8dRD1sckfb3WZM7Vf59GsZb31Bphd",
+      "amount": "200000000000",
+      "index": 1
+    },
+    {
+      "recipient": "CjTT2kzMnyTaUkRAFtZt1NsR4npCqPhgo6B3zcnDCQUA",
+      "amount": "300000000000",
+      "index": 2
+    }
+  ],
+  "generatedAt": "2024-01-01T00:00:00.000Z"
+}

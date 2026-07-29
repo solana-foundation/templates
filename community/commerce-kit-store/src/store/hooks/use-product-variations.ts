@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import type { Product, SelectedVariation } from '@/store/types'
 
 interface UseProductVariationsReturn {
@@ -23,17 +23,19 @@ interface UseProductVariationsReturn {
 export function useProductVariations(product: Product | null): UseProductVariationsReturn {
   const [selectedVariation, setSelectedVariation] = useState<SelectedVariation>({
     size: null,
-    color: null,
+    color: product?.variations[0]?.color || null,
   })
 
-  useEffect(() => {
-    if (product) {
-      setSelectedVariation({
-        size: null,
-        color: product.variations[0]?.color || null,
-      })
-    }
-  }, [product])
+  // Reset the selection whenever the product changes, without an effect.
+  // See: https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  const [prevProduct, setPrevProduct] = useState(product)
+  if (product !== prevProduct) {
+    setPrevProduct(product)
+    setSelectedVariation({
+      size: null,
+      color: product?.variations[0]?.color || null,
+    })
+  }
 
   const availableSizes = useMemo(() => {
     if (!product) return []

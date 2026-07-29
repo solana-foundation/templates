@@ -53,6 +53,9 @@ test-ledger
 dev-wallet.json
 
 # airdrop scripts
+# compressed-mint-config.json and airdrop-recipients.json are committed as a
+# working example so the app builds in a fresh checkout; airdrop:setup
+# overwrites them with real values when a user runs the actual setup flow.
+# Neither file ever contains RPC_ENDPOINT (it holds your Helius api-key) - that
+# stays in .env.local only and is read from process.env at build time instead.
 scripts/test-wallets.json
-scripts/compressed-mint-config.json
-scripts/airdrop-recipients.json

@@ -10,7 +10,6 @@ export interface AirdropConfig {
   decimals: number
   name: string
   symbol: string
-  network: string
 }
 
 export interface AirdropData {
