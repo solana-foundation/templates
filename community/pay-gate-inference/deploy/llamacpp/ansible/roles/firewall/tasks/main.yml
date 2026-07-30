@@ -1,0 +1,27 @@
+---
+- name: Install UFW
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+
+- name: Allow SSH and the Pay.sh gateway
+  ansible.builtin.command: ufw allow {{ item }}
+  register: ufw_rule
+  changed_when: "'Skipping' not in ufw_rule.stdout"
+  loop:
+    - OpenSSH
+    - '{{ pay_gateway_port }}/tcp'
+
+- name: Read UFW status
+  ansible.builtin.command: ufw status verbose
+  register: ufw_status
+  changed_when: false
+  check_mode: false
+
+- name: Set the default incoming policy
+  ansible.builtin.command: ufw default deny incoming
+  when: "'Default: deny (incoming)' not in ufw_status.stdout"
+
+- name: Enable UFW with its default deny-incoming policy
+  ansible.builtin.command: ufw --force enable
+  when: "'inactive' in ufw_status.stdout"

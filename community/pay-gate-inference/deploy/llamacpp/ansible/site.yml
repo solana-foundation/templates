@@ -1,0 +1,9 @@
+---
+- name: Provision a gated CPU inference host
+  hosts: all
+  become: true
+  roles:
+    - base
+    - firewall
+    - inference
+    - pay

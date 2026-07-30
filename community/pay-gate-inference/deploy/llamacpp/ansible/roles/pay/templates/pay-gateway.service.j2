@@ -1,0 +1,27 @@
+[Unit]
+Description=Pay.sh sandbox gateway for llama.cpp
+After=network-online.target llama-server.service
+Wants=network-online.target
+Requires=llama-server.service
+
+[Service]
+User={{ ansible_user }}
+Group={{ ansible_user }}
+Environment=HOME=/home/{{ ansible_user }}
+ExecStartPre=/bin/sh -c 'until /usr/bin/curl --fail --silent http://127.0.0.1:{{ llamacpp_port }}/health >/dev/null; do sleep 2; done'
+ExecStart=/usr/local/bin/pay gate inference \
+  /home/{{ ansible_user }}/.config/pay/paywall.yml \
+  --bind 0.0.0.0:{{ pay_gateway_port }} \
+  --public-url {{ pay_public_url }} \
+  --no-register \
+  --providers llama-cpp \
+  --sandbox \
+  --no-tui
+Restart=always
+RestartSec=2
+TimeoutStartSec=infinity
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

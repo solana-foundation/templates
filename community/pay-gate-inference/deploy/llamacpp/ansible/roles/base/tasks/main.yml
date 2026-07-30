@@ -1,0 +1,65 @@
+---
+- name: Install base packages
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - chrony
+      - curl
+      - htop
+      - jq
+      - numactl
+      - unattended-upgrades
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Read current timezone
+  ansible.builtin.command: timedatectl show -p Timezone --value
+  register: current_timezone
+  changed_when: false
+
+- name: Set timezone
+  ansible.builtin.command: timedatectl set-timezone {{ timezone }}
+  when: current_timezone.stdout != timezone
+
+- name: Enable unattended security upgrades
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+    mode: '0644'
+
+- name: Create journald configuration directory
+  ansible.builtin.file:
+    path: /etc/systemd/journald.conf.d
+    state: directory
+    mode: '0755'
+
+- name: Persist service logs with a size cap
+  ansible.builtin.copy:
+    dest: /etc/systemd/journald.conf.d/inference.conf
+    content: |
+      [Journal]
+      Storage=persistent
+      SystemMaxUse=2G
+    mode: '0644'
+  register: journald_config
+
+- name: Restart journald after configuration changes
+  ansible.builtin.systemd:
+    name: systemd-journald
+    state: restarted
+  when: journald_config.changed
+
+- name: Tune virtual memory for inference
+  ansible.builtin.copy:
+    dest: /etc/sysctl.d/90-inference.conf
+    content: |
+      vm.swappiness = 10
+    mode: '0644'
+  register: inference_sysctl
+
+- name: Apply sysctl changes
+  ansible.builtin.command: sysctl --system
+  when: inference_sysctl.changed

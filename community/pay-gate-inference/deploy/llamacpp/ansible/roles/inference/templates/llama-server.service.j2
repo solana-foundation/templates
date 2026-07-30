@@ -1,0 +1,29 @@
+[Unit]
+Description=llama.cpp OpenAI-compatible inference server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=llama
+Group=llama
+Environment=LLAMA_CACHE={{ llamacpp_models_dir }}
+ExecStart={{ llamacpp_root }}/bin/llama-server \
+  {% if llamacpp_hf_repo | length > 0 %}-hf {{ llamacpp_hf_repo }}{% else %}-m {{ llamacpp_models_dir }}/{{ llamacpp_model_file }}{% endif %} \
+  --host {{ llamacpp_host }} \
+  --port {{ llamacpp_port }} \
+  --alias {{ llamacpp_model_alias }} \
+  --threads {{ llamacpp_threads }} \
+  --ctx-size {{ llamacpp_ctx }} \
+  --parallel {{ llamacpp_parallel }} \
+  --jinja \
+  --metrics {{ llamacpp_extra_args }}
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+LimitMEMLOCK=infinity
+
+[Install]
+WantedBy=multi-user.target

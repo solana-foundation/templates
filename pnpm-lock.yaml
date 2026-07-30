@@ -619,6 +619,8 @@ importers:
 
   community/moneymq-x402: {}
 
+  community/pay-gate-inference: {}
+
   community/phantom-embedded-js:
     dependencies:
       '@phantom/browser-sdk':

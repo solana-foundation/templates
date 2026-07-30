@@ -530,6 +530,25 @@
         "usecase": "Payments"
       },
       {
+        "description": "Turn local inference into a paid API with Pay.sh",
+        "id": "gh:solana-foundation/templates/community/pay-gate-inference",
+        "image": "community/pay-gate-inference/og-image.png",
+        "keywords": [
+          "solana",
+          "pay.sh",
+          "x402",
+          "inference",
+          "ollama",
+          "llama.cpp",
+          "local-ai",
+          "payments"
+        ],
+        "name": "pay-gate-inference",
+        "path": "community/pay-gate-inference",
+        "displayName": "Monetize Inference with Pay.sh",
+        "usecase": "Payments"
+      },
+      {
         "description": "Vite + vanilla JavaScript template for integrating Phantom's embedded user wallets on Solana",
         "id": "gh:solana-foundation/templates/community/phantom-embedded-js",
         "image": "community/phantom-embedded-js/og-image.png",

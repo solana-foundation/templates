@@ -246,6 +246,14 @@ Templates maintained by the Solana community
 
 `x402` `moneymq` `payments` `micropayments` `solana` `api-monetization` `kora` `facilitator` `typescript`
 
+### [pay-gate-inference](community/pay-gate-inference)
+
+`gh:solana-foundation/templates/community/pay-gate-inference`
+
+> Turn local inference into a paid API with Pay.sh
+
+`solana` `pay.sh` `x402` `inference` `ollama` `llama.cpp` `local-ai` `payments`
+
 ### [phantom-embedded-js](community/phantom-embedded-js)
 
 `gh:solana-foundation/templates/community/phantom-embedded-js`

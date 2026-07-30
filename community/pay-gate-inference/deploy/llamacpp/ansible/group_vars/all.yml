@@ -1,0 +1,41 @@
+---
+timezone: UTC
+
+# llama.cpp is built from source with native CPU optimizations. Pin a release
+# from https://github.com/ggml-org/llama.cpp/releases and upgrade deliberately.
+llamacpp_version: b9923
+llamacpp_root: /opt/llama.cpp
+llamacpp_models_dir: /opt/llama.cpp/models
+
+# The model server remains private. Only the Pay.sh gateway is public.
+llamacpp_host: 127.0.0.1
+llamacpp_port: 8081
+llamacpp_model_alias: local-model
+
+# llama-server downloads this model on first start. `:Q8_0` selects the
+# quantization explicitly. Replace it with a model suited to your hardware.
+llamacpp_hf_repo: Qwen/Qwen3-0.6B-GGUF:Q8_0
+
+# Alternatively, clear llamacpp_hf_repo and provide a direct GGUF URL + file.
+llamacpp_model_url: ''
+llamacpp_model_file: ''
+
+# Physical cores are usually the best starting point for CPU inference.
+llamacpp_threads: >-
+  {{
+    ansible_facts['processor_cores']
+    * ansible_facts['processor_count']
+  }}
+llamacpp_ctx: 32768
+llamacpp_parallel: 1
+llamacpp_extra_args: ''
+
+# Official Pay.sh CLI release installed from GitHub with its published checksum.
+pay_install_mode: release
+pay_version: '0.26.0'
+pay_gateway_port: 8080
+pay_public_url: 'http://{{ ansible_host }}:{{ pay_gateway_port }}'
+
+# USD per 1 million tokens. This deployment remains sandbox-only.
+pay_price_in_per_1m: '0.10'
+pay_price_out_per_1m: '0.30'
