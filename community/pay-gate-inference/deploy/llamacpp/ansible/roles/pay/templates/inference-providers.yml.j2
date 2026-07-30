@@ -1,6 +1,6 @@
 # Override Pay.sh's built-in llama.cpp provider because this deployment keeps
-# llama-server on private port {{ llamacpp_port }} and exposes the gateway on
-# port {{ pay_gateway_port }}.
+# llama-server on private port {{ llamacpp_port }}. By default, only the
+# sandbox Pay gateway is public.
 providers:
   - slug: llama-cpp
     title: llama.cpp

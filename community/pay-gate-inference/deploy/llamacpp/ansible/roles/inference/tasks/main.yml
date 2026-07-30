@@ -1,4 +1,26 @@
 ---
+- name: Validate llama.cpp security-sensitive settings
+  ansible.builtin.assert:
+    that:
+      - ansible_user != 'root'
+      - llamacpp_host == '127.0.0.1'
+      - (llamacpp_port | int) >= 1024
+      - (llamacpp_port | int) <= 65535
+      - llamacpp_model_alias is match('^[A-Za-z0-9._:-]+$')
+      - >-
+        llamacpp_hf_repo | length == 0
+        or llamacpp_hf_repo is match('^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+(?::[A-Za-z0-9._-]+)?$')
+      - llamacpp_hf_repo | length == 0 or llamacpp_allow_unverified_hf_repo | bool
+      - llamacpp_model_url | length == 0 or llamacpp_model_url is match('^https://[^\\s]+$')
+      - "'\\n' not in llamacpp_extra_args"
+      - "'\\r' not in llamacpp_extra_args"
+      - llamacpp_model_file | length == 0 or llamacpp_model_file == (llamacpp_model_file | basename)
+    fail_msg: >-
+      Use a non-root SSH user, keep llama.cpp on loopback, use an unprivileged
+      port, and remove whitespace, path traversal, or newlines from values
+      rendered into the systemd unit. Runtime Hugging Face downloads require
+      an explicit llamacpp_allow_unverified_hf_repo risk acceptance.
+
 - name: Install llama.cpp build dependencies
   ansible.builtin.apt:
     name:
@@ -22,11 +44,11 @@
     state: directory
     owner: '{{ item.owner }}'
     group: '{{ item.group }}'
-    mode: '0755'
+    mode: "{{ item.mode | default('0755') }}"
   loop:
     - { path: '{{ llamacpp_root }}', owner: root, group: root }
     - { path: '{{ llamacpp_root }}/bin', owner: root, group: root }
-    - { path: '{{ llamacpp_models_dir }}', owner: llama, group: llama }
+    - { path: '{{ llamacpp_models_dir }}', owner: llama, group: llama, mode: '0750' }
 
 - name: Fetch the pinned llama.cpp source
   ansible.builtin.git:
@@ -37,6 +59,26 @@
     force: false
   register: llamacpp_source
 
+- name: Read the checked-out llama.cpp commit
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - '{{ llamacpp_root }}/src'
+      - rev-parse
+      - HEAD
+  register: checked_out_llamacpp_commit
+  changed_when: false
+  check_mode: false
+
+- name: Verify the pinned llama.cpp commit
+  ansible.builtin.assert:
+    that:
+      - checked_out_llamacpp_commit.stdout == llamacpp_commit
+    fail_msg: >-
+      The llama.cpp tag no longer resolves to the reviewed commit. Verify the
+      upstream release and update llamacpp_version and llamacpp_commit together.
+
 - name: Check for the installed llama-server binary
   ansible.builtin.stat:
     path: '{{ llamacpp_root }}/bin/llama-server'
@@ -44,19 +86,27 @@
 
 - name: Configure a native static release build
   ansible.builtin.command:
-    cmd: >-
-      cmake -B {{ llamacpp_root }}/build -S {{ llamacpp_root }}/src
-      -DCMAKE_BUILD_TYPE=Release
-      -DGGML_NATIVE=ON
-      -DBUILD_SHARED_LIBS=OFF
+    argv:
+      - cmake
+      - -B
+      - '{{ llamacpp_root }}/build'
+      - -S
+      - '{{ llamacpp_root }}/src'
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DGGML_NATIVE=ON
+      - -DBUILD_SHARED_LIBS=OFF
   when: llamacpp_source.changed or not installed_llamacpp.stat.exists
 
 - name: Build llama-server
   ansible.builtin.command:
-    cmd: >-
-      cmake --build {{ llamacpp_root }}/build
-      --target llama-server
-      -j {{ ansible_facts['processor_vcpus'] }}
+    argv:
+      - cmake
+      - --build
+      - '{{ llamacpp_root }}/build'
+      - --target
+      - llama-server
+      - -j
+      - "{{ ansible_facts['processor_vcpus'] }}"
   when: llamacpp_source.changed or not installed_llamacpp.stat.exists
 
 - name: Install llama-server
@@ -76,7 +126,8 @@
     dest: '{{ llamacpp_models_dir }}/{{ llamacpp_model_file }}'
     owner: llama
     group: llama
-    mode: '0644'
+    mode: '0640'
+    checksum: '{{ llamacpp_model_checksum }}'
   when:
     - llamacpp_model_url | length > 0
     - llamacpp_model_file | length > 0
@@ -97,10 +148,11 @@
         or (
           (llamacpp_model_url | length > 0)
           and (llamacpp_model_file | length > 0)
+          and (llamacpp_model_checksum is match('^sha256:[a-f0-9]{64}$'))
         )
     fail_msg: >-
-      Set llamacpp_hf_repo or both llamacpp_model_url and
-      llamacpp_model_file in group_vars/all.yml.
+      Set an explicitly allowed llamacpp_hf_repo, or set llamacpp_model_url,
+      llamacpp_model_file, and a valid SHA-256 checksum together.
 
 - name: Enable and start llama-server
   ansible.builtin.systemd:

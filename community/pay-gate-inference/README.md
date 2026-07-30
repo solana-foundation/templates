@@ -1,6 +1,9 @@
 # Monetize Inference with Pay.sh
 
-Open models let you run inference on compute you own. [Pay.sh](https://pay.sh) lets you charge for it without signing up for a billing platform or forcing users through accounts, API keys, and subscriptions. This template connects the two: define input and output token rates in [paywall.yml](paywall.yml), let users pay for consumption with stablecoins, and test the full flow safely in a sandbox.
+Open models let you run inference on compute you own. [Pay.sh](https://pay.sh) lets you charge for it without signing up for a billing platform or forcing users through accounts, API keys, and subscriptions. This template connects the two: define input and output token rates in [rates.yml](rates.yml), let users pay for consumption with stablecoins, and test the full flow safely in a sandbox.
+
+> [!CAUTION]
+> This is a public sandbox reference implementation, not an audited production deployment. Treat the Pay gateway as an internet-facing attack surface, review [SECURITY.md](SECURITY.md), and complete your own security, legal, and compliance review before handling real traffic or funds.
 
 ## How it works
 
@@ -13,9 +16,9 @@ pay curl ──────POST────▶ Pay.sh gateway ──────
 1. Pay.sh discovers your local engine and exposes its OpenAI-compatible API through a payment gateway.
 2. An unsigned inference request receives `HTTP 402 Payment Required` before the model runs. Health and model-listing endpoints remain free.
 3. `pay --sandbox curl` accepts the payment terms with disposable sandbox stablecoins and retries the same request.
-4. After inference, Pay.sh settles the actual input and output token cost using the rates in [paywall.yml](paywall.yml).
+4. After inference, Pay.sh settles the actual input and output token cost using the rates in [rates.yml](rates.yml).
 
-The gateway and inference engine bind to loopback by default. No JavaScript dependencies or API keys are required.
+The local quickstart binds the gateway and inference engine to loopback. No JavaScript dependencies or API keys are required.
 
 ## Start locally with Ollama
 
@@ -50,12 +53,12 @@ Start the Pay.sh gateway in terminal one:
 
 ```bash
 pay gate inference \
-  paywall.yml \
+  rates.yml \
   --providers ollama \
   --sandbox
 ```
 
-This asks Pay.sh to discover Ollama and apply the token rates in [paywall.yml](paywall.yml).
+This asks Pay.sh to discover Ollama and apply the token rates in [rates.yml](rates.yml).
 
 In terminal two, make the request with ordinary curl:
 
@@ -75,7 +78,11 @@ pay --sandbox curl \
   --json @request.json
 ```
 
-Review the sandbox terms shown by Pay.sh before authorizing. The final JSON response comes from your local model. Open the gateway UI at <http://127.0.0.1:1402/>; Pay.sh redirects that URL to the UI.
+Review the sandbox terms shown by Pay.sh before authorizing. The final JSON response comes from your local model.
+
+The local gateway also exposes a web UI at <http://127.0.0.1:1402/>. Open it to watch requests and payments arrive in real time, from the initial `402` challenge through the paid retry and delivered response.
+
+![Pay inference dashboard showing a completed payment flow](assets/pay-inference-dashboard.png)
 
 ## Use llama.cpp instead
 
@@ -104,7 +111,7 @@ The `--llamacpp` generator option sets the model in [request.json](request.json)
 
 ```bash
 pay gate inference \
-  paywall.yml \
+  rates.yml \
   --providers llama-cpp \
   --sandbox
 ```
@@ -125,7 +132,7 @@ pay --sandbox curl \
 
 ### Deploy llama.cpp to an Ubuntu CPU server
 
-The generated project includes an Ansible deployment under `deploy/llamacpp`. It builds a pinned llama.cpp release with native CPU optimizations, downloads the model, keeps `llama-server` on a private loopback port, installs Pay.sh, and exposes only the sandbox payment gateway.
+The generated project includes an Ansible deployment under `deploy/llamacpp`. It builds a pinned llama.cpp release with native CPU optimizations, verifies the model checksum, keeps inference on loopback, and exposes the sandbox Pay gateway from a dedicated non-login service account.
 
 Install Ansible and `just` on your development machine, then create your local inventory:
 
@@ -140,7 +147,7 @@ Edit `deploy/llamacpp/ansible/inventory.yml` with your Ubuntu host and SSH user.
 just specs ubuntu@<host>
 ```
 
-The defaults in `deploy/llamacpp/ansible/group_vars/all.yml` run the same `local-model` used by [request.json](request.json). Replace the Hugging Face repository, llama.cpp release, thread count, context, parallel slots, gateway URL, or token prices for your hardware.
+The defaults in `deploy/llamacpp/ansible/group_vars/all.yml` run the same `local-model` used by [request.json](request.json). Replace the pinned model URL and checksum together when changing models, then tune the llama.cpp release, thread count, context, parallel slots, gateway URL, and token prices for your hardware.
 
 Review and apply the playbook:
 
@@ -152,40 +159,31 @@ just deploy
 The playbook installs and starts two systemd services:
 
 - `llama-server` listens only on `127.0.0.1:8081`.
-- `pay-gateway` listens on port `8080` and is the only public inference route.
+- `pay-gateway` listens publicly on port `8080`. Its diagnostic web UI is disabled.
 
-Test the deployed gateway from your development machine:
+Run the unpaid test from your development machine:
 
 ```bash
-# Must return HTTP 402 without running inference
-curl --include \
-  http://<host>:8080/v1/chat/completions \
-  --json @request.json
+just gate-test <host>
 ```
 
-Sandbox funds and their local validator live on the inference host. Run the paid test there so the payer and gateway share that sandbox:
+It must return `HTTP 402` without running inference. Run the paid test on the server so the payer and gateway share the sandbox account:
 
 ```bash
 just paid-test ubuntu@<host>
 ```
 
-Use `just gate-test <host>` to repeat the unpaid check, or `just logs <host>` and `just gateway-logs <host>` to follow either service. The deployment intentionally stays in sandbox mode. Before accepting real stablecoins, add a domain and TLS, remove `--sandbox` only when mainnet token metering is supported, review firewall and payment settings, and set `pay_public_url` to the final HTTPS URL.
-
-## Use another inference engine
-
-Pay.sh can also discover LM Studio, vLLM, and exo:
+To make the gateway private instead, set `pay_gateway_expose_publicly: false`, set `pay_public_url` to its loopback URL, redeploy, and forward the API over SSH:
 
 ```bash
-pay gate inference --providers lm-studio ...
-pay gate inference --providers vllm ...
-pay gate inference --providers exo ...
+just tunnel ubuntu@<host>
 ```
 
-Ollama and llama.cpp have generator presets because they require different model IDs and gateway hostnames. For another engine, update [request.json](request.json) with a model it serves and pass the corresponding provider slug to Pay.sh.
+The public deployment does not add TLS, authentication beyond the payment challenge, rate limits, request-size limits, or DDoS protection. Keep it sandbox-only. Put a hardened HTTPS edge with abuse controls in front of the gateway and complete a threat review before handling real users or funds. Use `just logs <host>` and `just gateway-logs <host>` to follow either service.
 
 ## Set token prices
 
-The default rates in [paywall.yml](paywall.yml) are:
+The default rates in [rates.yml](rates.yml) are:
 
 - $0.10 per 1 million input tokens
 - $0.30 per 1 million output tokens
@@ -204,18 +202,33 @@ models:
 
 The paywall activates charging. Without the positional paywall or inline `--price`, `pay gate inference` is an uncharged observability proxy.
 
-## Security and approval boundaries
+## Connect a coding harness
+
+The `pay` command can wrap coding harnesses such as Goose, Claude Code, and Codex. This example uses Goose; follow the [Goose installation instructions](https://goose-docs.ai/docs/getting-started/installation/) before continuing:
+
+```bash
+pay goose
+```
+
+![Add a custom inference server in Pay's provider picker](assets/pay-goose-provider-picker.png)
+
+Add your inference server as a provider. Pay then routes Goose's inference traffic to your endpoint.
+
+## Security notice and operator responsibility
 
 - All examples use `--sandbox`; the gateway refuses non-localnet payment configuration.
-- The local quickstarts bind the gateway to `127.0.0.1:1402`. The Ubuntu playbook binds its sandbox gateway to `0.0.0.0:8080`, opens only SSH and that port, and keeps `llama-server` on loopback. Add TLS and review the exposure plan before adapting it beyond sandbox testing.
-- The local engines shown here have no authentication and must remain on loopback.
+- Local quickstarts bind both services to loopback. The Ubuntu playbook keeps llama.cpp on loopback but intentionally exposes the Pay sandbox gateway on port `8080`; UFW opens SSH and that port.
+- The playbook pins the llama.cpp release commit, verifies the default GGUF SHA-256, verifies the Pay.sh release checksum, uses non-login service accounts, and applies systemd sandboxing. These controls reduce risk; they do not prove the deployment is secure.
+- The inference engine has no application authentication and remains private. The public gateway is still vulnerable to scanning, denial of service, dependency flaws, and sandbox-funded compute abuse.
+- The gateway root publishes provider availability, model names, and configured prices. Its diagnostic UI is disabled on the public deployment.
 - Plain `curl` makes an unsigned request only. It never invokes Pay.sh or a signer.
 - `pay --sandbox curl` handles payment authorization and retry. Review the displayed recipient, maximum amount, asset, and network before approving.
 - Model prompts and responses are forwarded to the selected local engine. Sandbox settlement may use Pay's configured localnet RPC infrastructure.
 - No private key, seed phrase, API token, or wallet file belongs in this project.
-- Stop the gateway to remove access. Use `pay account --help` to inspect or remove locally stored sandbox account state.
+- You are responsible for host patching, SSH access, network policy, TLS, abuse controls, backups, monitoring, model licensing, privacy, sanctions, tax, and other legal or regulatory obligations.
+- Stop the gateway to remove access. Use `pay account --help` as the `pay-gateway` service user to inspect or remove its sandbox account state.
 
-This template and its Ubuntu provisioning are sandbox development harnesses, not a production custody or mainnet inference deployment.
+This template and its Ubuntu provisioning are provided as-is under the [MIT License](LICENSE), without warranties or guarantees. They have not received a formal security audit or certification. You assume the risk of deploying or modifying them. Nothing here is legal, security, tax, or compliance advice. Read the full [security policy and deployment checklist](SECURITY.md).
 
 ## Pay resources
 

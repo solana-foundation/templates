@@ -40,4 +40,8 @@ gate-test host:
 
 # Pay from the inference host so payer and gateway share the sandbox validator
 paid-test host:
-    ssh -t {{host}} 'pay --sandbox curl http://127.0.0.1:8080/v1/chat/completions --json @$HOME/.config/pay/request.json'
+    ssh -t {{host}} 'sudo -u pay-gateway env HOME=/var/lib/pay-gateway /usr/local/bin/pay --sandbox curl http://127.0.0.1:8080/v1/chat/completions --json @/var/lib/pay-gateway/.config/pay/request.json'
+
+# Forward the private gateway to http://127.0.0.1:8080 on this machine
+tunnel host:
+    ssh -N -L 8080:127.0.0.1:8080 {{host}}

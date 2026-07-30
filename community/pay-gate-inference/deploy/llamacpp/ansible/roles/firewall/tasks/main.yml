@@ -4,19 +4,28 @@
     name: ufw
     state: present
 
-- name: Allow SSH and the Pay.sh gateway
-  ansible.builtin.command: ufw allow {{ item }}
-  register: ufw_rule
-  changed_when: "'Skipping' not in ufw_rule.stdout"
-  loop:
-    - OpenSSH
-    - '{{ pay_gateway_port }}/tcp'
+- name: Allow SSH
+  ansible.builtin.command: ufw allow OpenSSH
+  register: ufw_ssh_rule
+  changed_when: "'Skipping' not in ufw_ssh_rule.stdout"
 
 - name: Read UFW status
   ansible.builtin.command: ufw status verbose
   register: ufw_status
   changed_when: false
   check_mode: false
+
+- name: Allow the gateway only after explicit public-exposure opt-in
+  ansible.builtin.command: ufw allow {{ pay_gateway_port }}/tcp
+  register: ufw_gateway_rule
+  changed_when: "'Skipping' not in ufw_gateway_rule.stdout"
+  when: pay_gateway_expose_publicly | bool
+
+- name: Remove a public gateway rule when exposure is disabled
+  ansible.builtin.command: ufw --force delete allow {{ pay_gateway_port }}/tcp
+  register: removed_gateway_rule
+  changed_when: "'Rule deleted' in removed_gateway_rule.stdout"
+  when: not (pay_gateway_expose_publicly | bool)
 
 - name: Set the default incoming policy
   ansible.builtin.command: ufw default deny incoming

@@ -5,23 +5,55 @@ Wants=network-online.target
 Requires=llama-server.service
 
 [Service]
-User={{ ansible_user }}
-Group={{ ansible_user }}
-Environment=HOME=/home/{{ ansible_user }}
-ExecStartPre=/bin/sh -c 'until /usr/bin/curl --fail --silent http://127.0.0.1:{{ llamacpp_port }}/health >/dev/null; do sleep 2; done'
+User={{ pay_service_user }}
+Group={{ pay_service_user }}
+Environment=HOME={{ pay_service_home }}
+WorkingDirectory={{ pay_service_home }}
+ExecStartPre=/usr/bin/curl \
+  --fail \
+  --silent \
+  --show-error \
+  --retry 60 \
+  --retry-delay 2 \
+  --retry-max-time 120 \
+  --retry-connrefused \
+  --max-time 5 \
+  http://127.0.0.1:{{ llamacpp_port }}/health
 ExecStart=/usr/local/bin/pay gate inference \
-  /home/{{ ansible_user }}/.config/pay/paywall.yml \
-  --bind 0.0.0.0:{{ pay_gateway_port }} \
+  {{ pay_service_home }}/.config/pay/rates.yml \
+  --bind {% if pay_gateway_expose_publicly %}0.0.0.0{% else %}127.0.0.1{% endif %}:{{ pay_gateway_port }} \
   --public-url {{ pay_public_url }} \
   --no-register \
   --providers llama-cpp \
   --sandbox \
-  --no-tui
+  --no-tui \
+  --no-web
 Restart=always
 RestartSec=2
-TimeoutStartSec=infinity
+TimeoutStartSec=130
+TimeoutStopSec=10
 NoNewPrivileges=true
 PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths={{ pay_service_home }}
+ProtectClock=true
+ProtectControlGroups=true
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RemoveIPC=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+SystemCallArchitectures=native
+UMask=0077
 
 [Install]
 WantedBy=multi-user.target
