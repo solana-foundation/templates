@@ -1,6 +1,6 @@
 import { createFromRoot } from 'codama'
 import { rootNodeFromAnchor, AnchorIdl } from '@codama/nodes-from-anchor'
-import { renderJavaScriptVisitor } from '@codama/renderers'
+import { renderVisitor as renderJavaScriptVisitor } from '@codama/renderers-js'
 import { visit } from '@codama/visitors-core'
 import anchorIdl from './target/idl/solana_distributor.json'
 import path from 'path'
