@@ -12,15 +12,16 @@ name = "basic"
 default = []
 cpi = ["no-entrypoint"]
 no-entrypoint = []
-no-idl = []
 no-log-ix-name = []
 idl-build = ["anchor-lang/idl-build"]
+anchor-debug = []
+custom-heap = []
+custom-panic = []
 
 
 [dependencies]
-anchor-lang = "0.32.1"
-# anchor-lang 0.32.1 declares ^2 for these crates but needs specific minimum
-# versions that contain the APIs it uses (store_current_index_checked, resize)
-solana-instructions-sysvar = ">=2.2.2"
-solana-account-info = ">=2.3.0"
+anchor-lang = "1.1.2"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(target_os, values("solana"))'] }
 

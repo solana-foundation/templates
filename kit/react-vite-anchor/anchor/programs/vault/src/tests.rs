@@ -1,13 +1,13 @@
 #[cfg(test)]
 mod tests {
     use crate::ID as PROGRAM_ID;
+    use anchor_lang::system_program;
     use litesvm::LiteSVM;
     use solana_sdk::{
         instruction::{AccountMeta, Instruction},
         pubkey::Pubkey,
         signature::Keypair,
         signer::Signer,
-        system_program,
         transaction::Transaction,
     };
 

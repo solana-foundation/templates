@@ -19,3 +19,4 @@ pnpm-lock.yaml
 
 # Claude Code
 .claude/
+pnpm-workspace.yaml

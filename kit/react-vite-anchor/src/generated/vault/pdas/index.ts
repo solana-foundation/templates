@@ -6,7 +6,4 @@
  * @see https://github.com/codama-idl/codama
  */
 
-export * from "./errors";
-export * from "./instructions";
-export * from "./pdas";
-export * from "./programs";
+export * from "./vault";

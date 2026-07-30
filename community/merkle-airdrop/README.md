@@ -60,7 +60,7 @@ After installation, you should see output similar to:
 Installed Versions:
 Rust: rustc 1.85.0 (4d91de4e4 2025-02-17)
 Solana CLI: solana-cli 2.1.15 (src:53545685; feat:3271415109, client:Agave)
-Anchor CLI: anchor-cli 0.31.1
+Anchor CLI: anchor-cli 1.1.2
 Node.js: v23.9.0
 Yarn: 1.22.1
 
@@ -104,7 +104,7 @@ export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
 Install Anchor Version Manager (AVM) for managing Anchor versions:
 
 ```bash
-cargo install --git https://github.com/coral-xyz/anchor avm --force
+cargo install --git https://github.com/solana-foundation/anchor avm --force
 ```
 
 Install the latest Anchor CLI:
@@ -144,7 +144,7 @@ solana --version
 
 # Check Anchor CLI
 anchor --version
-# Expected: anchor-cli 0.31.1
+# Expected: anchor-cli 1.1.2
 
 # Check Node.js
 node --version
@@ -441,7 +441,7 @@ See `anchor/tests/solana-distributor-comprehensive.test.ts` for end‑to‑end c
 
 ### Version and Compatibility Notes
 
-- Anchor CLI: 0.31.1
+- Anchor CLI: 1.1.2
 - Solana CLI: 2.2.20+ (2.2.x)
 - Rust: 1.88.0+
 - Node.js: 22+

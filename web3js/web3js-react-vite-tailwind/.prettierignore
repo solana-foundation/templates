@@ -5,3 +5,4 @@ tmp
 pnpm-lock.yaml
 .agents
 agent
+pnpm-workspace.yaml
