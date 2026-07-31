@@ -1,0 +1,5 @@
+# USD per 1 million tokens. The default applies to every model discovered
+# behind the selected local inference provider.
+default:
+  in: 0.10
+  out: 0.30

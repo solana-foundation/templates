@@ -1,0 +1,71 @@
+{
+  "name": "pay-gate-inference",
+  "displayName": "Monetize Inference with Pay.sh",
+  "description": "Turn local inference into a paid API with Pay.sh",
+  "usecase": "Payments",
+  "version": "0.1.0",
+  "private": true,
+  "keywords": [
+    "solana",
+    "pay.sh",
+    "x402",
+    "inference",
+    "ollama",
+    "llama.cpp",
+    "local-ai",
+    "payments"
+  ],
+  "create-solana-dapp": {
+    "options": {
+      "ollama": {
+        "default": true,
+        "description": "Configure local inference for Ollama",
+        "group": "engine",
+        "instructions": [
+          "List installed models, then pull the small starter model:",
+          "+ollama list",
+          "+ollama pull qwen3:0.6b",
+          "Start Pay's sandbox inference gateway:",
+          "+pay gate inference rates.yml --providers ollama --sandbox",
+          "In another terminal, prove the unpaid request is blocked:",
+          "+curl --include http://ollama.localhost:1402/v1/chat/completions --json @request.json",
+          "Then make the same request through Pay with disposable sandbox funds:",
+          "+pay --sandbox curl http://ollama.localhost:1402/v1/chat/completions --json @request.json"
+        ],
+        "rename": {
+          "inference-model": {
+            "to": "qwen3:0.6b",
+            "paths": [
+              "request.json"
+            ]
+          }
+        }
+      },
+      "llamacpp": {
+        "description": "Configure local inference for llama.cpp",
+        "group": "engine",
+        "instructions": [
+          "Start llama-server on 127.0.0.1:8080 with --alias local-model.",
+          "For a ready-to-run Ubuntu CPU host, run just setup, configure the inventory, then run just deploy.",
+          "Start Pay's sandbox inference gateway:",
+          "+pay gate inference rates.yml --providers llama-cpp --sandbox",
+          "In another terminal, prove the unpaid request is blocked:",
+          "+curl --include http://llama-cpp.localhost:1402/v1/chat/completions --json @request.json",
+          "Then make the same request through Pay with disposable sandbox funds:",
+          "+pay --sandbox curl http://llama-cpp.localhost:1402/v1/chat/completions --json @request.json"
+        ],
+        "rename": {
+          "inference-model": {
+            "to": "local-model",
+            "paths": [
+              "request.json"
+            ]
+          }
+        }
+      }
+    },
+    "instructions": [
+      "Read README.md and SECURITY.md before exposing services or removing --sandbox."
+    ]
+  }
+}

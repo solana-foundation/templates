@@ -1,0 +1,171 @@
+---
+- name: Validate llama.cpp security-sensitive settings
+  ansible.builtin.assert:
+    that:
+      - ansible_user != 'root'
+      - llamacpp_host == '127.0.0.1'
+      - (llamacpp_port | int) >= 1024
+      - (llamacpp_port | int) <= 65535
+      - llamacpp_model_alias is match('^[A-Za-z0-9._:-]+$')
+      - >-
+        llamacpp_hf_repo | length == 0
+        or llamacpp_hf_repo is match('^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+(?::[A-Za-z0-9._-]+)?$')
+      - llamacpp_hf_repo | length == 0 or llamacpp_allow_unverified_hf_repo | bool
+      - llamacpp_model_url | length == 0 or llamacpp_model_url is match('^https://[^\\s]+$')
+      - "'\\n' not in llamacpp_extra_args"
+      - "'\\r' not in llamacpp_extra_args"
+      - llamacpp_model_file | length == 0 or llamacpp_model_file == (llamacpp_model_file | basename)
+    fail_msg: >-
+      Use a non-root SSH user, keep llama.cpp on loopback, use an unprivileged
+      port, and remove whitespace, path traversal, or newlines from values
+      rendered into the systemd unit. Runtime Hugging Face downloads require
+      an explicit llamacpp_allow_unverified_hf_repo risk acceptance.
+
+- name: Install llama.cpp build dependencies
+  ansible.builtin.apt:
+    name:
+      - build-essential
+      - cmake
+      - git
+      - libcurl4-openssl-dev
+    state: present
+
+- name: Create the llama system user
+  ansible.builtin.user:
+    name: llama
+    system: true
+    shell: /usr/sbin/nologin
+    home: '{{ llamacpp_root }}'
+    create_home: false
+
+- name: Create llama.cpp directories
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: directory
+    owner: '{{ item.owner }}'
+    group: '{{ item.group }}'
+    mode: "{{ item.mode | default('0755') }}"
+  loop:
+    - { path: '{{ llamacpp_root }}', owner: root, group: root }
+    - { path: '{{ llamacpp_root }}/bin', owner: root, group: root }
+    - { path: '{{ llamacpp_models_dir }}', owner: llama, group: llama, mode: '0750' }
+
+- name: Fetch the pinned llama.cpp source
+  ansible.builtin.git:
+    repo: https://github.com/ggml-org/llama.cpp
+    dest: '{{ llamacpp_root }}/src'
+    version: '{{ llamacpp_version }}'
+    depth: 1
+    force: false
+  register: llamacpp_source
+
+- name: Read the checked-out llama.cpp commit
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - '{{ llamacpp_root }}/src'
+      - rev-parse
+      - HEAD
+  register: checked_out_llamacpp_commit
+  changed_when: false
+  check_mode: false
+
+- name: Verify the pinned llama.cpp commit
+  ansible.builtin.assert:
+    that:
+      - checked_out_llamacpp_commit.stdout == llamacpp_commit
+    fail_msg: >-
+      The llama.cpp tag no longer resolves to the reviewed commit. Verify the
+      upstream release and update llamacpp_version and llamacpp_commit together.
+
+- name: Check for the installed llama-server binary
+  ansible.builtin.stat:
+    path: '{{ llamacpp_root }}/bin/llama-server'
+  register: installed_llamacpp
+
+- name: Configure a native static release build
+  ansible.builtin.command:
+    argv:
+      - cmake
+      - -B
+      - '{{ llamacpp_root }}/build'
+      - -S
+      - '{{ llamacpp_root }}/src'
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DGGML_NATIVE=ON
+      - -DBUILD_SHARED_LIBS=OFF
+  when: llamacpp_source.changed or not installed_llamacpp.stat.exists
+
+- name: Build llama-server
+  ansible.builtin.command:
+    argv:
+      - cmake
+      - --build
+      - '{{ llamacpp_root }}/build'
+      - --target
+      - llama-server
+      - -j
+      - "{{ ansible_facts['processor_vcpus'] }}"
+  when: llamacpp_source.changed or not installed_llamacpp.stat.exists
+
+- name: Install llama-server
+  ansible.builtin.copy:
+    remote_src: true
+    src: '{{ llamacpp_root }}/build/bin/llama-server'
+    dest: '{{ llamacpp_root }}/bin/llama-server'
+    owner: root
+    group: root
+    mode: '0755'
+  when: llamacpp_source.changed or not installed_llamacpp.stat.exists
+  register: llamacpp_binary
+
+- name: Download a directly configured GGUF model
+  ansible.builtin.get_url:
+    url: '{{ llamacpp_model_url }}'
+    dest: '{{ llamacpp_models_dir }}/{{ llamacpp_model_file }}'
+    owner: llama
+    group: llama
+    mode: '0640'
+    checksum: '{{ llamacpp_model_checksum }}'
+  when:
+    - llamacpp_model_url | length > 0
+    - llamacpp_model_file | length > 0
+  register: llamacpp_model
+
+- name: Install the llama-server systemd unit
+  ansible.builtin.template:
+    src: llama-server.service.j2
+    dest: /etc/systemd/system/llama-server.service
+    mode: '0644'
+  register: llamacpp_unit
+
+- name: Require a model source
+  ansible.builtin.assert:
+    that:
+      - >-
+        (llamacpp_hf_repo | length > 0)
+        or (
+          (llamacpp_model_url | length > 0)
+          and (llamacpp_model_file | length > 0)
+          and (llamacpp_model_checksum is match('^sha256:[a-f0-9]{64}$'))
+        )
+    fail_msg: >-
+      Set an explicitly allowed llamacpp_hf_repo, or set llamacpp_model_url,
+      llamacpp_model_file, and a valid SHA-256 checksum together.
+
+- name: Enable and start llama-server
+  ansible.builtin.systemd:
+    name: llama-server
+    enabled: true
+    daemon_reload: true
+    state: >-
+      {{
+        'restarted'
+        if (
+          llamacpp_unit.changed
+          or (llamacpp_binary.changed | default(false))
+          or (llamacpp_model.changed | default(false))
+        )
+        else 'started'
+      }}
