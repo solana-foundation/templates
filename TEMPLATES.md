@@ -26,6 +26,14 @@ Kit Templates (using @solana/kit)
 
 `anchor` `kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
 
+### [nextjs-hardware-signin](kit/nextjs-hardware-signin)
+
+`gh:solana-foundation/templates/kit/nextjs-hardware-signin`
+
+> Next.js, Tailwind, @solana/kit — hardware-wallet authentication that signs a memo transaction and verifies it off-chain, no message signing required
+
+`kit` `nextjs` `react` `solana-kit` `hardware-wallet` `ledger` `sign-in` `authentication` `memo` `tailwind` `typescript`
+
 ### [nextjs-keychain](kit/nextjs-keychain)
 
 `gh:solana-foundation/templates/kit/nextjs-keychain`
@@ -33,14 +41,6 @@ Kit Templates (using @solana/kit)
 > Next.js, Tailwind, @solana/keychain — server-side signing with pluggable key backends (memory, KMS, MPC, custodial)
 
 `kit` `nextjs` `react` `solana-kit` `keychain` `signers` `kms` `mpc` `tailwind` `typescript`
-
-### [nextjs-ledger-signin](kit/nextjs-ledger-signin)
-
-`gh:solana-foundation/templates/kit/nextjs-ledger-signin`
-
-> Next.js, Tailwind, @solana/kit — hardware-wallet authentication that signs a memo transaction and verifies it off-chain, no message signing required
-
-`kit` `nextjs` `react` `solana-kit` `ledger` `sign-in` `authentication` `memo` `tailwind` `typescript`
 
 ### [nextjs-subscriptions](kit/nextjs-subscriptions)
 
