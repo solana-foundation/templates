@@ -238,19 +238,11 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `tailwind` `typescript` `framework-kit`
 
-### [moneymq-x402](community/moneymq-x402)
-
-`gh:solana-foundation/templates/community/moneymq-x402`
-
-> Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana
-
-`x402` `moneymq` `payments` `micropayments` `solana` `api-monetization` `kora` `facilitator` `typescript`
-
 ### [pay-gate-inference](community/pay-gate-inference)
 
 `gh:solana-foundation/templates/community/pay-gate-inference`
 
-> Turn local inference into a paid API with Pay.sh
+> Monetize self-hosted LLM inference with Pay.sh
 
 `solana` `pay.sh` `x402` `inference` `ollama` `llama.cpp` `local-ai` `payments`
 

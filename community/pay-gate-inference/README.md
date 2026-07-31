@@ -1,9 +1,8 @@
 # Monetize Inference with Pay.sh
 
-Open models let you run inference on compute you own. [Pay.sh](https://pay.sh) lets you charge for it without signing up for a billing platform or forcing users through accounts, API keys, and subscriptions. This template connects the two: define input and output token rates in [rates.yml](rates.yml), let users pay for consumption with stablecoins, and test the full flow safely in a sandbox.
+Open models let you run inference on compute you own. [Pay.sh](https://pay.sh) lets you charge for it without signing up for a billing platform or forcing users through accounts, API keys, and subscriptions. This template connects the two: define input and output token rates in [rates.yml](https://github.com/solana-foundation/templates/blob/main/community/pay-gate-inference/rates.yml), let users pay for consumption with stablecoins, and test the full flow safely in a sandbox.
 
-> [!CAUTION]
-> This is a public sandbox reference implementation, not an audited production deployment. Treat the Pay gateway as an internet-facing attack surface, review [SECURITY.md](SECURITY.md), and complete your own security, legal, and compliance review before handling real traffic or funds.
+> This is a public sandbox reference implementation, not an audited production deployment. Treat the Pay gateway as an internet-facing attack surface, review [SECURITY.md](https://github.com/solana-foundation/templates/blob/main/community/pay-gate-inference/SECURITY.md), and complete your own security, legal, and compliance review before handling real traffic or funds.
 
 ## How it works
 
@@ -16,7 +15,7 @@ pay curl ──────POST────▶ Pay.sh gateway ──────
 1. Pay.sh discovers your local engine and exposes its OpenAI-compatible API through a payment gateway.
 2. An unsigned inference request receives `HTTP 402 Payment Required` before the model runs. Health and model-listing endpoints remain free.
 3. `pay --sandbox curl` accepts the payment terms with disposable sandbox stablecoins and retries the same request.
-4. After inference, Pay.sh settles the actual input and output token cost using the rates in [rates.yml](rates.yml).
+4. After inference, Pay.sh settles the actual input and output token cost using the rates in [rates.yml](https://github.com/solana-foundation/templates/blob/main/community/pay-gate-inference/rates.yml).
 
 The local quickstart binds the gateway and inference engine to loopback. No JavaScript dependencies or API keys are required.
 
@@ -39,7 +38,7 @@ pnpm create solana-dapp@latest my-inference-app \
 cd my-inference-app
 ```
 
-Start Ollama, list any installed models, and pull the small 523 MB model used by [request.json](request.json):
+Start Ollama, list any installed models, and pull the small 523 MB model used by [request.json](https://github.com/solana-foundation/templates/blob/main/community/pay-gate-inference/request.json):
 
 ```bash
 ollama serve
@@ -58,7 +57,7 @@ pay gate inference \
   --sandbox
 ```
 
-This asks Pay.sh to discover Ollama and apply the token rates in [rates.yml](rates.yml).
+This asks Pay.sh to discover Ollama and apply the token rates in [rates.yml](https://github.com/solana-foundation/templates/blob/main/community/pay-gate-inference/rates.yml).
 
 In terminal two, make the request with ordinary curl:
 
@@ -82,7 +81,7 @@ Review the sandbox terms shown by Pay.sh before authorizing. The final JSON resp
 
 The local gateway also exposes a web UI at <http://127.0.0.1:1402/>. Open it to watch requests and payments arrive in real time, from the initial `402` challenge through the paid retry and delivered response.
 
-![Pay inference dashboard showing a completed payment flow](assets/pay-inference-dashboard.png)
+![Pay inference dashboard showing a completed payment flow](https://raw.githubusercontent.com/solana-foundation/templates/main/community/pay-gate-inference/assets/pay-inference-dashboard.png)
 
 ## Use llama.cpp instead
 
@@ -107,7 +106,7 @@ llama-server \
   --alias local-model
 ```
 
-The `--llamacpp` generator option sets the model in [request.json](request.json) to `local-model`. If you use another `--alias`, update that model value. Then select Pay's built-in llama.cpp provider:
+The `--llamacpp` generator option sets the model in [request.json](https://github.com/solana-foundation/templates/blob/main/community/pay-gate-inference/request.json) to `local-model`. If you use another `--alias`, update that model value. Then select Pay's built-in llama.cpp provider:
 
 ```bash
 pay gate inference \
@@ -147,7 +146,7 @@ Edit `deploy/llamacpp/ansible/inventory.yml` with your Ubuntu host and SSH user.
 just specs ubuntu@<host>
 ```
 
-The defaults in `deploy/llamacpp/ansible/group_vars/all.yml` run the same `local-model` used by [request.json](request.json). Replace the pinned model URL and checksum together when changing models, then tune the llama.cpp release, thread count, context, parallel slots, gateway URL, and token prices for your hardware.
+The defaults in `deploy/llamacpp/ansible/group_vars/all.yml` run the same `local-model` used by [request.json](https://github.com/solana-foundation/templates/blob/main/community/pay-gate-inference/request.json). Replace the pinned model URL and checksum together when changing models, then tune the llama.cpp release, thread count, context, parallel slots, gateway URL, and token prices for your hardware.
 
 Review and apply the playbook:
 
@@ -183,7 +182,7 @@ The public deployment does not add TLS, authentication beyond the payment challe
 
 ## Set token prices
 
-The default rates in [rates.yml](rates.yml) are:
+The default rates in [rates.yml](https://github.com/solana-foundation/templates/blob/main/community/pay-gate-inference/rates.yml) are:
 
 - $0.10 per 1 million input tokens
 - $0.30 per 1 million output tokens
@@ -210,7 +209,7 @@ The `pay` command can wrap coding harnesses such as Goose, Claude Code, and Code
 pay goose
 ```
 
-![Add a custom inference server in Pay's provider picker](assets/pay-goose-provider-picker.png)
+![Add a custom inference server in Pay's provider picker](https://raw.githubusercontent.com/solana-foundation/templates/main/community/pay-gate-inference/assets/pay-goose-provider-picker.png)
 
 Add your inference server as a provider. Pay then routes Goose's inference traffic to your endpoint.
 
@@ -228,7 +227,7 @@ Add your inference server as a provider. Pay then routes Goose's inference traff
 - You are responsible for host patching, SSH access, network policy, TLS, abuse controls, backups, monitoring, model licensing, privacy, sanctions, tax, and other legal or regulatory obligations.
 - Stop the gateway to remove access. Use `pay account --help` as the `pay-gateway` service user to inspect or remove its sandbox account state.
 
-This template and its Ubuntu provisioning are provided as-is under the [MIT License](LICENSE), without warranties or guarantees. They have not received a formal security audit or certification. You assume the risk of deploying or modifying them. Nothing here is legal, security, tax, or compliance advice. Read the full [security policy and deployment checklist](SECURITY.md).
+This template and its Ubuntu provisioning are provided as-is under the [MIT License](https://github.com/solana-foundation/templates/blob/main/community/pay-gate-inference/LICENSE), without warranties or guarantees. They have not received a formal security audit or certification. You assume the risk of deploying or modifying them. Nothing here is legal, security, tax, or compliance advice. Read the full [security policy and deployment checklist](https://github.com/solana-foundation/templates/blob/main/community/pay-gate-inference/SECURITY.md).
 
 ## Pay resources
 

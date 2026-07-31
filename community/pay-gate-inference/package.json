@@ -1,7 +1,7 @@
 {
   "name": "pay-gate-inference",
   "displayName": "Monetize Inference with Pay.sh",
-  "description": "Turn local inference into a paid API with Pay.sh",
+  "description": "Monetize self-hosted LLM inference with Pay.sh",
   "usecase": "Payments",
   "version": "0.1.0",
   "private": true,

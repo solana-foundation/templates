@@ -510,27 +510,7 @@
         "usecase": "Airdrop"
       },
       {
-        "description": "Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana",
-        "id": "gh:solana-foundation/templates/community/moneymq-x402",
-        "image": "community/moneymq-x402/og-image.png",
-        "keywords": [
-          "x402",
-          "moneymq",
-          "payments",
-          "micropayments",
-          "solana",
-          "api-monetization",
-          "kora",
-          "facilitator",
-          "typescript"
-        ],
-        "name": "moneymq-x402",
-        "path": "community/moneymq-x402",
-        "displayName": "MoneyMQ x402 Demo",
-        "usecase": "Payments"
-      },
-      {
-        "description": "Turn local inference into a paid API with Pay.sh",
+        "description": "Monetize self-hosted LLM inference with Pay.sh",
         "id": "gh:solana-foundation/templates/community/pay-gate-inference",
         "image": "community/pay-gate-inference/og-image.png",
         "keywords": [
