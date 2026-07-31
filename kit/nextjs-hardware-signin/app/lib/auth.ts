@@ -82,9 +82,9 @@ export type SignedAuthProof = {
   signatureBase64: string;
 };
 
-export type VerifyResult =
-  | { ok: true; address: Address }
-  | { ok: false; reason: string };
+type VerifySuccess = { ok: true; address: Address };
+type VerifyFailure = { ok: false; reason: string };
+export type VerifyResult = VerifySuccess | VerifyFailure;
 
 /**
  * Verify a Sign In With Hardware Wallet proof: an Ed25519 signature over a memo
