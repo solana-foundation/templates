@@ -77,6 +77,27 @@
         "usecase": "Starter"
       },
       {
+        "description": "Next.js, Tailwind, @solana/kit — hardware-wallet authentication that signs a memo transaction and verifies it off-chain, no message signing required",
+        "id": "gh:solana-foundation/templates/kit/nextjs-ledger-signin",
+        "image": "kit/nextjs-ledger-signin/og-image.png",
+        "keywords": [
+          "kit",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "ledger",
+          "sign-in",
+          "authentication",
+          "memo",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "nextjs-ledger-signin",
+        "path": "kit/nextjs-ledger-signin",
+        "displayName": "Sign In With Ledger",
+        "usecase": "Starter"
+      },
+      {
         "description": "Next.js, Tailwind, @solana/kit, Solana subscriptions program",
         "id": "gh:solana-foundation/templates/kit/nextjs-subscriptions",
         "image": "kit/nextjs-subscriptions/og-image.png",
