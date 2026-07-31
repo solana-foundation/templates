@@ -2,7 +2,6 @@
 
 Open models let you run inference on compute you own. [Pay.sh](https://pay.sh) lets you charge for it without signing up for a billing platform or forcing users through accounts, API keys, and subscriptions. This template connects the two: define input and output token rates in [rates.yml](https://github.com/solana-foundation/templates/blob/main/community/pay-gate-inference/rates.yml), let users pay for consumption with stablecoins, and test the full flow safely in a sandbox.
 
-> [!CAUTION]
 > This is a public sandbox reference implementation, not an audited production deployment. Treat the Pay gateway as an internet-facing attack surface, review [SECURITY.md](https://github.com/solana-foundation/templates/blob/main/community/pay-gate-inference/SECURITY.md), and complete your own security, legal, and compliance review before handling real traffic or funds.
 
 ## How it works
