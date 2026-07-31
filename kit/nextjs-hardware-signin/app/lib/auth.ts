@@ -15,15 +15,35 @@ import { MEMO_PROGRAM_ADDRESS } from "@solana-program/memo";
 export const NONCE_TTL_MS = 5 * 60 * 1000;
 export const SESSION_COOKIE = "siwhw_session";
 
-const SESSION_SECRET = process.env.SESSION_SECRET ?? "dev-insecure-secret";
+/**
+ * Resolve the HMAC secret used to sign session tokens. In production the
+ * deployment must supply SESSION_SECRET; without it, every session cookie would
+ * be signed against a public constant and any attacker could forge one. The
+ * insecure fallback exists only for local development. Resolved lazily so that
+ * a production build (which runs with NODE_ENV="production") does not throw at
+ * import time — the requirement is enforced only when a token is signed or
+ * verified at runtime.
+ */
+function getSessionSecret(): string {
+  const secret = process.env.SESSION_SECRET;
+  if (secret) return secret;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "SESSION_SECRET must be set in production to sign session tokens."
+    );
+  }
+  return "dev-insecure-secret";
+}
 
 /**
  * Mint a tamper-evident session token: the address plus an HMAC over it. A
- * client that does not know {@link SESSION_SECRET} cannot forge a token for an
+ * client that does not know the session secret cannot forge a token for an
  * address it has not proven ownership of.
  */
 export function createSessionToken(addr: string): string {
-  const mac = createHmac("sha256", SESSION_SECRET).update(addr).digest("hex");
+  const mac = createHmac("sha256", getSessionSecret())
+    .update(addr)
+    .digest("hex");
   return `${addr}.${mac}`;
 }
 
@@ -36,7 +56,7 @@ export function readSessionToken(
   if (separator === -1) return null;
   const addr = token.slice(0, separator);
   const mac = token.slice(separator + 1);
-  const expected = createHmac("sha256", SESSION_SECRET)
+  const expected = createHmac("sha256", getSessionSecret())
     .update(addr)
     .digest("hex");
   const macBytes = Buffer.from(mac, "hex");

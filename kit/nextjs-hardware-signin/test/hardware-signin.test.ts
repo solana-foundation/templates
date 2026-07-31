@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   appendTransactionMessageInstruction,
   blockhash,
@@ -100,5 +100,37 @@ describe("session token", () => {
 
   it("rejects a bare address with no MAC", () => {
     expect(readSessionToken(addr)).toBeNull();
+  });
+});
+
+describe("session secret in production", () => {
+  const addr = "11111111111111111111111111111111";
+  const savedNodeEnv = process.env.NODE_ENV;
+  const savedSecret = process.env.SESSION_SECRET;
+
+  beforeEach(() => {
+    process.env.NODE_ENV = "production";
+    delete process.env.SESSION_SECRET;
+  });
+
+  afterEach(() => {
+    process.env.NODE_ENV = savedNodeEnv;
+    if (savedSecret === undefined) delete process.env.SESSION_SECRET;
+    else process.env.SESSION_SECRET = savedSecret;
+  });
+
+  it("refuses to mint a token when SESSION_SECRET is unset", () => {
+    expect(() => createSessionToken(addr)).toThrow(/SESSION_SECRET/);
+  });
+
+  it("refuses to verify a token when SESSION_SECRET is unset", () => {
+    expect(() => readSessionToken(`${addr}.deadbeef`)).toThrow(
+      /SESSION_SECRET/
+    );
+  });
+
+  it("uses SESSION_SECRET to round-trip when it is set", () => {
+    process.env.SESSION_SECRET = "prod-secret-value";
+    expect(readSessionToken(createSessionToken(addr))).toBe(addr);
   });
 });

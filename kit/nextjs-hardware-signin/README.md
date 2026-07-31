@@ -80,4 +80,4 @@ See [`test/hardware-signin.test.ts`](test/hardware-signin.test.ts).
 This template favors clarity over completeness. For real deployments:
 
 - The nonce store ([`app/lib/nonce-store.ts`](app/lib/nonce-store.ts)) is in-memory and per-process — back it with Redis or a database across instances.
-- The session cookie is HMAC-signed ([`app/lib/auth.ts`](app/lib/auth.ts)) so its address cannot be forged. Set `SESSION_SECRET` in the environment; the fallback is for local dev only. For richer sessions (expiry, claims) reach for a signed JWT.
+- The session cookie is HMAC-signed ([`app/lib/auth.ts`](app/lib/auth.ts)) so its address cannot be forged. Set `SESSION_SECRET` in the environment; it is required in production, where signing or verifying a token without it throws. The insecure fallback applies only outside production. For richer sessions (expiry, claims) reach for a signed JWT.
