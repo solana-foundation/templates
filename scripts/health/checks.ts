@@ -192,6 +192,20 @@ const spawnSyncCp = (src: string, dest: string): boolean => {
   return result.status === 0
 }
 
+// ---------- setup-skip causation (pure, unit-tested) ----------
+
+/**
+ * True when a build failure's output references one of the template's required
+ * credential env var names — the only evidence that missing credentials caused
+ * the failure. Prose-detected templates have no key names, so they never match:
+ * causation cannot be established and their failures stay failures.
+ */
+export const buildFailureMentionsCredentials = (tail: string, credentialKeys: readonly string[]): boolean => {
+  if (credentialKeys.length === 0) return false
+  const haystack = tail.toLowerCase()
+  return credentialKeys.some((key) => haystack.includes(key.toLowerCase()))
+}
+
 // ---------- deprecation extraction (pure, unit-tested) ----------
 
 const pkgNameOf = (spec: string): string => {
@@ -638,12 +652,24 @@ export const checkTemplate = async (ref: TemplateRef, opts: RunOptions) => {
     // This dominates the overall status (see toTemplateReport): we genuinely couldn't validate
     // it, so it must read "skip", not get bubbled up to pass/warn by advisory checks.
     let needsSetupSkip = false
-    if (ref.needsSecrets && build.status === 'fail') {
+    if (
+      ref.needsSecrets &&
+      build.status === 'fail' &&
+      buildFailureMentionsCredentials(build.tail, ref.credentialKeys)
+    ) {
+      // Only downgrade to skip when the failure output actually references one of the
+      // credential var names: needing secrets does not prove the secrets caused THIS
+      // failure, and an unrelated type/dep/lint error must stay a fail.
       needsSetupSkip = true
       build = {
         ...build,
         status: 'skip',
         tail: `SKIPPED — needs setup/credentials (${ref.secretsReason ?? 'env required'}). Build without setup:\n${build.tail}`,
+      }
+    } else if (ref.needsSecrets && build.status === 'fail') {
+      build = {
+        ...build,
+        tail: `${build.tail}\n\nnote: template declares required credentials (${ref.secretsReason ?? 'env required'}) but the failure output does not reference them, treating as a real failure`,
       }
     }
 

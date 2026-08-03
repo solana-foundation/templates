@@ -134,13 +134,17 @@ export const envKeysRequiringCredentials = (envBody: string): string[] =>
     .map((line) => line.split('=')[0]?.trim() ?? '')
     .filter((key) => CREDENTIAL_KEY_PATTERN.test(key) && !NON_CREDENTIAL_KEY_PATTERN.test(key))
 
-const detectSecrets = (dir: string, pkg: AnyPkg | null): { needs: boolean; reason?: string } => {
+const detectSecrets = (dir: string, pkg: AnyPkg | null): { needs: boolean; reason?: string; keys: string[] } => {
   // An .env.example with credential-looking variable names is the strongest signal.
   const envExample = join(dir, '.env.example')
   if (existsSync(envExample)) {
     const credentialKeys = envKeysRequiringCredentials(readFileSync(envExample, 'utf-8'))
     if (credentialKeys.length > 0) {
-      return { needs: true, reason: `.env.example requires credentials (${credentialKeys.slice(0, 3).join(', ')})` }
+      return {
+        needs: true,
+        reason: `.env.example requires credentials (${credentialKeys.slice(0, 3).join(', ')})`,
+        keys: credentialKeys,
+      }
     }
   }
   const rawInstructions = pkg?.['create-solana-dapp']?.instructions
@@ -152,8 +156,8 @@ const detectSecrets = (dir: string, pkg: AnyPkg | null): { needs: boolean; reaso
         : ''
   ).toLowerCase()
   const hit = SECRET_HINTS.find((hint) => instructions.includes(hint))
-  if (hit) return { needs: true, reason: `setup instructions mention "${hit}"` }
-  return { needs: false }
+  if (hit) return { needs: true, reason: `setup instructions mention "${hit}"`, keys: [] }
+  return { needs: false, keys: [] }
 }
 
 const readGroups = (root: string): { path: string }[] => {
@@ -189,7 +193,7 @@ export const enumerateTemplates = (root: string): TemplateRef[] => {
     for (const dir of templateDirsIn(groupDir)) {
       const pkg = readPkg(dir)
       const name = dir.slice(groupDir.length + 1)
-      const { needs, reason } = detectSecrets(dir, pkg)
+      const { needs, reason, keys } = detectSecrets(dir, pkg)
       const cargo = detectCargo(dir)
       refs.push({
         id: `${group.path}/${name}`,
@@ -203,6 +207,7 @@ export const enumerateTemplates = (root: string): TemplateRef[] => {
         packageManager: resolvePackageManager(pkg),
         needsSecrets: needs,
         secretsReason: reason,
+        credentialKeys: keys,
       })
     }
   }

@@ -41,6 +41,8 @@ export type TemplateRef = {
   readonly needsSecrets: boolean
   /** why we think it needs secrets (env files, known service deps) */
   readonly secretsReason?: string
+  /** the exact env var names that require credentials (empty when detection came from prose) */
+  readonly credentialKeys: readonly string[]
 }
 
 export type BuildResult = {

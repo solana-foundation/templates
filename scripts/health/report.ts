@@ -132,7 +132,9 @@ const failureBlock = (template: TemplateReport): string[] => {
 
 export type Diff = {
   regressions: string[] // pass/warn -> fail
-  fixed: string[] // fail -> pass/warn
+  fixed: string[] // fail -> pass/warn, and ONLY those: skip is unknown, not fixed
+  becameUnverified: string[] // anything -> skip, we can no longer vouch for these
+  newlyVerified: string[] // skip -> anything, back under observation (current status shown)
   newTemplates: string[]
   removed: string[]
 }
@@ -142,6 +144,8 @@ export const diffReports = (current: HealthReport, baseline: HealthReport): Diff
   const currentById = new Map(current.templates.map((template) => [template.id, template.status]))
   const regressions: string[] = []
   const fixed: string[] = []
+  const becameUnverified: string[] = []
+  const newlyVerified: string[] = []
   const newTemplates: string[] = []
 
   for (const template of current.templates) {
@@ -150,21 +154,42 @@ export const diffReports = (current: HealthReport, baseline: HealthReport): Diff
       newTemplates.push(template.id)
       continue
     }
-    if (before !== 'fail' && template.status === 'fail') regressions.push(template.id)
-    if (before === 'fail' && template.status !== 'fail') fixed.push(template.id)
+    // skip means "could not verify": it is never a regression, never a fix, and
+    // transitions in and out of it get their own buckets so they stay visible.
+    if (before === 'skip' && template.status !== 'skip') {
+      newlyVerified.push(`${template.id} (now ${template.status})`)
+      if (template.status === 'fail') regressions.push(template.id)
+      continue
+    }
+    if (before !== 'skip' && template.status === 'skip') {
+      becameUnverified.push(template.id)
+      continue
+    }
+    if ((before === 'pass' || before === 'warn') && template.status === 'fail') regressions.push(template.id)
+    if (before === 'fail' && (template.status === 'pass' || template.status === 'warn')) fixed.push(template.id)
   }
   const removed = [...previousById.keys()].filter((id) => !currentById.has(id))
-  return { regressions, fixed, newTemplates, removed }
+  return { regressions, fixed, becameUnverified, newlyVerified, newTemplates, removed }
 }
 
 export const diffToMarkdown = (diff: Diff): string => {
   const lines: string[] = ['## Regressions vs last run', '']
-  if (!diff.regressions.length && !diff.fixed.length && !diff.newTemplates.length && !diff.removed.length) {
+  const empty =
+    !diff.regressions.length &&
+    !diff.fixed.length &&
+    !diff.becameUnverified.length &&
+    !diff.newlyVerified.length &&
+    !diff.newTemplates.length &&
+    !diff.removed.length
+  if (empty) {
     lines.push('_No changes vs baseline._')
     return lines.join('\n') + '\n'
   }
   if (diff.regressions.length) lines.push(`- 🔴 **Regressed (now failing):** ${diff.regressions.join(', ')}`)
+  if (diff.becameUnverified.length)
+    lines.push(`- 🟡 **Became unverifiable (now skip, needs attention):** ${diff.becameUnverified.join(', ')}`)
   if (diff.fixed.length) lines.push(`- 🟢 **Fixed:** ${diff.fixed.join(', ')}`)
+  if (diff.newlyVerified.length) lines.push(`- 🔵 **Back under observation:** ${diff.newlyVerified.join(', ')}`)
   if (diff.newTemplates.length) lines.push(`- 🆕 **New:** ${diff.newTemplates.join(', ')}`)
   if (diff.removed.length) lines.push(`- ➖ **Removed:** ${diff.removed.join(', ')}`)
   return lines.join('\n') + '\n'
