@@ -20,11 +20,13 @@ export type SwapStatus =
   | { state: "error"; message: string };
 
 type QuoteState = {
-  // The exact input string this quote was computed for. A quote is only
-  // visible (and executable) while it matches the current input — otherwise
-  // a stale quote could stay on screen during recomputation and execute a
-  // different amount than the one displayed.
+  // The exact (input, pool bundle) pair this quote was computed from. A
+  // quote is only visible (and executable) while both still match —
+  // otherwise a stale quote could stay on screen during recomputation and
+  // execute a different amount than displayed, or pair old-reserve math
+  // with a refreshed pool (e.g. right after a confirmed swap).
   forAmount: string;
+  forBundle: PoolBundle;
   result: QuoteResult | null;
   error: string | null;
 };
@@ -62,18 +64,29 @@ export function useSwap(
         const raw = await toRawAmount(amountIn, inputDecimals);
         if (raw.isZero()) {
           if (!cancelled) {
-            setQuoteState({ forAmount: amountIn, result: null, error: null });
+            setQuoteState({
+              forAmount: amountIn,
+              forBundle: bundle,
+              result: null,
+              error: null,
+            });
           }
           return;
         }
         const result = await computeQuote(bundle, raw);
         if (!cancelled) {
-          setQuoteState({ forAmount: amountIn, result, error: null });
+          setQuoteState({
+            forAmount: amountIn,
+            forBundle: bundle,
+            result,
+            error: null,
+          });
         }
       } catch (e) {
         if (!cancelled) {
           setQuoteState({
             forAmount: amountIn,
+            forBundle: bundle,
             result: null,
             error: e instanceof Error ? e.message : String(e),
           });
@@ -88,7 +101,10 @@ export function useSwap(
     };
   }, [hasValidInput, bundle, amountIn, inputDecimals]);
 
-  const isCurrent = hasValidInput && quoteState?.forAmount === amountIn;
+  const isCurrent =
+    hasValidInput &&
+    quoteState?.forAmount === amountIn &&
+    quoteState?.forBundle === bundle;
   const quote = isCurrent ? quoteState.result : null;
   const quoteError = isCurrent ? quoteState.error : null;
 
