@@ -19,6 +19,16 @@ export type SwapStatus =
   | { state: "confirmed"; txId: string }
   | { state: "error"; message: string };
 
+type QuoteState = {
+  // The exact input string this quote was computed for. A quote is only
+  // visible (and executable) while it matches the current input — otherwise
+  // a stale quote could stay on screen during recomputation and execute a
+  // different amount than the one displayed.
+  forAmount: string;
+  result: QuoteResult | null;
+  error: string | null;
+};
+
 export function useSwap(
   bundle: PoolBundle | null,
   amountIn: string,
@@ -27,8 +37,7 @@ export function useSwap(
   const { connection } = useConnection();
   const { publicKey, signAllTransactions } = useWallet();
 
-  const [quote, setQuote] = useState<QuoteResult | null>(null);
-  const [quoteError, setQuoteError] = useState<string | null>(null);
+  const [quoteState, setQuoteState] = useState<QuoteState | null>(null);
   const [status, setStatus] = useState<SwapStatus>({ state: "idle" });
 
   const inputDecimals = bundle
@@ -52,18 +61,22 @@ export function useSwap(
       try {
         const raw = await toRawAmount(amountIn, inputDecimals);
         if (raw.isZero()) {
-          if (!cancelled) setQuote(null);
+          if (!cancelled) {
+            setQuoteState({ forAmount: amountIn, result: null, error: null });
+          }
           return;
         }
         const result = await computeQuote(bundle, raw);
         if (!cancelled) {
-          setQuote(result);
-          setQuoteError(null);
+          setQuoteState({ forAmount: amountIn, result, error: null });
         }
       } catch (e) {
         if (!cancelled) {
-          setQuote(null);
-          setQuoteError(e instanceof Error ? e.message : String(e));
+          setQuoteState({
+            forAmount: amountIn,
+            result: null,
+            error: e instanceof Error ? e.message : String(e),
+          });
         }
       }
     };
@@ -75,8 +88,9 @@ export function useSwap(
     };
   }, [hasValidInput, bundle, amountIn, inputDecimals]);
 
-  const visibleQuote = hasValidInput ? quote : null;
-  const visibleQuoteError = hasValidInput ? quoteError : null;
+  const isCurrent = hasValidInput && quoteState?.forAmount === amountIn;
+  const quote = isCurrent ? quoteState.result : null;
+  const quoteError = isCurrent ? quoteState.error : null;
 
   const swap = useCallback(async () => {
     if (!bundle || !quote || !publicKey || !signAllTransactions) return;
@@ -116,5 +130,5 @@ export function useSwap(
     onConfirmed,
   ]);
 
-  return { quote: visibleQuote, quoteError: visibleQuoteError, status, swap };
+  return { quote, quoteError, status, swap };
 }
