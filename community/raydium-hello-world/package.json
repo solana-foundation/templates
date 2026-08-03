@@ -39,7 +39,6 @@
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.4",
     "@raydium-io/raydium-sdk-v2": "0.2.60-alpha",
-    "@solana/spl-token": "^0.4.15",
     "@solana/wallet-adapter-base": "0.9.27",
     "@solana/wallet-adapter-react": "0.15.39",
     "@solana/wallet-adapter-react-ui": "0.9.39",

@@ -13,6 +13,7 @@ import {
 import { clusterApiUrl } from "@solana/web3.js";
 import dynamic from "next/dynamic";
 import React, { type ReactNode, useCallback, useMemo } from "react";
+import { toast } from "sonner";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
 export const WalletButton = dynamic(
@@ -34,6 +35,7 @@ export function SolanaProvider({ children }: { children: ReactNode }) {
 
   const onError = useCallback((error: WalletError) => {
     console.error(error);
+    toast.error(error.message || error.name || "Wallet error");
   }, []);
 
   return (

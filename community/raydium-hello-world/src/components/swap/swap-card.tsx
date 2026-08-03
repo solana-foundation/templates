@@ -1,69 +1,163 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useId } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { useSwap } from "@/hooks/use-swap";
+import { ellipsify, getExplorerUrl } from "@/lib/explorer";
+import {
+  displaySymbol,
+  fromRawAmount,
+  DEFAULT_AMOUNT_RAW,
+  INPUT_MINT,
+  SLIPPAGE,
+  type PoolBundle,
+} from "@/lib/raydium";
 
 type SwapCardProps = {
-  connected: boolean;
+  bundle: PoolBundle | null;
   amountIn: string;
   onAmountInChange: (value: string) => void;
+  onSwapConfirmed?: () => void;
 };
 
-/**
- * The swap form: amount in → quoted amount out → execute.
- *
- * TODO(raydium): this is a static skeleton. The integration work happens in
- * three places:
- *   1. `src/hooks/use-pool.ts`  — fetch pool info from the SDK
- *   2. `src/lib/raydium.ts`     — quote (CurveCalculator) + build/execute swap
- *   3. this component           — replace the placeholder quote + wire onSwap
- */
 export function SwapCard({
-  connected,
+  bundle,
   amountIn,
   onAmountInChange,
+  onSwapConfirmed,
 }: SwapCardProps) {
-  const quoteOut: string | null = null; // TODO(raydium): compute via CurveCalculator
+  const { connected } = useWallet();
+  const { quote, quoteError, status, swap } = useSwap(
+    bundle,
+    amountIn,
+    onSwapConfirmed
+  );
+  const amountInputId = useId();
+
+  const baseIsInput = bundle
+    ? INPUT_MINT === bundle.poolInfo.mintA.address
+    : true;
+  const inMint = bundle
+    ? baseIsInput
+      ? bundle.poolInfo.mintA
+      : bundle.poolInfo.mintB
+    : null;
+  const outMint = bundle
+    ? baseIsInput
+      ? bundle.poolInfo.mintB
+      : bundle.poolInfo.mintA
+    : null;
+
+  useEffect(() => {
+    if (bundle && inMint && !amountIn && DEFAULT_AMOUNT_RAW) {
+      onAmountInChange(fromRawAmount(DEFAULT_AMOUNT_RAW, inMint.decimals));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bundle]);
+
+  const canSwap =
+    connected && !!bundle && !!quote && status.state !== "swapping";
 
   return (
-    <section className="flex flex-col gap-3 rounded-xl border border-neutral-800 p-4">
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
-        Swap
-      </h2>
+    <Card>
+      <CardHeader>
+        <CardTitle>Swap</CardTitle>
+        <CardDescription>
+          {inMint && outMint
+            ? `${displaySymbol(inMint)} for ${displaySymbol(outMint)}`
+            : "Quote locally, execute on devnet"}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor={amountInputId}>
+            You pay ({inMint ? displaySymbol(inMint) : "…"})
+          </Label>
+          <Input
+            id={amountInputId}
+            className="font-mono"
+            inputMode="decimal"
+            placeholder="0.0"
+            value={amountIn}
+            onChange={(e) => onAmountInChange(e.target.value)}
+          />
+        </div>
 
-      <label className="flex flex-col gap-1 text-sm">
-        <span className="text-neutral-500">You pay (SOL)</span>
-        <input
-          className="rounded-lg border border-neutral-700 bg-transparent px-3 py-2 font-mono outline-none focus:border-neutral-400"
-          inputMode="decimal"
-          placeholder="0.0"
-          value={amountIn}
-          onChange={(e) => onAmountInChange(e.target.value)}
-        />
-      </label>
+        <div className="flex flex-col gap-2">
+          <Label>
+            You receive ({outMint ? displaySymbol(outMint) : "…"}, estimated)
+          </Label>
+          <output className="rounded-md border border-border-low bg-cream px-3 py-2 font-mono text-sm text-muted">
+            {quote?.amountOut ?? "—"}
+          </output>
+        </div>
 
-      <label className="flex flex-col gap-1 text-sm">
-        <span className="text-neutral-500">You receive (estimated)</span>
-        <output className="rounded-lg border border-neutral-800 bg-neutral-900/40 px-3 py-2 font-mono text-neutral-400">
-          {quoteOut ?? "—"}
-        </output>
-      </label>
+        {quote && (
+          <p className="text-xs text-muted-foreground">
+            Trade fee: {quote.tradeFee} {inMint ? displaySymbol(inMint) : ""} ·
+            Slippage tolerance: {SLIPPAGE * 100}%
+          </p>
+        )}
+        {quoteError && <p className="text-xs text-destructive">{quoteError}</p>}
 
-      <button
-        type="button"
-        disabled
-        className="mt-1 rounded-lg bg-neutral-700 px-4 py-2 text-sm font-semibold text-neutral-300 disabled:cursor-not-allowed disabled:opacity-60"
-        // TODO(raydium): enable when connected && quote is ready, call executeSwap()
-      >
-        {connected ? "Swap (not wired yet)" : "Connect a wallet to swap"}
-      </button>
+        <Button disabled={!canSwap} onClick={() => void swap()}>
+          {!connected
+            ? "Connect a wallet to swap"
+            : status.state === "swapping"
+              ? "Approve in wallet, then confirming…"
+              : "Swap"}
+        </Button>
 
-      <p className="text-xs text-neutral-500">
-        Executes on devnet. Get devnet SOL at{" "}
-        <a className="underline" href="https://faucet.solana.com">
-          faucet.solana.com
-        </a>
-        .
-      </p>
-    </section>
+        {status.state === "confirmed" && (
+          <p className="flex items-center gap-2 text-xs text-green-600 dark:text-green-400">
+            Swapped!{" "}
+            <a
+              className="font-mono underline underline-offset-2"
+              href={getExplorerUrl(status.txId)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {ellipsify(status.txId)} <span aria-hidden="true">&rarr;</span>
+            </a>
+            <button
+              type="button"
+              className="cursor-pointer rounded-md border border-border-low px-2 py-0.5 text-muted transition hover:bg-cream"
+              onClick={() => {
+                void navigator.clipboard.writeText(status.txId);
+                toast.info("Signature copied");
+              }}
+            >
+              Copy signature
+            </button>
+          </p>
+        )}
+        {status.state === "error" && (
+          <p className="text-xs text-destructive">
+            Swap failed: {status.message}. If this mentions insufficient funds,
+            remember wrapping SOL costs a little extra rent on top of the swap
+            amount.
+          </p>
+        )}
+
+        <p className="text-xs text-muted-foreground">
+          Executes on devnet. Get devnet SOL at{" "}
+          <a className="underline" href="https://faucet.solana.com">
+            faucet.solana.com
+          </a>
+          .
+        </p>
+      </CardContent>
+    </Card>
   );
 }

@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import {
+  displaySymbol,
+  fromRawAmount,
+  loadPool,
+  type PoolBundle,
+} from "@/lib/raydium";
 
 export type PoolView = {
   tokenASymbol: string;
@@ -10,28 +17,54 @@ export type PoolView = {
   price: string;
 };
 
-/**
- * Fetches the CPMM pool this template swaps against.
- *
- * TODO(raydium): implement with @raydium-io/raydium-sdk-v2:
- *   - init the SDK (see `src/lib/raydium.ts`)
- *   - `raydium.cpmm.getPoolInfoFromRpc(POOL_ID)` for pool info + rpc data
- *   - map reserves/decimals into `PoolView`
- *
- * Devnet pool discovery (not documented in Raydium's docs — found via API):
- *   curl "https://api-v3-devnet.raydium.io/pools/info/list?poolType=standard&poolSortField=default&sortType=desc&pageSize=3&page=1"
- */
 export function usePool() {
+  const { connection } = useConnection();
+  const { publicKey, signAllTransactions } = useWallet();
+  const [bundle, setBundle] = useState<PoolBundle | null>(null);
   const [pool, setPool] = useState<PoolView | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // TODO(raydium): fetch pool info here.
-    setPool(null);
-    setIsLoading(false);
+  const refresh = useCallback(async () => {
+    setIsLoading(true);
     setError(null);
-  }, []);
+    try {
+      const loaded = await loadPool(connection, publicKey, signAllTransactions);
+      const { poolInfo, rpcData } = loaded;
 
-  return { pool, isLoading, error };
+      const reserveA = fromRawAmount(
+        rpcData.baseReserve.toString(),
+        poolInfo.mintA.decimals
+      );
+      const reserveB = fromRawAmount(
+        rpcData.quoteReserve.toString(),
+        poolInfo.mintB.decimals
+      );
+      const price =
+        Number(reserveA) > 0
+          ? (Number(reserveB) / Number(reserveA)).toFixed(6)
+          : "—";
+
+      setBundle(loaded);
+      setPool({
+        tokenASymbol: displaySymbol(poolInfo.mintA),
+        tokenBSymbol: displaySymbol(poolInfo.mintB),
+        reserveA,
+        reserveB,
+        price,
+      });
+    } catch (e) {
+      setBundle(null);
+      setPool(null);
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [connection, publicKey, signAllTransactions]);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  return { pool, bundle, isLoading, error, refresh };
 }
