@@ -6,7 +6,7 @@ A Next.js + Tailwind + TypeScript template that introduces Raydium on Solana. Co
 
 ## What You'll Learn
 
-- How to initialize the Raydium SDK (`@raydium-io/raydium-sdk-v2`) in a browser dApp — wallet public key + `signAllTransactions`, never a secret key
+- How to initialize the Raydium SDK (`@raydium-io/raydium-sdk-v2`) in a browser dApp — wallet public key + `signAllTransactions`
 - How CPMM pools store reserves and how price is derived from them
 - How to quote a swap locally with `CurveCalculator` — the same constant-product math the on-chain program runs
 - How to build, sign, and confirm a swap transaction on devnet
@@ -32,8 +32,6 @@ No configuration is required — the template runs against a live devnet pool ou
 Copy `.env.example` to `.env.local` to set any of these.
 
 ## Devnet Notes (read this first)
-
-Raydium's devnet environment is real but under-documented:
 
 - The SDK needs explicit devnet API hosts (`DEV_API_URLS` + `BASE_HOST: https://api-v3-devnet.raydium.io` — see `src/lib/raydium.ts`).
 - Mainnet pool IDs do not exist on devnet, and devnet pools can disappear over time. Find live pools via the
