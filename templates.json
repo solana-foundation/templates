@@ -56,6 +56,28 @@
         "path": "kit/nextjs-anchor"
       },
       {
+        "description": "Next.js, Tailwind, @solana/kit — hardware-wallet authentication that signs a memo transaction and verifies it off-chain, no message signing required",
+        "id": "gh:solana-foundation/templates/kit/nextjs-hardware-signin",
+        "image": "kit/nextjs-hardware-signin/og-image.png",
+        "keywords": [
+          "kit",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "hardware-wallet",
+          "ledger",
+          "sign-in",
+          "authentication",
+          "memo",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "nextjs-hardware-signin",
+        "path": "kit/nextjs-hardware-signin",
+        "displayName": "Sign In With Hardware Wallet",
+        "usecase": "Starter"
+      },
+      {
         "description": "Next.js, Tailwind, @solana/keychain — server-side signing with pluggable key backends (memory, KMS, MPC, custodial)",
         "id": "gh:solana-foundation/templates/kit/nextjs-keychain",
         "image": "kit/nextjs-keychain/og-image.png",
