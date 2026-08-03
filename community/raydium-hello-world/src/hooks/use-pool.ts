@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import {
   displaySymbol,
@@ -25,11 +25,25 @@ export function usePool() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Guards against overlapping refreshes landing out of order — only the
+  // latest request may write state.
+  const refreshSeq = useRef(0);
+
   const refresh = useCallback(async () => {
+    const seq = ++refreshSeq.current;
+
+    // The old data is stale the moment a refresh starts (e.g. right after
+    // our own swap moved the reserves). Clearing it synchronously makes
+    // everything derived from it — quotes, the Swap button — invalidate
+    // immediately instead of staying executable against outdated state.
+    setBundle(null);
+    setPool(null);
     setIsLoading(true);
     setError(null);
+
     try {
       const loaded = await loadPool(connection, publicKey, signAllTransactions);
+      if (refreshSeq.current !== seq) return;
       const { poolInfo, rpcData } = loaded;
 
       const reserveA = fromRawAmount(
@@ -54,11 +68,12 @@ export function usePool() {
         price,
       });
     } catch (e) {
+      if (refreshSeq.current !== seq) return;
       setBundle(null);
       setPool(null);
       setError(e instanceof Error ? e.message : String(e));
     } finally {
-      setIsLoading(false);
+      if (refreshSeq.current === seq) setIsLoading(false);
     }
   }, [connection, publicKey, signAllTransactions]);
 
