@@ -1,20 +1,19 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
+import { Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "@/components/app-providers";
+import { GridBackground } from "@/components/grid-background";
 import React from "react";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
-  variable: "--font-ibm-plex-mono",
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
-  weight: ["400", "600"],
-  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -28,10 +27,13 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${spaceGrotesk.variable} ${ibmPlexMono.variable} antialiased`}
-      >
-        <AppProviders>{children}</AppProviders>
+      <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
+        <AppProviders>
+          <div className="relative min-h-screen bg-background text-foreground">
+            <GridBackground />
+            <div className="relative z-10">{children}</div>
+          </div>
+        </AppProviders>
       </body>
     </html>
   );
