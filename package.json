@@ -22,7 +22,7 @@
     "automd": "^0.4.2",
     "prettier": "^3.6.2",
     "puppeteer": "^23.11.1",
-    "sharp": "^0.33.5",
+    "sharp": "^0.35.0",
     "tsx": "^4.19.2"
   },
   "repokit": {
