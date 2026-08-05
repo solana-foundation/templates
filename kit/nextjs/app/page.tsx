@@ -9,9 +9,7 @@ export default function Home() {
       <p className="mt-2 max-w-xl text-sm leading-relaxed text-foreground/50">
         A wallet + on-chain actions demo built on @solana/kit, the kit plugin
         client, and @solana/react. Connect a wallet, switch networks from the
-        header, and try SOL transfers, token actions, and memos. The{" "}
-        <strong className="font-semibold">NFTs</strong> tab reads assets from
-        the DAS API through a custom plugin.
+        header, and try SOL transfers, token actions, and memos.
       </p>
       <ActionsPanel />
     </main>

@@ -11,7 +11,7 @@ import { NftCard } from "./nft-card";
 
 /**
  * A `Method not found` means the endpoint is a plain Solana RPC with no DAS indexer behind
- * it, which is the common case on devnet and needs a different fix than a bad request.
+ * it, as on testnet and a local validator, and needs a different fix than a bad request.
  */
 function describeError(error: Error) {
   if (/-32601|Method not found/i.test(error.message)) {

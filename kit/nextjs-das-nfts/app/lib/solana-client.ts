@@ -1,9 +1,7 @@
-import { createClient, MicroLamports } from "@solana/kit";
+import { createClient } from "@solana/kit";
 import { walletSigner } from "@solana/kit-plugin-wallet";
-import { solanaRpc, rpcAirdrop } from "@solana/kit-plugin-rpc";
-import { tokenProgram } from "@solana-program/token";
-import { memoProgram } from "@solana-program/memo";
-import { systemProgram } from "@solana-program/system";
+import { solanaRpc } from "@solana/kit-plugin-rpc";
+import { das } from "./das";
 
 export type ClusterMoniker = "devnet" | "testnet" | "mainnet" | "localnet";
 
@@ -41,26 +39,36 @@ export function getClusterUrl(cluster: ClusterMoniker) {
   return CLUSTER_URLS[cluster];
 }
 
+/**
+ * DAS is an indexer API rather than validator state, so only some endpoints serve it. The
+ * public devnet and mainnet endpoints do; testnet and a local validator do not. Set
+ * `NEXT_PUBLIC_DAS_URL` to point at a provider that indexes the cluster you need.
+ */
+export function getDasUrl(cluster: ClusterMoniker) {
+  return process.env.NEXT_PUBLIC_DAS_URL || CLUSTER_URLS[cluster];
+}
+
+/** Helius rejects the spec param names on `getNftEditions` and `getTokenAccounts`. */
+function isHeliusUrl(url: string) {
+  return url.includes("helius-rpc.com");
+}
+
 export function getWalletChain(cluster: ClusterMoniker) {
   return WALLET_CHAINS[cluster];
 }
 
 export function createAppClient(cluster: ClusterMoniker) {
+  const dasUrl = getDasUrl(cluster);
+
   return createClient()
     .use(walletSigner({ chain: WALLET_CHAINS[cluster] }))
     .use(
       solanaRpc({
         rpcUrl: CLUSTER_URLS[cluster],
         rpcSubscriptionsUrl: WS_URLS[cluster],
-        transactionConfig: {
-          microLamportsPerComputeUnit: 1000n as MicroLamports,
-        },
       })
     )
-    .use(rpcAirdrop())
-    .use(systemProgram())
-    .use(tokenProgram())
-    .use(memoProgram());
+    .use(das({ url: dasUrl, heliusCompatibility: isHeliusUrl(dasUrl) }));
 }
 
 export type AppClient = ReturnType<typeof createAppClient>;
