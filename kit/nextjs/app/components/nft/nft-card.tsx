@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { useCluster } from "../cluster-context";
 import { ellipsify } from "../../lib/explorer";
@@ -40,8 +41,9 @@ function Badge({ children }: { children: React.ReactNode }) {
 
 export function NftCard({ asset }: { asset: DasApiAsset }) {
   const { getExplorerUrl } = useCluster();
+  const [imageFailed, setImageFailed] = useState(false);
   const imageUri = getImageUri(asset);
-  const imageUrl = resolveNftImageUrl(imageUri);
+  const imageUrl = imageFailed ? null : resolveNftImageUrl(imageUri);
   const name = asset.content?.metadata?.name ?? ellipsify(asset.id);
   const collection = getCollectionName(asset);
 
@@ -60,10 +62,11 @@ export function NftCard({ asset }: { asset: DasApiAsset }) {
             fill
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
             className="object-cover transition group-hover:scale-[1.02]"
+            onError={() => setImageFailed(true)}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center px-3 text-center text-xs text-muted">
-            {imageUri ? "Image host not allowed" : "No image"}
+            {imageUri ? "Image unavailable" : "No image"}
           </div>
         )}
       </div>

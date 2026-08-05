@@ -26,11 +26,27 @@ export const NFT_IMAGE_HOSTS = [
 
 const IPFS_GATEWAY = "https://ipfs.io/ipfs/";
 
-/** Matches the `**.example.com` subdomain wildcard that `remotePatterns` accepts. */
+const HOSTNAME_LABEL = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+
+/**
+ * Matches the `**.example.com` subdomain wildcard that `remotePatterns` accepts.
+ *
+ * The subdomain part is validated label by label rather than by suffix alone. A bare suffix
+ * test would admit hostnames with empty labels, such as `..example.com`, which this accepts
+ * but the image optimizer rejects — and a host this says yes to and the optimizer says no to
+ * is a broken image rather than a placeholder.
+ */
 function matchesHost(hostname: string, pattern: string): boolean {
-  return pattern.startsWith("**.")
-    ? hostname.endsWith(pattern.slice(2))
-    : hostname === pattern;
+  if (!pattern.startsWith("**.")) return hostname === pattern;
+
+  const suffix = pattern.slice(3);
+  if (!hostname.endsWith(`.${suffix}`)) return false;
+
+  const subdomain = hostname.slice(0, -(suffix.length + 1));
+  return (
+    subdomain.length > 0 &&
+    subdomain.split(".").every((label) => HOSTNAME_LABEL.test(label))
+  );
 }
 
 /**
