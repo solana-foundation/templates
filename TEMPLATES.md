@@ -26,6 +26,14 @@ Kit Templates (using @solana/kit)
 
 `anchor` `kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
 
+### [nextjs-das-nfts](kit/nextjs-das-nfts)
+
+`gh:solana-foundation/templates/kit/nextjs-das-nfts`
+
+> Next.js, Tailwind, @solana/kit — a custom RPC and plugin for the Metaplex DAS API, with an NFT viewer built on it
+
+`kit` `nextjs` `react` `solana-kit` `das` `digital-asset-standard` `nft` `compressed-nft` `metaplex` `custom-rpc` `plugin` `tailwind` `typescript`
+
 ### [nextjs-hardware-signin](kit/nextjs-hardware-signin)
 
 `gh:solana-foundation/templates/kit/nextjs-hardware-signin`

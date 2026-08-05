@@ -20,6 +20,7 @@
   "kit/axum-keychain",
   "kit/nextjs",
   "kit/nextjs-anchor",
+  "kit/nextjs-das-nfts",
   "kit/nextjs-hardware-signin",
   "kit/nextjs-keychain",
   "kit/nextjs-subscriptions",

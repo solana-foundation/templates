@@ -56,6 +56,30 @@
         "path": "kit/nextjs-anchor"
       },
       {
+        "description": "Next.js, Tailwind, @solana/kit — a custom RPC and plugin for the Metaplex DAS API, with an NFT viewer built on it",
+        "id": "gh:solana-foundation/templates/kit/nextjs-das-nfts",
+        "image": "kit/nextjs-das-nfts/og-image.png",
+        "keywords": [
+          "kit",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "das",
+          "digital-asset-standard",
+          "nft",
+          "compressed-nft",
+          "metaplex",
+          "custom-rpc",
+          "plugin",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "nextjs-das-nfts",
+        "path": "kit/nextjs-das-nfts",
+        "displayName": "DAS NFT Viewer",
+        "usecase": "Starter"
+      },
+      {
         "description": "Next.js, Tailwind, @solana/kit — hardware-wallet authentication that signs a memo transaction and verifies it off-chain, no message signing required",
         "id": "gh:solana-foundation/templates/kit/nextjs-hardware-signin",
         "image": "kit/nextjs-hardware-signin/og-image.png",
