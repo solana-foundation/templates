@@ -72,7 +72,7 @@ export function NftViewer() {
 
       {!error && owner && !isInvalidAddress && (
         <>
-          {isLoading && assets.length === 0 ? (
+          {isLoading ? (
             <div className="mt-4 grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
               {Array.from({ length: 4 }, (_, i) => (
                 <div
@@ -93,7 +93,7 @@ export function NftViewer() {
             </div>
           )}
 
-          {(page > 1 || assets.length === ASSETS_PER_PAGE) && (
+          {(page > 1 || isLoading || assets.length === ASSETS_PER_PAGE) && (
             <div className="mt-4 flex items-center justify-between text-xs">
               <span className="text-muted">Page {page}</span>
               <div className="flex gap-2">

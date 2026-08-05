@@ -109,6 +109,20 @@ renames two params, which `app/lib/solana-client.ts` handles by turning on
 selected cluster's RPC URL, and the viewer tells you when that endpoint has no DAS behind
 it.
 
+#### Metadata images are not trusted
+
+Anyone can airdrop an asset, and its off-chain metadata can point its image anywhere. Loading
+one straight into an `<img>` would tell that host the viewer's IP address, user agent, and
+when they looked at a wallet — so the viewer does two things instead:
+
+- Images render through `next/image`, which fetches them **on the server**. The viewer's
+  browser only ever talks to your origin.
+- [`app/lib/nft-image.ts`](app/lib/nft-image.ts) allowlists the storage networks and IPFS
+  gateways NFT metadata actually uses, and `next.config.ts` feeds that same list to
+  `images.remotePatterns`. Anything else renders a placeholder rather than being fetched.
+
+Add the hosts your own assets use to `NFT_IMAGE_HOSTS` before deploying.
+
 ### Switching networks
 
 A kit client is bound to one chain and RPC endpoint. The cluster dropdown rebuilds the client in a `useMemo` keyed on the cluster and hands the new instance to `ClientProvider`, which reprovisions the subtree. See [`app/lib/client-provider.tsx`](app/lib/client-provider.tsx).

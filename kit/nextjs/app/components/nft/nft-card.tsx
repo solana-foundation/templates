@@ -1,28 +1,24 @@
 "use client";
 
+import Image from "next/image";
 import { useCluster } from "../cluster-context";
 import { ellipsify } from "../../lib/explorer";
+import { resolveNftImageUrl } from "../../lib/nft-image";
 import type { DasApiAsset } from "../../lib/das";
-
-const IPFS_GATEWAY = "https://ipfs.io/ipfs/";
 
 /**
  * Off-chain metadata is arbitrary JSON, so the image can arrive in any of three places.
  * `content.links.image` is the indexer's own resolution and is preferred when present.
  */
-function getImageUrl(asset: DasApiAsset): string | null {
+function getImageUri(asset: DasApiAsset): string | null {
   const files = asset.content?.files ?? [];
   const image = asset.content?.links?.image;
-  const uri =
+  return (
     (typeof image === "string" ? image : null) ??
     files.find((file) => file.mime?.startsWith("image/"))?.uri ??
-    files[0]?.uri;
-
-  if (uri == null) return null;
-  if (uri.startsWith("ipfs://")) {
-    return `${IPFS_GATEWAY}${uri.slice("ipfs://".length)}`;
-  }
-  return uri;
+    files[0]?.uri ??
+    null
+  );
 }
 
 function getCollectionName(asset: DasApiAsset): string | null {
@@ -44,7 +40,8 @@ function Badge({ children }: { children: React.ReactNode }) {
 
 export function NftCard({ asset }: { asset: DasApiAsset }) {
   const { getExplorerUrl } = useCluster();
-  const imageUrl = getImageUrl(asset);
+  const imageUri = getImageUri(asset);
+  const imageUrl = resolveNftImageUrl(imageUri);
   const name = asset.content?.metadata?.name ?? ellipsify(asset.id);
   const collection = getCollectionName(asset);
 
@@ -55,17 +52,18 @@ export function NftCard({ asset }: { asset: DasApiAsset }) {
       rel="noopener noreferrer"
       className="group overflow-hidden rounded-2xl border border-border-low bg-card transition hover:border-border"
     >
-      <div className="aspect-square w-full bg-accent">
+      <div className="relative aspect-square w-full bg-accent">
         {imageUrl ? (
-          <img
+          <Image
             src={imageUrl}
             alt={name}
-            loading="lazy"
-            className="h-full w-full object-cover transition group-hover:scale-[1.02]"
+            fill
+            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+            className="object-cover transition group-hover:scale-[1.02]"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-xs text-muted">
-            No image
+          <div className="flex h-full w-full items-center justify-center px-3 text-center text-xs text-muted">
+            {imageUri ? "Image host not allowed" : "No image"}
           </div>
         )}
       </div>

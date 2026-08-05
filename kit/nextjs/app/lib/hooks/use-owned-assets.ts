@@ -40,7 +40,7 @@ export function useOwnedAssets(owner: string, page: number) {
             })
             .send()
       : null,
-    { keepPreviousData: true, revalidateOnFocus: false }
+    { revalidateOnFocus: false }
   );
 
   return {

@@ -13,12 +13,6 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
-  {
-    // NFT metadata points at arbitrary remote hosts, which `next/image` will not load
-    // without allowlisting every possible one in `next.config.ts`.
-    files: ["app/components/nft/**"],
-    rules: { "@next/next/no-img-element": "off" },
-  },
 ]);
 
 export default eslintConfig;
