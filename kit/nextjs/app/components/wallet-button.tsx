@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { address } from "@solana/kit";
+import { address, formatDecimalFixedPoint, lamportsToSol } from "@solana/kit";
 import {
   useWallets,
   useConnect,
@@ -10,10 +10,13 @@ import {
   useWalletStatus,
 } from "@solana/kit-plugin-wallet/react";
 import { useBalance } from "../lib/hooks/use-balance";
-import { lamportsToSolString } from "../lib/lamports";
 import { ellipsify } from "../lib/explorer";
 import { useCluster } from "./cluster-context";
 import { useAppClient } from "../lib/client-provider";
+
+const solFormatter = new Intl.NumberFormat("en-US", {
+  maximumFractionDigits: 5,
+});
 
 export function WalletButton() {
   const client = useAppClient();
@@ -131,7 +134,10 @@ export function WalletButton() {
             <p className="text-xs text-muted">Balance</p>
             <p className="text-lg font-bold tabular-nums">
               {balance.lamports != null
-                ? lamportsToSolString(balance.lamports)
+                ? formatDecimalFixedPoint(
+                    solFormatter,
+                    lamportsToSol(balance.lamports)
+                  )
                 : "—"}{" "}
               <span className="text-sm font-normal text-muted">SOL</span>
             </p>
