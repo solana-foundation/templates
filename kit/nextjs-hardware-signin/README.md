@@ -1,5 +1,9 @@
 # nextjs-hardware-signin
 
+This is a reference implementation until the Off-chain Message Signing standard is fully adopted. Follow ecosystem adoption [here](https://app.notion.com/p/solanafoundation/Solana-Off-Chain-Message-Signing-OCMS-374d36dad52d80bf981ddbcebfeca5f0?source=copy_link)
+
+---
+
 Sign In With a Hardware Wallet — wallet authentication for hardware wallets that **cannot sign arbitrary off-chain messages**. Built on `@solana/kit` v7 with the kit plugin client and [`@solana/react`](https://www.npmjs.com/package/@solana/react).
 
 Instead of `signMessage` (unsupported by many hardware wallets), the wallet signs a **memo transaction** carrying a server-issued nonce. The server verifies the Ed25519 signature off-chain — the transaction is **never broadcast**.
