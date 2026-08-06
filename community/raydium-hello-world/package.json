@@ -1,0 +1,71 @@
+{
+  "name": "raydium-hello-world",
+  "displayName": "Raydium Hello World",
+  "description": "Next.js + Tailwind template introducing Raydium: swap on a CPMM pool, devnet-first",
+  "usecase": "DeFi",
+  "keywords": [
+    "raydium",
+    "defi",
+    "swap",
+    "amm",
+    "cpmm",
+    "devnet",
+    "nextjs",
+    "tailwind",
+    "typescript",
+    "solana",
+    "wallet-adapter"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Install dependencies:",
+      "+{pm} install",
+      "Start the development server:",
+      "+{pm} dev"
+    ]
+  },
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build --webpack",
+    "ci": "npm run build && npm run lint && npm run format:check",
+    "dev": "next dev --webpack",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@raydium-io/raydium-sdk-v2": "0.2.60-alpha",
+    "@solana/wallet-adapter-base": "0.9.27",
+    "@solana/wallet-adapter-react": "0.15.39",
+    "@solana/wallet-adapter-react-ui": "0.9.39",
+    "@solana/wallet-adapter-wallets": "0.19.37",
+    "@solana/web3.js": "^1.98.4",
+    "bn.js": "^5.2.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "next": "16.2.6",
+    "next-themes": "^0.4.6",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.3.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/bn.js": "^5.2.0",
+    "@types/node": "^24.5.2",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "eslint": "^9.35.0",
+    "eslint-config-next": "16.0.10",
+    "pino-pretty": "^10.3.1",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2"
+  }
+}
