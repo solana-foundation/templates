@@ -3,13 +3,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import { address as toAddress, type GetSignaturesForAddressApi } from '@solana/kit'
 import { useAppClient } from '@/components/provider'
-import { useCluster } from '@/components/solana/cluster-provider'
 
 type SignatureResult = ReturnType<GetSignaturesForAddressApi['getSignaturesForAddress']>[number]
 
 export function useGetSignaturesQuery({ address }: { address: string }) {
   const client = useAppClient()
-  const { cluster } = useCluster()
   const [data, setData] = useState<SignatureResult[] | undefined>()
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<unknown>()
@@ -31,7 +29,7 @@ export function useGetSignaturesQuery({ address }: { address: string }) {
 
   useEffect(() => {
     fetchSignatures().catch((err) => console.error(err))
-  }, [fetchSignatures, cluster.id])
+  }, [fetchSignatures])
 
   return {
     data,

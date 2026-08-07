@@ -60,34 +60,39 @@ function WalletDropdown() {
   const { dispatchAsync: disconnect } = useDisconnect(client)
   const { user } = useAuth()
   const { handleSignOut } = useCombinedSignOut()
-  const [connecting, setConnecting] = React.useState<string | null>(null)
 
   const handleConnect = async (wallet: UiWallet) => {
     try {
-      setConnecting(wallet.name)
       await connect(wallet)
     } catch (error) {
+      // Selecting another wallet aborts the pending request; that is not a failure.
+      if (error instanceof Error && error.name === 'AbortError') return
       console.error('Error connecting wallet:', error)
       toast.error('Failed to connect wallet')
-    } finally {
-      setConnecting(null)
     }
   }
 
   const handleDisconnect = async () => {
-    if (user) {
-      await handleSignOut()
-    } else {
-      await disconnect()
+    try {
+      if (user) {
+        await handleSignOut()
+      } else {
+        await disconnect()
+      }
+    } catch (error) {
+      console.error('Error disconnecting wallet:', error)
+      toast.error('Failed to disconnect wallet')
     }
   }
 
   const handleCopy = async () => {
     const address = connected?.account.address
     if (!address) return
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+    try {
       await navigator.clipboard.writeText(address)
       toast.success('Address copied')
+    } catch {
+      // Clipboard API is unavailable on insecure origins or was denied.
     }
   }
 
@@ -119,7 +124,7 @@ function WalletDropdown() {
               key={wallet.name}
               wallet={wallet}
               onSelect={handleConnect}
-              disabled={walletStatus === 'connecting' || connecting === wallet.name}
+              disabled={walletStatus === 'connecting'}
             />
           ))
         ) : (

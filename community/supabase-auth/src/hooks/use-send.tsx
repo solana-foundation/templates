@@ -4,6 +4,7 @@ import { useCallback } from 'react'
 import { useAction } from '@solana/react'
 import { toast } from 'sonner'
 import { toastTx } from '@/components/toast-tx'
+import { parseTransactionError } from '@/lib/errors'
 
 /**
  * Runs a transaction-producing action, toasting an explorer link on success and the
@@ -21,7 +22,7 @@ export function useSend() {
         return signature
       } catch (error) {
         console.error(error)
-        toast.error(error instanceof Error ? error.message : 'Transaction failed')
+        toast.error(parseTransactionError(error))
         return undefined
       }
     },

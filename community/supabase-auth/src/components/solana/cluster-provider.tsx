@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, ReactNode, useCallback, useContext, useSyncExternalStore } from 'react'
+import { createContext, ReactNode, useCallback, useContext, useMemo, useSyncExternalStore } from 'react'
 import { ClusterId, ClusterOption, DEFAULT_CLUSTER, resolveCluster } from './clusters'
 
 type ClusterContextValue = {
@@ -47,11 +47,9 @@ export function ClusterProvider({ children }: { children: ReactNode }) {
     window.dispatchEvent(new Event(CLUSTER_EVENT))
   }, [])
 
-  return (
-    <ClusterContext.Provider value={{ cluster: resolveCluster(clusterId), setCluster }}>
-      {children}
-    </ClusterContext.Provider>
-  )
+  const value = useMemo(() => ({ cluster: resolveCluster(clusterId), setCluster }), [clusterId, setCluster])
+
+  return <ClusterContext.Provider value={value}>{children}</ClusterContext.Provider>
 }
 
 export function useCluster() {
