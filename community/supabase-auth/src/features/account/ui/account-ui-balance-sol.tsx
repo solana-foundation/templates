@@ -1,8 +1,10 @@
-import { lamportsToSolString } from '@solana/client'
+import { formatDecimalFixedPoint, lamportsToSol, type Lamports } from '@solana/kit'
 
-export function AccountUiBalanceSol({ balance }: { balance: bigint | null }) {
+const solFormatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 9 })
+
+export function AccountUiBalanceSol({ balance }: { balance: Lamports | null }) {
   if (balance == null) {
     return <span>0</span>
   }
-  return <span>{lamportsToSolString(balance)}</span>
+  return <span>{formatDecimalFixedPoint(solFormatter, lamportsToSol(balance))}</span>
 }

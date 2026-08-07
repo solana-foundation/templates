@@ -1,14 +1,17 @@
 'use client'
 
-import { ReactNode } from 'react'
-import { SolanaProvider } from '@solana/react-hooks'
-import { autoDiscover, createClient } from '@solana/client'
-
-const client = createClient({
-  endpoint: 'https://api.devnet.solana.com',
-  walletConnectors: autoDiscover(),
-})
+import { ReactNode, useMemo } from 'react'
+import { ClientProvider, useClient } from '@solana/react'
+import { useCluster } from '@/components/solana/cluster-provider'
+import { AppClient, createAppClient } from '@/components/solana/solana-client'
 
 export function Provider({ children }: { children: ReactNode }) {
-  return <SolanaProvider client={client}>{children}</SolanaProvider>
+  const { cluster } = useCluster()
+  const client = useMemo(() => createAppClient(cluster), [cluster])
+
+  return <ClientProvider client={client}>{children}</ClientProvider>
+}
+
+export function useAppClient() {
+  return useClient<AppClient>()
 }

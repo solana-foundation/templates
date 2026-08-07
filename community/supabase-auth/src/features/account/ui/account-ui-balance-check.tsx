@@ -1,20 +1,20 @@
 'use client'
 
 import { useState } from 'react'
-import { toAddress } from '@solana/client'
-import { useBalance, useClusterState, useSolanaClient } from '@solana/react-hooks'
+import { address as toAddress, lamports } from '@solana/kit'
 import { AppAlert } from '@/components/app-alert'
 import { Button } from '@/components/ui/button'
-import { resolveCluster } from '@/components/solana/clusters'
+import { useAppClient } from '@/components/provider'
+import { useCluster } from '@/components/solana/cluster-provider'
+import { useBalance } from '@/hooks/use-balance'
 
 export function AccountUiBalanceCheck({ address }: { address: string }) {
-  const clusterState = useClusterState()
-  const cluster = resolveCluster(clusterState.endpoint)
-  const client = useSolanaClient()
-  const balance = useBalance(address ? toAddress(address) : undefined, { watch: true })
+  const client = useAppClient()
+  const { cluster } = useCluster()
+  const balance = useBalance(address ? toAddress(address) : undefined)
   const [isPending, setIsPending] = useState(false)
 
-  if (balance.fetching) {
+  if (balance.isLoading) {
     return null
   }
   if (balance.error || balance.lamports == null) {
@@ -26,8 +26,8 @@ export function AccountUiBalanceCheck({ address }: { address: string }) {
             disabled={isPending}
             onClick={async () => {
               setIsPending(true)
-              await client.actions
-                .requestAirdrop(toAddress(address), BigInt(1_000_000_000))
+              await client
+                .airdrop(toAddress(address), lamports(1_000_000_000n))
                 .catch((err) => console.log(err))
                 .finally(() => setIsPending(false))
             }}

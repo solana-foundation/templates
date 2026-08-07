@@ -4,10 +4,13 @@ import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/components/auth/auth-provider'
 import { useRouter } from 'next/navigation'
-import { useWalletConnection } from '@solana/react-hooks'
+import { useConnectedWallet, useDisconnect } from '@solana/kit-plugin-wallet/react'
+import { useAppClient } from '@/components/provider'
 
 function WalletDisconnect(props: React.ComponentProps<typeof Button>) {
-  const { connected, disconnect } = useWalletConnection()
+  const client = useAppClient()
+  const connected = useConnectedWallet(client)
+  const { dispatchAsync: disconnect } = useDisconnect(client)
   const { signOut } = useAuth()
   const router = useRouter()
 

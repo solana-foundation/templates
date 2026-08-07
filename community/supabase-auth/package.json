@@ -15,8 +15,7 @@
   "keywords": [
     "supabase",
     "authentication",
-    "solana",
-    "framework-kit"
+    "solana"
   ],
   "create-solana-dapp": {
     "instructions": [
@@ -37,9 +36,11 @@
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@solana-mobile/wallet-standard-mobile": "^0.4.1",
-    "@solana/client": "^1.1.0",
-    "@solana/kit": "^5.0.0",
-    "@solana/react-hooks": "^1.1.0",
+    "@solana-program/system": "^0.13.0",
+    "@solana/kit": "^7.0.0",
+    "@solana/kit-plugin-rpc": "^0.15.0",
+    "@solana/kit-plugin-wallet": "^0.14.0",
+    "@solana/react": "^7.0.0",
     "@supabase/supabase-js": "^2.76.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -51,6 +52,7 @@
     "react-dom": "^19.2.0",
     "react-error-boundary": "^6.0.0",
     "sonner": "^2.0.7",
+    "swr": "^2.2.0",
     "tailwind-merge": "^3.3.1",
     "tw-animate-css": "^1.3.8",
     "zod": "^4.1.12"

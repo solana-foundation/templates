@@ -9,13 +9,11 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useClusterState, useSolanaClient } from '@solana/react-hooks'
-import { CLUSTERS, resolveCluster } from '@/components/solana/clusters'
+import { useCluster } from '@/components/solana/cluster-provider'
+import { CLUSTERS, ClusterId } from '@/components/solana/clusters'
 
 export function ClusterDropdown() {
-  const clusterState = useClusterState()
-  const client = useSolanaClient()
-  const cluster = resolveCluster(clusterState.endpoint)
+  const { cluster, setCluster } = useCluster()
 
   return (
     <DropdownMenu>
@@ -23,28 +21,12 @@ export function ClusterDropdown() {
         <Button variant="outline">{cluster.label}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuRadioGroup
-          value={cluster.id}
-          onValueChange={async (clusterId) => {
-            const next = CLUSTERS.find((item) => item.id === clusterId)
-            if (!next) return
-            await client.actions.setCluster(
-              next.endpoint,
-              next.websocket ? { websocketEndpoint: next.websocket } : undefined,
-            )
-          }}
-        >
-          {CLUSTERS.map((cluster) => {
-            return (
-              <DropdownMenuRadioItem
-                key={cluster.id}
-                value={cluster.id}
-                disabled={clusterState.status.status === 'connecting'}
-              >
-                {cluster.label}
-              </DropdownMenuRadioItem>
-            )
-          })}
+        <DropdownMenuRadioGroup value={cluster.id} onValueChange={(id) => setCluster(id as ClusterId)}>
+          {CLUSTERS.map((option) => (
+            <DropdownMenuRadioItem key={option.id} value={option.id}>
+              {option.label}
+            </DropdownMenuRadioItem>
+          ))}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -1,13 +1,13 @@
 'use client'
 import { useState } from 'react'
-import { lamportsFromSol, toAddress } from '@solana/client'
-import { useSolanaClient } from '@solana/react-hooks'
+import { address as toAddress, sol, solToLamports } from '@solana/kit'
+import { useAppClient } from '@/components/provider'
 import { AppModal } from '@/components/app-modal'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 
 export function AccountUiModalAirdrop({ address }: { address: string }) {
-  const client = useSolanaClient()
+  const client = useAppClient()
   const [amount, setAmount] = useState('2')
   const [isPending, setIsPending] = useState(false)
 
@@ -17,11 +17,10 @@ export function AccountUiModalAirdrop({ address }: { address: string }) {
       submitDisabled={!amount || isPending}
       submitLabel="Request Airdrop"
       submit={async () => {
-        const parsedAmount = Number(amount)
-        if (Number.isNaN(parsedAmount)) return
+        if (Number.isNaN(Number(amount))) return
         setIsPending(true)
-        await client.actions
-          .requestAirdrop(toAddress(address), lamportsFromSol(parsedAmount))
+        await client
+          .airdrop(toAddress(address), solToLamports(sol(amount)))
           .catch((error) => console.error(error))
           .finally(() => setIsPending(false))
       }}

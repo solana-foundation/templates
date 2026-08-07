@@ -686,8 +686,7 @@
         "keywords": [
           "supabase",
           "authentication",
-          "solana",
-          "framework-kit"
+          "solana"
         ],
         "name": "supabase-auth",
         "path": "community/supabase-auth",
