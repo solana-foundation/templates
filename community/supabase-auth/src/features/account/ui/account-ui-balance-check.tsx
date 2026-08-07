@@ -1,18 +1,18 @@
 'use client'
 
-import { useState } from 'react'
 import { address as toAddress, lamports } from '@solana/kit'
 import { AppAlert } from '@/components/app-alert'
 import { Button } from '@/components/ui/button'
 import { useAppClient } from '@/components/provider'
 import { useCluster } from '@/components/solana/cluster-provider'
 import { useBalance } from '@/hooks/use-balance'
+import { useSend } from '@/hooks/use-send'
 
 export function AccountUiBalanceCheck({ address }: { address: string }) {
   const client = useAppClient()
   const { cluster } = useCluster()
   const balance = useBalance(address ? toAddress(address) : undefined)
-  const [isPending, setIsPending] = useState(false)
+  const { run, isSending } = useSend()
 
   if (balance.isLoading) {
     return null
@@ -23,14 +23,8 @@ export function AccountUiBalanceCheck({ address }: { address: string }) {
         action={
           <Button
             variant="outline"
-            disabled={isPending}
-            onClick={async () => {
-              setIsPending(true)
-              await client
-                .airdrop(toAddress(address), lamports(1_000_000_000n))
-                .catch((err) => console.log(err))
-                .finally(() => setIsPending(false))
-            }}
+            disabled={isSending}
+            onClick={() => run(() => client.airdrop(toAddress(address), lamports(1_000_000_000n)), 'Airdrop confirmed')}
           >
             Request Airdrop
           </Button>

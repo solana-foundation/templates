@@ -4,17 +4,17 @@ import { useState } from 'react'
 import { address as toAddress, sol, solToLamports } from '@solana/kit'
 import { useConnectedWallet } from '@solana/kit-plugin-wallet/react'
 import { useAppClient } from '@/components/provider'
+import { useSend } from '@/hooks/use-send'
 import { AppModal } from '@/components/app-modal'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { toastTx } from '@/components/toast-tx'
 
 export function AccountUiModalSend({ address }: { address: string }) {
   const client = useAppClient()
   const connected = useConnectedWallet(client)
+  const { run, isSending } = useSend()
   const [destination, setDestination] = useState('')
   const [amount, setAmount] = useState('1')
-  const [isSending, setIsSending] = useState(false)
 
   if (!address || !connected?.signer) {
     return <div>Wallet not connected</div>
@@ -30,17 +30,14 @@ export function AccountUiModalSend({ address }: { address: string }) {
       submit={async () => {
         const target = destination.trim()
         if (!target || Number.isNaN(Number(amount))) return
-        setIsSending(true)
-        try {
-          const result = await client.system.instructions
-            .transferSol({ source: signer, destination: toAddress(target), amount: solToLamports(sol(amount)) })
-            .sendTransaction()
-          toastTx(result.context.signature)
-        } catch (error) {
-          console.error(error)
-        } finally {
-          setIsSending(false)
-        }
+        await run(
+          () =>
+            client.system.instructions
+              .transferSol({ source: signer, destination: toAddress(target), amount: solToLamports(sol(amount)) })
+              .sendTransaction()
+              .then((result) => result.context.signature),
+          'SOL transfer sent',
+        )
       }}
     >
       <Label htmlFor="destination">Destination</Label>
