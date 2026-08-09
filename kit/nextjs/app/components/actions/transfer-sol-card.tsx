@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { address } from "@solana/kit";
+import { address, sol, solToLamports, type Lamports } from "@solana/kit";
 import { useConnectedWallet } from "@solana/kit-plugin-wallet/react";
 import { toast } from "sonner";
-import { lamportsFromSol } from "../../lib/lamports";
 import { useAppClient } from "../../lib/client-provider";
 import { useSend } from "../../lib/hooks/use-send";
 
@@ -27,13 +26,21 @@ export function TransferSolCard() {
       return;
     }
 
+    let transferAmount: Lamports;
+    try {
+      transferAmount = solToLamports(sol(amount));
+    } catch {
+      toast.error("Invalid amount");
+      return;
+    }
+
     await run(
       () =>
         client.system.instructions
           .transferSol({
             source: signer,
             destination,
-            amount: lamportsFromSol(Number(amount)),
+            amount: transferAmount,
           })
           .sendTransaction(),
       "SOL transfer sent"

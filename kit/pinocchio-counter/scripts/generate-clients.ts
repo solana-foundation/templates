@@ -32,8 +32,7 @@ const configPreserver = preserveConfigFiles(typescriptClientsDir, rustClientsDir
 
 // Generate Rust client
 void pinocchioCounterCodama.accept(
-    renderRustVisitor(path.join(rustClientsDir, 'src', 'generated'), {
-        crateFolder: rustClientsDir,
+    renderRustVisitor(rustClientsDir, {
         deleteFolderBeforeRendering: true,
         formatCode: true,
     }),

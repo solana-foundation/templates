@@ -1,0 +1,11 @@
+{
+  "model": "inference-model",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Reply with exactly: gated inference works. /no_think"
+    }
+  ],
+  "max_tokens": 64,
+  "stream": false
+}

@@ -1,0 +1,8 @@
+# USD per 1 million tokens.
+default:
+  in: {{ pay_price_in_per_1m }}
+  out: {{ pay_price_out_per_1m }}
+models:
+  "{{ llamacpp_model_alias }}":
+    in: {{ pay_price_in_per_1m }}
+    out: {{ pay_price_out_per_1m }}

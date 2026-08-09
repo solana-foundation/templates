@@ -1,0 +1,47 @@
+[Unit]
+Description=llama.cpp OpenAI-compatible inference server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=llama
+Group=llama
+Environment=LLAMA_CACHE={{ llamacpp_models_dir }}
+ExecStart={{ llamacpp_root }}/bin/llama-server \
+  {% if llamacpp_hf_repo | length > 0 %}-hf {{ llamacpp_hf_repo }}{% else %}-m {{ llamacpp_models_dir }}/{{ llamacpp_model_file }}{% endif %} \
+  --host {{ llamacpp_host }} \
+  --port {{ llamacpp_port }} \
+  --alias {{ llamacpp_model_alias }} \
+  --threads {{ llamacpp_threads }} \
+  --ctx-size {{ llamacpp_ctx }} \
+  --parallel {{ llamacpp_parallel }} \
+  --jinja \
+  --metrics {{ llamacpp_extra_args }}
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths={{ llamacpp_models_dir }}
+ProtectClock=true
+ProtectControlGroups=true
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RemoveIPC=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+SystemCallArchitectures=native
+UMask=0077
+LimitMEMLOCK=infinity
+
+[Install]
+WantedBy=multi-user.target

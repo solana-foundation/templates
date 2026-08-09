@@ -99,6 +99,11 @@ jobs:
           # @solana-program/token >=0.14 requires Node >=24
           - node: 22
             template: kit/nextjs
+          # Depends on @solana/kit RPC/wallet stack that requires Node >=24
+          - node: 22
+            template: kit/nextjs-hardware-signin
+          - node: 22
+            template: kit/nextjs-das-nfts
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -124,6 +129,11 @@ jobs:
           # @solana-program/token >=0.14 requires Node >=24
           - node: 22
             template: kit/nextjs
+          # Depends on @solana/kit RPC/wallet stack that requires Node >=24
+          - node: 22
+            template: kit/nextjs-hardware-signin
+          - node: 22
+            template: kit/nextjs-das-nfts
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -149,6 +159,11 @@ jobs:
           # @solana-program/token >=0.14 requires Node >=24
           - node: 22
             template: kit/nextjs
+          # Depends on @solana/kit RPC/wallet stack that requires Node >=24
+          - node: 22
+            template: kit/nextjs-hardware-signin
+          - node: 22
+            template: kit/nextjs-das-nfts
     steps:
       - name: Checkout
         uses: actions/checkout@v4

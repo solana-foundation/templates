@@ -1,0 +1,49 @@
+---
+timezone: UTC
+
+# llama.cpp is built from source with native CPU optimizations. Pin a release
+# from https://github.com/ggml-org/llama.cpp/releases and upgrade deliberately.
+llamacpp_version: b9923
+llamacpp_commit: bbebeec4a87355896e3faac0c2baca8130c91b6a
+llamacpp_root: /opt/llama.cpp
+llamacpp_models_dir: /opt/llama.cpp/models
+
+# The model server remains private. Only the Pay.sh gateway is public.
+llamacpp_host: 127.0.0.1
+llamacpp_port: 8081
+llamacpp_model_alias: local-model
+
+# The default model URL uses an immutable Hugging Face revision and its
+# published LFS digest. Replace all three values together when changing models.
+llamacpp_hf_repo: ''
+llamacpp_allow_unverified_hf_repo: false
+llamacpp_model_url: >-
+  https://huggingface.co/Qwen/Qwen3-0.6B-GGUF/resolve/23749fefcc72300e3a2ad315e1317431b06b590a/Qwen3-0.6B-Q8_0.gguf
+llamacpp_model_file: Qwen3-0.6B-Q8_0.gguf
+llamacpp_model_checksum: sha256:9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031
+
+# Physical cores are usually the best starting point for CPU inference.
+llamacpp_threads: >-
+  {{
+    ansible_facts['processor_cores']
+    * ansible_facts['processor_count']
+  }}
+llamacpp_ctx: 32768
+llamacpp_parallel: 1
+llamacpp_extra_args: ''
+
+# Official Pay.sh CLI release installed from GitHub with its published checksum.
+pay_install_mode: release
+pay_version: '0.26.0'
+pay_service_user: pay-gateway
+pay_service_home: /var/lib/pay-gateway
+pay_gateway_port: 8080
+
+# The payment gateway is public; llama.cpp remains private on loopback.
+# This sandbox listener has no TLS, rate limits, or DDoS protection.
+pay_gateway_expose_publicly: true
+pay_public_url: 'http://{{ ansible_host }}:{{ pay_gateway_port }}'
+
+# USD per 1 million tokens. This deployment remains sandbox-only.
+pay_price_in_per_1m: '0.10'
+pay_price_out_per_1m: '0.30'

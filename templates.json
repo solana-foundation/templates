@@ -56,6 +56,52 @@
         "path": "kit/nextjs-anchor"
       },
       {
+        "description": "Next.js, Tailwind, @solana/kit — a custom RPC and plugin for the Metaplex DAS API, with an NFT viewer built on it",
+        "id": "gh:solana-foundation/templates/kit/nextjs-das-nfts",
+        "image": "kit/nextjs-das-nfts/og-image.png",
+        "keywords": [
+          "kit",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "das",
+          "digital-asset-standard",
+          "nft",
+          "compressed-nft",
+          "metaplex",
+          "custom-rpc",
+          "plugin",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "nextjs-das-nfts",
+        "path": "kit/nextjs-das-nfts",
+        "displayName": "DAS NFT Viewer",
+        "usecase": "Starter"
+      },
+      {
+        "description": "Next.js, Tailwind, @solana/kit — hardware-wallet authentication that signs a memo transaction and verifies it off-chain, no message signing required",
+        "id": "gh:solana-foundation/templates/kit/nextjs-hardware-signin",
+        "image": "kit/nextjs-hardware-signin/og-image.png",
+        "keywords": [
+          "kit",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "hardware-wallet",
+          "ledger",
+          "sign-in",
+          "authentication",
+          "memo",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "nextjs-hardware-signin",
+        "path": "kit/nextjs-hardware-signin",
+        "displayName": "Sign In With Hardware Wallet",
+        "usecase": "Starter"
+      },
+      {
         "description": "Next.js, Tailwind, @solana/keychain — server-side signing with pluggable key backends (memory, KMS, MPC, custodial)",
         "id": "gh:solana-foundation/templates/kit/nextjs-keychain",
         "image": "kit/nextjs-keychain/og-image.png",
@@ -510,23 +556,22 @@
         "usecase": "Airdrop"
       },
       {
-        "description": "Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana",
-        "id": "gh:solana-foundation/templates/community/moneymq-x402",
-        "image": "community/moneymq-x402/og-image.png",
+        "description": "Monetize self-hosted LLM inference with Pay.sh",
+        "id": "gh:solana-foundation/templates/community/pay-gate-inference",
+        "image": "community/pay-gate-inference/og-image.png",
         "keywords": [
-          "x402",
-          "moneymq",
-          "payments",
-          "micropayments",
           "solana",
-          "api-monetization",
-          "kora",
-          "facilitator",
-          "typescript"
+          "pay.sh",
+          "x402",
+          "inference",
+          "ollama",
+          "llama.cpp",
+          "local-ai",
+          "payments"
         ],
-        "name": "moneymq-x402",
-        "path": "community/moneymq-x402",
-        "displayName": "MoneyMQ x402 Demo",
+        "name": "pay-gate-inference",
+        "path": "community/pay-gate-inference",
+        "displayName": "Monetize Inference with Pay.sh",
         "usecase": "Payments"
       },
       {

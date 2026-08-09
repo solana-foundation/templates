@@ -1,0 +1,155 @@
+---
+- name: Validate the Pay.sh installation mode
+  ansible.builtin.assert:
+    that:
+      - pay_install_mode in ['release', 'existing']
+      - (pay_gateway_port | int) >= 1024
+      - (pay_gateway_port | int) <= 65535
+      - pay_gateway_port | int != llamacpp_port | int
+      - pay_service_user is match('^[a-z_][a-z0-9_-]*$')
+      - pay_service_home is match('^/var/lib/[A-Za-z0-9._-]+$')
+      - pay_public_url is match('^https?://[^\\s]+$')
+      - not (pay_gateway_expose_publicly | bool) or not ('127.0.0.1' in pay_public_url)
+      - (pay_price_in_per_1m | float) >= 0
+      - (pay_price_out_per_1m | float) >= 0
+    fail_msg: >-
+      Use valid unprivileged ports, a dedicated /var/lib service home, safe
+      systemd values, and non-negative token prices. Public exposure requires
+      an explicit non-loopback public URL.
+
+- name: Select the Pay.sh release target
+  ansible.builtin.set_fact:
+    pay_release_target: >-
+      {{
+        'aarch64-unknown-linux-gnu'
+        if ansible_facts['architecture'] in ['aarch64', 'arm64']
+        else 'x86_64-unknown-linux-gnu'
+      }}
+  when: pay_install_mode == 'release'
+
+- name: Require a supported Pay.sh architecture
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['architecture'] in ['aarch64', 'arm64', 'x86_64']
+    fail_msg: 'The Pay.sh release supports x86_64 and aarch64 Linux hosts.'
+  when: pay_install_mode == 'release'
+
+- name: Download the verified Pay.sh CLI release
+  ansible.builtin.get_url:
+    url: >-
+      https://github.com/solana-foundation/pay/releases/download/pay-v{{ pay_version
+      }}/pay-{{ pay_release_target }}.tar.gz
+    dest: '/tmp/pay-{{ pay_version }}-{{ pay_release_target }}.tar.gz'
+    checksum: >-
+      sha256:https://github.com/solana-foundation/pay/releases/download/pay-v{{
+      pay_version }}/sha256sums.txt
+    mode: '0644'
+  when: pay_install_mode == 'release'
+
+- name: Create the versioned Pay.sh installation directory
+  ansible.builtin.file:
+    path: '/opt/pay/{{ pay_version }}'
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: pay_install_mode == 'release'
+
+- name: Install the Pay.sh CLI
+  ansible.builtin.unarchive:
+    src: '/tmp/pay-{{ pay_version }}-{{ pay_release_target }}.tar.gz'
+    dest: '/opt/pay/{{ pay_version }}'
+    remote_src: true
+    creates: '/opt/pay/{{ pay_version }}/pay'
+  register: pay_binary
+  when: pay_install_mode == 'release'
+
+- name: Set Pay.sh CLI permissions
+  ansible.builtin.file:
+    path: '/opt/pay/{{ pay_version }}/pay'
+    owner: root
+    group: root
+    mode: '0755'
+  when: pay_install_mode == 'release'
+
+- name: Activate the selected Pay.sh CLI version
+  ansible.builtin.file:
+    src: '/opt/pay/{{ pay_version }}/pay'
+    dest: /usr/local/bin/pay
+    state: link
+    force: true
+  register: pay_link
+  when: pay_install_mode == 'release'
+
+- name: Verify the Pay.sh inference gateway command
+  ansible.builtin.command: /usr/local/bin/pay gate inference --help
+  changed_when: false
+
+- name: Inspect the active Pay.sh CLI
+  ansible.builtin.stat:
+    path: /usr/local/bin/pay
+    follow: true
+  register: active_pay_binary
+
+- name: Require a root-owned, non-writable Pay.sh CLI
+  ansible.builtin.assert:
+    that:
+      - active_pay_binary.stat.exists
+      - active_pay_binary.stat.pw_name == 'root'
+      - active_pay_binary.stat.mode == '0755'
+    fail_msg: >-
+      /usr/local/bin/pay must resolve to a root-owned executable that is not
+      writable by its group or other users.
+
+- name: Create the Pay.sh service account
+  ansible.builtin.user:
+    name: '{{ pay_service_user }}'
+    system: true
+    shell: /usr/sbin/nologin
+    home: '{{ pay_service_home }}'
+    create_home: true
+
+- name: Create the Pay.sh configuration directory
+  ansible.builtin.file:
+    path: '{{ pay_service_home }}/.config/pay'
+    state: directory
+    owner: '{{ pay_service_user }}'
+    group: '{{ pay_service_user }}'
+    mode: '0700'
+
+- name: Install the inference provider and paywall configuration
+  ansible.builtin.template:
+    src: '{{ item.src }}'
+    dest: '{{ pay_service_home }}/.config/pay/{{ item.dest }}'
+    owner: '{{ pay_service_user }}'
+    group: '{{ pay_service_user }}'
+    mode: '0600'
+  loop:
+    - { src: inference-providers.yml.j2, dest: inference-providers.yml }
+    - { src: rates.yml.j2, dest: rates.yml }
+    - { src: request.json.j2, dest: request.json }
+  register: pay_config
+
+- name: Install the Pay.sh gateway systemd unit
+  ansible.builtin.template:
+    src: pay-gateway.service.j2
+    dest: /etc/systemd/system/pay-gateway.service
+    mode: '0644'
+  register: pay_unit
+
+- name: Enable and start the Pay.sh gateway
+  ansible.builtin.systemd:
+    name: pay-gateway
+    enabled: true
+    daemon_reload: true
+    state: >-
+      {{
+        'restarted'
+        if (
+          pay_unit.changed
+          or pay_config.changed
+          or (pay_binary.changed | default(false))
+          or (pay_link.changed | default(false))
+        )
+        else 'started'
+      }}

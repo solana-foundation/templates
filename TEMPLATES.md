@@ -26,6 +26,22 @@ Kit Templates (using @solana/kit)
 
 `anchor` `kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
 
+### [nextjs-das-nfts](kit/nextjs-das-nfts)
+
+`gh:solana-foundation/templates/kit/nextjs-das-nfts`
+
+> Next.js, Tailwind, @solana/kit — a custom RPC and plugin for the Metaplex DAS API, with an NFT viewer built on it
+
+`kit` `nextjs` `react` `solana-kit` `das` `digital-asset-standard` `nft` `compressed-nft` `metaplex` `custom-rpc` `plugin` `tailwind` `typescript`
+
+### [nextjs-hardware-signin](kit/nextjs-hardware-signin)
+
+`gh:solana-foundation/templates/kit/nextjs-hardware-signin`
+
+> Next.js, Tailwind, @solana/kit — hardware-wallet authentication that signs a memo transaction and verifies it off-chain, no message signing required
+
+`kit` `nextjs` `react` `solana-kit` `hardware-wallet` `ledger` `sign-in` `authentication` `memo` `tailwind` `typescript`
+
 ### [nextjs-keychain](kit/nextjs-keychain)
 
 `gh:solana-foundation/templates/kit/nextjs-keychain`
@@ -238,13 +254,13 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `tailwind` `typescript` `framework-kit`
 
-### [moneymq-x402](community/moneymq-x402)
+### [pay-gate-inference](community/pay-gate-inference)
 
-`gh:solana-foundation/templates/community/moneymq-x402`
+`gh:solana-foundation/templates/community/pay-gate-inference`
 
-> Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana
+> Monetize self-hosted LLM inference with Pay.sh
 
-`x402` `moneymq` `payments` `micropayments` `solana` `api-monetization` `kora` `facilitator` `typescript`
+`solana` `pay.sh` `x402` `inference` `ollama` `llama.cpp` `local-ai` `payments`
 
 ### [phantom-embedded-js](community/phantom-embedded-js)
 

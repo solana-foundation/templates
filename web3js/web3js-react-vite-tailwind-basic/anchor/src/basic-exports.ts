@@ -1,5 +1,5 @@
 // Here we export some useful types and functions for interacting with the Anchor program.
-import { AnchorProvider, Program } from '@coral-xyz/anchor'
+import { AnchorProvider, Program } from '@anchor-lang/core'
 import { Cluster, PublicKey } from '@solana/web3.js'
 import BasicIDL from '../target/idl/basic.json'
 import type { Basic } from '../target/types/basic'

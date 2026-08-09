@@ -1,0 +1,6 @@
+# Copy to inventory.yml with `just setup`, then enter the real host.
+all:
+  hosts:
+    inference-01:
+      ansible_host: 203.0.113.10
+      ansible_user: ubuntu
