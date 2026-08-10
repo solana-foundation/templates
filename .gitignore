@@ -93,3 +93,6 @@ web3js/**/tmp
 
 # AI
 **/.claude/
+
+# advisory template security reports
+security-reports/
