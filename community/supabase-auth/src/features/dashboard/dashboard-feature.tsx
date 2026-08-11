@@ -40,8 +40,8 @@ const secondary: {
     icon: <MessageCircleQuestion className="w-5 h-5 text-orange-400" />,
   },
   {
-    label: 'Solana Client Hooks',
-    href: 'https://www.npmjs.com/package/@solana/react-hooks',
+    label: 'Solana Kit Wallet Plugin',
+    href: 'https://www.npmjs.com/package/@solana/kit-plugin-wallet',
     icon: <LucideWallet className="w-5 h-5 text-blue-400" />,
   },
 ]

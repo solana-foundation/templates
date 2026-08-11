@@ -1,37 +1,26 @@
 'use client'
 
 import { ReactNode } from 'react'
+import { useRequestSWR } from '@solana/react/swr'
 import { Button } from '@/components/ui/button'
 import { AppAlert } from '@/components/app-alert'
-import { useClusterState, useClusterStatus, useWalletActions } from '@solana/react-hooks'
-import { resolveCluster } from '@/components/solana/clusters'
+import { useAppClient } from '@/components/provider'
+import { useCluster } from '@/components/solana/cluster-provider'
 
 export function ClusterUiChecker({ children }: { children: ReactNode }) {
-  const clusterState = useClusterState()
-  const clusterStatus = useClusterStatus()
-  const { setCluster } = useWalletActions()
-  const cluster = resolveCluster(clusterState.endpoint)
+  const client = useAppClient()
+  const { cluster } = useCluster()
+  const { error, isLoading, mutate } = useRequestSWR(['cluster-health', cluster.id], client.rpc.getLatestBlockhash())
 
-  const handleRefresh = async () => {
-    try {
-      await setCluster(clusterState.endpoint, {
-        commitment: clusterState.commitment,
-        websocketEndpoint: clusterState.websocketEndpoint,
-      })
-    } catch (error) {
-      console.error('Failed to refresh cluster status', error)
-    }
-  }
-
-  if (clusterStatus.status === 'idle' || clusterStatus.status === 'connecting') {
+  if (isLoading) {
     return null
   }
 
-  if (clusterStatus.status === 'error') {
+  if (error) {
     return (
       <AppAlert
         action={
-          <Button variant="outline" onClick={handleRefresh}>
+          <Button variant="outline" onClick={() => mutate()}>
             Refresh
           </Button>
         }
@@ -41,5 +30,6 @@ export function ClusterUiChecker({ children }: { children: ReactNode }) {
       </AppAlert>
     )
   }
+
   return children
 }

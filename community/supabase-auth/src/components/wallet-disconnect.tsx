@@ -4,54 +4,38 @@ import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/components/auth/auth-provider'
 import { useRouter } from 'next/navigation'
-import { useWalletConnection } from '@solana/react-hooks'
+import { useConnectedWallet, useDisconnect } from '@solana/kit-plugin-wallet/react'
+import { useAppClient } from '@/components/provider'
 
 function WalletDisconnect(props: React.ComponentProps<typeof Button>) {
-  const { connected, disconnect } = useWalletConnection()
+  const client = useAppClient()
+  const connected = useConnectedWallet(client)
+  const { dispatchAsync: disconnect } = useDisconnect(client)
   const { signOut } = useAuth()
   const router = useRouter()
 
   const handleDisconnect = async () => {
+    // Each step is isolated so a failure in one still runs the rest and lands the
+    // user back on the home page rather than on a page they can no longer read.
     try {
-      // Sign out from Supabase auth first (this clears the session)
       await signOut()
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
 
-      // Clear any remaining Supabase data from localStorage
-      if (typeof window !== 'undefined') {
-        // Clear Supabase auth data
-        const keys = Object.keys(localStorage)
-        keys.forEach((key) => {
-          if (key.startsWith('sb-') || key.includes('supabase')) {
-            localStorage.removeItem(key)
-          }
-        })
-      }
+    if (typeof window !== 'undefined') {
+      Object.keys(localStorage)
+        .filter((key) => key.startsWith('sb-') || key.includes('supabase'))
+        .forEach((key) => localStorage.removeItem(key))
+    }
 
-      // Then disconnect the wallet
+    try {
       await disconnect()
-
-      // Force redirect to home page
-      router.replace('/')
     } catch (error) {
       console.error('Error disconnecting wallet:', error)
-
-      // Force cleanup even if signOut fails
-      if (typeof window !== 'undefined') {
-        // Clear all localStorage just to be safe
-        const keys = Object.keys(localStorage)
-        keys.forEach((key) => {
-          if (key.startsWith('sb-') || key.includes('supabase')) {
-            localStorage.removeItem(key)
-          }
-        })
-      }
-
-      // Still try to disconnect wallet
-      await disconnect()
-
-      // Force redirect
-      router.replace('/')
     }
+
+    router.replace('/')
   }
 
   return (

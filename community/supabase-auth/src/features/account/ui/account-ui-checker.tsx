@@ -1,11 +1,12 @@
 'use client'
-import { useWalletSession } from '@solana/react-hooks'
+import { useConnectedWallet } from '@solana/kit-plugin-wallet/react'
+import { useAppClient } from '@/components/provider'
 import { AccountUiBalanceCheck } from './account-ui-balance-check'
 
 export function AccountUiChecker() {
-  const wallet = useWalletSession()
-  if (!wallet) {
+  const connected = useConnectedWallet(useAppClient())
+  if (!connected) {
     return null
   }
-  return <AccountUiBalanceCheck address={wallet.account.address.toString()} />
+  return <AccountUiBalanceCheck address={connected.account.address} />
 }

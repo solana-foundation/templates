@@ -316,7 +316,7 @@ Templates maintained by the Solana community
 
 > Authenticate Solana wallets with Supabase
 
-`supabase` `authentication` `solana` `framework-kit`
+`supabase` `authentication` `solana`
 
 ### [x402-solana-rust](community/x402-solana-rust)
 

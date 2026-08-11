@@ -1,34 +1,30 @@
 'use client'
 import { useState } from 'react'
-import { lamportsFromSol, toAddress } from '@solana/client'
-import { useSolanaClient } from '@solana/react-hooks'
+import { address as toAddress, sol, solToLamports } from '@solana/kit'
+import { useAppClient } from '@/components/provider'
+import { useSend } from '@/hooks/use-send'
 import { AppModal } from '@/components/app-modal'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 
 export function AccountUiModalAirdrop({ address }: { address: string }) {
-  const client = useSolanaClient()
+  const client = useAppClient()
+  const { run, isSending } = useSend()
   const [amount, setAmount] = useState('2')
-  const [isPending, setIsPending] = useState(false)
 
   return (
     <AppModal
       title="Airdrop"
-      submitDisabled={!amount || isPending}
+      submitDisabled={!amount || isSending}
       submitLabel="Request Airdrop"
       submit={async () => {
-        const parsedAmount = Number(amount)
-        if (Number.isNaN(parsedAmount)) return
-        setIsPending(true)
-        await client.actions
-          .requestAirdrop(toAddress(address), lamportsFromSol(parsedAmount))
-          .catch((error) => console.error(error))
-          .finally(() => setIsPending(false))
+        if (Number.isNaN(Number(amount))) return
+        await run(() => client.airdrop(toAddress(address), solToLamports(sol(amount))), 'Airdrop confirmed')
       }}
     >
       <Label htmlFor="amount">Amount</Label>
       <Input
-        disabled={isPending}
+        disabled={isSending}
         id="amount"
         min="1"
         onChange={(e) => setAmount(e.target.value)}

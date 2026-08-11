@@ -1,10 +1,11 @@
 'use client'
 import { useAuth } from '@/components/auth/auth-provider'
-import { useWalletConnection } from '@solana/react-hooks'
+import { useDisconnect } from '@solana/kit-plugin-wallet/react'
+import { useAppClient } from '@/components/provider'
 
 export const useCombinedSignOut = () => {
   const { signOut } = useAuth()
-  const { disconnect } = useWalletConnection()
+  const { dispatchAsync: disconnect } = useDisconnect(useAppClient())
 
   const handleSignOut = async () => {
     try {

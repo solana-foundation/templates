@@ -1,16 +1,17 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { useSolanaClient, useClusterState } from '@solana/react-hooks'
+import { useAppClient } from '@/components/provider'
 import { getTokenAccountsByOwner } from './get-token-accounts-by-owner'
 
 const TOKEN_PROGRAM_ID = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 const TOKEN_2022_PROGRAM_ID = 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb'
 
+type TokenAccount = Awaited<ReturnType<typeof getTokenAccountsByOwner>>[number]
+
 export function useGetTokenAccountsQuery({ address }: { address: string }) {
-  const client = useSolanaClient()
-  const cluster = useClusterState()
-  const [data, setData] = useState<any[] | undefined>()
+  const client = useAppClient()
+  const [data, setData] = useState<TokenAccount[] | undefined>()
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<unknown>()
 
@@ -34,7 +35,7 @@ export function useGetTokenAccountsQuery({ address }: { address: string }) {
 
   useEffect(() => {
     fetchAccounts().catch((err) => console.error(err))
-  }, [fetchAccounts, cluster.endpoint])
+  }, [fetchAccounts])
 
   return {
     data,

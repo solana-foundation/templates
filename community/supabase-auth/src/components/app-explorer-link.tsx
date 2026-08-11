@@ -1,8 +1,7 @@
 'use client'
 
 import { ArrowUpRightFromSquare } from 'lucide-react'
-import { useClusterState } from '@solana/react-hooks'
-import { resolveCluster } from '@/components/solana/clusters'
+import { useCluster } from '@/components/solana/cluster-provider'
 
 type ExplorerLinkProps = {
   address?: string
@@ -17,25 +16,19 @@ function buildExplorerUrl({
   address,
   transaction,
   block,
-}: ExplorerLinkProps & {
-  cluster: { id: string; endpoint: string }
+}: Pick<ExplorerLinkProps, 'address' | 'block' | 'transaction'> & {
+  cluster: { id: string }
 }) {
   const base = 'https://explorer.solana.com'
   const path = address ? `/address/${address}` : transaction ? `/tx/${transaction}` : block ? `/block/${block}` : '/'
-  const clusterQuery =
-    cluster.id === 'mainnet-beta'
-      ? ''
-      : cluster.id === 'custom'
-        ? `?cluster=custom&customUrl=${encodeURIComponent(cluster.endpoint)}`
-        : `?cluster=${cluster.id}`
+  const clusterQuery = cluster.id === 'mainnet-beta' ? '' : `?cluster=${cluster.id}`
 
   return `${base}${path}${clusterQuery}`
 }
 
 export function AppExplorerLink({ className, label = '', ...link }: ExplorerLinkProps) {
-  const clusterState = useClusterState()
-  const cluster = resolveCluster(clusterState.endpoint)
-  const href = buildExplorerUrl({ ...link, cluster: { id: cluster.id, endpoint: cluster.endpoint } })
+  const { cluster } = useCluster()
+  const href = buildExplorerUrl({ ...link, cluster: { id: cluster.id } })
 
   return (
     <a

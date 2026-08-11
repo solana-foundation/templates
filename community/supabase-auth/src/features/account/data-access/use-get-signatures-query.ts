@@ -1,21 +1,13 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { toAddress } from '@solana/client'
-import { useSolanaClient, useClusterState } from '@solana/react-hooks'
+import { address as toAddress, type GetSignaturesForAddressApi } from '@solana/kit'
+import { useAppClient } from '@/components/provider'
 
-type SignatureResult = {
-  blockTime: number | null
-  confirmationStatus?: string
-  err: unknown
-  memo?: string | null
-  signature: string
-  slot: number
-}
+type SignatureResult = ReturnType<GetSignaturesForAddressApi['getSignaturesForAddress']>[number]
 
 export function useGetSignaturesQuery({ address }: { address: string }) {
-  const client = useSolanaClient()
-  const cluster = useClusterState()
+  const client = useAppClient()
   const [data, setData] = useState<SignatureResult[] | undefined>()
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<unknown>()
@@ -24,8 +16,8 @@ export function useGetSignaturesQuery({ address }: { address: string }) {
     if (!address) return
     setIsLoading(true)
     try {
-      const res = await client.runtime.rpc.getSignaturesForAddress(toAddress(address)).send()
-      setData(res ?? [])
+      const res = await client.rpc.getSignaturesForAddress(toAddress(address)).send()
+      setData([...(res ?? [])])
       setError(undefined)
     } catch (err) {
       setError(err)
@@ -37,7 +29,7 @@ export function useGetSignaturesQuery({ address }: { address: string }) {
 
   useEffect(() => {
     fetchSignatures().catch((err) => console.error(err))
-  }, [fetchSignatures, cluster.endpoint])
+  }, [fetchSignatures])
 
   return {
     data,

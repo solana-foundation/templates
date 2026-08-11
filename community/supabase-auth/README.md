@@ -9,7 +9,7 @@ The template uses Supabase's managed PostgreSQL database, so there's no local da
 - **Supabase Authentication** with Solana wallet integration via Web3 auth
 - **[Zod](https://zod.dev)** for environment variable validation (T3 Stack style)
 - **[Tailwind CSS](https://tailwindcss.com)** and **[Shadcn UI](https://ui.shadcn.com)** for styling
-- **[@solana/client](https://github.com/solana-foundation/framework-kit/tree/main/packages/client)** and **[@solana/react-hooks](https://github.com/solana-foundation/framework-kit/tree/main/packages/react-hooks)** for Solana wallet and RPC functionality
+- **[@solana/kit](https://github.com/anza-xyz/kit)** with **[@solana/kit-plugin-wallet](https://www.npmjs.com/package/@solana/kit-plugin-wallet)** and **[@solana/kit-plugin-rpc](https://www.npmjs.com/package/@solana/kit-plugin-rpc)** for Solana wallet and RPC functionality
 - **Protected Routes** with authentication middleware
 - **[TypeScript](https://www.typescriptlang.org)** throughout for type safety
 
@@ -118,7 +118,7 @@ These are prefixed with `NEXT_PUBLIC_` because they're used in client-side code.
 
 ## Wallet Connection
 
-The template uses @solana/react-hooks to manage wallet connections. Here's how it works:
+The template uses the `@solana/kit-plugin-wallet` React hooks to manage wallet connections. Here's how it works:
 
 1. **Select a wallet**: Click the wallet dropdown in the header (shows "Connect Wallet" if nothing is connected)
 2. **Choose your wallet**: Select Phantom, Solflare, or another supported wallet
@@ -166,7 +166,7 @@ A 422 error usually means:
 
 - Web3 authentication isn't enabled (see above)
 - Your Supabase project doesn't support Web3 auth (check if you're on a supported plan)
-- The `window.solana` provider isn't properly connected
+- No wallet is connected in the header
 
 #### "Solana wallet not detected"
 
@@ -242,7 +242,7 @@ This template uses:
 
 - [Supabase](https://supabase.com) for authentication and database
 - [Next.js](https://nextjs.org) as the React framework
-- [@solana/client](https://github.com/solana-foundation/framework-kit/tree/main/packages/client) and [@solana/react-hooks](https://github.com/solana-foundation/framework-kit/tree/main/packages/react-hooks) for Solana wallet and RPC functionality
+- [@solana/kit](https://github.com/anza-xyz/kit) with [@solana/kit-plugin-wallet](https://www.npmjs.com/package/@solana/kit-plugin-wallet) and [@solana/kit-plugin-rpc](https://www.npmjs.com/package/@solana/kit-plugin-rpc) for Solana wallet and RPC functionality
 - [Shadcn UI](https://ui.shadcn.com) for component primitives
 
 ## License

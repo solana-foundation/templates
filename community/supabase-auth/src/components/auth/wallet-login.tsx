@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useWalletConnection, useWalletSession } from '@solana/react-hooks'
+import { useConnectedWallet, useSignMessage, useWallets } from '@solana/kit-plugin-wallet/react'
+import { useAppClient } from '@/components/provider'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from './auth-provider'
 import { useCombinedSignOut } from '@/hooks/use-combined-signout'
@@ -12,28 +13,37 @@ import { useCombinedSignOut } from '@/hooks/use-combined-signout'
 export default function WalletLogin() {
   const [message, setMessage] = useState('')
   const router = useRouter()
-  const { connected, connectors } = useWalletConnection()
-  const session = useWalletSession()
+  const client = useAppClient()
+  const wallets = useWallets(client)
+  const connected = useConnectedWallet(client)
+  const { dispatchAsync: signMessage } = useSignMessage(client)
   const { user } = useAuth()
   const { handleSignOut } = useCombinedSignOut()
 
   const handleWalletAuth = async () => {
     setMessage('')
 
-    if (!connectors.length) {
-      setMessage('No wallet connectors available. Please install a Solana wallet.')
+    if (!wallets.length) {
+      setMessage('No wallets available. Please install a Solana wallet.')
       return
     }
 
-    if (!connected || !session) {
+    if (!connected) {
       setMessage('Please connect a wallet first')
       return
     }
+
+    const address = connected.account.address
 
     try {
       const { data, error } = await supabase.auth.signInWithWeb3({
         chain: 'solana',
         statement: 'Please sign this message to authenticate with your wallet.',
+        // Supabase builds the Sign-in-with-Solana message itself and asks this interface to sign it.
+        wallet: {
+          publicKey: { toBase58: () => address },
+          signMessage: (bytes: Uint8Array) => signMessage(bytes),
+        },
       })
 
       if (error) {
@@ -55,7 +65,7 @@ export default function WalletLogin() {
     setMessage('Signed out successfully')
   }
 
-  if (user && session) {
+  if (user && connected) {
     return (
       <Card className="w-full max-w-md">
         <CardHeader>
@@ -65,7 +75,7 @@ export default function WalletLogin() {
         <CardContent>
           <div className="space-y-4">
             <div className="space-y-2">
-              <p className="text-sm text-green-600">Wallet: {session.account.address.toString().slice(0, 8)}...</p>
+              <p className="text-sm text-green-600">Wallet: {connected.account.address.slice(0, 8)}...</p>
               <Button onClick={() => router.push('/account')} className="w-full">
                 View Account Details
               </Button>
@@ -87,7 +97,7 @@ export default function WalletLogin() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {!connected || !session ? (
+          {!connected ? (
             <div className="text-center space-y-2">
               <p className="text-sm text-gray-600">
                 No wallet connected. Please use the wallet connection from the header.
@@ -98,9 +108,7 @@ export default function WalletLogin() {
             </div>
           ) : (
             <div className="space-y-2">
-              <p className="text-sm text-green-600">
-                Wallet Connected: {session.account.address.toString().slice(0, 8)}...
-              </p>
+              <p className="text-sm text-green-600">Wallet Connected: {connected.account.address.slice(0, 8)}...</p>
               <Button onClick={handleWalletAuth} className="w-full">
                 Sign in with Solana
               </Button>
