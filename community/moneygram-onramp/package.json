@@ -1,0 +1,70 @@
+{
+  "name": "moneygram-onramp",
+  "displayName": "MoneyGram Ramps On/Off-Ramp",
+  "description": "Next.js app embedding the MoneyGram Ramps widget to cash in and out of USDC",
+  "usecase": "Payments",
+  "keywords": [
+    "solana",
+    "moneygram",
+    "onramp",
+    "offramp",
+    "usdc",
+    "payments",
+    "kit",
+    "nextjs",
+    "solana-kit",
+    "tailwind",
+    "typescript"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Add your MoneyGram sandbox credentials:",
+      "cp .env.example .env.local",
+      "Install dependencies:",
+      "+{pm} install",
+      "Start the dev server:",
+      "+{pm} dev"
+    ]
+  },
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "next build",
+    "ci": "npm run build && npm run lint && npm run format:check",
+    "dev": "next dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@solana-program/memo": "^0.12.0",
+    "@solana-program/system": "^0.13.0",
+    "@solana-program/token": "^0.15.0",
+    "@solana/kit": "^7.0.0",
+    "@solana/kit-plugin-rpc": "^0.15.0",
+    "@solana/kit-plugin-wallet": "^0.14.0",
+    "@solana/react": "^7.0.0",
+    "next": "16.2.6",
+    "next-themes": "^0.4.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "sonner": "^2.0.7",
+    "swr": "^2.2.0",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.10",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

@@ -254,6 +254,14 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `tailwind` `typescript` `framework-kit`
 
+### [moneygram-onramp](community/moneygram-onramp)
+
+`gh:solana-foundation/templates/community/moneygram-onramp`
+
+> Next.js app embedding the MoneyGram Ramps widget to cash in and out of USDC
+
+`solana` `moneygram` `onramp` `offramp` `usdc` `payments` `kit` `nextjs` `solana-kit` `tailwind` `typescript`
+
 ### [pay-gate-inference](community/pay-gate-inference)
 
 `gh:solana-foundation/templates/community/pay-gate-inference`

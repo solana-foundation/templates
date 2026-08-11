@@ -556,6 +556,28 @@
         "usecase": "Airdrop"
       },
       {
+        "description": "Next.js app embedding the MoneyGram Ramps widget to cash in and out of USDC",
+        "id": "gh:solana-foundation/templates/community/moneygram-onramp",
+        "image": "community/moneygram-onramp/og-image.png",
+        "keywords": [
+          "solana",
+          "moneygram",
+          "onramp",
+          "offramp",
+          "usdc",
+          "payments",
+          "kit",
+          "nextjs",
+          "solana-kit",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "moneygram-onramp",
+        "path": "community/moneygram-onramp",
+        "displayName": "MoneyGram Ramps On/Off-Ramp",
+        "usecase": "Payments"
+      },
+      {
         "description": "Monetize self-hosted LLM inference with Pay.sh",
         "id": "gh:solana-foundation/templates/community/pay-gate-inference",
         "image": "community/pay-gate-inference/og-image.png",
