@@ -1,6 +1,6 @@
 # moneygram-onramp
 
-Next.js app that embeds the [MoneyGram Ramps](https://developer.moneygram.com/) widget so users move between physical cash and on-chain USDC on Solana. Built on `@solana/kit` v7 with the kit plugin client — the cash-out signing callback is a single `transferToATA` call instead of hand-rolled ATA, blockhash, and compute-budget plumbing.
+Next.js app that embeds the [MoneyGram Ramps](https://xramps.moneygram.com/solana) widget so users move between physical cash and on-chain USDC on Solana. Built on `@solana/kit` v7 with the kit plugin client — the cash-out signing callback is a single `transferToATA` call instead of hand-rolled ATA, blockhash, and compute-budget plumbing.
 
 Based on the [Solana Foundation Next.js kit template](https://github.com/solana-foundation/templates/tree/main/kit/nextjs).
 
@@ -22,7 +22,7 @@ Open [http://localhost:3000](http://localhost:3000), switch the network selector
 
 Get devnet funds: [faucet.solana.com](https://faucet.solana.com) (SOL) and [faucet.circle.com](https://faucet.circle.com) (USDC).
 
-You need MoneyGram Ramps sandbox credentials to run this — request them through [MoneyGram developer onboarding](https://developer.moneygram.com/). Without `MONEYGRAM_SK` set, the session route returns a 500 with a setup hint.
+You need MoneyGram Ramps sandbox credentials to run this — request them through [MoneyGram developer onboarding](https://xramps.moneygram.com/ops/partner/register). Without `MONEYGRAM_SK` set, the session route returns a 500 with a setup hint.
 
 ## What's Included
 
