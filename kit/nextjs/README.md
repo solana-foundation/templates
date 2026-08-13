@@ -4,6 +4,8 @@ Next.js starter built on `@solana/kit` v7 with the kit plugin client and [`@sola
 
 ## Getting Started
 
+Requires Node.js 24 or newer.
+
 ```shell
 npx -y create-solana-dapp@latest -t solana-foundation/templates/kit/nextjs
 ```
@@ -15,11 +17,18 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000), connect a wallet, and (on devnet) click **Airdrop 1 SOL** to fund it. Then try the actions. Need devnet SOL another way? [faucet.solana.com](https://faucet.solana.com/).
 
+To use localnet, start a local validator in another terminal before selecting
+**localnet**:
+
+```shell
+solana-test-validator
+```
+
 ## What's Included
 
 - **Wallet connection** via [`@solana/kit-plugin-wallet`](https://www.npmjs.com/package/@solana/kit-plugin-wallet) (wallet-standard discovery, auto-reconnect)
 - **Network switcher** — devnet, testnet, mainnet, localnet
-- **Transfer SOL** with the (`@solana-program/system`)[https://www.npmjs.com/package/@solana-program/system] kit plugin
+- **Transfer SOL** with the [`@solana-program/system`](https://www.npmjs.com/package/@solana-program/system) kit plugin
 - **Token actions** — create a mint, mint tokens, and transfer them with the [`@solana-program/token`](https://www.npmjs.com/package/@solana-program/token) kit plugin (associated token accounts created for you)
 - **Add memo** with the [`@solana-program/memo`](https://www.npmjs.com/package/@solana-program/memo) kit plugin
 - **Live balance** and **toast notifications** with explorer links
