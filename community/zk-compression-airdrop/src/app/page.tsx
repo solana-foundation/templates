@@ -19,6 +19,8 @@ function loadAirdropSetup(): { config: AirdropConfig; airdropData: AirdropData }
   }
 }
 
+export const dynamic = 'force-dynamic'
+
 export default function Home() {
   const setup = loadAirdropSetup()
 
