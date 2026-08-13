@@ -17,7 +17,7 @@ The template uses Supabase's managed PostgreSQL database, so there's no local da
 
 Before you start, make sure you have:
 
-1. **Node.js 18+** installed - required to run [Next.js](https://nextjs.org)
+1. **Node.js 20.9+** installed - required to run [Next.js](https://nextjs.org)
 2. **A Supabase account** - create one at [supabase.com](https://supabase.com) (free tier works)
 3. **A Solana wallet** - Phantom, Solflare, or Backpack installed in your browser
 4. **Git** - to clone or fork this repository
@@ -101,7 +101,7 @@ npm run dev
 This starts [Next.js](https://nextjs.org) with Turbopack (faster than the default webpack). You should see output like:
 
 ```text
-▲ Next.js 15.5.6
+▲ Next.js 16.3.0
 - Local:        http://localhost:3000
 ```
 

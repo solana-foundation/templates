@@ -5,18 +5,18 @@ import { toAddress } from '@solana/client'
 import { useSolanaClient, useClusterState } from '@solana/react-hooks'
 
 type SignatureResult = {
-  blockTime: number | null
-  confirmationStatus?: string
+  blockTime: bigint | null
+  confirmationStatus: string | null
   err: unknown
-  memo?: string | null
+  memo: string | null
   signature: string
-  slot: number
+  slot: bigint
 }
 
 export function useGetSignaturesQuery({ address }: { address: string }) {
   const client = useSolanaClient()
   const cluster = useClusterState()
-  const [data, setData] = useState<SignatureResult[] | undefined>()
+  const [data, setData] = useState<readonly SignatureResult[] | undefined>()
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<unknown>()
 

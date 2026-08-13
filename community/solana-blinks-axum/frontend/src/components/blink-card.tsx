@@ -80,6 +80,8 @@ export function BlinkCard({ actionUrl, onRemove }: BlinkCardProps) {
   }, [account])
 
   useEffect(() => {
+    // Synchronize the displayed balance with the connected account's RPC state.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refreshBalance()
   }, [refreshBalance])
 

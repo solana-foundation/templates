@@ -59,7 +59,7 @@ This is the **first-ever ChatGPT application** that combines:
 
 ### Prerequisites
 
-- Node.js 18+ and pnpm
+- Node.js 20.9+ and pnpm
 - A Solana wallet with some SOL
 - ChatGPT with developer mode access
 
@@ -234,7 +234,7 @@ Smart address resolution supporting:
 
 ### Technology Stack
 
-- **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS
+- **Frontend**: Next.js 16, React 19, TypeScript, Tailwind CSS
 - **Blockchain**: Solana Web3.js, SPL Token
 - **ChatGPT Integration**: OpenAI Apps SDK, Model Context Protocol (MCP)
 - **Swap Infrastructure**: Jupiter Aggregator API

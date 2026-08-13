@@ -1,6 +1,7 @@
 'use client'
 
 import localFont from 'next/font/local'
+import Image from 'next/image'
 import TextGlitch from '@/components/text-glitch'
 
 const font2 = localFont({
@@ -37,7 +38,7 @@ export default function HeroText() {
           <span className={`flex w-full text-[10vw] whitespace-nowrap font-black ${font3.className}`}>
             quality web3{' '}
             <span className="flex ml-[1.5vw] md:ml-[1vw]">
-              <img src="/b.svg" className="w-[8vw] h-[10vw] -mr-1 md:-mr-[2vw]" />
+              <Image src="/b.svg" alt="b" width={80} height={100} className="w-[8vw] h-[10vw] -mr-1 md:-mr-[2vw]" />
               <span className="mr-2">uilders</span>
             </span>
           </span>
