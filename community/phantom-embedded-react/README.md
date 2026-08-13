@@ -6,7 +6,7 @@ A Next.js starter for integrating Phantom's embedded wallet SDK. Users can sign 
 
 ### 1. Prerequisites
 
-- **Node.js 18+**
+- **Node.js 20.9+**
 - **Phantom Portal App ID** — Register at [phantom.com/portal](https://phantom.com/portal/) and add:
   - `http://localhost:3000` as an allowed origin URL
   - `http://localhost:3000/auth/callback` as an allowed redirect URL
