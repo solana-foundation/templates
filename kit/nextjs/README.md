@@ -53,3 +53,17 @@ Components read the client with `useClient()` and the connected wallet with the 
 ### Switching networks
 
 A kit client is bound to one chain and RPC endpoint. The cluster dropdown rebuilds the client in a `useMemo` keyed on the cluster and hands the new instance to `ClientProvider`, which reprovisions the subtree. See [`app/lib/client-provider.tsx`](app/lib/client-provider.tsx).
+
+## Testing
+
+```shell
+npm run test
+```
+
+The tests in [`tests/`](tests/) drive the real UI — click **Connect Wallet**, pick a wallet, fill in the transfer form, press **Send SOL** — and assert on-chain state before and after each click. Three pieces make that work without a browser or a wallet extension:
+
+- **[`@solana/surfpool`](https://www.npmjs.com/package/@solana/surfpool)** embeds a [Surfpool](https://surfpool.run) Solana runtime in-process. Each test file boots its own surfnet on dynamic ports in well under a second, with cheatcodes to fund accounts (`surfnet.fundSol`), set token balances, deploy programs, and time travel. It's a native addon with prebuilt binaries for macOS (x64/arm64) and Linux x64.
+- **A mock wallet-standard wallet** ([`tests/mock-wallet.ts`](tests/mock-wallet.ts)) registers itself like any browser extension would, so the app's real wallet discovery, connect flow, and transaction signing run unmodified — signatures come from an in-memory keypair.
+- **[Vitest](https://vitest.dev) + [Testing Library](https://testing-library.com/docs/react-testing-library/intro/)** render the actual app components in jsdom and interact with them by role and label, the same way a user would.
+
+The tests point the app's client factory at the surfnet via the optional URL override on `createAppClient` — everything else (plugins, signing, subscriptions, live balance updates) is the production code path.
