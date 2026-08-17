@@ -45,13 +45,26 @@ export function getWalletChain(cluster: ClusterMoniker) {
   return WALLET_CHAINS[cluster];
 }
 
-export function createAppClient(cluster: ClusterMoniker) {
+export type RpcUrlOverrides = {
+  rpcUrl: string;
+  rpcSubscriptionsUrl: string;
+};
+
+/**
+ * Builds the app-wide kit client. `urls` overrides the cluster's default RPC
+ * endpoints — used by tests to point the client at an ephemeral Surfpool
+ * instance on dynamic ports.
+ */
+export function createAppClient(
+  cluster: ClusterMoniker,
+  urls?: RpcUrlOverrides
+) {
   return createClient()
     .use(walletSigner({ chain: WALLET_CHAINS[cluster] }))
     .use(
       solanaRpc({
-        rpcUrl: CLUSTER_URLS[cluster],
-        rpcSubscriptionsUrl: WS_URLS[cluster],
+        rpcUrl: urls?.rpcUrl ?? CLUSTER_URLS[cluster],
+        rpcSubscriptionsUrl: urls?.rpcSubscriptionsUrl ?? WS_URLS[cluster],
         transactionConfig: {
           microLamportsPerComputeUnit: 1000n as MicroLamports,
         },
