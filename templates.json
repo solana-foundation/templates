@@ -717,6 +717,23 @@
         "usecase": "Auth"
       },
       {
+        "description": "Index Solana program accounts into Supabase with realtime queries",
+        "id": "gh:solana-foundation/templates/community/supabase-solana-indexing",
+        "image": "community/supabase-solana-indexing/og-image.png",
+        "keywords": [
+          "solana",
+          "supabase",
+          "indexing",
+          "realtime",
+          "nextjs",
+          "typescript"
+        ],
+        "name": "supabase-solana-indexing",
+        "path": "community/supabase-solana-indexing",
+        "displayName": "Supabase Solana Indexing",
+        "usecase": "Infrastructure"
+      },
+      {
         "description": "x402 payment server template for Solana with Rust",
         "id": "gh:solana-foundation/templates/community/x402-solana-rust",
         "image": "community/x402-solana-rust/og-image.png",
