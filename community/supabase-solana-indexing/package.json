@@ -41,7 +41,7 @@
     "@solana/kit": "^5.5.1",
     "@supabase/supabase-js": "^2.76.1",
     "dotenv": "^17.2.3",
-    "next": "16.2.6",
+    "next": "16.2.11",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "ws": "^8.18.3"
