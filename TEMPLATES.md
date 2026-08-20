@@ -270,6 +270,14 @@ Templates maintained by the Solana community
 
 `solana` `pay.sh` `x402` `inference` `ollama` `llama.cpp` `local-ai` `payments`
 
+### [pay-high-throughput-proxy](community/pay-high-throughput-proxy)
+
+`gh:solana-foundation/templates/community/pay-high-throughput-proxy`
+
+> Deploy a Pay.sh proxy tuned to verify ~1M stablecoin payment vouchers per second
+
+`solana` `pay.sh` `x402` `mpp` `payments` `pingora` `high-throughput` `ed25519`
+
 ### [phantom-embedded-js](community/phantom-embedded-js)
 
 `gh:solana-foundation/templates/community/phantom-embedded-js`

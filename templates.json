@@ -597,6 +597,25 @@
         "usecase": "Payments"
       },
       {
+        "description": "Deploy a Pay.sh proxy tuned to verify ~1M stablecoin payment vouchers per second",
+        "id": "gh:solana-foundation/templates/community/pay-high-throughput-proxy",
+        "image": "community/pay-high-throughput-proxy/og-image.png",
+        "keywords": [
+          "solana",
+          "pay.sh",
+          "x402",
+          "mpp",
+          "payments",
+          "pingora",
+          "high-throughput",
+          "ed25519"
+        ],
+        "name": "pay-high-throughput-proxy",
+        "path": "community/pay-high-throughput-proxy",
+        "displayName": "Scale a Pay.sh Proxy to 1M Payments/sec",
+        "usecase": "Payments"
+      },
+      {
         "description": "Vite + vanilla JavaScript template for integrating Phantom's embedded user wallets on Solana",
         "id": "gh:solana-foundation/templates/community/phantom-embedded-js",
         "image": "community/phantom-embedded-js/og-image.png",
