@@ -9,6 +9,7 @@
   "community/merkle-airdrop",
   "community/moneygram-onramp",
   "community/pay-gate-inference",
+  "community/pay-high-throughput-proxy",
   "community/phantom-embedded-js",
   "community/phantom-embedded-react",
   "community/phantom-embedded-react-native",

@@ -1,0 +1,32 @@
+{
+  "name": "pay-high-throughput-proxy",
+  "displayName": "Scale a Pay.sh Proxy to 1M Payments/sec",
+  "description": "Deploy a Pay.sh proxy tuned to verify ~1M stablecoin payment vouchers per second",
+  "usecase": "Payments",
+  "version": "0.1.0",
+  "private": true,
+  "keywords": [
+    "solana",
+    "pay.sh",
+    "x402",
+    "mpp",
+    "payments",
+    "pingora",
+    "high-throughput",
+    "ed25519"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Read README.md and SECURITY.md before exposing the proxy or removing --sandbox safeguards.",
+      "Install Ansible and just on your machine, then create your inventory:",
+      "+brew install ansible just",
+      "+just setup",
+      "Edit deploy/ansible/inventory.yml (host + public IP) and deploy/ansible/proxy.env (RPC, recipient, operator key, session secret).",
+      "Preview then provision the tuned proxy host:",
+      "+just check",
+      "+just deploy",
+      "Confirm the paid endpoint returns HTTP 402:",
+      "+just gate-test <public-ip>"
+    ]
+  }
+}
