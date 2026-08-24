@@ -7,7 +7,7 @@ import type { HealthReport, Status } from './types.js'
 const report = (entries: Record<string, Status>): HealthReport =>
   ({
     templates: Object.entries(entries).map(([id, status]) => ({ id, status })),
-  }) as HealthReport
+  }) as unknown as HealthReport
 
 test('fail to skip is NOT a fix, it becomes unverified', () => {
   const diff = diffReports(report({ a: 'skip' }), report({ a: 'fail' }))
