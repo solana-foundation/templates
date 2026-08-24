@@ -1,0 +1,26 @@
+# Socket and file-descriptor tuning for a high-throughput Pay proxy.
+# Managed by the pay-high-throughput-proxy template. Applied with `sysctl --system`.
+
+# Allow many open sockets (persistent HTTP/2 connections + their streams).
+fs.file-max = 2097152
+fs.nr_open = 2097152
+
+# Larger accept/backlog queues so connection bursts are not dropped.
+net.core.somaxconn = 65535
+net.core.netdev_max_backlog = 250000
+net.ipv4.tcp_max_syn_backlog = 65535
+
+# Wider socket buffers for sustained throughput.
+net.core.rmem_max = 16777216
+net.core.wmem_max = 16777216
+net.ipv4.tcp_rmem = 4096 87380 16777216
+net.ipv4.tcp_wmem = 4096 65536 16777216
+
+# Recycle ephemeral ports quickly and widen the range (matters for any
+# upstream fan-out; harmless for the accept-side listener).
+net.ipv4.ip_local_port_range = 10240 65535
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_fin_timeout = 15
+
+# Keep congestion window warm on long-lived, mostly-idle-then-bursty conns.
+net.ipv4.tcp_slow_start_after_idle = 0

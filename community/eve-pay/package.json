@@ -1,0 +1,55 @@
+{
+  "name": "eve-pay",
+  "displayName": "Eve + Pay.sh Agent",
+  "description": "Approval-gated Eve agent that buys sandbox API access with Pay.sh",
+  "usecase": "Payments",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "build": "eve build",
+    "ci": "npm run typecheck && npm run build",
+    "dev": "eve dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "info": "eve info",
+    "start": "eve start",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": [
+    "solana",
+    "pay.sh",
+    "x402",
+    "mpp",
+    "eve",
+    "vercel",
+    "ai-agent",
+    "payments",
+    "typescript"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Add an AI Gateway credential for local development:",
+      "+cp .env.example .env.local",
+      "Set AI_GATEWAY_API_KEY in .env.local, then start the Eve agent:",
+      "+{pm} dev",
+      "Ask: Get a paid sandbox quote for AAPL",
+      "Review and approve the payment details when Eve pauses.",
+      "This starter uses sandbox funds only. Read README.md before adapting it for real payments."
+    ]
+  },
+  "dependencies": {
+    "@solana/addresses": "6.9.0",
+    "ai": "7.0.22",
+    "eve": "0.22.5",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.5.2",
+    "prettier": "3.6.2",
+    "typescript": "5.9.3"
+  }
+}

@@ -7,6 +7,10 @@ minimumReleaseAgeExclude:
   - '@solana/client'
   - '@solana/react-hooks'
   - '@solana/kit'
+  - '@solana/kit-plugin-wallet'
+  - '@solana-program/system'
+  - '@solana-program/token'
+  - '@solana-program/memo'
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@tailwindcss/oxide'

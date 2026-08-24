@@ -4,3 +4,4 @@ pnpm-lock.yaml
 src/generated
 .agents
 agent
+pnpm-workspace.yaml

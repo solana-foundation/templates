@@ -1,5 +1,5 @@
 import { AnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { AnchorProvider } from '@coral-xyz/anchor'
+import { AnchorProvider } from '@anchor-lang/core'
 
 export function useAnchorProvider() {
   const { connection } = useConnection()

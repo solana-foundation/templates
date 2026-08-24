@@ -23,6 +23,12 @@ just build          # Build program and generate clients
 just test           # Run all tests
 ```
 
+To print LiteSVM transaction logs while running integration tests, run:
+
+```bash
+TX_LOGS=1 cargo test -p tests-pinocchio-counter -- --nocapture
+```
+
 ## What's Included
 
 - **Native Solana program** using Pinocchio for minimal compute overhead

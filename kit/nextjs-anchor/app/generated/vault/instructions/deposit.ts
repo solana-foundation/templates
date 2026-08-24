@@ -10,10 +10,8 @@ import {
   combineCodec,
   fixDecoderSize,
   fixEncoderSize,
-  getAddressEncoder,
   getBytesDecoder,
   getBytesEncoder,
-  getProgramDerivedAddress,
   getStructDecoder,
   getStructEncoder,
   getU64Decoder,
@@ -34,6 +32,7 @@ import {
   type WritableAccount,
   type WritableSignerAccount,
 } from "@solana/kit";
+import { findVaultPda } from "../pdas";
 import { VAULT_PROGRAM_ADDRESS } from "../programs";
 import {
   expectAddress,
@@ -159,12 +158,8 @@ export async function getDepositInstructionAsync<
 
   // Resolve default values.
   if (!accounts.vault.value) {
-    accounts.vault.value = await getProgramDerivedAddress({
-      programAddress,
-      seeds: [
-        getBytesEncoder().encode(new Uint8Array([118, 97, 117, 108, 116])),
-        getAddressEncoder().encode(expectAddress(accounts.signer.value)),
-      ],
+    accounts.vault.value = await findVaultPda({
+      signer: expectAddress(accounts.signer.value),
     });
   }
   if (!accounts.systemProgram.value) {

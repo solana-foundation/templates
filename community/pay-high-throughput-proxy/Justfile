@@ -1,0 +1,42 @@
+set shell := ["bash", "-cu"]
+
+ansible_dir := "deploy/ansible"
+
+default:
+    @just --list
+
+# Create the ignored inventory + secret files without overwriting existing ones
+setup:
+    test -f {{ansible_dir}}/inventory.yml || cp {{ansible_dir}}/inventory.example.yml {{ansible_dir}}/inventory.yml
+    test -f {{ansible_dir}}/proxy.env || { cp {{ansible_dir}}/proxy.env.example {{ansible_dir}}/proxy.env && chmod 600 {{ansible_dir}}/proxy.env; }
+    @echo "Edit {{ansible_dir}}/inventory.yml and {{ansible_dir}}/proxy.env, then run: just check"
+
+# Check SSH and privilege escalation
+ping:
+    cd {{ansible_dir}} && ansible pay_proxies -m ping
+
+# Preview the provisioning changes without applying them
+check:
+    cd {{ansible_dir}} && ansible-playbook --syntax-check playbook.yml && ansible-playbook playbook.yml --check --diff
+
+# Provision or update the proxy host (builds Pay with the pinned AVX-512 toolchain)
+deploy *args:
+    cd {{ansible_dir}} && ansible-playbook playbook.yml {{args}}
+
+# Prove the deployed endpoint returns HTTP 402 before any payment (uses the fetched CA)
+gate-test host:
+    curl --cacert {{ansible_dir}}/artifacts/proxy-1-ca.crt -sS -D - -o /dev/null https://{{host}}/api/v1/compute
+
+# Confirm the deployed binary was built with AVX-512 IFMA (the fast ed25519 backend)
+verify-build:
+    cd {{ansible_dir}} && ansible pay_proxies -b -m shell -a "objdump -d /opt/pay/bin/pay | awk '/vpmadd52/{n++} END{print n+0}'"
+
+# Follow the proxy logs
+logs:
+    cd {{ansible_dir}} && ansible pay_proxies -b -m command -a 'journalctl -u pay-proxy -n 100 --no-pager'
+
+# Print the load-generator hint (run pay-bench from SEPARATE authorized hosts)
+loadtest-hint:
+    @echo "Load-test from separate hosts so their CPU/traffic never taint the server measurement."
+    @echo "The playbook installs pay-bench beside pay at /opt/pay/bin/pay-bench and fetches the"
+    @echo "CA to {{ansible_dir}}/artifacts/. See rust/bench/README.md in solana-foundation/pay."

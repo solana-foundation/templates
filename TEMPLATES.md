@@ -14,7 +14,7 @@ Kit Templates (using @solana/kit)
 
 `gh:solana-foundation/templates/kit/nextjs`
 
-> Next.js, Tailwind, @solana/react-hooks
+> Next.js, Tailwind, @solana/kit wallet + on-chain actions
 
 `kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
 
@@ -25,6 +25,22 @@ Kit Templates (using @solana/kit)
 > Next.js, Tailwind, @solana/kit, Anchor vault program
 
 `anchor` `kit` `nextjs` `react` `solana-kit` `tailwind` `typescript`
+
+### [nextjs-das-nfts](kit/nextjs-das-nfts)
+
+`gh:solana-foundation/templates/kit/nextjs-das-nfts`
+
+> Next.js, Tailwind, @solana/kit — a custom RPC and plugin for the Metaplex DAS API, with an NFT viewer built on it
+
+`kit` `nextjs` `react` `solana-kit` `das` `digital-asset-standard` `nft` `compressed-nft` `metaplex` `custom-rpc` `plugin` `tailwind` `typescript`
+
+### [nextjs-hardware-signin](kit/nextjs-hardware-signin)
+
+`gh:solana-foundation/templates/kit/nextjs-hardware-signin`
+
+> Next.js, Tailwind, @solana/kit — hardware-wallet authentication that signs a memo transaction and verifies it off-chain, no message signing required
+
+`kit` `nextjs` `react` `solana-kit` `hardware-wallet` `ledger` `sign-in` `authentication` `memo` `tailwind` `typescript`
 
 ### [nextjs-keychain](kit/nextjs-keychain)
 
@@ -190,6 +206,14 @@ Templates maintained by the Solana community
 
 `drift` `defi` `perps` `nextjs` `tailwind` `typescript` `solana` `wallet-adapter`
 
+### [eve-pay](community/eve-pay)
+
+`gh:solana-foundation/templates/community/eve-pay`
+
+> Approval-gated Eve agent that buys sandbox API access with Pay.sh
+
+`solana` `pay.sh` `x402` `mpp` `eve` `vercel` `ai-agent` `payments` `typescript`
+
 ### [kit-node-solanax402](community/kit-node-solanax402)
 
 `gh:solana-foundation/templates/community/kit-node-solanax402`
@@ -230,13 +254,29 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `tailwind` `typescript` `framework-kit`
 
-### [moneymq-x402](community/moneymq-x402)
+### [moneygram-onramp](community/moneygram-onramp)
 
-`gh:solana-foundation/templates/community/moneymq-x402`
+`gh:solana-foundation/templates/community/moneygram-onramp`
 
-> Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana
+> Next.js app embedding the MoneyGram Ramps widget to cash in and out of USDC
 
-`x402` `moneymq` `payments` `micropayments` `solana` `api-monetization` `kora` `facilitator` `typescript`
+`solana` `moneygram` `onramp` `offramp` `usdc` `payments` `kit` `nextjs` `solana-kit` `tailwind` `typescript`
+
+### [pay-gate-inference](community/pay-gate-inference)
+
+`gh:solana-foundation/templates/community/pay-gate-inference`
+
+> Monetize self-hosted LLM inference with Pay.sh
+
+`solana` `pay.sh` `x402` `inference` `ollama` `llama.cpp` `local-ai` `payments`
+
+### [pay-high-throughput-proxy](community/pay-high-throughput-proxy)
+
+`gh:solana-foundation/templates/community/pay-high-throughput-proxy`
+
+> Deploy a Pay.sh proxy tuned to verify ~1M stablecoin payment vouchers per second
+
+`solana` `pay.sh` `x402` `mpp` `payments` `pingora` `high-throughput` `ed25519`
 
 ### [phantom-embedded-js](community/phantom-embedded-js)
 
@@ -285,6 +325,14 @@ Templates maintained by the Solana community
 > Authenticate Solana wallets with Supabase
 
 `supabase` `authentication` `solana` `framework-kit`
+
+### [supabase-solana-indexing](community/supabase-solana-indexing)
+
+`gh:solana-foundation/templates/community/supabase-solana-indexing`
+
+> Index Solana program accounts into Supabase with realtime queries
+
+`solana` `supabase` `indexing` `realtime` `nextjs` `typescript`
 
 ### [x402-solana-rust](community/x402-solana-rust)
 

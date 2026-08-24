@@ -25,7 +25,7 @@
         "usecase": "Starter"
       },
       {
-        "description": "Next.js, Tailwind, @solana/react-hooks",
+        "description": "Next.js, Tailwind, @solana/kit wallet + on-chain actions",
         "id": "gh:solana-foundation/templates/kit/nextjs",
         "image": "kit/nextjs/og-image.png",
         "keywords": [
@@ -54,6 +54,52 @@
         ],
         "name": "nextjs-anchor",
         "path": "kit/nextjs-anchor"
+      },
+      {
+        "description": "Next.js, Tailwind, @solana/kit — a custom RPC and plugin for the Metaplex DAS API, with an NFT viewer built on it",
+        "id": "gh:solana-foundation/templates/kit/nextjs-das-nfts",
+        "image": "kit/nextjs-das-nfts/og-image.png",
+        "keywords": [
+          "kit",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "das",
+          "digital-asset-standard",
+          "nft",
+          "compressed-nft",
+          "metaplex",
+          "custom-rpc",
+          "plugin",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "nextjs-das-nfts",
+        "path": "kit/nextjs-das-nfts",
+        "displayName": "DAS NFT Viewer",
+        "usecase": "Starter"
+      },
+      {
+        "description": "Next.js, Tailwind, @solana/kit — hardware-wallet authentication that signs a memo transaction and verifies it off-chain, no message signing required",
+        "id": "gh:solana-foundation/templates/kit/nextjs-hardware-signin",
+        "image": "kit/nextjs-hardware-signin/og-image.png",
+        "keywords": [
+          "kit",
+          "nextjs",
+          "react",
+          "solana-kit",
+          "hardware-wallet",
+          "ledger",
+          "sign-in",
+          "authentication",
+          "memo",
+          "tailwind",
+          "typescript"
+        ],
+        "name": "nextjs-hardware-signin",
+        "path": "kit/nextjs-hardware-signin",
+        "displayName": "Sign In With Hardware Wallet",
+        "usecase": "Starter"
       },
       {
         "description": "Next.js, Tailwind, @solana/keychain — server-side signing with pluggable key backends (memory, KMS, MPC, custodial)",
@@ -401,6 +447,26 @@
         "usecase": "DeFi"
       },
       {
+        "description": "Approval-gated Eve agent that buys sandbox API access with Pay.sh",
+        "id": "gh:solana-foundation/templates/community/eve-pay",
+        "image": "community/eve-pay/og-image.png",
+        "keywords": [
+          "solana",
+          "pay.sh",
+          "x402",
+          "mpp",
+          "eve",
+          "vercel",
+          "ai-agent",
+          "payments",
+          "typescript"
+        ],
+        "name": "eve-pay",
+        "path": "community/eve-pay",
+        "displayName": "Eve + Pay.sh Agent",
+        "usecase": "Payments"
+      },
+      {
         "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit",
         "id": "gh:solana-foundation/templates/community/kit-node-solanax402",
         "image": "community/kit-node-solanax402/og-image.png",
@@ -490,23 +556,63 @@
         "usecase": "Airdrop"
       },
       {
-        "description": "Complete x402 payment protocol demo with MoneyMQ facilitator, showing micropayment-protected APIs on Solana",
-        "id": "gh:solana-foundation/templates/community/moneymq-x402",
-        "image": "community/moneymq-x402/og-image.png",
+        "description": "Next.js app embedding the MoneyGram Ramps widget to cash in and out of USDC",
+        "id": "gh:solana-foundation/templates/community/moneygram-onramp",
+        "image": "community/moneygram-onramp/og-image.png",
         "keywords": [
-          "x402",
-          "moneymq",
-          "payments",
-          "micropayments",
           "solana",
-          "api-monetization",
-          "kora",
-          "facilitator",
+          "moneygram",
+          "onramp",
+          "offramp",
+          "usdc",
+          "payments",
+          "kit",
+          "nextjs",
+          "solana-kit",
+          "tailwind",
           "typescript"
         ],
-        "name": "moneymq-x402",
-        "path": "community/moneymq-x402",
-        "displayName": "MoneyMQ x402 Demo",
+        "name": "moneygram-onramp",
+        "path": "community/moneygram-onramp",
+        "displayName": "MoneyGram Ramps On/Off-Ramp",
+        "usecase": "Payments"
+      },
+      {
+        "description": "Monetize self-hosted LLM inference with Pay.sh",
+        "id": "gh:solana-foundation/templates/community/pay-gate-inference",
+        "image": "community/pay-gate-inference/og-image.png",
+        "keywords": [
+          "solana",
+          "pay.sh",
+          "x402",
+          "inference",
+          "ollama",
+          "llama.cpp",
+          "local-ai",
+          "payments"
+        ],
+        "name": "pay-gate-inference",
+        "path": "community/pay-gate-inference",
+        "displayName": "Monetize Inference with Pay.sh",
+        "usecase": "Payments"
+      },
+      {
+        "description": "Deploy a Pay.sh proxy tuned to verify ~1M stablecoin payment vouchers per second",
+        "id": "gh:solana-foundation/templates/community/pay-high-throughput-proxy",
+        "image": "community/pay-high-throughput-proxy/og-image.png",
+        "keywords": [
+          "solana",
+          "pay.sh",
+          "x402",
+          "mpp",
+          "payments",
+          "pingora",
+          "high-throughput",
+          "ed25519"
+        ],
+        "name": "pay-high-throughput-proxy",
+        "path": "community/pay-high-throughput-proxy",
+        "displayName": "Scale a Pay.sh Proxy to 1M Payments/sec",
         "usecase": "Payments"
       },
       {
@@ -628,6 +734,23 @@
         "path": "community/supabase-auth",
         "displayName": "Supabase Auth",
         "usecase": "Auth"
+      },
+      {
+        "description": "Index Solana program accounts into Supabase with realtime queries",
+        "id": "gh:solana-foundation/templates/community/supabase-solana-indexing",
+        "image": "community/supabase-solana-indexing/og-image.png",
+        "keywords": [
+          "solana",
+          "supabase",
+          "indexing",
+          "realtime",
+          "nextjs",
+          "typescript"
+        ],
+        "name": "supabase-solana-indexing",
+        "path": "community/supabase-solana-indexing",
+        "displayName": "Supabase Solana Indexing",
+        "usecase": "Infrastructure"
       },
       {
         "description": "x402 payment server template for Solana with Rust",

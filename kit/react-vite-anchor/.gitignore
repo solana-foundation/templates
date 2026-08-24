@@ -26,3 +26,6 @@ lerna-debug.log*
 # Anchor build artifacts
 /anchor/.anchor/
 /anchor/target/
+
+# TypeScript incremental build cache
+*.tsbuildinfo

@@ -1,0 +1,47 @@
+set shell := ["bash", "-cu"]
+
+ansible_dir := "deploy/llamacpp/ansible"
+
+default:
+    @just --list
+
+# Create the ignored Ansible inventory file without overwriting an existing one
+setup:
+    test -f {{ansible_dir}}/inventory.yml || cp {{ansible_dir}}/inventory.example.yml {{ansible_dir}}/inventory.yml
+    @echo "Edit {{ansible_dir}}/inventory.yml, then run: just ping"
+
+# Collect hardware details before tuning llama.cpp
+specs host:
+    ssh {{host}} 'sudo bash -s' < deploy/llamacpp/scripts/collect-specs.sh
+
+# Check SSH and privilege escalation
+ping:
+    cd {{ansible_dir}} && ansible all -m ping
+
+# Preview the provisioning changes
+check:
+    cd {{ansible_dir}} && ansible-playbook site.yml --check --diff
+
+# Provision or update the inference host
+deploy *args:
+    cd {{ansible_dir}} && ansible-playbook site.yml {{args}}
+
+# Follow llama.cpp logs
+logs host:
+    ssh {{host}} 'sudo journalctl -u llama-server -f'
+
+# Follow Pay.sh gateway logs
+gateway-logs host:
+    ssh {{host}} 'sudo journalctl -u pay-gateway -f'
+
+# Prove that an unpaid request is blocked by the deployed gateway
+gate-test host:
+    curl --include http://{{host}}:8080/v1/chat/completions --json @request.json
+
+# Pay from the inference host so payer and gateway share the sandbox validator
+paid-test host:
+    ssh -t {{host}} 'sudo -u pay-gateway env HOME=/var/lib/pay-gateway /usr/local/bin/pay --sandbox curl http://127.0.0.1:8080/v1/chat/completions --json @/var/lib/pay-gateway/.config/pay/request.json'
+
+# Forward the private gateway to http://127.0.0.1:8080 on this machine
+tunnel host:
+    ssh -N -L 8080:127.0.0.1:8080 {{host}}
