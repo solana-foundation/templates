@@ -5,6 +5,7 @@ import { useConnectedWallet } from "@solana/kit-plugin-wallet/react";
 import { useAppClient } from "../../lib/client-provider";
 import { useSend } from "../../lib/hooks/use-send";
 
+// Maximum memo payload that fits Solana's 1,232-byte packet limit with one signer.
 const MAX_MEMO_BYTES = 509;
 const textEncoder = new TextEncoder();
 

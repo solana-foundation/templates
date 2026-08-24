@@ -8,6 +8,8 @@ import { useAppClient } from "../../lib/client-provider";
 import { useSend } from "../../lib/hooks/use-send";
 import { isCustomProgramError } from "../../lib/errors";
 
+const SYSTEM_PROGRAM_ERROR__RESULT_WITH_NEGATIVE_LAMPORTS = 1;
+
 export function TransferSolCard() {
   const client = useAppClient();
   const connected = useConnectedWallet(client);
@@ -48,7 +50,10 @@ export function TransferSolCard() {
           .sendTransaction(),
       "SOL transfer sent",
       (error) =>
-        isCustomProgramError(error, 1)
+        isCustomProgramError(
+          error,
+          SYSTEM_PROGRAM_ERROR__RESULT_WITH_NEGATIVE_LAMPORTS
+        )
           ? "Insufficient SOL balance. Enter a smaller amount and leave enough SOL for transaction fees."
           : undefined
     );

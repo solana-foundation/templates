@@ -14,6 +14,7 @@ const DECIMALS = 9;
 const BASE_UNITS_PER_TOKEN = 10n ** BigInt(DECIMALS);
 const MAX_TOKEN_AMOUNT = (1n << 64n) - 1n;
 const TOKEN_AMOUNT_PATTERN = new RegExp(`^(\\d+)(?:\\.(\\d{1,${DECIMALS}}))?$`);
+const TOKEN_PROGRAM_ERROR__INSUFFICIENT_FUNDS = 1;
 
 function toBaseUnits(amount: string): bigint {
   const normalizedAmount = amount.trim();
@@ -146,7 +147,7 @@ export function TokenCard() {
           .sendTransaction(),
       "Tokens transferred",
       (error) =>
-        isCustomProgramError(error, 1)
+        isCustomProgramError(error, TOKEN_PROGRAM_ERROR__INSUFFICIENT_FUNDS)
           ? "Insufficient balance. Make sure you have enough tokens to transfer and enough SOL for transaction fees and recipient account creation."
           : undefined
     );
