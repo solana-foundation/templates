@@ -1,0 +1,3 @@
+deploy/ansible/inventory.yml
+deploy/ansible/proxy.env
+deploy/ansible/artifacts/
