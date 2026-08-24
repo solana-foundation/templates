@@ -9,6 +9,8 @@
     "generate": "tsx scripts/generate.ts && automd",
     "format": "prettier --write .",
     "lint": "tsx scripts/lint.ts && prettier --check .",
+    "security:check": "tsx scripts/security-check.ts",
+    "security:test": "tsx --test scripts/security/*.test.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "update-deps": "pnpm -r update --latest",
     "validate": "tsx scripts/validate.ts"
@@ -23,7 +25,8 @@
     "prettier": "^3.6.2",
     "puppeteer": "^23.11.1",
     "sharp": "^0.33.5",
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.2",
+    "yaml": "^2.8.1"
   },
   "repokit": {
     "groups": [
