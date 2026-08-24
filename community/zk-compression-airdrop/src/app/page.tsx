@@ -6,16 +6,26 @@ import path from 'path'
 
 function loadAirdropSetup(): { config: AirdropConfig; airdropData: AirdropData } | null {
   const scriptsDirectory = path.join(process.cwd(), 'scripts')
-  const configPath = path.join(scriptsDirectory, 'compressed-mint-config.json')
-  const recipientsPath = path.join(scriptsDirectory, 'airdrop-recipients.json')
+  const setupPath = path.join(scriptsDirectory, 'airdrop-setup.json')
 
-  if (!existsSync(configPath) || !existsSync(recipientsPath)) {
+  if (!existsSync(setupPath)) {
     return null
   }
 
-  return {
-    config: JSON.parse(readFileSync(configPath, 'utf-8')) as AirdropConfig,
-    airdropData: JSON.parse(readFileSync(recipientsPath, 'utf-8')) as AirdropData,
+  try {
+    const setup = JSON.parse(readFileSync(setupPath, 'utf-8')) as {
+      config: AirdropConfig
+      airdropData: AirdropData
+    }
+
+    if (setup.config.mintAddress !== setup.airdropData.mint || setup.config.decimals !== setup.airdropData.decimals) {
+      return null
+    }
+
+    return setup
+  } catch (error) {
+    console.error('Failed to load generated airdrop setup:', error)
+    return null
   }
 }
 
