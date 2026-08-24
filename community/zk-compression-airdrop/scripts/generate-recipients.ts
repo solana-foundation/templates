@@ -1,6 +1,7 @@
 import { address, type Address } from '@solana/kit'
 import fs from 'fs'
 import path from 'path'
+import { writeJsonAtomically } from './write-json-atomically'
 
 interface Recipient {
   address: Address
@@ -53,11 +54,13 @@ async function main() {
     generatedAt: new Date().toISOString(),
   }
 
-  fs.writeFileSync(path.join(__dirname, 'airdrop-recipients.json'), JSON.stringify(airdropData, null, 2))
+  writeJsonAtomically(path.join(__dirname, 'airdrop-recipients.json'), airdropData)
+  writeJsonAtomically(path.join(__dirname, 'airdrop-setup.json'), { config, airdropData })
 
   console.log('\nRecipients list generated!')
   console.log('Total amount:', (Number(totalAmount) / 10 ** config.decimals).toLocaleString())
   console.log('Saved to scripts/airdrop-recipients.json')
+  console.log('Setup snapshot saved to scripts/airdrop-setup.json')
 }
 
 main().catch(console.error)

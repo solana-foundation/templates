@@ -5,6 +5,7 @@ import { createMint } from '@lightprotocol/compressed-token'
 import bs58 from 'bs58'
 import fs from 'fs'
 import path from 'path'
+import { writeJsonAtomically } from './write-json-atomically'
 
 async function main() {
   const RPC_ENDPOINT = process.env.RPC_ENDPOINT
@@ -62,7 +63,7 @@ async function main() {
     createdAt: new Date().toISOString(),
   }
 
-  fs.writeFileSync(path.join(__dirname, 'compressed-mint-config.json'), JSON.stringify(config, null, 2))
+  writeJsonAtomically(path.join(__dirname, 'compressed-mint-config.json'), config)
 
   console.log('\nConfig saved to scripts/compressed-mint-config.json')
 }
