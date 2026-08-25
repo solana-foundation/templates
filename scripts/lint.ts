@@ -14,7 +14,7 @@
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 import { readPackageJson, readDirs, hasPackageJson, fileExists } from './shared/fs-utils.js'
-import { type GroupConfig, type PackageJson, isTemplatePackageJson } from './shared/types.js'
+import { type GroupConfig, type PackageJson } from './shared/types.js'
 import { type Result, ok, err } from './shared/result.js'
 import { validateImage } from './shared/image-utils.tsx'
 
