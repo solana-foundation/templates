@@ -28,10 +28,10 @@ Pull requests are the best way to propose changes to the codebase. We actively w
 6. Make sure your code lints.
 7. Issue that pull request!
 
-## Any contributions you make will be under the MIT Software License
+## Any contributions you make will be under the Apache 2.0 Software License
 
 In short, when you submit code changes, your submissions are understood to be under the same
-[MIT License](https://choosealicense.com/licenses/mit/) that covers the project.
+[Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/) that covers the project.
 
 ## Report bugs using GitHub's [issues](https://github.com/solana-foundation/templates/issues)
 
@@ -106,7 +106,7 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under its MIT License.
+By contributing, you agree that your contributions will be licensed under its Apache 2.0 License.
 
 ## References
 
