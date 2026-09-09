@@ -6,11 +6,12 @@ import { getTokenAccountsByOwner } from './get-token-accounts-by-owner'
 
 const TOKEN_PROGRAM_ID = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 const TOKEN_2022_PROGRAM_ID = 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb'
+type TokenAccounts = Awaited<ReturnType<typeof getTokenAccountsByOwner>>
 
 export function useGetTokenAccountsQuery({ address }: { address: string }) {
   const client = useSolanaClient()
   const cluster = useClusterState()
-  const [data, setData] = useState<any[] | undefined>()
+  const [data, setData] = useState<TokenAccounts | undefined>()
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<unknown>()
 

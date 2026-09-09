@@ -4,12 +4,15 @@ import { ArrowUpRightFromSquare } from 'lucide-react'
 import { useClusterState } from '@solana/react-hooks'
 import { resolveCluster } from '@/components/solana/clusters'
 
-type ExplorerLinkProps = {
+type ExplorerTarget = {
   address?: string
   block?: string
+  transaction?: string
+}
+
+type ExplorerLinkProps = ExplorerTarget & {
   className?: string
   label: string
-  transaction?: string
 }
 
 function buildExplorerUrl({
@@ -17,7 +20,7 @@ function buildExplorerUrl({
   address,
   transaction,
   block,
-}: ExplorerLinkProps & {
+}: ExplorerTarget & {
   cluster: { id: string; endpoint: string }
 }) {
   const base = 'https://explorer.solana.com'

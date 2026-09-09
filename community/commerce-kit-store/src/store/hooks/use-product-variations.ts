@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import type { Product, SelectedVariation } from '@/store/types'
 
 interface UseProductVariationsReturn {
@@ -21,19 +21,27 @@ interface UseProductVariationsReturn {
  * Handles the business logic for product configuration
  */
 export function useProductVariations(product: Product | null): UseProductVariationsReturn {
-  const [selectedVariation, setSelectedVariation] = useState<SelectedVariation>({
-    size: null,
-    color: null,
+  const defaultVariation = useMemo<SelectedVariation>(
+    () => ({ size: null, color: product?.variations[0]?.color || null }),
+    [product],
+  )
+  const [selection, setSelection] = useState<{ productId: string | null; variation: SelectedVariation }>({
+    productId: null,
+    variation: defaultVariation,
   })
+  const productId = product?.id ?? null
+  const selectedVariation = selection.productId === productId ? selection.variation : defaultVariation
 
-  useEffect(() => {
-    if (product) {
-      setSelectedVariation({
-        size: null,
-        color: product.variations[0]?.color || null,
-      })
-    }
-  }, [product])
+  const updateSelectedVariation = (update: (current: SelectedVariation) => SelectedVariation) => {
+    setSelection((current) => ({
+      productId,
+      variation: update(current.productId === productId ? current.variation : defaultVariation),
+    }))
+  }
+
+  const setSelectedVariation = (variation: SelectedVariation) => {
+    setSelection({ productId, variation })
+  }
 
   const availableSizes = useMemo(() => {
     if (!product) return []
@@ -64,11 +72,11 @@ export function useProductVariations(product: Product | null): UseProductVariati
   const canAddToCart = useMemo(() => isSelectionComplete && stockAvailable > 0, [isSelectionComplete, stockAvailable])
 
   const setSelectedSize = (size: string) => {
-    setSelectedVariation((prev) => ({ ...prev, size }))
+    updateSelectedVariation((current) => ({ ...current, size }))
   }
 
   const setSelectedColor = (color: string) => {
-    setSelectedVariation((prev) => ({ ...prev, color }))
+    updateSelectedVariation((current) => ({ ...current, color }))
   }
 
   return {

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { toAddress } from '@solana/client'
+import { lamports } from '@solana/kit'
 import { useBalance, useClusterState, useSolanaClient } from '@solana/react-hooks'
 import { AppAlert } from '@/components/app-alert'
 import { Button } from '@/components/ui/button'
@@ -27,7 +28,7 @@ export function AccountUiBalanceCheck({ address }: { address: string }) {
             onClick={async () => {
               setIsPending(true)
               await client.actions
-                .requestAirdrop(toAddress(address), BigInt(1_000_000_000))
+                .requestAirdrop(toAddress(address), lamports(1_000_000_000n))
                 .catch((err) => console.log(err))
                 .finally(() => setIsPending(false))
             }}

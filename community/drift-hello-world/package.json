@@ -24,7 +24,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "next build --webpack",
     "ci": "npm run build && npm run lint && npm run format:check",
     "dev": "next dev --webpack",
     "format": "prettier --write .",
