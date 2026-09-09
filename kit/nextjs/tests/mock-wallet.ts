@@ -94,3 +94,7 @@ export const mockWallet = {
 export function registerMockWallet(): void {
   registerWallet(mockWallet);
 }
+
+export function resetMockWallet(): void {
+  connectedAccounts = [];
+}

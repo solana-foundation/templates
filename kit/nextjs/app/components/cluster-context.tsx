@@ -21,17 +21,23 @@ const ClusterContext = createContext<ClusterContextValue | null>(null);
 
 const STORAGE_KEY = "solana-cluster";
 const CLUSTER_EVENT = "cluster-change";
+let memoryCluster: ClusterMoniker = "devnet";
 
 function readStoredCluster(): ClusterMoniker {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored && CLUSTERS.includes(stored as ClusterMoniker)) {
-      return stored as ClusterMoniker;
+    if (stored === null) {
+      return memoryCluster;
+    }
+    if (CLUSTERS.includes(stored as ClusterMoniker)) {
+      memoryCluster = stored as ClusterMoniker;
+    } else {
+      memoryCluster = "devnet";
     }
   } catch {
     // localStorage unavailable (e.g. Safari private mode)
   }
-  return "devnet";
+  return memoryCluster;
 }
 
 function getServerCluster(): ClusterMoniker {
@@ -57,6 +63,7 @@ export function ClusterProvider({ children }: { children: ReactNode }) {
   );
 
   const setCluster = useCallback((c: ClusterMoniker) => {
+    memoryCluster = c;
     try {
       localStorage.setItem(STORAGE_KEY, c);
     } catch {
