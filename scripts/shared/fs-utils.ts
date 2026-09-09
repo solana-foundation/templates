@@ -7,7 +7,7 @@
 
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, unlinkSync } from 'fs'
 import { join, relative } from 'path'
-import { Result, ok, err, tryCatch } from './result.js'
+import { Result, ok, tryCatch } from './result.js'
 import type { PackageJson } from './types.js'
 
 /**
