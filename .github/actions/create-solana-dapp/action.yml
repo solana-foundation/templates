@@ -29,7 +29,12 @@ runs:
         BRANCH="${{ github.head_ref || github.ref_name }}"
         REPO="${{ github.event.pull_request.head.repo.full_name || github.repository }}"
         echo "Installing from repo: $REPO, branch: $BRANCH"
-        ${{ inputs.cmd }} --template gh:${REPO}/${{ inputs.template }}#${BRANCH} sandbox
+        if ! ${{ inputs.cmd }} --verbose --template gh:${REPO}/${{ inputs.template }}#${BRANCH} sandbox; then
+          if [ -f sandbox/error.log ]; then
+            cat sandbox/error.log
+          fi
+          exit 1
+        fi
         cd sandbox
         ${{ inputs.package-manager }} install
         npm run ci
