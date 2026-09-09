@@ -1,0 +1,18 @@
+---
+# Copy to inventory.yml with `just setup`, then enter your real host and its
+# literal public IP (used in the TLS certificate SAN and the health check).
+all:
+  children:
+    pay_proxies:
+      hosts:
+        proxy-1:
+          ansible_host: 203.0.113.10
+          ansible_user: ubuntu
+          pay_proxy_public_ip: 203.0.113.10
+  vars:
+    # Immutable Pay revision with the native-TLS listener validated for the
+    # high-throughput measurements. Change only to another reviewed 40-char SHA.
+    pay_git_ref: '5ae1a9976de892a9790edc70ed83b8da21d28380'
+    pay_rust_toolchain: 'nightly-2026-08-14'
+    # Controller-local secret file (created by `just setup`, ignored by git).
+    pay_proxy_env_file: '{{ inventory_dir }}/proxy.env'

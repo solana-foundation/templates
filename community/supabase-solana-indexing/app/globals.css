@@ -1,0 +1,53 @@
+@import 'tailwindcss';
+
+:root {
+  --background: #07110f;
+  --foreground: #edfdf7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at 15% 0%, rgba(62, 207, 142, 0.14), transparent 32rem), var(--background);
+  color: var(--foreground);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.eyebrow {
+  color: #3ecf8e;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: fit-content;
+  border: 1px solid rgba(62, 207, 142, 0.25);
+  border-radius: 999px;
+  background: rgba(62, 207, 142, 0.08);
+  padding: 0.55rem 0.8rem;
+  color: #a7f3d0;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-size: 0.78rem;
+}
+
+.status-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: #3ecf8e;
+  box-shadow: 0 0 0.8rem #3ecf8e;
+}

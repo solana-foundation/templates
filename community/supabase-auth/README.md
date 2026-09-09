@@ -101,7 +101,7 @@ npm run dev
 This starts [Next.js](https://nextjs.org) with Turbopack (faster than the default webpack). You should see output like:
 
 ```text
-▲ Next.js 16.3.0
+▲ Next.js 16.3.4
 - Local:        http://localhost:3000
 ```
 

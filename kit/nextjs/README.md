@@ -4,6 +4,8 @@ Next.js starter built on `@solana/kit` v7 with the kit plugin client and [`@sola
 
 ## Getting Started
 
+Requires Node.js 24 or newer.
+
 ```shell
 npx -y create-solana-dapp@latest -t solana-foundation/templates/kit/nextjs
 ```
@@ -15,11 +17,18 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000), connect a wallet, and (on devnet) click **Airdrop 1 SOL** to fund it. Then try the actions. Need devnet SOL another way? [faucet.solana.com](https://faucet.solana.com/).
 
+To use localnet, start a local validator in another terminal before selecting
+**localnet**:
+
+```shell
+solana-test-validator
+```
+
 ## What's Included
 
 - **Wallet connection** via [`@solana/kit-plugin-wallet`](https://www.npmjs.com/package/@solana/kit-plugin-wallet) (wallet-standard discovery, auto-reconnect)
 - **Network switcher** — devnet, testnet, mainnet, localnet
-- **Transfer SOL** with the (`@solana-program/system`)[https://www.npmjs.com/package/@solana-program/system] kit plugin
+- **Transfer SOL** with the [`@solana-program/system`](https://www.npmjs.com/package/@solana-program/system) kit plugin
 - **Token actions** — create a mint, mint tokens, and transfer them with the [`@solana-program/token`](https://www.npmjs.com/package/@solana-program/token) kit plugin (associated token accounts created for you)
 - **Add memo** with the [`@solana-program/memo`](https://www.npmjs.com/package/@solana-program/memo) kit plugin
 - **Live balance** and **toast notifications** with explorer links
@@ -44,3 +53,17 @@ Components read the client with `useClient()` and the connected wallet with the 
 ### Switching networks
 
 A kit client is bound to one chain and RPC endpoint. The cluster dropdown rebuilds the client in a `useMemo` keyed on the cluster and hands the new instance to `ClientProvider`, which reprovisions the subtree. See [`app/lib/client-provider.tsx`](app/lib/client-provider.tsx).
+
+## Testing
+
+```shell
+npm run test
+```
+
+The tests in [`tests/`](tests/) drive the real UI — click **Connect Wallet**, pick a wallet, fill in the transfer form, press **Send SOL** — and assert on-chain state before and after each click. Three pieces make that work without a browser or a wallet extension:
+
+- **[`@solana/surfpool`](https://www.npmjs.com/package/@solana/surfpool)** embeds a [Surfpool](https://surfpool.run) Solana runtime in-process. Each test file boots its own surfnet on dynamic ports in well under a second, with cheatcodes to fund accounts (`surfnet.fundSol`), set token balances, deploy programs, and time travel. It's a native addon with prebuilt binaries for macOS (x64/arm64) and Linux x64.
+- **A mock wallet-standard wallet** ([`tests/mock-wallet.ts`](tests/mock-wallet.ts)) registers itself like any browser extension would, so the app's real wallet discovery, connect flow, and transaction signing run unmodified — signatures come from an in-memory keypair.
+- **[Vitest](https://vitest.dev) + [Testing Library](https://testing-library.com/docs/react-testing-library/intro/)** render the actual app components in jsdom and interact with them by role and label, the same way a user would.
+
+The tests point the app's client factory at the surfnet via the optional URL override on `createAppClient` — everything else (plugins, signing, subscriptions, live balance updates) is the production code path.

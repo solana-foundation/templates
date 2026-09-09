@@ -6,6 +6,7 @@ import { useCluster } from "../../components/cluster-context";
 import { parseTransactionError } from "../errors";
 
 type TxResult = { context: { signature: string } };
+type ErrorMessageResolver = (error: unknown) => string | undefined;
 
 export function useSend() {
   const { getExplorerUrl } = useCluster();
@@ -14,7 +15,8 @@ export function useSend() {
     async (
       _signal: AbortSignal,
       action: () => Promise<TxResult>,
-      successMessage: string
+      successMessage: string,
+      getErrorMessage?: ErrorMessageResolver
     ) => {
       try {
         const result = await action();
@@ -34,7 +36,7 @@ export function useSend() {
         return signature;
       } catch (err) {
         console.error(err);
-        toast.error(parseTransactionError(err));
+        toast.error(getErrorMessage?.(err) ?? parseTransactionError(err));
         return undefined;
       }
     }
