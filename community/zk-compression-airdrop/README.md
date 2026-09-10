@@ -12,7 +12,7 @@ A Next.js application for distributing SPL tokens using [ZK Compression](https:/
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 with App Router
+- **Framework**: Next.js 16 with App Router
 - **Styling**: Tailwind CSS + Shadcn UI
 - **Solana SDK**: [Gill](https://gill.site/) + Wallet UI components
 - **ZK Compression**: @lightprotocol/compressed-token + stateless.js

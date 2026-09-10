@@ -11,7 +11,7 @@ LazorKit provides passkey-based authentication for Solana, enabling users to cre
 - Passkey authentication (no seed phrases)
 - Non-custodial smart wallet
 - SOL transfer example
-- Built with Next.js 15, React 19, and Tailwind CSS
+- Built with Next.js 16, React 19, and Tailwind CSS
 
 ## Quick Start
 
