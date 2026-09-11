@@ -49,4 +49,6 @@ The workflow installs with `--ignore-scripts` and `--ignore-pnpmfile`, so depend
 
 ## Deliberate limits
 
+Reviewable source files larger than 256,000 bytes are not inspected for source patterns. Each skipped file produces a low-severity `source-size-limit-exceeded` coverage finding with its path and byte size, requiring manual review. This finding describes missing coverage, not the safety of the file's contents.
+
 The harness is deterministic and does not query package registries. It verifies that pnpm's existing minimum release-age policy remains enabled, but it does not score individual package publication dates or package-name similarity. Those checks can be added later as a separately cached advisory data source without making the required review path depend on mutable external data.

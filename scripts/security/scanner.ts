@@ -41,6 +41,7 @@ const IGNORED_DIRECTORIES = new Set([
   'target',
 ])
 const REVIEWABLE_EXTENSIONS = new Set(['.cjs', '.js', '.mjs', '.ps1', '.sh', '.ts'])
+const MAX_SOURCE_FILE_BYTES = 256_000
 
 const SOURCE_PATTERNS: readonly {
   readonly evidence: string
@@ -456,7 +457,20 @@ function scanReviewableSource(
   for (const filePath of collectFiles(templateDir)) {
     const templateRelativePath = toRepoPath(templateDir, filePath)
     if (!isReviewableSource(templateRelativePath, scriptEntrypoints)) continue
-    if (statSync(filePath).size > 256_000) continue
+    const fileSize = statSync(filePath).size
+    if (fileSize > MAX_SOURCE_FILE_BYTES) {
+      findings.push({
+        category: 'scan-coverage',
+        evidence: `${fileSize} bytes; source scan limit: ${MAX_SOURCE_FILE_BYTES} bytes`,
+        location: toRepoPath(rootDir, filePath),
+        message: 'Reviewable source exceeds the size limit and was not scanned.',
+        recommendation: 'Review the file manually or split it into smaller, reviewable source files.',
+        ruleId: 'source-size-limit-exceeded',
+        severity: 'low',
+        subject: template,
+      })
+      continue
+    }
 
     const lines = readFileSync(filePath, 'utf8').split(/\r?\n/)
     const lexicalState: LexicalState = { blockComment: false, quote: null }

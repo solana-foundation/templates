@@ -2,6 +2,20 @@
   "schemaVersion": 1,
   "acknowledgements": [
     {
+      "fingerprint": "c8353bc1141fa5ca49fabd15c93ce925bc2a7447979bf2a9ed728ab8fad98e23",
+      "ruleId": "source-child-process",
+      "subject": "community/supabase-solana-indexing",
+      "location": "community/supabase-solana-indexing/scripts/live-test.ts:1",
+      "rationale": "Explicit live integration test imports spawn to launch the local indexer with the current Node executable and fixed argument paths, without a shell. It inherits the operator's environment and is not run by the security scan."
+    },
+    {
+      "fingerprint": "91bb675fb7758c79cdd3a89358726774e018cf90ad6079793fa57c25f6b0e69d",
+      "ruleId": "source-child-process",
+      "subject": "community/supabase-solana-indexing",
+      "location": "community/supabase-solana-indexing/scripts/live-test.ts:121",
+      "rationale": "Explicit live integration test launches the local indexer with process.execPath and fixed tsx/indexer arguments, without a shell. Inherited credentials are needed for the operator-requested live test; the security scan does not execute this script."
+    },
+    {
       "fingerprint": "4c82d437e22cd73376ff1e32fd159bf2dab749169d945d3af003a134e69e3dfe",
       "ruleId": "manifest-lifecycle-script",
       "subject": "x402-solana-rust",
@@ -90,13 +104,6 @@
       "ruleId": "dependency-build-script-allowed",
       "subject": "sharp@0.33.5",
       "location": "node_modules/.pnpm/sharp@0.33.5/node_modules/sharp/package.json",
-      "rationale": "Exact install script reviewed and package is explicitly permitted by pnpm onlyBuiltDependencies; script changes produce a new fingerprint."
-    },
-    {
-      "fingerprint": "ba985a2812bd093a35c563fd5bb42956a38492f0a0eb1db98a82f715a1b462dd",
-      "ruleId": "dependency-build-script-allowed",
-      "subject": "sharp@0.34.5",
-      "location": "node_modules/.pnpm/sharp@0.34.5/node_modules/sharp/package.json",
       "rationale": "Exact install script reviewed and package is explicitly permitted by pnpm onlyBuiltDependencies; script changes produce a new fingerprint."
     },
     {
@@ -205,17 +212,10 @@
       "rationale": "Exact install script is blocked by pnpm because the package is absent from onlyBuiltDependencies; script changes produce a new fingerprint."
     },
     {
-      "fingerprint": "d77477c51cf2835a71423ac11b903cad30a8692fce6d1f94871c7df7eb4d42db",
+      "fingerprint": "e1dfa5cfb174f8c5fd38ed7bdb9d63776e987123cf8458706d20eab59d108ebd",
       "ruleId": "dependency-build-script-blocked",
-      "subject": "protobufjs@7.4.0",
-      "location": "node_modules/.pnpm/protobufjs@7.4.0/node_modules/protobufjs/package.json",
-      "rationale": "Exact install script is blocked by pnpm because the package is absent from onlyBuiltDependencies; script changes produce a new fingerprint."
-    },
-    {
-      "fingerprint": "a0bce6aab381c1c9ecae4ad5cd99f51166c1f71fc5f2296526d8a962e06dbb85",
-      "ruleId": "dependency-build-script-blocked",
-      "subject": "protobufjs@7.5.4",
-      "location": "node_modules/.pnpm/protobufjs@7.5.4/node_modules/protobufjs/package.json",
+      "subject": "protobufjs@7.6.5",
+      "location": "node_modules/.pnpm/protobufjs@7.6.5/node_modules/protobufjs/package.json",
       "rationale": "Exact install script is blocked by pnpm because the package is absent from onlyBuiltDependencies; script changes produce a new fingerprint."
     },
     {

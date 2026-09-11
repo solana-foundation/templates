@@ -120,6 +120,37 @@ test('flags template and dependency supply-chain risks without throwing', () => 
   assert.deepEqual(result.findings, [...result.findings].sort(compareExpectedFindings))
 })
 
+test('reports oversized reviewable source files while scanning files at the size limit', () => {
+  const rootDir = createFixtureRepository()
+  writeJson(join(rootDir, 'community', 'template', 'package.json'), { name: 'template' })
+  const prefix = "eval('review-me')\n"
+  const scriptsDir = join(rootDir, 'community', 'template', 'scripts')
+  writeText(join(scriptsDir, 'boundary.js'), prefix.padEnd(256_000, ' '))
+  writeText(join(scriptsDir, 'oversized.js'), prefix.padEnd(256_001, ' '))
+  writeText(join(scriptsDir, 'unicode.js'), '//'.concat('é'.repeat(128_000)))
+  writeText(join(scriptsDir, 'notes.md'), 'x'.repeat(256_001))
+
+  const scan = scanRepository(rootDir)
+  const coverage = scan.findings.filter((finding) => finding.ruleId === 'source-size-limit-exceeded')
+  assert.equal(coverage.length, 2)
+  assert.deepEqual(
+    coverage.map((finding) => finding.evidence),
+    ['256001 bytes; source scan limit: 256000 bytes', '256002 bytes; source scan limit: 256000 bytes'],
+  )
+  assert.ok(coverage.every((finding) => finding.category === 'scan-coverage' && finding.severity === 'low'))
+  assert.ok(coverage.every((finding) => finding.subject === 'community/template'))
+  const sourceFindings = scan.findings.filter((finding) => finding.ruleId === 'source-dynamic-evaluation')
+  assert.deepEqual(
+    sourceFindings.map((finding) => finding.location),
+    ['community/template/scripts/boundary.js:1'],
+  )
+  assert.deepEqual(scanRepository(rootDir), scan)
+  const report = createSecurityReport(scan, EMPTY_SECURITY_BASELINE, '2026-09-09T00:00:00.000Z')
+  assert.equal(report.findings.filter((finding) => finding.ruleId === 'source-size-limit-exceeded').length, 2)
+  assert.match(renderSecurityReport(report), /source-size-limit-exceeded/)
+  assert.match(renderSecurityReport(report), /256001 bytes/)
+})
+
 test('reports allowed dependency build scripts as review items', () => {
   const rootDir = createFixtureRepository(['native-addon'])
   writeJson(join(rootDir, 'community', 'safe-template', 'package.json'), { name: 'safe-template' })
