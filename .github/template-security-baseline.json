@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "acknowledgements": [
+    {
+      "fingerprint": "4c82d437e22cd73376ff1e32fd159bf2dab749169d945d3af003a134e69e3dfe",
+      "ruleId": "manifest-lifecycle-script",
+      "subject": "x402-solana-rust",
+      "location": "community/x402-solana-rust/package.json",
+      "rationale": "Reviewed bundled interactive scaffolder: it exits in CI and pnpm source installs, copies local template files, and runs npm install only for the generated frontend."
+    },
+    {
+      "fingerprint": "e9b432d6d23af90c1365faaa4b590dd43d5e4815c0788793ab4b7b419ca22763",
+      "ruleId": "source-child-process",
+      "subject": "community/merkle-airdrop",
+      "location": "community/merkle-airdrop/anchor/codama.config.ts:31",
+      "rationale": "Reviewed Codama configuration: it invokes fixed local solana-keygen and anchor build commands for program generation without executing downloaded code."
+    },
+    {
+      "fingerprint": "f41efa0b200586832959e3c5759175948b65b221e2808400077e9850529e21fa",
+      "ruleId": "source-child-process",
+      "subject": "community/merkle-airdrop",
+      "location": "community/merkle-airdrop/anchor/codama.config.ts:34",
+      "rationale": "Reviewed Codama configuration: it invokes fixed local solana-keygen and anchor build commands for program generation without executing downloaded code."
+    },
+    {
+      "fingerprint": "8b0ff454723c924b156c9cbc77beac5e996da7d4797cc80dce4c1a2a501dffd8",
+      "ruleId": "source-child-process",
+      "subject": "community/merkle-airdrop",
+      "location": "community/merkle-airdrop/anchor/codama.config.ts:7",
+      "rationale": "Reviewed Codama configuration: it invokes fixed local solana-keygen and anchor build commands for program generation without executing downloaded code."
+    },
+    {
+      "fingerprint": "83472135f87e566efde9aa684de29eb8059b44c88144c6eaa95066733f91f5bc",
+      "ruleId": "source-child-process",
+      "subject": "community/merkle-airdrop",
+      "location": "community/merkle-airdrop/anchor/codama.config.ts:90",
+      "rationale": "Reviewed Codama configuration: it invokes fixed local solana-keygen and anchor build commands for program generation without executing downloaded code."
+    },
+    {
+      "fingerprint": "9ce6cdbb4e35b0c32258666bb50b0c6e5da87105129a84c04e4f25a66881e368",
+      "ruleId": "source-child-process",
+      "subject": "community/x402-solana-rust",
+      "location": "community/x402-solana-rust/create.js:10",
+      "rationale": "Reviewed bundled interactive scaffolder: it exits in CI and pnpm source installs, copies local template files, and runs npm install only for the generated frontend."
+    },
+    {
+      "fingerprint": "8e12a5c04021bf1ced0e04be31a3c62da336f31ee59967987d8f50079207b346",
+      "ruleId": "source-child-process",
+      "subject": "community/x402-solana-rust",
+      "location": "community/x402-solana-rust/create.js:185",
+      "rationale": "Reviewed bundled interactive scaffolder: it exits in CI and pnpm source installs, copies local template files, and runs npm install only for the generated frontend."
+    },
+    {
+      "fingerprint": "0894c55d77237f22460dc3fac890f60e315aea1c9bd6b9ce9c1ee349394370a0",
+      "ruleId": "dependency-build-script-allowed",
+      "subject": "@parcel/watcher@2.5.1",
+      "location": "node_modules/.pnpm/@parcel+watcher@2.5.1/node_modules/@parcel/watcher/package.json",
+      "rationale": "Exact install script reviewed and package is explicitly permitted by pnpm onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "4ead4b21db857a94ac8b1756b71fccb37c71a1dca49b929a320fbe8ae7671634",
+      "ruleId": "dependency-build-script-allowed",
+      "subject": "bigint-buffer@1.1.5",
+      "location": "node_modules/.pnpm/bigint-buffer@1.1.5/node_modules/bigint-buffer/package.json",
+      "rationale": "Exact install script reviewed and package is explicitly permitted by pnpm onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "371cc2d82abe56ed5b5f59ffa3cf75e8fcef898368ffc7c0dfd1a8d4ce1fe8af",
+      "ruleId": "dependency-build-script-allowed",
+      "subject": "bufferutil@4.0.9",
+      "location": "node_modules/.pnpm/bufferutil@4.0.9/node_modules/bufferutil/package.json",
+      "rationale": "Exact install script reviewed and package is explicitly permitted by pnpm onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "84cc75b7baf1df99121ebdb26843efad730a7b772b7691bbb801ccd768a40c95",
+      "ruleId": "dependency-build-script-allowed",
+      "subject": "esbuild@0.21.5",
+      "location": "node_modules/.pnpm/esbuild@0.21.5/node_modules/esbuild/package.json",
+      "rationale": "Exact install script reviewed and package is explicitly permitted by pnpm onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "dc393b022f5515ba50251cefed55a39fc749ba4e91a889e137fe40f50c6617fd",
+      "ruleId": "dependency-build-script-allowed",
+      "subject": "esbuild@0.25.10",
+      "location": "node_modules/.pnpm/esbuild@0.25.10/node_modules/esbuild/package.json",
+      "rationale": "Exact install script reviewed and package is explicitly permitted by pnpm onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "43708cc19c2d5c997815da0149e6ecb566678db8aac05e359b7a00d8dd5a3bcb",
+      "ruleId": "dependency-build-script-allowed",
+      "subject": "sharp@0.33.5",
+      "location": "node_modules/.pnpm/sharp@0.33.5/node_modules/sharp/package.json",
+      "rationale": "Exact install script reviewed and package is explicitly permitted by pnpm onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "ba985a2812bd093a35c563fd5bb42956a38492f0a0eb1db98a82f715a1b462dd",
+      "ruleId": "dependency-build-script-allowed",
+      "subject": "sharp@0.34.5",
+      "location": "node_modules/.pnpm/sharp@0.34.5/node_modules/sharp/package.json",
+      "rationale": "Exact install script reviewed and package is explicitly permitted by pnpm onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "4a1b15f49b43ddfd2e4a436c765d3bb942efbf7f89b3768667f67643befb33bb",
+      "ruleId": "dependency-build-script-allowed",
+      "subject": "unrs-resolver@1.11.1",
+      "location": "node_modules/.pnpm/unrs-resolver@1.11.1/node_modules/unrs-resolver/package.json",
+      "rationale": "Exact install script reviewed and package is explicitly permitted by pnpm onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "37688d9b3ce6f5a949bed0b06dd307e5f0d504f37524eb44fd1d3b9bef8ebf6f",
+      "ruleId": "dependency-build-script-allowed",
+      "subject": "utf-8-validate@5.0.10",
+      "location": "node_modules/.pnpm/utf-8-validate@5.0.10/node_modules/utf-8-validate/package.json",
+      "rationale": "Exact install script reviewed and package is explicitly permitted by pnpm onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "fc14b60fc8c912eccb8eb51d43d6635282efe8f66a5f61d59f365271ef79d02a",
+      "ruleId": "source-network-access",
+      "subject": "community/kit-node-solanax402",
+      "location": "community/kit-node-solanax402/src/server/index.ts:214",
+      "rationale": "Reviewed expected runtime or test request to the configured x402 server or facilitator; responses are parsed as data and are not executed."
+    },
+    {
+      "fingerprint": "64be8cfde4169ddbb4c9b5097c881eb4e00736c7a0d576a829006054b155dcaf",
+      "ruleId": "source-network-access",
+      "subject": "community/kit-node-solanax402",
+      "location": "community/kit-node-solanax402/test-402-response.mjs:28",
+      "rationale": "Reviewed expected runtime or test request to the configured x402 server or facilitator; responses are parsed as data and are not executed."
+    },
+    {
+      "fingerprint": "96c9b0517ca489a0f16d3c394bc3e0cb92f20c971660d57e65a473f5b6904b30",
+      "ruleId": "source-network-access",
+      "subject": "community/kit-node-solanax402",
+      "location": "community/kit-node-solanax402/test-replay-attack.mjs:140",
+      "rationale": "Reviewed expected runtime or test request to the configured x402 server or facilitator; responses are parsed as data and are not executed."
+    },
+    {
+      "fingerprint": "01de860767f4a89c9844ad0c8c792562158a06d5dba2f1f4a49ebb9f2e23aefd",
+      "ruleId": "source-network-access",
+      "subject": "community/kit-node-solanax402",
+      "location": "community/kit-node-solanax402/test-true-x402.mjs:184",
+      "rationale": "Reviewed expected runtime or test request to the configured x402 server or facilitator; responses are parsed as data and are not executed."
+    },
+    {
+      "fingerprint": "025968caa42330873a711ee46560143252ece6b0c9ae752f1fcb78d77d5d0a7f",
+      "ruleId": "template-lockfile-coverage-missing",
+      "subject": "kit-expo-minimal",
+      "location": "mobile/kit-expo-minimal/package.json",
+      "rationale": "Known repository coverage gap: mobile templates are catalogued outside the root pnpm workspace and remain visible here until separately locked or scanned."
+    },
+    {
+      "fingerprint": "77cd9705bc3ef295f5e582c51708dc7ea36f1239de1a5986a8c28f02be2e506d",
+      "ruleId": "template-lockfile-coverage-missing",
+      "subject": "kit-expo-privy",
+      "location": "mobile/kit-expo-privy/package.json",
+      "rationale": "Known repository coverage gap: mobile templates are catalogued outside the root pnpm workspace and remain visible here until separately locked or scanned."
+    },
+    {
+      "fingerprint": "6d09028221143b7bc000bc788b3d7ae5af99a0fa2ed2d73f16d3dcf5326baa3c",
+      "ruleId": "template-lockfile-coverage-missing",
+      "subject": "kit-expo-uniwind",
+      "location": "mobile/kit-expo-uniwind/package.json",
+      "rationale": "Known repository coverage gap: mobile templates are catalogued outside the root pnpm workspace and remain visible here until separately locked or scanned."
+    },
+    {
+      "fingerprint": "46832f497bb61eeb488fc75518a52adc9ae2da6a73b0c49687cdb37b5b82c5b6",
+      "ruleId": "template-lockfile-coverage-missing",
+      "subject": "web3js-expo-minimal",
+      "location": "mobile/web3js-expo-minimal/package.json",
+      "rationale": "Known repository coverage gap: mobile templates are catalogued outside the root pnpm workspace and remain visible here until separately locked or scanned."
+    },
+    {
+      "fingerprint": "43a0e24a268ecb2cde5e41e39912fdf356c8197f1ef3117fbafca1da20a04f22",
+      "ruleId": "template-lockfile-coverage-missing",
+      "subject": "web3js-expo-paper",
+      "location": "mobile/web3js-expo-paper/package.json",
+      "rationale": "Known repository coverage gap: mobile templates are catalogued outside the root pnpm workspace and remain visible here until separately locked or scanned."
+    },
+    {
+      "fingerprint": "e7d30f6da52e074d435aeb1f4bb4684437ed04ae1ed26279948066d473858573",
+      "ruleId": "template-lockfile-coverage-missing",
+      "subject": "web3js-expo",
+      "location": "mobile/web3js-expo/package.json",
+      "rationale": "Known repository coverage gap: mobile templates are catalogued outside the root pnpm workspace and remain visible here until separately locked or scanned."
+    },
+    {
+      "fingerprint": "1ff10eddce13b9d300976ac8440f2a639ed34a2d2b55fc6c372991734702382a",
+      "ruleId": "dependency-build-script-blocked",
+      "subject": "@stellar/stellar-sdk@14.2.0",
+      "location": "node_modules/.pnpm/@stellar+stellar-sdk@14.2.0/node_modules/@stellar/stellar-sdk/package.json",
+      "rationale": "Exact install script is blocked by pnpm because the package is absent from onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "8153da1fdb6381008d84e5e141eaad9db3093f371dbb1227ebaee356dc466b77",
+      "ruleId": "dependency-build-script-blocked",
+      "subject": "blake-hash@2.0.0",
+      "location": "node_modules/.pnpm/blake-hash@2.0.0/node_modules/blake-hash/package.json",
+      "rationale": "Exact install script is blocked by pnpm because the package is absent from onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "ba763a8b0434bddd37333eb0f7e0a4cdde0407fbbec161c7a111f95dfd705115",
+      "ruleId": "dependency-build-script-blocked",
+      "subject": "keccak@3.0.4",
+      "location": "node_modules/.pnpm/keccak@3.0.4/node_modules/keccak/package.json",
+      "rationale": "Exact install script is blocked by pnpm because the package is absent from onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "d77477c51cf2835a71423ac11b903cad30a8692fce6d1f94871c7df7eb4d42db",
+      "ruleId": "dependency-build-script-blocked",
+      "subject": "protobufjs@7.4.0",
+      "location": "node_modules/.pnpm/protobufjs@7.4.0/node_modules/protobufjs/package.json",
+      "rationale": "Exact install script is blocked by pnpm because the package is absent from onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "a0bce6aab381c1c9ecae4ad5cd99f51166c1f71fc5f2296526d8a962e06dbb85",
+      "ruleId": "dependency-build-script-blocked",
+      "subject": "protobufjs@7.5.4",
+      "location": "node_modules/.pnpm/protobufjs@7.5.4/node_modules/protobufjs/package.json",
+      "rationale": "Exact install script is blocked by pnpm because the package is absent from onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "7cddab9195c7e97c99bbf2ed42772d67e19118bcbf36ab1163962364901e0de7",
+      "ruleId": "dependency-build-script-blocked",
+      "subject": "puppeteer@23.11.1",
+      "location": "node_modules/.pnpm/puppeteer@23.11.1_bufferutil@4.0.9_typescript@5.9.3_utf-8-validate@5.0.10/node_modules/puppeteer/package.json",
+      "rationale": "Exact install script is blocked by pnpm because the package is absent from onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "f886636f016573ea6f589ad487fa9b4247ff34d62db5ef228c7dcd17664e6268",
+      "ruleId": "dependency-build-script-blocked",
+      "subject": "sqlite3@5.1.7",
+      "location": "node_modules/.pnpm/sqlite3@5.1.7/node_modules/sqlite3/package.json",
+      "rationale": "Exact install script is blocked by pnpm because the package is absent from onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "c79bcfd76edd83e10c6df548d3ca3e0ca3f19eb7632890a80321d762ef73c172",
+      "ruleId": "dependency-build-script-blocked",
+      "subject": "tiny-secp256k1@1.1.7",
+      "location": "node_modules/.pnpm/tiny-secp256k1@1.1.7/node_modules/tiny-secp256k1/package.json",
+      "rationale": "Exact install script is blocked by pnpm because the package is absent from onlyBuiltDependencies; script changes produce a new fingerprint."
+    },
+    {
+      "fingerprint": "0b7a06ea8ca3c58cbc12c9ddb4bad9250e4d60ac31073890a083bb4320cda37d",
+      "ruleId": "dependency-build-script-blocked",
+      "subject": "usb@2.17.0",
+      "location": "node_modules/.pnpm/usb@2.17.0/node_modules/usb/package.json",
+      "rationale": "Exact install script is blocked by pnpm because the package is absent from onlyBuiltDependencies; script changes produce a new fingerprint."
+    }
+  ]
+}
