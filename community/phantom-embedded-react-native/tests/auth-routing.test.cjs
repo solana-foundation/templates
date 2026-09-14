@@ -18,17 +18,21 @@ function loadModule(relativePath, { env = {}, mocks = {} } = {}) {
     },
   })
   const module = { exports: {} }
-  runInNewContext(outputText, {
-    module,
-    exports: module.exports,
-    URL,
-    process: { env },
-    console,
-    require(name) {
-      assert.ok(Object.hasOwn(mocks, name), `Unexpected dependency: ${name}`)
-      return mocks[name]
+  runInNewContext(
+    outputText,
+    {
+      module,
+      exports: module.exports,
+      URL,
+      process: { env },
+      console,
+      require(name) {
+        assert.ok(Object.hasOwn(mocks, name), `Unexpected dependency: ${name}`)
+        return mocks[name]
+      },
     },
-  }, { filename })
+    { filename },
+  )
   return module.exports
 }
 
@@ -74,8 +78,11 @@ function loadConnectButton() {
     mocks: {
       react: { createElement: (type, props, ...children) => ({ type, props: { ...props, children } }) },
       'react-native': {
-        View: 'View', TouchableOpacity: 'TouchableOpacity', Text: 'Text',
-        ActivityIndicator: 'ActivityIndicator', StyleSheet: { create: (styles) => styles },
+        View: 'View',
+        TouchableOpacity: 'TouchableOpacity',
+        Text: 'Text',
+        ActivityIndicator: 'ActivityIndicator',
+        StyleSheet: { create: (styles) => styles },
         Alert: { alert: () => assert.fail('Rendering must not show an alert') },
       },
       '@phantom/react-native-sdk': {
