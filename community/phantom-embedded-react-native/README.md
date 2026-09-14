@@ -1,6 +1,6 @@
 # Phantom Embedded Wallet - React Native Starter
 
-An Expo starter for integrating Phantom's embedded wallet SDK on mobile. Users can sign in with Google, Apple, email, or their existing Phantom wallet—no browser extension required.
+An Expo starter for integrating Phantom's embedded wallet SDK on mobile. This template configures Google and Apple sign-in, with Solana and Ethereum wallet addresses. No browser extension is required.
 
 **Note:** This template requires a custom development build and will NOT work with Expo Go. The Phantom React Native SDK requires native modules that are not available in Expo Go.
 
@@ -8,51 +8,73 @@ An Expo starter for integrating Phantom's embedded wallet SDK on mobile. Users c
 
 ### 1. Prerequisites
 
-- **Node.js 18+**
-- **Phantom Portal App ID** — Register at [phantom.com/portal](https://phantom.com/portal/) and add:
-  - Your app's URL scheme (e.g., `phantomwallet://phantom-auth-callback`) as an allowed redirect URL
+- **Node.js 20.19.4 or newer**, compatible with this template's React Native 0.81.5 and [Expo SDK 54](https://docs.expo.dev/versions/v54.0.0/).
+- **Phantom Portal access and an App ID**. Confirm that you can create or access an app at [Phantom Portal](https://phantom.com/portal/) before proceeding. A placeholder App ID cannot authenticate. If new registrations are paused or your account cannot create an app, follow the portal's access instructions or contact [Phantom support](https://help.phantom.com/). This is an external prerequisite, not a local configuration error.
+- **Android:** Android Studio and the Android SDK, with an emulator or connected device. See [Expo's Android environment setup](https://docs.expo.dev/get-started/set-up-your-environment/?platform=android&device=simulated).
+- **iOS:** macOS and Xcode for a local native build. Windows cannot run `expo run:ios` locally.
 
 ### 2. Create and configure
 
 ```bash
-npx create-solana-dapp@latest <your-app-name> --template phantom-embedded-react-native
+npx create-solana-dapp@latest <your-app-name> --template phantom-embedded-react-native-starter
 cd <your-app-name>
-cp .env.example .env
+npm install
 ```
 
-Add your App ID and configuration to `.env`:
+The template name matches the repository's [template catalog](https://github.com/solana-foundation/templates/blob/main/TEMPLATES.md). If your CLI cannot resolve the catalog name, use the explicit repository template instead:
+
+```bash
+npx create-solana-dapp@latest <your-app-name> --template gh:solana-foundation/templates/community/phantom-embedded-react-native
+```
+
+Copy `.env.example` to `.env` (`cp .env.example .env` in a Unix shell, or `Copy-Item .env.example .env` in PowerShell). Add your App ID:
 
 ```env
 EXPO_PUBLIC_PHANTOM_APP_ID=your-app-id-here
-EXPO_PUBLIC_APP_SCHEME=your-app-scheme
-EXPO_PUBLIC_SOLANA_RPC_URL=your-prefered-rpc
+EXPO_PUBLIC_APP_SCHEME=phantomwallet
+EXPO_PUBLIC_SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
 ```
+
+Keep `EXPO_PUBLIC_APP_SCHEME` equal to `expo.scheme` in `app.json`. The default callback is `phantomwallet://phantom-auth-callback`; add that complete URL to your app's allowed redirect URLs in Phantom Portal. If you customize the scheme, update both files and the portal entry, then rebuild the native app.
+
+Before building, replace `expo.ios.bundleIdentifier` and `expo.android.package` in `app.json` with your own reverse-domain identifiers. The `com.example.phantomwallet` values are placeholders. For iOS signing, select your own Apple development team when required; no author's team ID is included.
+
+The SDK receives `EXPO_PUBLIC_PHANTOM_APP_ID` in the client. Do not put private keys or service secrets in `EXPO_PUBLIC_*` variables.
+
+You can use pnpm instead of npm: run `pnpm install` and use `pnpm run` for the commands below. Use one package manager per generated project; do not bypass dependency errors with `--legacy-peer-deps`.
 
 ### 3. Run
 
 **For iOS:**
 
 ```bash
-pnpm run ios
+npm run ios
 ```
 
 **For Android:**
 
 ```bash
-pnpm run android
+npm run android
 ```
 
 ## What's in This Template
 
+Native builds initialize Web Crypto before the Phantom SDK through `lib/crypto.native.ts`. The random-values polyfill alone does not provide the `crypto.subtle` methods used during authentication. Web builds use the browser's native implementation. Rebuild your native app after changing native dependencies.
+
+`app/+native-intent.tsx` keeps the SDK's OAuth callback on the welcome route while Phantom processes the original linking event. Once the SDK reports a connected session, the connect component redirects to the dashboard, including after session restoration.
+
 ```
 ├── app/
-│   ├── _layout.tsx          # PhantomProvider setup (polyfill import must be first)
+│   ├── _layout.tsx          # PhantomProvider setup (crypto initialization must be first)
+│   ├── +native-intent.tsx   # OAuth callback routing
 │   ├── index.tsx            # Demo page with connect button
 │   └── wallet.tsx           # Wallet screen with account info
 ├── components/
 │   ├── ConnectButton.tsx    # Example wallet UI
 │   └── WalletInfo.tsx       # Balance and address display
 ├── lib/
+│   ├── crypto.native.ts     # Native Web Crypto initialization
+│   ├── crypto.ts            # Browser Web Crypto entry point
 │   ├── solana.ts            # Solana balance fetching
 │   └── utils.ts             # Utility functions
 └── .env.example
@@ -60,16 +82,22 @@ pnpm run android
 
 The template is pre-configured with:
 
-- Google, Apple, and injected wallet auth providers
-- Solana address type enabled
+- Google and Apple auth providers
+- Solana and Ethereum address types enabled
 - Deep linking for OAuth callbacks
 - Dark theme
 
 ## Common Issues
 
-**"Invalid redirect URL"** — Your redirect URL in `.env` must exactly match what's in Phantom Portal. The format is `{scheme}://phantom-auth-callback` (e.g., `phantomwallet://phantom-auth-callback`).
+**"Invalid redirect URL"** — The app reads `EXPO_PUBLIC_APP_SCHEME`, not `EXPO_PUBLIC_REDIRECT_URL`. Set the same scheme in `.env` and `app.json`, and allowlist the complete `{scheme}://phantom-auth-callback` URL in Phantom Portal (e.g., `phantomwallet://phantom-auth-callback`).
 
-**"Module not found: react-native-get-random-values"** — Ensure the polyfill is imported first in `app/_layout.tsx` before any other imports.
+**"Template not found"** — Use the catalog name `phantom-embedded-react-native-starter` or the explicit `gh:solana-foundation/templates/community/phantom-embedded-react-native` identifier above, not the directory name alone.
+
+**Portal signup or app creation is unavailable** — Local setup cannot remove this restriction. Obtain access through Phantom before testing authentication. The separate MCP integration below does not supply an App ID for this mobile template.
+
+**Dependency installation fails** — Check `node --version` against the prerequisite above and use the current template, which aligns React types with React Native 0.81.5. Run `npx expo install --check` to check Expo package compatibility before building.
+
+**"Module not found: react-native-get-random-values"** — Install the template's dependencies and keep `import '../lib/crypto'` as the first import in `app/_layout.tsx`. Native builds resolve `lib/crypto.native.ts`, which initializes both random values and Web Crypto before Phantom loads. Rebuild the native app after changing native dependencies; importing the random-values polyfill alone does not provide `crypto.subtle`.
 
 **"Expo Go not working"** — Expected behavior. Expo Go doesn't support the native modules required by Phantom SDK. You must create a development build.
 

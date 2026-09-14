@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, TouchableOpacity, Text, ActivityIndicator, StyleSheet, Alert } from 'react-native'
 import { useConnect, useAccounts } from '@phantom/react-native-sdk'
-import { useRouter } from 'expo-router'
+import { Redirect } from 'expo-router'
 import { colors } from '@/lib/theme'
 
 /**
@@ -12,7 +12,6 @@ import { colors } from '@/lib/theme'
 export function ConnectButton() {
   const { connect, isConnecting } = useConnect()
   const { isConnected } = useAccounts()
-  const router = useRouter()
 
   /**
    * Initiates Phantom Connect flow with specific provider
@@ -21,7 +20,6 @@ export function ConnectButton() {
   const handleConnect = async (provider: 'google' | 'apple') => {
     try {
       await connect({ provider })
-      router.push('/wallet')
     } catch (error: any) {
       console.error('Connection failed:', error)
       // Only show alert if error is not user cancellation
@@ -31,9 +29,9 @@ export function ConnectButton() {
     }
   }
 
-  // Hide button if already connected
+  // Restored sessions must reach the dashboard as well as interactive logins.
   if (isConnected) {
-    return null
+    return <Redirect href="/wallet" />
   }
 
   return (

@@ -25,7 +25,7 @@ export const colors = {
   gray300: '#d1d5db',
   gray400: '#9ca3af',
   gray500: '#6b7280',
-}
+} as const
 
 /**
  * Semantic color tokens
