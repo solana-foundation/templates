@@ -59,6 +59,8 @@ npm run android
 
 ## What's in This Template
 
+Run `npm test` (or `pnpm test`) for callback-routing and connected-session navigation checks. These tests use mocked native and wallet providers; verify sign-in and session restoration on a development build as well.
+
 Native builds initialize Web Crypto before the Phantom SDK through `lib/crypto.native.ts`. The random-values polyfill alone does not provide the `crypto.subtle` methods used during authentication. Web builds use the browser's native implementation. Rebuild your native app after changing native dependencies.
 
 `app/+native-intent.tsx` keeps the SDK's OAuth callback on the welcome route while Phantom processes the original linking event. Once the SDK reports a connected session, the connect component redirects to the dashboard, including after session restoration.
