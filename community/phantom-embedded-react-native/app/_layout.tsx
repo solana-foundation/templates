@@ -1,6 +1,6 @@
 // THIS MUST BE THE FIRST IMPORT!
 // Required for cryptographic operations in React Native
-import 'react-native-get-random-values'
+import '../lib/crypto'
 
 import { Stack } from 'expo-router'
 import {
@@ -44,7 +44,7 @@ export default function RootLayout() {
   const customTheme = {
     ...darkTheme,
     brand: colors.brand, // Use brand color
-    borderRadius: 12,
+    borderRadius: '12px',
   }
 
   return (
