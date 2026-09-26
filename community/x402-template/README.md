@@ -1,14 +1,14 @@
-# X402 Next.js Solana Template
+# x402 Next.js Solana Template
 
-**A simple Next.js starter template with X402 payment protocol integration for Solana.**
+**A simple Next.js starter template with x402 payment protocol integration for Solana.**
 
-This template demonstrates a streamlined implementation of the X402 payment protocol using the `x402-next` package, making it easy to add cryptocurrency payment gates to your Next.js applications.
+This template demonstrates a streamlined implementation of the x402 payment protocol using the `x402-next` package, making it easy to add cryptocurrency payment gates to your Next.js applications.
 
 > ⚠️ **Using on Mainnet?** This template is configured for testnet (devnet) by default, and the default facilitator (`https://x402.org/facilitator`) is testnet-only. To accept real payments on mainnet, set `NEXT_PUBLIC_NETWORK=solana` and use a facilitator that supports Solana mainnet, such as the [Coinbase CDP facilitator](https://docs.cdp.coinbase.com/x402/seller/quickstart) (requires CDP API keys) or [PayAI](https://facilitator.payai.network) (no API key needed to start: set `NEXT_PUBLIC_FACILITATOR_URL=https://facilitator.payai.network`). More options are listed in the [x402 facilitator directory](https://docs.x402.org/dev-tools/facilitators). You don't need to configure a fee payer: `x402-next` reads it from the facilitator. See [Going to Production](#going-to-production).
 
 ## Table of Contents
 
-- [What is X402?](#what-is-x402)
+- [What is x402?](#what-is-x402)
 - [Features](#features)
 - [Getting Started](#getting-started)
 - [How It Works](#how-it-works)
@@ -18,9 +18,9 @@ This template demonstrates a streamlined implementation of the X402 payment prot
 
 ---
 
-## What is X402?
+## What is x402?
 
-**X402** is an open payment protocol that uses HTTP status code **402 "Payment Required"** to enable seamless cryptocurrency payments for web content and APIs.
+**x402** is an open payment protocol that uses HTTP status code **402 "Payment Required"** to enable seamless cryptocurrency payments for web content and APIs.
 
 ### Key Benefits
 
@@ -44,7 +44,7 @@ This template demonstrates a streamlined implementation of the X402 payment prot
 
 ## Features
 
-- **X402 Payment Middleware** - Powered by `x402-next` package
+- **x402 Payment Middleware** - Powered by `x402-next` package
 - **Solana Integration** - Uses Solana blockchain for payment verification
 - **Multiple Price Tiers** - Configure different prices for different routes
 - **Session Management** - Automatic session handling after payment
@@ -164,7 +164,7 @@ export const config = {
 
 ```
 x402-template/
-├── middleware.ts              # 🛡️  X402 payment middleware configuration
+├── middleware.ts              # 🛡️  x402 payment middleware configuration
 ├── app/
 │   ├── page.tsx              # 🏠 Homepage with links to protected content
 │   ├── layout.tsx            # 📐 Root layout
@@ -308,16 +308,16 @@ This template uses minimal dependencies:
 - **next** - Next.js framework
 - **react** / **react-dom** - React library
 - **viem** - Type-safe Ethereum/Solana types
-- **x402-next** - X402 payment middleware (handles all payment logic)
+- **x402-next** - x402 payment middleware (handles all payment logic)
 
 ---
 
 ## Learn More
 
-### X402 Protocol
+### x402 Protocol
 
-- [X402 Specification](https://github.com/coinbase/x402) - Official protocol documentation
-- [X402 Next Package](https://www.npmjs.com/package/x402-next) - Middleware used in this template
+- [x402 Specification](https://github.com/x402-foundation/x402) - Official protocol documentation
+- [x402 Next Package](https://www.npmjs.com/package/x402-next) - Middleware used in this template
 
 ### Solana
 
@@ -369,7 +369,7 @@ pnpm install
 
 For issues specific to this template, please open an issue on the repository.
 
-For X402 protocol questions, refer to the [official documentation](https://github.com/coinbase/x402).
+For x402 protocol questions, refer to the [official documentation](https://github.com/x402-foundation/x402).
 
 ---
 
