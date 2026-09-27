@@ -1,7 +1,7 @@
 import { paymentProxy } from '@x402/next'
 import { HTTPFacilitatorClient, x402ResourceServer } from '@x402/core/server'
 import type { Network } from '@x402/core/types'
-import { normalizeNetwork, SOLANA_DEVNET_CAIP2 } from '@x402/svm'
+import { SOLANA_DEVNET_CAIP2, SOLANA_MAINNET_CAIP2 } from '@x402/svm'
 import { registerExactSvmScheme } from '@x402/svm/exact/server'
 import { createPaywall } from '@x402/paywall'
 import { svmPaywall } from '@x402/paywall/svm'
@@ -13,8 +13,13 @@ if (!receiverAddress) {
   )
 }
 export const payTo = receiverAddress
-// x402 v2 uses CAIP-2 network ids: `solana-devnet` and `solana` (mainnet) are mapped to them
-export const network = normalizeNetwork(process.env.NEXT_PUBLIC_NETWORK || 'solana-devnet') as Network
+// x402 v2 identifies networks by CAIP-2 id
+export const network = (process.env.NEXT_PUBLIC_NETWORK || SOLANA_DEVNET_CAIP2) as Network
+if (network !== SOLANA_DEVNET_CAIP2 && network !== SOLANA_MAINNET_CAIP2) {
+  throw new Error(
+    `NEXT_PUBLIC_NETWORK must be a Solana CAIP-2 id: ${SOLANA_DEVNET_CAIP2} (devnet) or ${SOLANA_MAINNET_CAIP2} (mainnet).`,
+  )
+}
 const facilitatorUrl = process.env.NEXT_PUBLIC_FACILITATOR_URL || 'https://x402.org/facilitator'
 
 export const server = new x402ResourceServer(new HTTPFacilitatorClient({ url: facilitatorUrl }))
