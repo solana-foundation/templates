@@ -16,6 +16,8 @@
     "instructions": [
       "Install dependencies:",
       "+{pm} install",
+      "Copy the environment file and set NEXT_PUBLIC_RECEIVER_ADDRESS to your Solana address:",
+      "+cp .env.example .env.local",
       "Start dev server:",
       "+{pm} dev"
     ],
