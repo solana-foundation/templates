@@ -4,7 +4,7 @@
 
 This template demonstrates a streamlined implementation of the x402 payment protocol (v2) using the `@x402/next` package, making it easy to add cryptocurrency payment gates to your Next.js applications.
 
-> ⚠️ **Using on Mainnet?** This template is configured for testnet (devnet) by default, and the default facilitator (`https://x402.org/facilitator`) is testnet-only. To accept real payments on mainnet, set `NEXT_PUBLIC_NETWORK=solana` and use a facilitator that supports Solana mainnet, such as the [Coinbase CDP facilitator](https://docs.cdp.coinbase.com/x402/seller/quickstart) (requires CDP API keys) or [PayAI](https://facilitator.payai.network) (no API key needed to start: set `NEXT_PUBLIC_FACILITATOR_URL=https://facilitator.payai.network`). More options are listed in the [x402 facilitator directory](https://docs.x402.org/dev-tools/facilitators). You don't need to configure a fee payer: the x402 server reads it from the facilitator. See [Going to Production](#going-to-production).
+> ⚠️ **Using on Mainnet?** This template is configured for testnet (devnet) by default, and the default facilitator (`https://x402.org/facilitator`) is testnet-only. To accept real payments on mainnet, set `NEXT_PUBLIC_NETWORK=solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp` and use a facilitator that supports Solana mainnet, such as the [Coinbase CDP facilitator](https://docs.cdp.coinbase.com/x402/seller/quickstart) (requires CDP API keys) or [PayAI](https://facilitator.payai.network) (no API key needed to start: set `NEXT_PUBLIC_FACILITATOR_URL=https://facilitator.payai.network`). More options are listed in the [x402 facilitator directory](https://docs.x402.org/dev-tools/facilitators). You don't need to configure a fee payer: the x402 server reads it from the facilitator. See [Going to Production](#going-to-production).
 
 ## Table of Contents
 
@@ -112,7 +112,7 @@ The core of the payment integration is in `proxy.ts`:
 import { paymentProxy } from '@x402/next'
 import { HTTPFacilitatorClient, x402ResourceServer } from '@x402/core/server'
 import type { Network } from '@x402/core/types'
-import { normalizeNetwork, SOLANA_DEVNET_CAIP2 } from '@x402/svm'
+import { SOLANA_DEVNET_CAIP2, SOLANA_MAINNET_CAIP2 } from '@x402/svm'
 import { registerExactSvmScheme } from '@x402/svm/exact/server'
 import { createPaywall } from '@x402/paywall'
 import { svmPaywall } from '@x402/paywall/svm'
@@ -124,8 +124,13 @@ if (!receiverAddress) {
   )
 }
 export const payTo = receiverAddress
-// x402 v2 uses CAIP-2 network ids: `solana-devnet` and `solana` (mainnet) are mapped to them
-export const network = normalizeNetwork(process.env.NEXT_PUBLIC_NETWORK || 'solana-devnet') as Network
+// x402 v2 identifies networks by CAIP-2 id
+export const network = (process.env.NEXT_PUBLIC_NETWORK || SOLANA_DEVNET_CAIP2) as Network
+if (network !== SOLANA_DEVNET_CAIP2 && network !== SOLANA_MAINNET_CAIP2) {
+  throw new Error(
+    `NEXT_PUBLIC_NETWORK must be a Solana CAIP-2 id: ${SOLANA_DEVNET_CAIP2} (devnet) or ${SOLANA_MAINNET_CAIP2} (mainnet).`,
+  )
+}
 const facilitatorUrl = process.env.NEXT_PUBLIC_FACILITATOR_URL || 'https://x402.org/facilitator'
 
 export const server = new x402ResourceServer(new HTTPFacilitatorClient({ url: facilitatorUrl }))
@@ -240,17 +245,17 @@ x402-template/
 
 ### Environment Variables
 
-Set these in `.env.local` (copy `.env.example`). `NEXT_PUBLIC_RECEIVER_ADDRESS` is required. The network defaults to `solana-devnet` and the facilitator to `https://x402.org/facilitator`:
+Set these in `.env.local` (copy `.env.example`). `NEXT_PUBLIC_RECEIVER_ADDRESS` is required. The network defaults to Solana devnet and the facilitator to `https://x402.org/facilitator`:
 
 ```bash
 # Your Solana wallet address (where payments go)
 NEXT_PUBLIC_RECEIVER_ADDRESS=your_solana_address_here
 
-# Network (solana-devnet or solana for mainnet)
-NEXT_PUBLIC_NETWORK=solana-devnet
+# Network as a CAIP-2 id: solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1 (devnet) or solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp (mainnet)
+NEXT_PUBLIC_NETWORK=solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1
 
 # Facilitator URL (service that verifies and settles payments)
-# x402.org is testnet-only. For mainnet, use a facilitator that supports `solana`,
+# x402.org is testnet-only. For mainnet, use a facilitator that supports Solana mainnet,
 # e.g. https://facilitator.payai.network (see https://docs.x402.org/dev-tools/facilitators)
 NEXT_PUBLIC_FACILITATOR_URL=https://x402.org/facilitator
 ```
@@ -281,10 +286,10 @@ For API routes, wrap the handler with `withX402` as in `app/api/cat-fact/route.t
 
 You can use different networks:
 
-- `solana-devnet` - For testing (use test tokens)
-- `solana` - Mainnet, for production (real money!)
+- `solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1` - Devnet, for testing (use test tokens)
+- `solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp` - Mainnet, for production (real money!)
 
-x402 v2 identifies networks by [CAIP-2](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-2.md) id. `proxy.ts` maps these names to `solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1` (devnet) and `solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp` (mainnet), and you can also set a CAIP-2 id directly. Other names, such as `solana-mainnet-beta`, fail with `Unsupported SVM network`.
+x402 v2 identifies networks by [CAIP-2](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-2.md) id. The v1 names (`solana-devnet`, `solana`) are not accepted: any other value makes `proxy.ts` throw an error that lists these two ids.
 
 ---
 
@@ -315,7 +320,7 @@ export default async function PremiumPage() {
 
 ### Testing with Devnet
 
-When using `solana-devnet`:
+When using devnet:
 
 - Payments use test tokens (no real money)
 - Perfect for development and testing
@@ -325,7 +330,7 @@ When using `solana-devnet`:
 
 To accept real payments:
 
-1. Set `NEXT_PUBLIC_NETWORK=solana` (x402 uses `solana` for mainnet, not `solana-mainnet-beta`)
+1. Set `NEXT_PUBLIC_NETWORK=solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp`
 2. Set `NEXT_PUBLIC_FACILITATOR_URL` to a facilitator that supports Solana mainnet (see the note at the top of this README). With the testnet-only default, the server exits with `Facilitator does not support scheme "exact" on network "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"`.
 3. Update your wallet address to your production wallet
 4. Test thoroughly before deploying!
