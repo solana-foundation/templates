@@ -17,6 +17,14 @@ const ASSOCIATED_TOKEN_PROGRAM = address(
 );
 const MEMO_PROGRAM = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr";
 
+function getLocalWsUrl() {
+  const url = new URL(RPC_URL);
+  const rpcPort = Number(url.port || (url.protocol === "https:" ? 443 : 80));
+  url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
+  url.port = String(rpcPort + 1);
+  return url.toString();
+}
+
 async function rpc(method, params) {
   const response = await fetch(RPC_URL, {
     method: "POST",
@@ -54,7 +62,7 @@ export class Surfnet {
       ],
       { stdio: ["ignore", "ignore", "pipe"] }
     );
-    const runtime = new Surfnet(validator, ledgerDir, true);
+    const runtime = new Surfnet(validator, ledgerDir, true, getLocalWsUrl());
     await runtime.waitForHealth();
     return runtime;
   }
@@ -86,7 +94,7 @@ export class Surfnet {
     }
   }
 
-  constructor(process, ledgerDir, ownsValidator) {
+  constructor(process, ledgerDir, ownsValidator, wsUrl = WS_URL) {
     this.process = process;
     this.ledgerDir = ledgerDir;
     this.ownsValidator = ownsValidator;
@@ -95,7 +103,7 @@ export class Surfnet {
       this.errorOutput = `${this.errorOutput}${chunk}`.trim().slice(-4000);
     });
     this.rpcUrl = RPC_URL;
-    this.wsUrl = WS_URL;
+    this.wsUrl = wsUrl;
   }
 
   async fundSol(owner, amount) {
