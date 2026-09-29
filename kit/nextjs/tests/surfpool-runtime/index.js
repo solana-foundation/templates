@@ -51,7 +51,9 @@ async function isPortAvailable(port) {
 async function getFreePortPair() {
   for (let attempt = 0; attempt < 20; attempt++) {
     const rpcPort = await getFreePort();
-    if (await isPortAvailable(rpcPort + 1)) return rpcPort;
+    if (rpcPort < 65535 && (await isPortAvailable(rpcPort + 1))) {
+      return rpcPort;
+    }
   }
   throw new Error("Could not find adjacent free RPC and WebSocket ports");
 }
