@@ -1,5 +1,7 @@
 import { spawn } from "node:child_process";
-import { resolve } from "node:path";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 import {
   address,
   generateKeyPairSigner,
@@ -7,8 +9,8 @@ import {
   getProgramDerivedAddress,
 } from "@solana/kit";
 
-const RPC_URL = "http://127.0.0.1:8899";
-const WS_URL = "ws://127.0.0.1:8900";
+const RPC_URL = process.env.SOLANA_TEST_RPC_URL ?? "http://127.0.0.1:8899";
+const WS_URL = process.env.SOLANA_TEST_WS_URL ?? "ws://127.0.0.1:8900";
 const TOKEN_PROGRAM = address("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 const ASSOCIATED_TOKEN_PROGRAM = address(
   "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
@@ -28,32 +30,52 @@ async function rpc(method, params) {
 
 export class Surfnet {
   static async start() {
+    if (process.env.SOLANA_TEST_RPC_URL) {
+      const runtime = new Surfnet(null, null);
+      await runtime.waitForHealth();
+      return runtime;
+    }
+    const ledgerDir =
+      process.env.SOLANA_TEST_LEDGER_DIR ??
+      mkdtempSync(join(tmpdir(), "kit-nextjs-validator-"));
     const validator = spawn(
       process.env.SOLANA_TEST_VALIDATOR ?? "solana-test-validator",
       [
         "--reset",
         "--quiet",
+        "--ledger",
+        ledgerDir,
+        "--rpc-port",
+        new URL(RPC_URL).port || "8899",
+        "--ws-port",
+        new URL(WS_URL).port || "8900",
         "--bpf-program",
         MEMO_PROGRAM,
         resolve(process.cwd(), "tests/fixtures/spl_memo_v4.so"),
       ],
       { stdio: "ignore" }
     );
-    const runtime = new Surfnet(validator);
+    const runtime = new Surfnet(validator, ledgerDir);
+    await runtime.waitForHealth();
+    return runtime;
+  }
+
+  async waitForHealth() {
     for (let attempt = 0; attempt < 60; attempt++) {
       try {
         await rpc("getHealth", []);
-        return runtime;
+        return;
       } catch {
         await new Promise((resolve) => setTimeout(resolve, 250));
       }
     }
-    runtime.stop();
+    this.stop();
     throw new Error("Agave test validator did not start");
   }
 
-  constructor(process) {
+  constructor(process, ledgerDir) {
     this.process = process;
+    this.ledgerDir = ledgerDir;
     this.rpcUrl = RPC_URL;
     this.wsUrl = WS_URL;
   }
@@ -85,6 +107,9 @@ export class Surfnet {
   }
 
   stop() {
-    this.process.kill();
+    this.process?.kill();
+    if (!process.env.SOLANA_TEST_LEDGER_DIR) {
+      rmSync(this.ledgerDir, { force: true, recursive: true });
+    }
   }
 }
