@@ -181,6 +181,7 @@ test("posts a memo and records it in the transaction logs", async () => {
       maxSupportedTransactionVersion: 1,
     })
     .send();
+  expect(transaction?.version).toBe(1);
   expect(transaction?.meta?.logMessages?.join("\n")).toContain(
     "gm from @solana/kit"
   );
