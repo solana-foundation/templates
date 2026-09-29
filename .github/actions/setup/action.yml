@@ -41,23 +41,17 @@ runs:
         echo "$HOME/.avm/bin" >> $GITHUB_PATH
       shell: bash
 
-    - name: Cache Solana CLI
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cache/solana/
-          ~/.local/share/solana/
-        key: solana-cli-${{ runner.os }}-agave-4.2.2-v2
-
     - name: Install Solana CLI
       run: |
-        if ! solana --version 2>/dev/null | grep -q 'solana-cli 4.2.2'; then
-          rm -rf "$HOME/.local/share/solana/install"
-        fi
-        sh -c "$(curl -sSfL https://release.anza.xyz/v4.2.2/install)"
-        echo "SOLANA_BIN=$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_ENV
-        echo "SOLANA_TEST_VALIDATOR=$HOME/.local/share/solana/install/active_release/bin/solana-test-validator" >> $GITHUB_ENV
-        echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+        AGAVE_DIR="$RUNNER_TEMP/agave-4.2.2"
+        rm -rf "$AGAVE_DIR"
+        mkdir -p "$AGAVE_DIR"
+        curl --fail --silent --show-error --location \
+          https://github.com/anza-xyz/agave/releases/download/v4.2.2/solana-release-x86_64-unknown-linux-gnu.tar.bz2 \
+          | tar -xjf - --strip-components=1 -C "$AGAVE_DIR"
+        echo "SOLANA_BIN=$AGAVE_DIR/bin" >> $GITHUB_ENV
+        echo "SOLANA_TEST_VALIDATOR=$AGAVE_DIR/bin/solana-test-validator" >> $GITHUB_ENV
+        echo "$AGAVE_DIR/bin" >> $GITHUB_PATH
       shell: bash
 
     - name: Verify installations
