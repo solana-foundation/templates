@@ -76,6 +76,11 @@ runs:
       shell: bash
 
     - name: Install package manager
-      if: ${{  inputs.package-manager != 'npm' }}
-      run: npm install -g ${{ inputs.package-manager }}
+      if: ${{ inputs.package-manager == 'pnpm' }}
+      run: npm install -g pnpm@12.7.0
+      shell: bash
+
+    - name: Install package manager
+      if: ${{ inputs.package-manager == 'yarn' }}
+      run: npm install -g yarn
       shell: bash

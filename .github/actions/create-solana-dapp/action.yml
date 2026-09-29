@@ -36,6 +36,10 @@ runs:
           exit 1
         fi
         cd sandbox
-        ${{ inputs.package-manager }} install
+        if [[ "${{ inputs.package-manager }}" == "pnpm" ]]; then
+          pnpm install --allow-build=esbuild --allow-build=unrs-resolver
+        else
+          ${{ inputs.package-manager }} install
+        fi
         npm run ci
       shell: bash
