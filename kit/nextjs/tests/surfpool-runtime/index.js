@@ -109,10 +109,11 @@ export class Surfnet {
   async fundSol(owner, amount) {
     const signature = await rpc("requestAirdrop", [owner, Number(amount)]);
     for (let attempt = 0; attempt < 40; attempt++) {
-      const [status] = await rpc("getSignatureStatuses", [
+      const statuses = await rpc("getSignatureStatuses", [
         [signature],
         { searchTransactionHistory: true },
       ]);
+      const status = statuses?.value?.[0];
       if (status?.err) throw new Error(JSON.stringify(status.err));
       if (
         status?.confirmationStatus === "confirmed" ||
