@@ -54,7 +54,7 @@ export class Surfnet {
         MEMO_PROGRAM,
         resolve(process.cwd(), "tests/fixtures/spl_memo_v4.so"),
       ],
-      { stdio: "ignore" }
+      { stdio: ["ignore", "ignore", "pipe"] }
     );
     const runtime = new Surfnet(validator, ledgerDir, true);
     await runtime.waitForHealth();
@@ -71,7 +71,9 @@ export class Surfnet {
       }
     }
     this.stop();
-    throw new Error("Agave test validator did not start");
+    throw new Error(
+      `Agave test validator did not start${runtime.errorOutput ? `: ${runtime.errorOutput}` : ""}`
+    );
   }
 
   async assertMemoProgram() {
@@ -90,6 +92,10 @@ export class Surfnet {
     this.process = process;
     this.ledgerDir = ledgerDir;
     this.ownsValidator = ownsValidator;
+    this.errorOutput = "";
+    process?.stderr?.on("data", (chunk) => {
+      this.errorOutput = `${this.errorOutput}${chunk}`.trim().slice(-4000);
+    });
     this.rpcUrl = RPC_URL;
     this.wsUrl = WS_URL;
   }
