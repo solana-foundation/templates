@@ -108,10 +108,21 @@ export class Surfnet {
 
   async fundSol(owner, amount) {
     const signature = await rpc("requestAirdrop", [owner, Number(amount)]);
-    await rpc("getSignatureStatuses", [
-      [signature],
-      { searchTransactionHistory: true },
-    ]);
+    for (let attempt = 0; attempt < 40; attempt++) {
+      const [status] = await rpc("getSignatureStatuses", [
+        [signature],
+        { searchTransactionHistory: true },
+      ]);
+      if (status?.err) throw new Error(JSON.stringify(status.err));
+      if (
+        status?.confirmationStatus === "confirmed" ||
+        status?.confirmationStatus === "finalized"
+      ) {
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 250));
+    }
+    throw new Error(`Airdrop transaction was not confirmed: ${signature}`);
   }
 
   deploy() {}
