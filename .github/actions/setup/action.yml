@@ -55,13 +55,16 @@ runs:
           rm -rf "$HOME/.local/share/solana/install"
         fi
         sh -c "$(curl -sSfL https://release.anza.xyz/v4.2.2/install)"
+        echo "SOLANA_BIN=$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_ENV
+        echo "SOLANA_TEST_VALIDATOR=$HOME/.local/share/solana/install/active_release/bin/solana-test-validator" >> $GITHUB_ENV
         echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
       shell: bash
 
     - name: Verify installations
       run: |
         anchor --version
-        solana --version
+        "$SOLANA_BIN/solana" --version
+        "$SOLANA_TEST_VALIDATOR" --version
       shell: bash
 
     - name: Install Node.js
