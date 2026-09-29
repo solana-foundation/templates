@@ -37,6 +37,25 @@ async function getFreePort() {
   return port;
 }
 
+async function isPortAvailable(port) {
+  const server = createServer();
+  return new Promise((resolve) => {
+    const finish = (available) => {
+      server.close(() => resolve(available));
+    };
+    server.once("error", () => finish(false));
+    server.listen(port, "127.0.0.1", () => finish(true));
+  });
+}
+
+async function getFreePortPair() {
+  for (let attempt = 0; attempt < 20; attempt++) {
+    const rpcPort = await getFreePort();
+    if (await isPortAvailable(rpcPort + 1)) return rpcPort;
+  }
+  throw new Error("Could not find adjacent free RPC and WebSocket ports");
+}
+
 async function rpc(method, params, rpcUrl = RPC_URL) {
   const response = await fetch(rpcUrl, {
     method: "POST",
@@ -59,7 +78,7 @@ export class Surfnet {
     const ledgerDir =
       process.env.SOLANA_TEST_LEDGER_DIR ??
       mkdtempSync(join(tmpdir(), "kit-nextjs-validator-"));
-    const rpcPort = await getFreePort();
+    const rpcPort = await getFreePortPair();
     const rpcUrl = new URL(RPC_URL);
     rpcUrl.port = String(rpcPort);
     const localRpcUrl = rpcUrl.toString();
