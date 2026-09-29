@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { address, lamports } from "@solana/kit";
-import { useConnectedWallet } from "@solana/kit-plugin-wallet/react";
 import { toast } from "sonner";
+import { useConnectedWallet } from "@solana/kit-plugin-wallet/react";
 import { useAppClient } from "../../lib/client-provider";
 
 export function AirdropCard() {
