@@ -48,8 +48,6 @@ export class Surfnet {
         ledgerDir,
         "--rpc-port",
         new URL(RPC_URL).port || "8899",
-        "--ws-port",
-        new URL(WS_URL).port || "8900",
         "--bpf-program",
         MEMO_PROGRAM,
         resolve(process.cwd(), "tests/fixtures/spl_memo_v4.so"),
