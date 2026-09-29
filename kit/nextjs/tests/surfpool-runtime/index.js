@@ -72,7 +72,7 @@ export class Surfnet {
     }
     this.stop();
     throw new Error(
-      `Agave test validator did not start${runtime.errorOutput ? `: ${runtime.errorOutput}` : ""}`
+      `Agave test validator did not start${this.errorOutput ? `: ${this.errorOutput}` : ""}`
     );
   }
 
