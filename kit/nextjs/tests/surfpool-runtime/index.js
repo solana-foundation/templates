@@ -31,8 +31,9 @@ async function rpc(method, params) {
 export class Surfnet {
   static async start() {
     if (process.env.SOLANA_TEST_RPC_URL) {
-      const runtime = new Surfnet(null, null);
+      const runtime = new Surfnet(null, null, false);
       await runtime.waitForHealth();
+      await runtime.assertMemoProgram();
       return runtime;
     }
     const ledgerDir =
@@ -55,7 +56,7 @@ export class Surfnet {
       ],
       { stdio: "ignore" }
     );
-    const runtime = new Surfnet(validator, ledgerDir);
+    const runtime = new Surfnet(validator, ledgerDir, true);
     await runtime.waitForHealth();
     return runtime;
   }
@@ -73,9 +74,22 @@ export class Surfnet {
     throw new Error("Agave test validator did not start");
   }
 
-  constructor(process, ledgerDir) {
+  async assertMemoProgram() {
+    const account = await rpc("getAccountInfo", [
+      MEMO_PROGRAM,
+      { encoding: "base64" },
+    ]);
+    if (!account?.value) {
+      throw new Error(
+        "Configured test validator must preload the Memo v4 program"
+      );
+    }
+  }
+
+  constructor(process, ledgerDir, ownsValidator) {
     this.process = process;
     this.ledgerDir = ledgerDir;
+    this.ownsValidator = ownsValidator;
     this.rpcUrl = RPC_URL;
     this.wsUrl = WS_URL;
   }
@@ -107,6 +121,7 @@ export class Surfnet {
   }
 
   stop() {
+    if (!this.ownsValidator) return;
     this.process?.kill();
     if (!process.env.SOLANA_TEST_LEDGER_DIR) {
       rmSync(this.ledgerDir, { force: true, recursive: true });
