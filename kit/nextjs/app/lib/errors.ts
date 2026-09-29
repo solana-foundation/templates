@@ -4,7 +4,12 @@ import {
 } from "@solana/kit";
 
 export function parseTransactionError(err: unknown): string {
-  if (errorChainIncludes(err, /user (?:rejected|declined)|rejected by user/i)) {
+  if (
+    errorChainIncludes(
+      err,
+      /user (?:rejected|declined)|rejected by user|transaction cancel(?:led|ed)/i
+    )
+  ) {
     return "Transaction was rejected by the wallet.";
   }
 

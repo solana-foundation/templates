@@ -1,0 +1,13 @@
+{
+  "name": "@template-tests/surfpool-runtime",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": "./index.js",
+  "dependencies": {
+    "@solana-program/token": "0.17.0",
+    "@solana/kit": "^8.3.0",
+    "@solana/kit-plugin-rpc": "0.19.0",
+    "@solana/kit-plugin-signer": "0.19.0"
+  }
+}
