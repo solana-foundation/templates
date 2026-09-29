@@ -73,5 +73,10 @@ The tests in [`tests/`](tests/) drive the real UI — click **Connect Wallet**, 
 
 The tests point `AppClientProvider` at the local validator via its optional URL override. The validator adapter requires Agave 4.2.2 and a supported macOS or Linux environment.
 
+If `SOLANA_TEST_LEDGER_DIR` is set, it is passed to the validator with
+`--reset`. Use only a disposable, test-owned directory for this variable; do
+not point it at a shared validator ledger or a localnet ledger containing data
+you need to keep.
+
 The validator does not include Memo v4 by default. Tests verify and preload the pinned official binary from [`tests/fixtures`](tests/fixtures/README.md) into the ephemeral local
 runtime, without network downloads or public-cluster deployments.
