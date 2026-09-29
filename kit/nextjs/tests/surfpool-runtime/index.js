@@ -202,7 +202,7 @@ export class Surfnet {
   stop() {
     if (!this.ownsValidator) return;
     this.process?.kill();
-    if (!process.env.SOLANA_TEST_LEDGER_DIR) {
+    if (this.ledgerDir && !process.env.SOLANA_TEST_LEDGER_DIR) {
       rmSync(this.ledgerDir, { force: true, recursive: true });
     }
   }
