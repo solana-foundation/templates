@@ -44,6 +44,8 @@ export function ActionsPanel() {
     );
   }
 
+  const supportsV1 = connected.supportedTransactionVersions.has(1);
+
   return (
     <section className="mt-8 grid gap-4 sm:grid-cols-2">
       {cluster === "mainnet" && (
@@ -53,7 +55,7 @@ export function ActionsPanel() {
         </p>
       )}
       {cluster !== "mainnet" && <AirdropCard />}
-      {connected.signer ? (
+      {connected.signer && supportsV1 ? (
         <>
           <TransferSolCard />
           <MemoCard />
@@ -61,8 +63,9 @@ export function ActionsPanel() {
         </>
       ) : (
         <p className="sm:col-span-2 rounded-lg border border-border-low bg-card px-4 py-3 text-sm text-muted">
-          This wallet account is connected in read-only mode and cannot sign
-          transactions. Connect a signing-capable account to use these actions.
+          {!connected.signer
+            ? "This wallet account is connected in read-only mode and cannot sign transactions. Connect a signing-capable account to use these actions."
+            : "This wallet does not support Version 1 transactions. Connect a V1-capable wallet to use these actions."}
         </p>
       )}
     </section>
