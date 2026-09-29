@@ -1,5 +1,6 @@
 import { spawn } from "node:child_process";
 import { mkdtempSync, rmSync } from "node:fs";
+import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import {
@@ -17,16 +18,27 @@ const ASSOCIATED_TOKEN_PROGRAM = address(
 );
 const MEMO_PROGRAM = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr";
 
-function getLocalWsUrl() {
-  const url = new URL(RPC_URL);
+function getLocalWsUrl(rpcUrl) {
+  const url = new URL(rpcUrl);
   const rpcPort = Number(url.port || (url.protocol === "https:" ? 443 : 80));
   url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
   url.port = String(rpcPort + 1);
   return url.toString();
 }
 
-async function rpc(method, params) {
-  const response = await fetch(RPC_URL, {
+async function getFreePort() {
+  const server = createServer();
+  await new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", resolve);
+  });
+  const { port } = server.address();
+  await new Promise((resolve) => server.close(resolve));
+  return port;
+}
+
+async function rpc(method, params, rpcUrl = RPC_URL) {
+  const response = await fetch(rpcUrl, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
@@ -47,6 +59,10 @@ export class Surfnet {
     const ledgerDir =
       process.env.SOLANA_TEST_LEDGER_DIR ??
       mkdtempSync(join(tmpdir(), "kit-nextjs-validator-"));
+    const rpcPort = await getFreePort();
+    const rpcUrl = new URL(RPC_URL);
+    rpcUrl.port = String(rpcPort);
+    const localRpcUrl = rpcUrl.toString();
     const validator = spawn(
       process.env.SOLANA_TEST_VALIDATOR ?? "solana-test-validator",
       [
@@ -55,14 +71,20 @@ export class Surfnet {
         "--ledger",
         ledgerDir,
         "--rpc-port",
-        new URL(RPC_URL).port || "8899",
+        String(rpcPort),
         "--bpf-program",
         MEMO_PROGRAM,
         resolve(process.cwd(), "tests/fixtures/spl_memo_v4.so"),
       ],
       { stdio: ["ignore", "ignore", "pipe"] }
     );
-    const runtime = new Surfnet(validator, ledgerDir, true, getLocalWsUrl());
+    const runtime = new Surfnet(
+      validator,
+      ledgerDir,
+      true,
+      getLocalWsUrl(localRpcUrl),
+      localRpcUrl
+    );
     await runtime.waitForHealth();
     return runtime;
   }
@@ -70,7 +92,7 @@ export class Surfnet {
   async waitForHealth() {
     for (let attempt = 0; attempt < 60; attempt++) {
       try {
-        await rpc("getHealth", []);
+        await rpc("getHealth", [], this.rpcUrl);
         return;
       } catch {
         await new Promise((resolve) => setTimeout(resolve, 250));
@@ -83,10 +105,11 @@ export class Surfnet {
   }
 
   async assertMemoProgram() {
-    const account = await rpc("getAccountInfo", [
-      MEMO_PROGRAM,
-      { encoding: "base64" },
-    ]);
+    const account = await rpc(
+      "getAccountInfo",
+      [MEMO_PROGRAM, { encoding: "base64" }],
+      this.rpcUrl
+    );
     if (!account?.value) {
       throw new Error(
         "Configured test validator must preload the Memo v4 program"
@@ -94,7 +117,13 @@ export class Surfnet {
     }
   }
 
-  constructor(process, ledgerDir, ownsValidator, wsUrl = WS_URL) {
+  constructor(
+    process,
+    ledgerDir,
+    ownsValidator,
+    wsUrl = WS_URL,
+    rpcUrl = RPC_URL
+  ) {
     this.process = process;
     this.ledgerDir = ledgerDir;
     this.ownsValidator = ownsValidator;
@@ -102,17 +131,22 @@ export class Surfnet {
     process?.stderr?.on("data", (chunk) => {
       this.errorOutput = `${this.errorOutput}${chunk}`.trim().slice(-4000);
     });
-    this.rpcUrl = RPC_URL;
+    this.rpcUrl = rpcUrl;
     this.wsUrl = wsUrl;
   }
 
   async fundSol(owner, amount) {
-    const signature = await rpc("requestAirdrop", [owner, Number(amount)]);
+    const signature = await rpc(
+      "requestAirdrop",
+      [owner, Number(amount)],
+      this.rpcUrl
+    );
     for (let attempt = 0; attempt < 40; attempt++) {
-      const statuses = await rpc("getSignatureStatuses", [
-        [signature],
-        { searchTransactionHistory: true },
-      ]);
+      const statuses = await rpc(
+        "getSignatureStatuses",
+        [[signature], { searchTransactionHistory: true }],
+        this.rpcUrl
+      );
       const status = statuses?.value?.[0];
       if (status?.err) throw new Error(JSON.stringify(status.err));
       if (
