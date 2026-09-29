@@ -51,6 +51,9 @@ runs:
 
     - name: Install Solana CLI
       run: |
+        if ! solana --version 2>/dev/null | grep -q 'solana-cli 4.2.2'; then
+          rm -rf "$HOME/.local/share/solana/install"
+        fi
         sh -c "$(curl -sSfL https://release.anza.xyz/v4.2.2/install)"
         echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
       shell: bash
