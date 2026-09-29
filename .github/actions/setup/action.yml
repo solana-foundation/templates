@@ -47,7 +47,7 @@ runs:
         path: |
           ~/.cache/solana/
           ~/.local/share/solana/
-        key: solana-cli-${{ runner.os }}-4.2.2
+        key: solana-cli-${{ runner.os }}-agave-4.2.2-v2
 
     - name: Install Solana CLI
       run: |
