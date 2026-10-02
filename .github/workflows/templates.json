@@ -41,5 +41,6 @@
   "web3js/legacy/web3js-next-tailwind-counter",
   "web3js/legacy/web3js-react-vite-tailwind",
   "web3js/legacy/web3js-react-vite-tailwind-basic",
-  "web3js/legacy/web3js-react-vite-tailwind-counter"
+  "web3js/legacy/web3js-react-vite-tailwind-counter",
+  "web3js/web3js-nextjs"
 ]

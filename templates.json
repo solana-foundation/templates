@@ -291,6 +291,32 @@
     ]
   },
   {
+    "description": "Templates using @solana/web3.js v3 and @solana/wallet-adapter",
+    "name": "Web3.js Templates",
+    "path": "web3js",
+    "templates": [
+      {
+        "description": "Next.js, Tailwind, @solana/web3.js v3, Wallet Adapter v3, SIWS, SPL tokens",
+        "id": "gh:solana-foundation/templates/web3js/web3js-nextjs",
+        "image": "web3js/web3js-nextjs/og-image.png",
+        "keywords": [
+          "nextjs",
+          "react",
+          "siws",
+          "solana-web3js",
+          "spl-token",
+          "tailwind",
+          "typescript",
+          "wallet-adapter"
+        ],
+        "name": "web3js-nextjs",
+        "path": "web3js/web3js-nextjs",
+        "displayName": "Web3.js v3 Next.js",
+        "usecase": "Starter"
+      }
+    ]
+  },
+  {
     "description": "Templates using @solana/web3.js v1 and the legacy wallet adapter packages",
     "name": "Web3.js Templates (legacy)",
     "path": "web3js/legacy",
