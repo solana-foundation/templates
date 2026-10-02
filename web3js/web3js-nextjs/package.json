@@ -1,0 +1,66 @@
+{
+  "name": "web3js-nextjs",
+  "displayName": "Web3.js v3 Next.js",
+  "description": "Next.js, Tailwind, @solana/web3.js v3, Wallet Adapter v3, SIWS, SPL tokens",
+  "usecase": "Starter",
+  "keywords": [
+    "nextjs",
+    "react",
+    "siws",
+    "solana-web3js",
+    "spl-token",
+    "tailwind",
+    "typescript",
+    "wallet-adapter"
+  ],
+  "create-solana-dapp": {
+    "rename": {
+      "scaffold": {
+        "to": "{{name}}",
+        "paths": [
+          "app"
+        ]
+      }
+    }
+  },
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "next build",
+    "ci": "npm run build && npm run typecheck && npm run lint && npm run format:check && npm run test",
+    "dev": "next dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint",
+    "start": "next start",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@solana-program/token": "^0.17.0",
+    "@solana/kit": "^8.4.0",
+    "@solana/wallet-adapter": "^3.0.1",
+    "@solana/web3.js": "^3.0.1",
+    "next": "16.3.8",
+    "next-themes": "^0.4.6",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "sonner": "^2.0.7"
+  },
+  "devDependencies": {
+    "@solana/wallet-standard-util": "^1.2.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.8",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^5.0.3"
+  }
+}
