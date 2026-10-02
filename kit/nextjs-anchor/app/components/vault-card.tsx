@@ -59,7 +59,13 @@ export function VaultCard() {
   const handleDeposit = useCallback(async () => {
     if (!walletAddress || !vaultAddress || !amount || !signer) return;
 
-    const depositLamports = lamportsFromSol(parseFloat(amount));
+    const depositLamports = lamportsFromSol(amount);
+    if (depositLamports === null) {
+      toast.error(
+        "Enter a valid SOL amount greater than zero with up to 9 decimal places."
+      );
+      return;
+    }
     if (walletLamports != null && walletLamports < depositLamports) {
       toast.error("Insufficient balance.", {
         description: `You need at least ${amount} SOL plus fees. Current balance: ${lamportsToSolString(walletLamports)} SOL.`,
@@ -71,7 +77,7 @@ export function VaultCard() {
       const instruction = getDepositInstruction({
         signer,
         vault: vaultAddress,
-        amount: lamportsFromSol(parseFloat(amount)),
+        amount: depositLamports,
       });
 
       const signature = await send({ instructions: [instruction] });
@@ -93,7 +99,15 @@ export function VaultCard() {
       console.error("Deposit failed:", err);
       toast.error(parseTransactionError(err));
     }
-  }, [walletAddress, vaultAddress, amount, signer, send, getExplorerUrl]);
+  }, [
+    walletAddress,
+    vaultAddress,
+    amount,
+    signer,
+    walletLamports,
+    send,
+    getExplorerUrl,
+  ]);
 
   const handleWithdraw = useCallback(async () => {
     if (!walletAddress || !vaultAddress || !signer) return;
@@ -200,7 +214,8 @@ export function VaultCard() {
           <input
             type="number"
             min="0"
-            step="0.01"
+            step="0.000000001"
+            aria-label="Amount in SOL"
             placeholder="Amount in SOL"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
@@ -209,12 +224,7 @@ export function VaultCard() {
           />
           <button
             onClick={handleDeposit}
-            disabled={
-              isSending ||
-              !amount ||
-              parseFloat(amount) <= 0 ||
-              (vaultLamports ?? 0n) > 0n
-            }
+            disabled={isSending || !amount || (vaultLamports ?? 0n) > 0n}
             className="rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-xs transition hover:bg-primary/90 disabled:opacity-50 disabled:pointer-events-none"
           >
             {isSending ? "Confirming..." : "Deposit"}
