@@ -32,7 +32,16 @@ export function TokenCard({ owner, signer }: TokenCardProps) {
   const { connection } = useConnection();
   const { cluster } = useCluster();
   const { send, isSending } = useSendTransaction();
-  const [mint, setMint] = useState<PublicKey | null>(null);
+  const storageKey = `web3js-react-vite:mint:${cluster}:${owner.toBase58()}`;
+  const [mint, setMintState] = useState<PublicKey | null>(() => {
+    const saved = localStorage.getItem(storageKey);
+    return saved ? new PublicKey(saved) : null;
+  });
+  const setMint = (next: PublicKey | null) => {
+    if (next) localStorage.setItem(storageKey, next.toBase58());
+    else localStorage.removeItem(storageKey);
+    setMintState(next);
+  };
   const token = useTokenAccount(mint, owner);
 
   const [mintAmount, setMintAmount] = useState("100");

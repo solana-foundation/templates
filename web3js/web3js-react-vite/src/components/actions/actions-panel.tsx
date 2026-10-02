@@ -50,7 +50,7 @@ export function ActionsPanel() {
       )}
       <WalletCard />
       {signer && <TransferSolCard />}
-      <SignMessageCard />
+      <SignMessageCard key={publicKey.toBase58()} />
       {signer ? (
         <TokenCard
           key={`${cluster}:${publicKey.toBase58()}`}

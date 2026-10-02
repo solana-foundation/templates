@@ -27,10 +27,17 @@ export function WalletCard() {
         LAMPORTS_PER_SOL
       );
       const latest = await connection.getLatestBlockhash("confirmed");
-      await connection.confirmTransaction(
+      const { value } = await connection.confirmTransaction(
         { signature, ...latest },
         "confirmed"
       );
+      if (value.err) {
+        throw new Error(
+          `Airdrop transaction failed: ${JSON.stringify(value.err, (_, v) =>
+            typeof v === "bigint" ? v.toString() : v
+          )}`
+        );
+      }
       toast.success("Airdropped 1 SOL", {
         description: (
           <a
