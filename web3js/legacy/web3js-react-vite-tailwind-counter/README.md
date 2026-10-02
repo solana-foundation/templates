@@ -14,7 +14,7 @@ This is a Vite app containing:
 #### Download the template
 
 ```shell
-pnpm create solana-dapp@latest -t gh:solana-foundation/templates/web3js/web3js-react-vite-tailwind-counter
+pnpm create solana-dapp@latest -t gh:solana-foundation/templates/web3js/legacy/web3js-react-vite-tailwind-counter
 ```
 
 #### Install Dependencies
