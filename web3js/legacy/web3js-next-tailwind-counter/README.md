@@ -1,11 +1,11 @@
-# web3js-react-vite-tailwind-basic
+# web3js-next-tailwind-counter
 
-This is a Vite app containing:
+This is a Next.js app containing:
 
 - Tailwind CSS setup for styling
 - Useful wallet UI elements setup using [@solana/web3.js](https://www.npmjs.com/package/@solana/web3.js)
-- A basic Greeter Solana program written in Anchor
-- UI components for interacting with the Greeter program using the Anchor generated client
+- A basic Counter Solana program written in Anchor
+- UI components for interacting with the Counter program
 
 ## Getting Started
 
@@ -14,7 +14,7 @@ This is a Vite app containing:
 #### Download the template
 
 ```shell
-pnpm create solana-dapp@latest -t gh:solana-foundation/templates/web3js/web3js-react-vite-tailwind-basic
+pnpm create solana-dapp@latest -t gh:solana-foundation/templates/web3js/legacy/web3js-next-tailwind-counter
 ```
 
 #### Install Dependencies

@@ -11,6 +11,8 @@ minimumReleaseAgeExclude:
   - '@solana-program/system'
   - '@solana-program/token'
   - '@solana-program/memo'
+  - '@solana/web3.js'
+  - '@solana/wallet-adapter'
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@tailwindcss/oxide'
@@ -31,3 +33,4 @@ packages:
   - kit/*
   - pinocchio/*
   - web3js/*
+  - web3js/legacy/*
