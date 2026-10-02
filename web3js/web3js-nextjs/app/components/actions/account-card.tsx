@@ -28,7 +28,17 @@ export function AccountCard() {
         publicKey,
         LAMPORTS_PER_SOL
       );
-      await connection.confirmTransaction({ signature, ...latest });
+      const { value } = await connection.confirmTransaction({
+        signature,
+        ...latest,
+      });
+      if (value.err) {
+        throw new Error(
+          `Airdrop transaction failed: ${JSON.stringify(value.err, (_, v) =>
+            typeof v === "bigint" ? v.toString() : v
+          )}`
+        );
+      }
       toast.success("Airdropped 1 SOL");
     } catch (err) {
       console.error(err);

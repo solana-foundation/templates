@@ -118,7 +118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const switched = address !== null && address !== session.address;
     if (disconnected || switched) {
       deleteSession().then(
-        () => setSession(null),
+        () => setSession((current) => (current === session ? null : current)),
         (err: Error) => {
           console.error(err);
           toast.error(err.message);

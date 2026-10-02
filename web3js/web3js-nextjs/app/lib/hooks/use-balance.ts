@@ -16,12 +16,18 @@ export function useBalance(publicKey: PublicKey | null) {
   useEffect(() => {
     if (!publicKey || !key) return;
     let active = true;
+    let receivedUpdate = false;
 
     connection.getBalance(publicKey).then(
-      (lamports) => active && setState({ key, lamports, error: false }),
-      () => active && setState({ key, lamports: null, error: true })
+      (lamports) =>
+        active && !receivedUpdate && setState({ key, lamports, error: false }),
+      () =>
+        active &&
+        !receivedUpdate &&
+        setState({ key, lamports: null, error: true })
     );
     const subscriptionId = connection.onAccountChange(publicKey, (account) => {
+      receivedUpdate = true;
       if (active) setState({ key, lamports: account.lamports, error: false });
     });
 
