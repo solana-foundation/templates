@@ -67,7 +67,14 @@ export function WalletActions({ wallet }: { wallet: WalletSession }) {
       if (transferAmount !== lamportsFromSol(amount, { rounding: "ceil" })) {
         throw new Error("Use at most 9 decimal places for the SOL amount.");
       }
-      if (balance.lamports !== null && transferAmount >= balance.lamports) {
+      if (balance.lamports === null || balance.error) {
+        throw new Error(
+          "Wait for the balance to load successfully before transferring SOL."
+        );
+      }
+      // ponytail: one signature, no priority fee; estimate fees if that changes.
+      const feeLamports = 5_000n;
+      if (transferAmount + feeLamports > balance.lamports) {
         throw new Error(
           "Insufficient SOL balance. Leave enough SOL for transaction fees."
         );
