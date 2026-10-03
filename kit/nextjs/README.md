@@ -67,7 +67,7 @@ npm run test
 
 The tests in [`tests/`](tests/) drive the real UI — click **Connect Wallet**, pick a wallet, fill in the transfer form, press **Send SOL** — and assert on-chain state before and after each click. Three pieces make that work without a browser or a wallet extension:
 
-- **Agave 4.2.2's `solana-test-validator`** runs the tests against a V1-enabled local validator. The test adapter starts an isolated validator, preloads the memo fixture, and exposes only the small funding/account helpers the tests need.
+- **Agave 4.2.2's `solana-test-validator`** runs the tests against a V1-enabled local validator. The test adapter starts an isolated validator and exposes only the small funding/account helpers the tests need.
 - **A mock wallet-standard wallet** ([`tests/mock-wallet.ts`](tests/mock-wallet.ts)) registers itself like any browser extension would, so the app's real wallet discovery, connect flow, and transaction signing run unmodified — signatures come from an in-memory keypair.
 - **[Vitest](https://vitest.dev) + [Testing Library](https://testing-library.com/docs/react-testing-library/intro/)** render the actual app components in jsdom and interact with them by role and label, the same way a user would.
 
@@ -78,5 +78,5 @@ If `SOLANA_TEST_LEDGER_DIR` is set, it is passed to the validator with
 not point it at a shared validator ledger or a localnet ledger containing data
 you need to keep.
 
-The validator does not include Memo v4 by default. Tests verify and preload the pinned official binary from [`tests/fixtures`](tests/fixtures/README.md) into the ephemeral local
-runtime, without network downloads or public-cluster deployments.
+Agave 4.2.2 includes the Memo programs by default, so the tests do not need a
+bundled program binary or a separate Memo deployment.

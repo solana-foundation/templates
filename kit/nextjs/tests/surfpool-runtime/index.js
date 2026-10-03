@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { mkdtempSync, rmSync } from "node:fs";
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { join } from "node:path";
 import {
   address,
   generateKeyPairSigner,
@@ -93,9 +93,6 @@ export class Surfnet {
         ledgerDir,
         "--rpc-port",
         String(rpcPort),
-        "--bpf-program",
-        MEMO_PROGRAM,
-        resolve(process.cwd(), "tests/fixtures/spl_memo_v4.so"),
       ],
       { stdio: ["ignore", "ignore", "pipe"] }
     );
@@ -133,7 +130,7 @@ export class Surfnet {
     );
     if (!account?.value) {
       throw new Error(
-        "Configured test validator must preload the Memo v4 program"
+        "Configured test validator must provide the Memo program"
       );
     }
   }
@@ -180,8 +177,6 @@ export class Surfnet {
     }
     throw new Error(`Airdrop transaction was not confirmed: ${signature}`);
   }
-
-  deploy() {}
 
   getAta(owner, mint) {
     return getProgramDerivedAddress({

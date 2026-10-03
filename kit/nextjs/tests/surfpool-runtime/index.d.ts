@@ -4,7 +4,6 @@ export declare class Surfnet {
   readonly rpcUrl: string;
   readonly wsUrl: string;
   fundSol(owner: string, amount: number | bigint): Promise<void>;
-  deploy(): void;
   getAta(owner: string, mint: string): Promise<string>;
   stop(): void;
 }

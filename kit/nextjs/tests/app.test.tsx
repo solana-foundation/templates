@@ -1,8 +1,5 @@
 import { address, createSolanaRpc } from "@solana/kit";
 import { fetchMint, fetchToken } from "@solana-program/token";
-import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { Surfnet } from "@template-tests/surfpool-runtime";
 import {
   cleanup,
@@ -41,14 +38,6 @@ let rpc: ReturnType<typeof createSolanaRpc>;
 
 beforeAll(async () => {
   surfnet = await Surfnet.start();
-  // The Kit 8 plugin uses Memo v4, so the adapter preloads the pinned fixture.
-  const memoBinary = readFileSync(
-    resolve(process.cwd(), "tests/fixtures/spl_memo_v4.so")
-  );
-  expect(createHash("sha256").update(memoBinary).digest("hex")).toBe(
-    "0c92063c6838d9ad8af50aaefea9a166b5bb41a2bfa2bc6327d7db320849bc78"
-  );
-  surfnet.deploy();
   rpc = createSolanaRpc(surfnet.rpcUrl);
   await surfnet.fundSol(mockWalletAddress, 5 * LAMPORTS_PER_SOL);
   registerMockWallet();
