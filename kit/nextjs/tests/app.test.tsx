@@ -1,6 +1,6 @@
 import { address, createSolanaRpc } from "@solana/kit";
-import { ClientProvider } from "@solana/react";
-import { Surfnet } from "@solana/surfpool";
+import { fetchMint, fetchToken } from "@solana-program/token";
+import { Surfnet } from "@template-tests/surfpool-runtime";
 import {
   cleanup,
   fireEvent,
@@ -20,10 +20,11 @@ import {
 } from "vitest";
 import { AirdropCard } from "../app/components/actions/airdrop-card";
 import { MemoCard } from "../app/components/actions/memo-card";
+import { TokenCard } from "../app/components/actions/token-card";
 import { TransferSolCard } from "../app/components/actions/transfer-sol-card";
 import { ClusterProvider } from "../app/components/cluster-context";
 import { WalletButton } from "../app/components/wallet-button";
-import { createAppClient } from "../app/lib/solana-client";
+import { AppClientProvider } from "../app/lib/client-provider";
 import {
   mockWalletAddress,
   registerMockWallet,
@@ -35,10 +36,10 @@ const LAMPORTS_PER_SOL = 1_000_000_000;
 let surfnet: Surfnet;
 let rpc: ReturnType<typeof createSolanaRpc>;
 
-beforeAll(() => {
-  surfnet = Surfnet.start();
+beforeAll(async () => {
+  surfnet = await Surfnet.start();
   rpc = createSolanaRpc(surfnet.rpcUrl);
-  surfnet.fundSol(mockWalletAddress, 5 * LAMPORTS_PER_SOL);
+  await surfnet.fundSol(mockWalletAddress, 5 * LAMPORTS_PER_SOL);
   registerMockWallet();
 }, 60_000);
 
@@ -53,24 +54,29 @@ beforeEach(() => {
 
 afterEach(cleanup);
 
-function TestApp() {
-  const client = useMemo(
-    () =>
-      createAppClient("localnet", {
-        rpcUrl: surfnet.rpcUrl,
-        rpcSubscriptionsUrl: surfnet.wsUrl,
-      }),
+function TestApp({ tokens = false }: { tokens?: boolean }) {
+  const urls = useMemo(
+    () => ({
+      rpcUrl: surfnet.rpcUrl,
+      rpcSubscriptionsUrl: surfnet.wsUrl,
+    }),
     []
   );
   return (
     <ClusterProvider>
-      <ClientProvider client={client}>
+      <AppClientProvider urls={urls}>
         <WalletButton />
-        <AirdropCard />
-        <TransferSolCard />
-        <MemoCard />
+        {tokens ? (
+          <TokenCard />
+        ) : (
+          <>
+            <AirdropCard />
+            <TransferSolCard />
+            <MemoCard />
+          </>
+        )}
         <Toaster />
-      </ClientProvider>
+      </AppClientProvider>
     </ClusterProvider>
   );
 }
@@ -93,9 +99,6 @@ async function connectWallet() {
 }
 
 test("connects the mock wallet and shows its on-chain balance", async () => {
-  // fundSol sets the absolute balance, pinning the displayed amount no matter
-  // what the other tests have spent.
-  surfnet.fundSol(mockWalletAddress, 5 * LAMPORTS_PER_SOL);
   render(<TestApp />);
 
   const walletButton = await connectWallet();
@@ -127,7 +130,7 @@ test("airdrop button funds the connected wallet", async () => {
 });
 
 test("signs and sends a SOL transfer that moves lamports on-chain", async () => {
-  const recipient = Surfnet.newKeypair().publicKey;
+  const recipient = (await Surfnet.newKeypair()).publicKey;
   render(<TestApp />);
   await connectWallet();
 
@@ -164,10 +167,92 @@ test("posts a memo and records it in the transaction logs", async () => {
   const transaction = await rpc
     .getTransaction(signatures[0].signature, {
       encoding: "json",
-      maxSupportedTransactionVersion: 0,
+      maxSupportedTransactionVersion: 1,
     })
     .send();
+  expect(transaction?.version).toBe(1);
   expect(transaction?.meta?.logMessages?.join("\n")).toContain(
     "gm from @solana/kit"
   );
 });
+
+test("creates a mint, mints tokens, and transfers to new and existing token accounts", async () => {
+  render(<TestApp tokens />);
+  await connectWallet();
+  fireEvent.click(
+    screen.getByRole("button", { name: "Create mint (9 decimals)" })
+  );
+  await screen.findByText("Token mint created", {}, { timeout: 15_000 });
+
+  const mintLink = screen
+    .getAllByRole("link")
+    .find((link) => link.getAttribute("href")?.includes("/address/"));
+  expect(mintLink).toBeTruthy();
+  const mint = address(
+    new URL(mintLink!.getAttribute("href")!).pathname.split("/").at(-1)!
+  );
+  const created = await fetchMint(rpc, mint);
+  expect(created.data.decimals).toBe(9);
+  expect(created.data.supply).toBe(0n);
+  expect(created.data.mintAuthority).toEqual({
+    __option: "Some",
+    value: mockWalletAddress,
+  });
+
+  fireEvent.click(screen.getByRole("button", { name: "Mint to my wallet" }));
+  await screen.findByText(
+    "Tokens minted to your wallet",
+    {},
+    { timeout: 15_000 }
+  );
+  const senderAta = address(await surfnet.getAta(mockWalletAddress, mint));
+  expect((await fetchToken(rpc, senderAta)).data.amount).toBe(100_000_000_000n);
+  expect((await fetchMint(rpc, mint)).data.supply).toBe(100_000_000_000n);
+
+  const recipient = (await Surfnet.newKeypair()).publicKey;
+  const recipientAta = address(await surfnet.getAta(recipient, mint));
+  expect(
+    (await rpc.getAccountInfo(recipientAta, { encoding: "base64" }).send())
+      .value
+  ).toBeNull();
+  fireEvent.change(screen.getByLabelText("Recipient address"), {
+    target: { value: recipient },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Transfer tokens" }));
+  await waitFor(
+    async () => {
+      const received = await fetchToken(rpc, recipientAta);
+      expect(received.data.amount).toBe(10_000_000_000n);
+      expect(received.data.owner).toBe(recipient);
+      expect(received.data.mint).toBe(mint);
+      expect((await fetchToken(rpc, senderAta)).data.amount).toBe(
+        90_000_000_000n
+      );
+    },
+    { timeout: 15_000 }
+  );
+
+  // Repeat with an existing ATA and a fractional amount to catch scaling errors.
+  fireEvent.change(screen.getByLabelText("Amount to transfer"), {
+    target: { value: "0.000000001" },
+  });
+  const transferButton = await screen.findByRole("button", {
+    name: "Transfer tokens",
+  });
+  await waitFor(() =>
+    expect((transferButton as HTMLButtonElement).disabled).toBe(false)
+  );
+  fireEvent.click(transferButton);
+  await waitFor(
+    async () => {
+      expect((await fetchToken(rpc, recipientAta)).data.amount).toBe(
+        10_000_000_001n
+      );
+      expect((await fetchToken(rpc, senderAta)).data.amount).toBe(
+        89_999_999_999n
+      );
+      expect((await fetchMint(rpc, mint)).data.supply).toBe(100_000_000_000n);
+    },
+    { timeout: 15_000 }
+  );
+}, 60_000);

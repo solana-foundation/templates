@@ -36,6 +36,18 @@ runs:
           exit 1
         fi
         cd sandbox
-        ${{ inputs.package-manager }} install
+        if [[ "${{ inputs.package-manager }}" == "pnpm" ]]; then
+          pnpm install \
+            --allow-build=@parcel/watcher \
+            --allow-build=@tailwindcss/oxide \
+            --allow-build=bigint-buffer \
+            --allow-build=bufferutil \
+            --allow-build=esbuild \
+            --allow-build=sharp \
+            --allow-build=unrs-resolver \
+            --allow-build=utf-8-validate
+        else
+          ${{ inputs.package-manager }} install
+        fi
         npm run ci
       shell: bash

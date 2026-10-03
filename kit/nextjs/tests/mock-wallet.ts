@@ -39,6 +39,12 @@ let connectedAccounts: (typeof account)[] = [];
 export const mockWallet = {
   chains: CHAINS,
   features: {
+    "standard:disconnect": {
+      disconnect: async () => {
+        connectedAccounts = [];
+      },
+      version: "1.0.0" as const,
+    },
     "solana:signMessage": {
       signMessage: async (...inputs: readonly { message: Uint8Array }[]) =>
         Promise.all(
@@ -68,7 +74,7 @@ export const mockWallet = {
             };
           })
         ),
-      supportedTransactionVersions: ["legacy", 0] as const,
+      supportedTransactionVersions: ["legacy", 0, 1] as const,
       version: "1.0.0" as const,
     },
     "standard:connect": {
