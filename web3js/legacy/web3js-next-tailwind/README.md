@@ -12,7 +12,7 @@ This is a Next.js app containing:
 #### Download the template
 
 ```shell
-pnpm create solana-dapp@latest -t gh:solana-foundation/templates/web3js/web3js-next-tailwind
+pnpm create solana-dapp@latest -t gh:solana-foundation/templates/web3js/legacy/web3js-next-tailwind
 ```
 
 #### Install Dependencies

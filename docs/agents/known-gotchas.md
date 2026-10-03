@@ -6,7 +6,7 @@
 
 ## Template Group Scanning
 
-The generator and linter scan direct children of each root `repokit.groups` path. A directory inside a scanned group without `package.json` can fail lint.
+The generator and linter scan direct children of each root `repokit.groups` path. A directory inside a scanned group without `package.json` can fail lint, unless that directory is itself a configured group root (for example `web3js/legacy` inside `web3js`), in which case the parent group skips it.
 
 ## Open Graph Images
 

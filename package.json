@@ -41,9 +41,14 @@
         "name": "Solana Mobile"
       },
       {
-        "description": "Templates using @solana/web3.js (legacy)",
+        "description": "Templates using @solana/web3.js v3 and @solana/wallet-adapter",
         "name": "Web3.js Templates",
         "path": "web3js"
+      },
+      {
+        "description": "Templates using @solana/web3.js v1 and the legacy wallet adapter packages",
+        "name": "Web3.js Templates (legacy)",
+        "path": "web3js/legacy"
       },
       {
         "description": "Templates maintained by the Solana community",

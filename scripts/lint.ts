@@ -64,8 +64,8 @@ const validateTemplatePackageJson = (pkg: PackageJson, templatePath: string): Va
   return errors
 }
 
-// Scan a single group for validation errors
-const lintGroup = async (groupPath: string): Promise<ValidationError[]> => {
+// Scan a single group for validation errors, skipping child directories that are themselves group roots
+const lintGroup = async (groupPath: string, groupPaths: ReadonlySet<string>): Promise<ValidationError[]> => {
   const groupDir = join(ROOT_DIR, groupPath)
   const entriesResult = readDirs(groupDir)
 
@@ -78,6 +78,10 @@ const lintGroup = async (groupPath: string): Promise<ValidationError[]> => {
   for (const entry of entriesResult.value) {
     const entryPath = join(groupDir, entry)
     const templatePath = join(groupPath, entry)
+
+    if (groupPaths.has(templatePath)) {
+      continue
+    }
 
     if (!hasPackageJson(entryPath)) {
       errors.push({ path: templatePath, message: 'Missing package.json' })
@@ -154,10 +158,11 @@ const lint = async (): Promise<Result<void>> => {
 
   const groups = configResult.value
   const allErrors: ValidationError[] = []
+  const groupPaths = new Set(groups.map((group) => join(group.path)))
 
   // Lint each group
   for (const group of groups) {
-    const groupErrors = await lintGroup(group.path)
+    const groupErrors = await lintGroup(group.path, groupPaths)
     allErrors.push(...groupErrors)
   }
 
