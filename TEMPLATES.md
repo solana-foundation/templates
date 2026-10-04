@@ -70,7 +70,7 @@ Kit Templates (using @solana/kit)
 
 `gh:solana-foundation/templates/kit/react-vite`
 
-> React + Vite, Tailwind, @solana/react-hooks
+> React + Vite, Tailwind, @solana/kit wallet connection
 
 `kit` `react` `solana-kit` `tailwind` `typescript` `vite`
 

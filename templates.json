@@ -156,7 +156,7 @@
         "usecase": "Program Development"
       },
       {
-        "description": "React + Vite, Tailwind, @solana/react-hooks",
+        "description": "React + Vite, Tailwind, @solana/kit wallet connection",
         "id": "gh:solana-foundation/templates/kit/react-vite",
         "image": "kit/react-vite/og-image.png",
         "keywords": [
