@@ -99,6 +99,9 @@ jobs:
           # @solana-program/token >=0.14 requires Node >=24
           - node: 22
             template: kit/nextjs
+          # Kit 8 wallet/RPC plugins require Node >=24
+          - node: 22
+            template: kit/react-vite
           # Depends on @solana/kit RPC/wallet stack that requires Node >=24
           - node: 22
             template: kit/nextjs-hardware-signin
@@ -129,6 +132,9 @@ jobs:
           # @solana-program/token >=0.14 requires Node >=24
           - node: 22
             template: kit/nextjs
+          # Kit 8 wallet/RPC plugins require Node >=24
+          - node: 22
+            template: kit/react-vite
           # Depends on @solana/kit RPC/wallet stack that requires Node >=24
           - node: 22
             template: kit/nextjs-hardware-signin
@@ -159,6 +165,9 @@ jobs:
           # @solana-program/token >=0.14 requires Node >=24
           - node: 22
             template: kit/nextjs
+          # Kit 8 wallet/RPC plugins require Node >=24
+          - node: 22
+            template: kit/react-vite
           # Depends on @solana/kit RPC/wallet stack that requires Node >=24
           - node: 22
             template: kit/nextjs-hardware-signin
