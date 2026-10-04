@@ -7,6 +7,18 @@ import {
 } from "@solana/kit-plugin-wallet/react";
 import { useClient } from "@solana/react";
 import type { AppClient } from "./solana-client";
+import { getWalletForHandle } from "@wallet-standard/ui-registry";
+
+const walletIds = new WeakMap<object, number>();
+let nextWalletId = 0;
+function walletId(wallet: object) {
+  let id = walletIds.get(wallet);
+  if (id === undefined) {
+    id = nextWalletId++;
+    walletIds.set(wallet, id);
+  }
+  return id;
+}
 
 export default function App() {
   const client = useClient<AppClient>();
@@ -141,7 +153,7 @@ export default function App() {
             ) : (
               wallets.map((candidate) => (
                 <button
-                  key={candidate.name}
+                  key={walletId(getWalletForHandle(candidate))}
                   onClick={() => {
                     resetDisconnect();
                     void connect(candidate).catch(() => {});
@@ -155,7 +167,9 @@ export default function App() {
                       {isConnecting
                         ? "Connecting…"
                         : status === "connected" &&
-                            connectedWallet?.wallet.name === candidate.name
+                            connectedWallet != null &&
+                            getWalletForHandle(connectedWallet.wallet) ===
+                              getWalletForHandle(candidate)
                           ? "Active"
                           : "Tap to connect"}
                     </span>

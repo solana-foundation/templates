@@ -1,6 +1,10 @@
 import { address, getAddressDecoder } from "@solana/kit";
+import { createClient } from "@solana/kit";
+import { solanaRpc } from "@solana/kit-plugin-rpc";
+import { walletSigner } from "@solana/kit-plugin-wallet";
 import { ClientProvider } from "@solana/react";
 import { registerWallet } from "@wallet-standard/wallet";
+import { getWallets } from "@wallet-standard/app";
 import {
   act,
   cleanup,
@@ -53,9 +57,9 @@ const wallet = {
     },
     "standard:connect": {
       version: "1.0.0" as const,
-      connect: async () => {
+      connect: async (options?: { silent?: boolean }) => {
         if (rejectConnection) throw new Error("Connection rejected by user");
-        changeAccounts([first]);
+        if (!options?.silent) changeAccounts([first]);
         return { accounts };
       },
     },
@@ -86,13 +90,73 @@ afterEach(() => {
   rejectDisconnection = false;
   localStorage.clear();
 });
-function mount() {
-  render(
-    <ClientProvider client={client}>
+function mount(activeClient = client) {
+  return render(
+    <ClientProvider client={activeClient}>
       <App />
     </ClientProvider>
   );
 }
+
+test("restores the persisted account with a fresh client after remount", async () => {
+  const view = mount();
+  await connect();
+  await screen.findByText(first.address);
+  act(() => changeAccounts([second]));
+  await screen.findByText(second.address);
+  view.unmount();
+  const restoredClient = createClient()
+    .use(walletSigner({ chain: "solana:devnet" }))
+    .use(
+      solanaRpc({
+        rpcUrl: "https://api.devnet.solana.com",
+        rpcSubscriptionsUrl: "wss://api.devnet.solana.com",
+        transactionConfig: { version: 1 },
+      })
+    );
+  try {
+    mount(restoredClient);
+    await screen.findByText(second.address);
+    expect(screen.queryByText("Restoring wallet...")).toBeNull();
+    expect(
+      screen.getByRole("button", { name: /Test Wallet/ }).textContent
+    ).toContain("Active");
+    expect(screen.queryByRole("alert")).toBeNull();
+  } finally {
+    cleanup();
+  }
+});
+
+test("distinguishes two registered wallets with the same name", async () => {
+  const duplicate = {
+    ...wallet,
+    name: "Test Wallet",
+    get accounts() {
+      return accounts;
+    },
+    features: { ...wallet.features },
+  };
+  const unregister = getWallets().register(duplicate);
+  try {
+    mount();
+    const buttons = await screen.findAllByRole("button", {
+      name: /Test Wallet/,
+    });
+    await waitFor(() =>
+      expect((buttons[0] as HTMLButtonElement).disabled).toBe(false)
+    );
+    fireEvent.click(buttons[0]);
+    await screen.findByText(first.address);
+    expect(buttons[0].textContent).toContain("Active");
+    expect(buttons[1].textContent).toContain("Tap to connect");
+    fireEvent.click(buttons[1]);
+    await waitFor(() => expect(buttons[1].textContent).toContain("Active"));
+    expect(buttons[0].textContent).toContain("Tap to connect");
+  } finally {
+    cleanup();
+    unregister();
+  }
+});
 async function connect() {
   const button = await screen.findByRole("button", { name: /Test Wallet/ });
   await waitFor(() =>
