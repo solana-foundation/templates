@@ -10,7 +10,11 @@ import { ellipsify } from "../../lib/explorer";
 export function SignMessageCard() {
   const { publicKey, signMessage } = useWallet();
   const [message, setMessage] = useState("gm from @solana/web3.js v3");
-  const [signature, setSignature] = useState<string | null>(null);
+  const [result, setResult] = useState<{
+    signature: string;
+    message: string;
+    address: string;
+  } | null>(null);
   const [busy, setBusy] = useState(false);
 
   const handleSign = async () => {
@@ -22,7 +26,11 @@ export function SignMessageCard() {
       if (!(await publicKey.verifySignature(signed, bytes))) {
         throw new Error("The wallet returned an invalid signature.");
       }
-      setSignature(getBase58Decoder().decode(signed));
+      setResult({
+        signature: getBase58Decoder().decode(signed),
+        message,
+        address: publicKey.toBase58(),
+      });
       toast.success("Message signed and verified");
     } catch (err) {
       console.error(err);
@@ -31,6 +39,11 @@ export function SignMessageCard() {
       setBusy(false);
     }
   };
+
+  const signature =
+    result?.message === message && result.address === publicKey?.toBase58()
+      ? result.signature
+      : null;
 
   return (
     <div className="rounded-2xl border border-border-low bg-card p-6">
@@ -47,8 +60,9 @@ export function SignMessageCard() {
           id="sign-message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          disabled={busy}
           placeholder="Message to sign"
-          className="w-full rounded-lg border border-border-low bg-background px-3 py-2 text-sm outline-none focus:border-ring"
+          className="w-full rounded-lg border border-border-low bg-background px-3 py-2 text-sm outline-none focus:border-ring disabled:opacity-50"
         />
         {!signMessage && (
           <p className="text-xs text-muted">

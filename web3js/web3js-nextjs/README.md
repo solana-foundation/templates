@@ -4,7 +4,7 @@ Next.js starter built on [`@solana/web3.js`](https://www.npmjs.com/package/@sola
 
 ## Getting Started
 
-Requires Node.js 22 or newer.
+Requires Node.js 24 or newer.
 
 ```shell
 npx -y create-solana-dapp@latest -t solana-foundation/templates/web3js/web3js-nextjs
