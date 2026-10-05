@@ -104,6 +104,9 @@ jobs:
             template: kit/nextjs-hardware-signin
           - node: 22
             template: kit/nextjs-das-nfts
+          # Kit 8 plugins require Node >=24
+          - node: 22
+            template: kit/react-vite-anchor
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -134,6 +137,9 @@ jobs:
             template: kit/nextjs-hardware-signin
           - node: 22
             template: kit/nextjs-das-nfts
+          # Kit 8 plugins require Node >=24
+          - node: 22
+            template: kit/react-vite-anchor
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -164,6 +170,9 @@ jobs:
             template: kit/nextjs-hardware-signin
           - node: 22
             template: kit/nextjs-das-nfts
+          # Kit 8 plugins require Node >=24
+          - node: 22
+            template: kit/react-vite-anchor
     steps:
       - name: Checkout
         uses: actions/checkout@v4

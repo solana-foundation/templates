@@ -1,133 +1,152 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import {
-  useWalletConnection,
+  useClient,
+  usePayer,
+  useRequest,
   useSendTransaction,
-  useBalance,
-} from "@solana/react-hooks";
+} from "@solana/react";
 import {
-  getProgramDerivedAddress,
-  getAddressEncoder,
-  getBytesEncoder,
-  type Address,
-} from "@solana/kit";
-import {
-  getDepositInstructionDataEncoder,
-  getWithdrawInstructionDataEncoder,
-  VAULT_PROGRAM_ADDRESS,
+  findVaultPda,
+  getDepositInstruction,
+  getWithdrawInstruction,
 } from "./generated/vault";
-
-const LAMPORTS_PER_SOL = 1_000_000_000n;
-const SYSTEM_PROGRAM_ADDRESS = "11111111111111111111111111111111" as Address;
+import type { AppClient } from "./solana-client";
+import { parseSolAmount } from "./amount";
+import { useConnectedWallet } from "@solana/kit-plugin-wallet/react";
 
 export function VaultCard() {
-  const { wallet, status } = useWalletConnection();
-  const { send, isSending } = useSendTransaction();
-
-  const [amount, setAmount] = useState("");
-  const [vaultAddress, setVaultAddress] = useState<Address | null>(null);
-  const [txStatus, setTxStatus] = useState<string | null>(null);
-
-  const walletAddress = wallet?.account.address;
-
-  // Derive vault PDA when wallet connects
+  const client = useClient<AppClient>();
+  const payer = usePayer(client);
+  const connectedWallet = useConnectedWallet(client);
+  const supportsV1 =
+    connectedWallet?.supportedTransactionVersions.has(1) ?? false;
+  const walletAddress = payer?.address;
+  const { dispatchAsync: send, isRunning } = useSendTransaction(client);
+  const pending = useRef(false);
+  const mounted = useRef(true);
   useEffect(() => {
-    async function deriveVault() {
-      if (!walletAddress) {
-        setVaultAddress(null);
-        return;
-      }
-
-      const [pda] = await getProgramDerivedAddress({
-        programAddress: VAULT_PROGRAM_ADDRESS,
-        seeds: [
-          getBytesEncoder().encode(new Uint8Array([118, 97, 117, 108, 116])), // "vault"
-          getAddressEncoder().encode(walletAddress),
-        ],
-      });
-
-      setVaultAddress(pda);
-    }
-
-    deriveVault();
-  }, [walletAddress]);
-
-  // Get vault balance
-  const vaultBalance = useBalance(vaultAddress ?? undefined);
-  const vaultLamports = vaultBalance?.lamports ?? 0n;
-  const vaultSol = Number(vaultLamports) / Number(LAMPORTS_PER_SOL);
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  const [isPreparing, setIsPreparing] = useState(false);
+  const isSending = isRunning || isPreparing;
+  const [amount, setAmount] = useState("");
+  const [txStatus, setTxStatus] = useState<string | null>(null);
+  const pdaSource = useMemo(
+    () =>
+      walletAddress ? () => findVaultPda({ signer: walletAddress }) : null,
+    [walletAddress]
+  );
+  const pda = useRequest(pdaSource);
+  const vaultAddress = pda.data?.[0];
+  const balanceSource = useMemo(
+    () =>
+      vaultAddress
+        ? client.rpc.getBalance(vaultAddress, { commitment: "confirmed" })
+        : null,
+    [client, vaultAddress]
+  );
+  const balance = useRequest(balanceSource);
+  const refreshBalance = balance.refresh;
+  const vaultLamports = balance.data?.value ?? 0n;
+  const vaultSol = Number(vaultLamports) / 1_000_000_000;
+  const balanceReady = balance.status === "success";
+  let depositAmount: bigint | null = null;
+  try {
+    depositAmount = parseSolAmount(amount);
+  } catch {
+    /* Invalid input keeps Deposit disabled. */
+  }
 
   const handleDeposit = useCallback(async () => {
-    if (!walletAddress || !vaultAddress || !amount) return;
-
+    if (
+      !payer ||
+      !supportsV1 ||
+      !vaultAddress ||
+      !balanceReady ||
+      pending.current
+    )
+      return;
+    pending.current = true;
+    setIsPreparing(true);
     try {
-      setTxStatus("Building transaction...");
-
-      const depositAmount = BigInt(
-        Math.floor(parseFloat(amount) * Number(LAMPORTS_PER_SOL))
-      );
-
-      // Manually construct the instruction
-      const instruction = {
-        programAddress: VAULT_PROGRAM_ADDRESS,
-        accounts: [
-          { address: walletAddress, role: 3 }, // WritableSigner (3 = writable + signer)
-          { address: vaultAddress, role: 1 }, // Writable (1 = writable)
-          { address: SYSTEM_PROGRAM_ADDRESS, role: 0 }, // Readonly (0 = readonly)
-        ],
-        data: getDepositInstructionDataEncoder().encode({
-          amount: depositAmount,
+      const lamports = parseSolAmount(amount);
+      const rent = await client.rpc
+        .getMinimumBalanceForRentExemption(0n)
+        .send();
+      // Preparation may finish after the user changes or disconnects accounts.
+      const currentWallet = client.wallet.getState().connected;
+      if (
+        !mounted.current ||
+        currentWallet?.signer !== payer ||
+        !currentWallet.supportedTransactionVersions.has(1)
+      )
+        return;
+      if (lamports <= rent)
+        throw new Error("Deposit must exceed the vault's rent-exempt minimum.");
+      setTxStatus("Awaiting signature and confirmation...");
+      const result = await send([
+        getDepositInstruction({
+          signer: payer,
+          vault: vaultAddress,
+          amount: lamports,
         }),
-      };
-
-      setTxStatus("Awaiting signature...");
-
-      const signature = await send({
-        instructions: [instruction],
-      });
-
-      setTxStatus(`Deposited! Signature: ${signature?.slice(0, 20)}...`);
+      ]);
+      setTxStatus(`Deposited! Signature: ${result.context.signature}`);
       setAmount("");
+      refreshBalance();
     } catch (err) {
-      console.error("Deposit failed:", err);
+      if (mounted.current) refreshBalance();
       setTxStatus(
-        `Error: ${err instanceof Error ? err.message : "Unknown error"}`
+        `Error: ${err instanceof Error ? err.message : "Deposit failed"}`
       );
+    } finally {
+      pending.current = false;
+      setIsPreparing(false);
     }
-  }, [walletAddress, vaultAddress, amount, send]);
+  }, [
+    payer,
+    supportsV1,
+    vaultAddress,
+    balanceReady,
+    amount,
+    client,
+    send,
+    refreshBalance,
+  ]);
 
   const handleWithdraw = useCallback(async () => {
-    if (!walletAddress || !vaultAddress) return;
-
+    if (
+      !payer ||
+      !supportsV1 ||
+      !vaultAddress ||
+      !balanceReady ||
+      pending.current
+    )
+      return;
+    pending.current = true;
+    setIsPreparing(true);
     try {
-      setTxStatus("Building transaction...");
-
-      // Manually construct the instruction
-      const instruction = {
-        programAddress: VAULT_PROGRAM_ADDRESS,
-        accounts: [
-          { address: walletAddress, role: 3 }, // WritableSigner
-          { address: vaultAddress, role: 1 }, // Writable
-          { address: SYSTEM_PROGRAM_ADDRESS, role: 0 }, // Readonly
-        ],
-        data: getWithdrawInstructionDataEncoder().encode({}),
-      };
-
-      setTxStatus("Awaiting signature...");
-
-      const signature = await send({
-        instructions: [instruction],
-      });
-
-      setTxStatus(`Withdrawn! Signature: ${signature?.slice(0, 20)}...`);
+      setTxStatus("Awaiting signature and confirmation...");
+      const result = await send([
+        getWithdrawInstruction({ signer: payer, vault: vaultAddress }),
+      ]);
+      setTxStatus(`Withdrawn! Signature: ${result.context.signature}`);
+      refreshBalance();
     } catch (err) {
-      console.error("Withdraw failed:", err);
+      if (mounted.current) refreshBalance();
       setTxStatus(
-        `Error: ${err instanceof Error ? err.message : "Unknown error"}`
+        `Error: ${err instanceof Error ? err.message : "Withdrawal failed"}`
       );
+    } finally {
+      pending.current = false;
+      setIsPreparing(false);
     }
-  }, [walletAddress, vaultAddress, send]);
+  }, [payer, supportsV1, vaultAddress, balanceReady, send, refreshBalance]);
 
-  if (status !== "connected") {
+  if (!payer) {
     return (
       <section className="w-full max-w-3xl space-y-4 rounded-2xl border border-border-low bg-card p-6 shadow-[0_20px_80px_-50px_rgba(0,0,0,0.35)]">
         <div className="space-y-1">
@@ -153,7 +172,11 @@ export function VaultCard() {
           </p>
         </div>
         <span className="rounded-full bg-cream px-3 py-1 text-xs font-semibold uppercase tracking-wide text-foreground/80">
-          {vaultLamports > 0n ? "Has funds" : "Empty"}
+          {!balanceReady
+            ? "Loading"
+            : vaultLamports > 0n
+              ? "Has funds"
+              : "Empty"}
         </span>
       </div>
 
@@ -162,8 +185,17 @@ export function VaultCard() {
         <p className="text-xs uppercase tracking-wide text-muted">
           Vault Balance
         </p>
+        <button
+          type="button"
+          aria-label="Refresh vault balance"
+          disabled={isSending || !vaultAddress || balance.status === "fetching"}
+          onClick={() => refreshBalance()}
+          className="text-sm underline disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          Refresh
+        </button>
         <p className="mt-1 text-3xl font-bold tabular-nums">
-          {vaultSol.toFixed(4)}{" "}
+          {balanceReady ? vaultSol.toFixed(9) : "..."}{" "}
           <span className="text-lg font-normal text-muted">SOL</span>
         </p>
         {vaultAddress && (
@@ -174,24 +206,31 @@ export function VaultCard() {
       </div>
 
       {/* Deposit Form */}
+      {!supportsV1 && (
+        <p role="alert" className="text-sm text-red-600">
+          This wallet does not support Version 1 transactions. Connect a
+          V1-capable wallet to deposit or withdraw.
+        </p>
+      )}
       <div className="space-y-3">
         <div className="flex gap-3">
           <input
-            type="number"
-            min="0"
-            step="0.01"
+            type="text"
+            inputMode="decimal"
+            aria-label="Amount in SOL"
             placeholder="Amount in SOL"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             disabled={isSending}
-            className="flex-1 rounded-lg border border-border-low bg-card px-4 py-2.5 text-sm outline-none transition placeholder:text-muted focus:border-foreground/30 disabled:cursor-not-allowed disabled:opacity-60"
+            className="min-w-0 flex-1 rounded-lg border border-border-low bg-card px-4 py-2.5 text-sm outline-none transition placeholder:text-muted focus:border-foreground/30 disabled:cursor-not-allowed disabled:opacity-60"
           />
           <button
             onClick={handleDeposit}
             disabled={
               isSending ||
-              !amount ||
-              parseFloat(amount) <= 0 ||
+              !supportsV1 ||
+              !balanceReady ||
+              depositAmount === null ||
               vaultLamports > 0n
             }
             className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
@@ -209,15 +248,35 @@ export function VaultCard() {
       {/* Withdraw Button */}
       <button
         onClick={handleWithdraw}
-        disabled={isSending || vaultLamports === 0n}
+        disabled={
+          isSending || !supportsV1 || !balanceReady || vaultLamports === 0n
+        }
         className="w-full rounded-lg border border-border-low bg-card px-4 py-2.5 text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
       >
         {isSending ? "Confirming..." : "Withdraw All"}
       </button>
 
+      {pda.error || balance.error ? (
+        <div role="alert" className="text-sm text-red-600">
+          Unable to load vault data.
+          <button
+            onClick={() => {
+              pda.refresh();
+              balance.refresh();
+            }}
+            className="ml-2 underline"
+          >
+            Retry
+          </button>
+        </div>
+      ) : null}
+
       {/* Status */}
       {txStatus && (
-        <div className="rounded-lg border border-border-low bg-cream/50 px-4 py-3 text-sm">
+        <div
+          role="status"
+          className="break-all rounded-lg border border-border-low bg-cream/50 px-4 py-3 text-sm"
+        >
           {txStatus}
         </div>
       )}

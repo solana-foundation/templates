@@ -1,15 +1,17 @@
 # vite-anchor
 
-React + Vite starter with Tailwind CSS, `@solana/react-hooks`, and an Anchor vault program example.
+React + Vite starter with Tailwind CSS, Kit 8 RPC/wallet plugins, `@solana/react`, and an Anchor vault program example.
 
 ## Getting Started
+
+Requires Node.js 24 or newer. Wallets must be configured for devnet.
 
 ```shell
 npx -y create-solana-dapp@latest -t solana-foundation/templates/kit/react-vite-anchor
 ```
 
 ```shell
-npm install   # Builds program and generates client automatically
+npm install   # Uses the checked-in program client; no Rust build is required
 npm run dev
 ```
 
@@ -17,20 +19,21 @@ Open [http://localhost:5173](http://localhost:5173), connect your wallet, and in
 
 ## What's Included
 
-- **Wallet connection** via `@solana/react-hooks` with auto-discovery
+- **Wallet connection** via the Kit wallet plugin with Wallet Standard discovery and account updates
+- **Version 1 transactions** configured through the Kit RPC plugin
 - **SOL Vault program** - deposit and withdraw SOL from a personal PDA vault
 - **Codama-generated client** - type-safe program interactions using `@solana/kit`
 - **Tailwind CSS v4** with light/dark mode
 
 ## Stack
 
-| Layer          | Technology                              |
-| -------------- | --------------------------------------- |
-| Frontend       | React 19, Vite, TypeScript              |
-| Styling        | Tailwind CSS v4                         |
-| Solana Client  | `@solana/client`, `@solana/react-hooks` |
-| Program Client | Codama-generated, `@solana/kit`         |
-| Program        | Anchor (Rust)                           |
+| Layer          | Technology                                     |
+| -------------- | ---------------------------------------------- |
+| Frontend       | React 19, Vite, TypeScript                     |
+| Styling        | Tailwind CSS v4                                |
+| Solana Client  | Kit 8, Kit RPC/wallet plugins, `@solana/react` |
+| Program Client | Codama-generated, `@solana/kit`                |
+| Program        | Anchor (Rust)                                  |
 
 ## Project Structure
 
@@ -92,6 +95,12 @@ The included vault program is already deployed to devnet. To deploy your own:
 
 ## Testing
 
+```bash
+npm run ci   # Frontend build, lint, formatting, and unit tests
+```
+
+For browser testing, use devnet SOL only. Verify wallet account switching, deposit, withdrawal, and wallet rejection. Each transaction requires wallet approval.
+
 Tests use [LiteSVM](https://github.com/LiteSVM/litesvm), a fast lightweight Solana VM for testing.
 
 ```bash
@@ -116,5 +125,5 @@ This uses [Codama](https://github.com/codama-idl/codama) to generate a type-safe
 - [Solana Docs](https://solana.com/docs) - core concepts and guides
 - [Anchor Docs](https://www.anchor-lang.com/docs) - program development framework
 - [Deploying Programs](https://solana.com/docs/programs/deploying) - deployment guide
-- [framework-kit](https://github.com/solana-foundation/framework-kit) - the React hooks used here
+- [Kit](https://github.com/anza-xyz/kit) - Solana client and React integration
 - [Codama](https://github.com/codama-idl/codama) - client generation from IDL
