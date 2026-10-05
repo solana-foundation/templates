@@ -78,7 +78,7 @@ Kit Templates (using @solana/kit)
 
 `gh:solana-foundation/templates/kit/react-vite-anchor`
 
-> React + Vite, Tailwind, @solana/react-hooks, Anchor vault program
+> React + Vite, Tailwind, Kit 8 wallet integration, Anchor vault program
 
 `anchor` `kit` `react` `solana-kit` `tailwind` `typescript` `vite`
 

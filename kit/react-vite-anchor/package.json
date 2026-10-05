@@ -1,6 +1,6 @@
 {
   "name": "react-vite-anchor",
-  "description": "React + Vite, Tailwind, @solana/react-hooks, Anchor vault program",
+  "description": "React + Vite, Tailwind, Kit 8 wallet integration, Anchor vault program",
   "keywords": [
     "anchor",
     "kit",
@@ -23,11 +23,15 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "anchor-build": "cd anchor && anchor build --ignore-keys",
     "anchor-test": "cd anchor && anchor build --ignore-keys && cargo test",
     "build": "tsc -b && vite build",
-    "ci": "npm run build && npm run lint && npm run format:check",
+    "ci": "npm run build && npm run lint && npm run format:check && npm run test",
+    "test": "vitest run",
     "codama:js": "codama run js",
     "dev": "vite",
     "format": "prettier --write .",
@@ -37,15 +41,23 @@
     "setup": "npm run anchor-build && npm run codama:js"
   },
   "dependencies": {
-    "@solana/client": "^1.2.0",
-    "@solana/kit": "^5.1.0",
-    "@solana/react-hooks": "^1.1.5",
+    "@solana/kit": "^8.3.0",
+    "@solana/kit-plugin-rpc": "^0.19.0",
+    "@solana/kit-plugin-wallet": "^0.20.0",
+    "@solana/react": "^8.2.0",
+    "@wallet-standard/ui-registry": "^1.0.1",
     "@tailwindcss/vite": "^4",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "tailwindcss": "^4"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.0",
+    "@wallet-standard/app": "^1.1.0",
+    "@wallet-standard/wallet": "^1.1.0",
+    "jsdom": "^26.1.0",
+    "vitest": "^3.2.7",
     "@codama/nodes-from-anchor": "1.5.3",
     "@codama/renderers-js": "1.7.1",
     "@eslint/js": "^9.35.0",
