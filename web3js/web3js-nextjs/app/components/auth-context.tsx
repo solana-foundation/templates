@@ -63,15 +63,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const signOut = useCallback(async () => {
-    await deleteSession();
-    setSession(null);
+  const endSession = useCallback((ended: Session) => {
+    const signOut = deleteSession().then(() =>
+      setSession((current) => (current === ended ? null : current))
+    );
+    pendingSignOut.current = signOut;
+    signOut
+      .catch(() => {})
+      .finally(() => {
+        if (pendingSignOut.current === signOut) pendingSignOut.current = null;
+      });
+    return signOut;
   }, []);
+
+  const signOut = useCallback(async () => {
+    if (session) await endSession(session);
+  }, [endSession, session]);
 
   const signIn = useCallback(async () => {
     if (!address) throw new Error("Connect a wallet first.");
-
-    await pendingSignOut.current?.catch(() => {});
+    while (pendingSignOut.current) {
+      await pendingSignOut.current.catch(() => {});
+    }
     if (!walletSignIn) {
       throw new Error("This wallet does not support Sign In With Solana.");
     }
@@ -117,25 +130,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // as disconnected or connects a different account. "pending" and
   // "reconnecting" (page load, cluster switch) are transient and keep it.
   useEffect(() => {
-    if (!session) return;
+    if (!session || pendingSignOut.current) return;
     const disconnected = status === "disconnected";
     const switched = address !== null && address !== session.address;
     if (disconnected || switched) {
-      const signOut = deleteSession();
-      pendingSignOut.current = signOut;
-      signOut
-        .then(
-          () => setSession((current) => (current === session ? null : current)),
-          (err: Error) => {
-            console.error(err);
-            toast.error(err.message);
-          }
-        )
-        .finally(() => {
-          if (pendingSignOut.current === signOut) pendingSignOut.current = null;
-        });
+      endSession(session).catch((err: Error) => {
+        console.error(err);
+        toast.error(err.message);
+      });
     }
-  }, [address, session, status]);
+  }, [address, endSession, session, status]);
 
   return (
     <AuthContext.Provider
