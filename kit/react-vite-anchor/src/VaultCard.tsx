@@ -11,7 +11,7 @@ import {
   getWithdrawInstruction,
 } from "./generated/vault";
 import type { AppClient } from "./solana-client";
-import { parseSolAmount } from "./amount";
+import { formatSolAmount, parseSolAmount } from "./amount";
 import { useConnectedWallet } from "@solana/kit-plugin-wallet/react";
 
 export function VaultCard() {
@@ -51,7 +51,6 @@ export function VaultCard() {
   const balance = useRequest(balanceSource);
   const refreshBalance = balance.refresh;
   const vaultLamports = balance.data?.value ?? 0n;
-  const vaultSol = Number(vaultLamports) / 1_000_000_000;
   const balanceReady = balance.status === "success";
   let depositAmount: bigint | null = null;
   try {
@@ -195,7 +194,7 @@ export function VaultCard() {
           Refresh
         </button>
         <p className="mt-1 text-3xl font-bold tabular-nums">
-          {balanceReady ? vaultSol.toFixed(9) : "..."}{" "}
+          {balanceReady ? formatSolAmount(vaultLamports) : "..."}{" "}
           <span className="text-lg font-normal text-muted">SOL</span>
         </p>
         {vaultAddress && (

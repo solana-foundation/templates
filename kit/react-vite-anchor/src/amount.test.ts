@@ -1,5 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { parseSolAmount } from "./amount";
+import { formatSolAmount, parseSolAmount } from "./amount";
+
+describe("formatSolAmount", () => {
+  it.each([
+    [0n, "0.000000000"],
+    [1n, "0.000000001"],
+    [1_000_000_000n, "1.000000000"],
+    [1_000_000_009n, "1.000000009"],
+    [9_007_199_254_740_993n, "9007199.254740993"],
+    [(1n << 64n) - 1n, "18446744073.709551615"],
+  ])("formats %s lamports exactly", (lamports, expected) => {
+    expect(formatSolAmount(lamports)).toBe(expected);
+  });
+});
 
 describe("parseSolAmount", () => {
   it("converts SOL without floating-point rounding", () => {

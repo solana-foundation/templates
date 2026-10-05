@@ -1,5 +1,11 @@
 const U64_MAX = (1n << 64n) - 1n;
 
+export function formatSolAmount(lamports: bigint): string {
+  const whole = lamports / 1_000_000_000n;
+  const fraction = (lamports % 1_000_000_000n).toString().padStart(9, "0");
+  return `${whole}.${fraction}`;
+}
+
 export function parseSolAmount(value: string): bigint {
   if (!/^\d+(\.\d{1,9})?$/.test(value)) {
     throw new Error(
