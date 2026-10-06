@@ -2717,6 +2717,9 @@ importers:
       typescript:
         specifier: ^5
         version: 5.9.3
+      vite:
+        specifier: ^7.2.7
+        version: 7.2.7(@types/node@22.7.5)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.2)(tsx@4.20.6)(yaml@2.8.4)
       vitest:
         specifier: ^5.0.3
         version: 5.0.3(@types/node@22.7.5)(jsdom@26.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(vite@7.2.7(@types/node@22.7.5)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.2)(tsx@4.20.6)(yaml@2.8.4))
