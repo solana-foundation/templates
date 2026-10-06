@@ -104,6 +104,9 @@ jobs:
             template: kit/nextjs-hardware-signin
           - node: 22
             template: kit/nextjs-das-nfts
+          # @solana/web3.js v3 pins @solana-program/stake 0.9.0, which requires Node >=24
+          - node: 22
+            template: web3js/web3js-nextjs
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -134,6 +137,9 @@ jobs:
             template: kit/nextjs-hardware-signin
           - node: 22
             template: kit/nextjs-das-nfts
+          # @solana/web3.js v3 pins @solana-program/stake 0.9.0, which requires Node >=24
+          - node: 22
+            template: web3js/web3js-nextjs
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -164,6 +170,9 @@ jobs:
             template: kit/nextjs-hardware-signin
           - node: 22
             template: kit/nextjs-das-nfts
+          # @solana/web3.js v3 pins @solana-program/stake 0.9.0, which requires Node >=24
+          - node: 22
+            template: web3js/web3js-nextjs
     steps:
       - name: Checkout
         uses: actions/checkout@v4
