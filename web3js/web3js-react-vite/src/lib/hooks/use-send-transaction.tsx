@@ -43,7 +43,11 @@ export function useSendTransaction() {
           "confirmed"
         );
         if (value.err) {
-          throw new Error(`Transaction failed: ${JSON.stringify(value.err)}`);
+          throw new Error(
+            `Transaction failed: ${JSON.stringify(value.err, (_, v) =>
+              typeof v === "bigint" ? v.toString() : v
+            )}`
+          );
         }
 
         toast.success(successMessage, {

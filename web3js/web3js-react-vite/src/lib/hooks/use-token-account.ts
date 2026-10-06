@@ -16,6 +16,7 @@ export type TokenAccountData = {
 type TokenAccountState = {
   key: string;
   data: TokenAccountData | null;
+  missing: boolean;
   error: unknown;
 };
 
@@ -24,6 +25,7 @@ export function useTokenAccount(mint: PublicKey | null, owner: PublicKey) {
   const [state, setState] = useState<TokenAccountState>({
     key: "",
     data: null,
+    missing: false,
     error: null,
   });
   const [version, setVersion] = useState(0);
@@ -44,20 +46,25 @@ export function useTokenAccount(mint: PublicKey | null, owner: PublicKey) {
         connection.getAccountInfo(new PublicKey(ata), "confirmed"),
       ]);
       if (!active) return;
+      if (!mintInfo) {
+        setState({ key, data: null, missing: true, error: null });
+        return;
+      }
 
       setState({
         key,
         data: {
-          supply: mintInfo ? getMintDecoder().decode(mintInfo.data).supply : 0n,
+          supply: getMintDecoder().decode(mintInfo.data).supply,
           balance: tokenInfo
             ? getTokenDecoder().decode(tokenInfo.data).amount
             : 0n,
         },
+        missing: false,
         error: null,
       });
     })().catch((error: unknown) => {
       console.error(error);
-      if (active) setState({ key, data: null, error });
+      if (active) setState({ key, data: null, missing: false, error });
     });
 
     return () => {
@@ -70,6 +77,7 @@ export function useTokenAccount(mint: PublicKey | null, owner: PublicKey) {
   const current = state.key === key ? state : null;
   return {
     data: current?.data ?? null,
+    missing: current?.missing ?? false,
     error: current?.error ?? null,
     refresh,
   };

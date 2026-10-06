@@ -33,7 +33,7 @@ export function TokenCard({ owner, signer }: TokenCardProps) {
   const { cluster } = useCluster();
   const { send, isSending } = useSendTransaction();
   const storageKey = `web3js-react-vite:mint:${cluster}:${owner.toBase58()}`;
-  const [mint, setMintState] = useState<PublicKey | null>(() => {
+  const [savedMint, setMintState] = useState<PublicKey | null>(() => {
     try {
       const saved = localStorage.getItem(storageKey);
       return saved ? new PublicKey(saved) : null;
@@ -50,7 +50,8 @@ export function TokenCard({ owner, signer }: TokenCardProps) {
       console.error(err);
     }
   };
-  const token = useTokenAccount(mint, owner);
+  const token = useTokenAccount(savedMint, owner);
+  const mint = token.missing ? null : savedMint;
 
   const [mintAmount, setMintAmount] = useState("100");
   const [recipient, setRecipient] = useState("");
