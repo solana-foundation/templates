@@ -107,6 +107,8 @@ jobs:
           # @solana/web3.js v3 pins @solana-program/stake 0.9.0, which requires Node >=24
           - node: 22
             template: web3js/web3js-nextjs
+          - node: 22
+            template: web3js/web3js-react-vite
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -140,6 +142,8 @@ jobs:
           # @solana/web3.js v3 pins @solana-program/stake 0.9.0, which requires Node >=24
           - node: 22
             template: web3js/web3js-nextjs
+          - node: 22
+            template: web3js/web3js-react-vite
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -173,6 +177,8 @@ jobs:
           # @solana/web3.js v3 pins @solana-program/stake 0.9.0, which requires Node >=24
           - node: 22
             template: web3js/web3js-nextjs
+          - node: 22
+            template: web3js/web3js-react-vite
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -313,6 +313,24 @@
         "path": "web3js/web3js-nextjs",
         "displayName": "Web3.js v3 Next.js",
         "usecase": "Starter"
+      },
+      {
+        "description": "React + Vite, Tailwind, @solana/web3.js v3, Wallet Adapter v3, SPL tokens",
+        "id": "gh:solana-foundation/templates/web3js/web3js-react-vite",
+        "image": "web3js/web3js-react-vite/og-image.png",
+        "keywords": [
+          "react",
+          "solana-web3js",
+          "spl-token",
+          "tailwind",
+          "typescript",
+          "vite",
+          "wallet-adapter"
+        ],
+        "name": "web3js-react-vite",
+        "path": "web3js/web3js-react-vite",
+        "displayName": "Web3.js v3 React + Vite",
+        "usecase": "Starter"
       }
     ]
   },

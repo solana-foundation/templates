@@ -146,6 +146,14 @@ Templates using @solana/web3.js v3 and @solana/wallet-adapter
 
 `nextjs` `react` `siws` `solana-web3js` `spl-token` `tailwind` `typescript` `wallet-adapter`
 
+### [web3js-react-vite](web3js/web3js-react-vite)
+
+`gh:solana-foundation/templates/web3js/web3js-react-vite`
+
+> React + Vite, Tailwind, @solana/web3.js v3, Wallet Adapter v3, SPL tokens
+
+`react` `solana-web3js` `spl-token` `tailwind` `typescript` `vite` `wallet-adapter`
+
 # Web3.js Templates (legacy)
 
 Templates using @solana/web3.js v1 and the legacy wallet adapter packages
