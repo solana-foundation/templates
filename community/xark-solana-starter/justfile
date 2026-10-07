@@ -1,0 +1,87 @@
+set shell := ["bash", "-euc"]
+
+circuit := "circuit/target/xark/secret_code"
+url := env_var_or_default("SOLANA_URL", "http://127.0.0.1:8899")
+keypair := env_var_or_default("SOLANA_KEYPAIR", env_var("HOME") / ".config/solana/id.json")
+anchor := env_var_or_default("ANCHOR", "anchor")
+
+default:
+    @just --list
+
+doctor:
+    xark doctor
+    {{anchor}} --version
+    cargo-build-sbf --version
+    solana --version
+
+# Build the circuit, verifier and both programs
+build: circuit programs
+
+# Build the circuit and export the verifier crate
+circuit:
+    xark build circuit
+    # Dev keys, not for real value.
+    [ -f {{circuit}}/pk.bin ] || xark setup circuit
+    # `xark export` bundles one proof as a self-test. Secret 1 is not a real code.
+    xark prove circuit --inputs '{"secret": 1, "commitment": "17847258390462923071212518425927834238796435801505415407318169918090986946609", "signer_hi": 0, "signer_lo": 0}'
+    xark export circuit --allow-insecure --crate-name secret-code-verifier
+
+# New circuit keys (redeploy afterwards)
+reset-keys:
+    rm -f {{circuit}}/pk.bin {{circuit}}/vk.bin
+    just build
+
+# Build both programs
+programs:
+    # Placeholder program IDs have no keypair until `just sync-ids`.
+    cd programs/anchor && {{anchor}} build --ignore-keys
+    cd programs/pinocchio && cargo build-sbf --arch v3
+
+# Run the tests
+test:
+    xark test circuit
+    cargo test --manifest-path programs/anchor/Cargo.toml
+    cargo test --workspace
+
+# Build, fmt check, clippy, tests
+ci:
+    just build
+    cargo fmt --all --check
+    cargo fmt --check --manifest-path circuit/Cargo.toml
+    cargo fmt --check --manifest-path programs/anchor/Cargo.toml
+    cargo fmt --check --manifest-path programs/pinocchio/Cargo.toml
+    cargo clippy --workspace --all-targets -- -D warnings
+    cargo clippy --manifest-path programs/anchor/Cargo.toml --all-targets -- -D warnings
+    cargo clippy --manifest-path programs/pinocchio/Cargo.toml -- -D warnings
+    just test
+
+# Use your own program keypairs
+sync-ids:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    anchor_id=$(solana-keygen pubkey programs/anchor/target/deploy/xark_starter_anchor-keypair.json)
+    pinocchio_id=$(solana-keygen pubkey programs/pinocchio/target/deploy/xark_starter_pinocchio-keypair.json)
+    perl -0pi -e "s/(ANCHOR_PROGRAM_ID: Address =\s*Address::from_str_const\(\")[1-9A-HJ-NP-Za-km-z]+/\${1}$anchor_id/" interface/src/lib.rs
+    perl -0pi -e "s/(PINOCCHIO_PROGRAM_ID: Address =\s*Address::from_str_const\(\")[1-9A-HJ-NP-Za-km-z]+/\${1}$pinocchio_id/" interface/src/lib.rs
+    (cd programs/anchor && {{anchor}} keys sync)
+    echo "anchor:    $anchor_id"
+    echo "pinocchio: $pinocchio_id"
+    just programs
+
+# Deploy a program: just deploy anchor|pinocchio
+deploy program="anchor":
+    solana program deploy --url {{url}} --keypair {{keypair}} programs/{{program}}/target/deploy/xark_starter_{{program}}.so \
+        --program-id programs/{{program}}/target/deploy/xark_starter_{{program}}-keypair.json
+
+# Run the full flow: just demo anchor|pinocchio
+demo program="anchor":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    starter() { cargo run -q -p client --bin starter -- --program {{program}} --url {{url}} --keypair {{keypair}} "$@"; }
+    code=$(mktemp -u).code
+    starter new-code --out "$code"
+    starter initialize || echo "(already initialized)"
+    starter register --code "$code"
+    starter claim --code "$code"
+    starter status --code "$code"
+    rm -f "$code"
