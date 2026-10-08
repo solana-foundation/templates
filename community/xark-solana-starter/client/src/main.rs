@@ -9,6 +9,7 @@ use client::{
     prover::{Prover, XarkCli},
 };
 use solana_address::Address;
+use solana_commitment_config::CommitmentConfig;
 use solana_instruction::Instruction;
 use solana_keypair::{read_keypair_file, Keypair};
 use solana_rpc_client::rpc_client::RpcClient;
@@ -87,7 +88,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    let rpc = RpcClient::new(cli.url.clone());
+    let rpc = RpcClient::new_with_commitment(cli.url.clone(), CommitmentConfig::confirmed());
     match &cli.command {
         Command::NewCode { .. } => unreachable!(),
         Command::Initialize => {
