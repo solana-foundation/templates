@@ -2,8 +2,8 @@
   "name": "x402-template",
   "version": "0.1.0",
   "private": true,
-  "displayName": "X402 Next.js",
-  "description": "Next.js Solana starter with X402 payment protocol integration",
+  "displayName": "x402 Next.js",
+  "description": "Next.js Solana starter with x402 payment protocol integration",
   "usecase": "Payments",
   "keywords": [
     "solana",
@@ -16,6 +16,8 @@
     "instructions": [
       "Install dependencies:",
       "+{pm} install",
+      "Copy the environment file and set NEXT_PUBLIC_RECEIVER_ADDRESS to your Solana address:",
+      "+cp .env.example .env.local",
       "Start dev server:",
       "+{pm} dev"
     ],
@@ -36,11 +38,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@x402/core": "^2.27.0",
+    "@x402/next": "^2.27.0",
+    "@x402/paywall": "^2.27.0",
+    "@x402/svm": "^2.27.0",
     "next": "16.3.4",
     "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "viem": "^2.38.5",
-    "x402-next": "^1.1.0"
+    "react-dom": "19.2.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

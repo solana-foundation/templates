@@ -1,14 +1,14 @@
-# X402 Next.js Solana Template
+# x402 Next.js Solana Template
 
-**A simple Next.js starter template with X402 payment protocol integration for Solana.**
+**A simple Next.js starter template with x402 payment protocol integration for Solana.**
 
-This template demonstrates a streamlined implementation of the X402 payment protocol using the `x402-next` package, making it easy to add cryptocurrency payment gates to your Next.js applications.
+This template demonstrates a streamlined implementation of the x402 payment protocol (v2) using the `@x402/next` package, making it easy to add cryptocurrency payment gates to your Next.js applications.
 
-> ⚠️ **Using on Mainnet?** This template is configured for testnet (devnet) by default. To accept real payments on mainnet, you'll need to set up CDP API keys and configure a fee payer. See the [CDP X402 Mainnet Documentation](https://docs.cdp.coinbase.com/x402/quickstart-for-sellers#running-on-mainnet) for complete setup instructions.
+> ⚠️ **Using on Mainnet?** This template is configured for testnet (devnet) by default, and the default facilitator (`https://x402.org/facilitator`) is testnet-only. To accept real payments on mainnet, set `NEXT_PUBLIC_NETWORK=solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp` and use a facilitator that supports Solana mainnet, such as the [Coinbase CDP facilitator](https://docs.cdp.coinbase.com/x402/seller/quickstart) (requires CDP API keys) or [PayAI](https://facilitator.payai.network) (no API key needed to start: set `NEXT_PUBLIC_FACILITATOR_URL=https://facilitator.payai.network`). More options are listed in the [x402 facilitator directory](https://docs.x402.org/dev-tools/facilitators). You don't need to configure a fee payer: the x402 server reads it from the facilitator. See [Going to Production](#going-to-production).
 
 ## Table of Contents
 
-- [What is X402?](#what-is-x402)
+- [What is x402?](#what-is-x402)
 - [Features](#features)
 - [Getting Started](#getting-started)
 - [How It Works](#how-it-works)
@@ -18,16 +18,16 @@ This template demonstrates a streamlined implementation of the X402 payment prot
 
 ---
 
-## What is X402?
+## What is x402?
 
-**X402** is an open payment protocol that uses HTTP status code **402 "Payment Required"** to enable seamless cryptocurrency payments for web content and APIs.
+**x402** is an open payment protocol that uses HTTP status code **402 "Payment Required"** to enable seamless cryptocurrency payments for web content and APIs.
 
 ### Key Benefits
 
 - **Direct Payments** - Accept cryptocurrency payments without third-party payment processors
 - **No Accounts** - No user registration or authentication required
 - **Blockchain-Verified** - Payments are verified directly on the Solana blockchain
-- **Simple Integration** - Add payment gates to any Next.js route with middleware
+- **Simple Integration** - Add payment gates to any Next.js page or API route
 - **Flexible Pricing** - Set different prices for different content
 
 ### How It Works
@@ -35,20 +35,20 @@ This template demonstrates a streamlined implementation of the X402 payment prot
 ```
 1. User requests protected content
 2. Server responds with 402 Payment Required
-3. User makes payment via Coinbase Pay or crypto wallet
-4. User proves payment with transaction signature
-5. Server verifies on blockchain and grants access
+3. User signs a USDC payment with a Solana wallet
+4. The request is sent again with the signed payment
+5. The facilitator verifies and settles the payment on Solana, and the server grants access
 ```
 
 ---
 
 ## Features
 
-- **X402 Payment Middleware** - Powered by `x402-next` package
+- **x402 Payment Proxy** - Powered by the `@x402/next` package
+- **Paid API Routes** - `withX402` settles the payment only after a successful response
 - **Solana Integration** - Uses Solana blockchain for payment verification
 - **Multiple Price Tiers** - Configure different prices for different routes
-- **Session Management** - Automatic session handling after payment
-- **Type-Safe** - Full TypeScript support with Viem types
+- **Type-Safe** - Full TypeScript support
 - **Next.js 16** - Built on the latest Next.js App Router
 
 ---
@@ -73,6 +73,9 @@ cd my-app
 # Install dependencies
 pnpm install
 
+# Set your receiving address (and optionally the network and facilitator)
+cp .env.example .env.local
+
 # Run development server
 pnpm dev
 ```
@@ -83,81 +86,134 @@ Visit `http://localhost:3000` to see your app running.
 
 1. Navigate to `http://localhost:3000`
 2. Click on "Access Cheap Content" or "Access Expensive Content"
-3. You'll be presented with a Coinbase Pay payment dialog
+3. You'll see the x402 paywall. Connect a Solana wallet that holds devnet USDC
 4. Complete the payment
 5. Access is granted and you'll see the protected content
+
+The template also includes a paid API route. Without a payment it returns `402 Payment Required` with the payment requirements in a base64 `PAYMENT-REQUIRED` header:
+
+```bash
+curl -i http://localhost:3000/api/cat-fact
+```
+
+To pay from code, use `@x402/fetch` with `@x402/svm` (see the [fetch client example](https://github.com/x402-foundation/x402/tree/main/examples/typescript/clients/fetch)).
 
 ---
 
 ## How It Works
 
-This template uses the `x402-next` package which provides middleware to handle the entire payment flow.
+This template uses the `@x402/next` package, which handles the entire payment flow. `paymentProxy` protects pages from the Next.js proxy, and `withX402` protects individual API routes.
 
-### Middleware Configuration
+### Proxy Configuration
 
-The core of the payment integration is in `middleware.ts`:
+The core of the payment integration is in `proxy.ts`:
 
 ```typescript
-import { Address } from 'viem'
-import { paymentMiddleware, Resource, Network } from 'x402-next'
-import { NextRequest } from 'next/server'
+import { paymentProxy } from '@x402/next'
+import { HTTPFacilitatorClient, x402ResourceServer } from '@x402/core/server'
+import type { Network } from '@x402/core/types'
+import { SOLANA_DEVNET_CAIP2, SOLANA_MAINNET_CAIP2 } from '@x402/svm'
+import { registerExactSvmScheme } from '@x402/svm/exact/server'
+import { createPaywall } from '@x402/paywall'
+import { svmPaywall } from '@x402/paywall/svm'
 
-// Your Solana wallet address that receives payments
-const address = 'CmGgLQL36Y9ubtTsy2zmE46TAxwCBm66onZmPPhUWNqv' as Address
-const network = 'solana-devnet' as Network
-const facilitatorUrl = 'https://x402.org/facilitator' as Resource
-const cdpClientKey = '3uyu43EHCwgVIQx6a8cIfSkxp6cXgU30'
+const receiverAddress = process.env.NEXT_PUBLIC_RECEIVER_ADDRESS
+if (!receiverAddress) {
+  throw new Error(
+    'NEXT_PUBLIC_RECEIVER_ADDRESS is not set. Copy .env.example to .env.local and set your Solana address.',
+  )
+}
+export const payTo = receiverAddress
+// x402 v2 identifies networks by CAIP-2 id
+export const network = (process.env.NEXT_PUBLIC_NETWORK || SOLANA_DEVNET_CAIP2) as Network
+if (network !== SOLANA_DEVNET_CAIP2 && network !== SOLANA_MAINNET_CAIP2) {
+  throw new Error(
+    `NEXT_PUBLIC_NETWORK must be a Solana CAIP-2 id: ${SOLANA_DEVNET_CAIP2} (devnet) or ${SOLANA_MAINNET_CAIP2} (mainnet).`,
+  )
+}
+const facilitatorUrl = process.env.NEXT_PUBLIC_FACILITATOR_URL || 'https://x402.org/facilitator'
 
-const x402PaymentMiddleware = paymentMiddleware(
-  address,
+export const server = new x402ResourceServer(new HTTPFacilitatorClient({ url: facilitatorUrl }))
+registerExactSvmScheme(server)
+
+export const paywall = createPaywall()
+  .withNetwork(svmPaywall)
+  .withConfig({
+    appName: 'x402 Demo',
+    testnet: network === SOLANA_DEVNET_CAIP2,
+  })
+  .build()
+
+export const proxy = paymentProxy(
   {
     '/content/cheap': {
-      price: '$0.01',
-      config: {
-        description: 'Access to cheap content',
-      },
-      network,
+      accepts: { scheme: 'exact', price: '$0.01', network, payTo },
+      description: 'Access to cheap content',
+      mimeType: 'text/html',
     },
     '/content/expensive': {
-      price: '$0.25',
-      config: {
-        description: 'Access to expensive content',
-      },
-      network,
+      accepts: { scheme: 'exact', price: '$0.25', network, payTo },
+      description: 'Access to expensive content',
+      mimeType: 'text/html',
     },
   },
-  {
-    url: facilitatorUrl,
-  },
-  {
-    cdpClientKey,
-    appLogo: '/logos/x402-examples.png',
-    appName: 'x402 Demo',
-    sessionTokenEndpoint: '/api/x402/session-token',
-  },
+  server,
+  undefined, // paywallConfig: already set on the paywall above
+  paywall,
 )
 
-export const middleware = (req: NextRequest) => {
-  const delegate = x402PaymentMiddleware as unknown as (
-    request: NextRequest,
-  ) => ReturnType<typeof x402PaymentMiddleware>
-  return delegate(req)
-}
-
+// Configure which paths the proxy should run on
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)', '/'],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (metadata files)
+     */
+    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/', // Include the root path explicitly
+  ],
 }
 ```
 
+### API Route Configuration
+
+`app/api/cat-fact/route.ts` protects an API route with `withX402`, reusing the server and paywall from `proxy.ts`:
+
+```typescript
+import { NextResponse } from 'next/server'
+import { withX402 } from '@x402/next'
+import { network, payTo, paywall, server } from '@/proxy'
+
+const handler = async () => NextResponse.json({ fact: 'A group of cats is called a clowder.' })
+
+// withX402 settles the payment only after the handler returns a successful response (status < 400)
+export const GET = withX402(
+  handler,
+  {
+    accepts: { scheme: 'exact', price: '$0.01', network, payTo },
+    description: 'Access to a premium cat fact',
+    mimeType: 'application/json',
+  },
+  server,
+  undefined, // paywallConfig: already set on the paywall in proxy.ts
+  paywall,
+)
+```
+
+You can also protect API routes from `proxy.ts`, but then the payment settles even when the route handler fails. `withX402` settles only after the handler returns a successful response.
+
 ### What Happens Under the Hood
 
-1. **Request Interception** - Middleware checks if the requested route requires payment
-2. **Payment Check** - If the route is protected, middleware checks for valid payment session
-3. **402 Response** - If no valid payment, returns 402 with payment requirements
-4. **Coinbase Pay Widget** - User sees payment modal powered by Coinbase
-5. **Payment Verification** - After payment, transaction is verified on Solana blockchain via facilitator
-6. **Session Creation** - Valid payment creates a session token
-7. **Access Granted** - User can now access protected content
+1. **Request Interception** - The proxy (or `withX402`) checks if the requested route requires payment
+2. **402 Response** - Without a payment, the server returns 402 with the payment requirements in the `PAYMENT-REQUIRED` header. Browsers get a paywall page
+3. **Wallet Payment** - The user connects a Solana wallet and signs a USDC transfer. The facilitator's fee payer covers the transaction fee
+4. **Payment Verification** - The request is sent again with a `PAYMENT-SIGNATURE` header, and the facilitator verifies the payment
+5. **Settlement** - The facilitator submits the transaction on Solana, and the response includes a `PAYMENT-RESPONSE` header
+6. **Access Granted** - The user sees the protected content
+
+There are no sessions: every request to a protected route needs its own payment.
 
 ---
 
@@ -165,11 +221,14 @@ export const config = {
 
 ```
 x402-template/
-├── middleware.ts              # 🛡️  X402 payment middleware configuration
+├── proxy.ts                   # 🛡️  x402 payment proxy configuration
 ├── app/
 │   ├── page.tsx              # 🏠 Homepage with links to protected content
 │   ├── layout.tsx            # 📐 Root layout
 │   ├── globals.css           # 🎨 Global styles
+│   ├── api/
+│   │   └── cat-fact/
+│   │       └── route.ts      # 💳 Paid API route (withX402)
 │   └── content/
 │       └── [type]/
 │           └── page.tsx      # 🔒 Protected content pages
@@ -186,56 +245,51 @@ x402-template/
 
 ### Environment Variables
 
-The template uses sensible defaults, but you can customize by creating a `.env.local` file:
+Set these in `.env.local` (copy `.env.example`). `NEXT_PUBLIC_RECEIVER_ADDRESS` is required. The network defaults to Solana devnet and the facilitator to `https://x402.org/facilitator`:
 
 ```bash
 # Your Solana wallet address (where payments go)
-NEXT_PUBLIC_WALLET_ADDRESS=your_solana_address_here
+NEXT_PUBLIC_RECEIVER_ADDRESS=your_solana_address_here
 
-# Network (solana-devnet or solana-mainnet-beta)
-NEXT_PUBLIC_NETWORK=solana-devnet
+# Network as a CAIP-2 id: solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1 (devnet) or solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp (mainnet)
+NEXT_PUBLIC_NETWORK=solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1
 
-# Coinbase Pay Client Key (get from Coinbase Developer Portal)
-NEXT_PUBLIC_CDP_CLIENT_KEY=your_client_key_here
-
-# Facilitator URL (service that verifies payments)
+# Facilitator URL (service that verifies and settles payments)
+# x402.org is testnet-only. For mainnet, use a facilitator that supports Solana mainnet,
+# e.g. https://facilitator.payai.network (see https://docs.x402.org/dev-tools/facilitators)
 NEXT_PUBLIC_FACILITATOR_URL=https://x402.org/facilitator
 ```
 
 ### Customizing Routes and Prices
 
-Edit `middleware.ts` to add or modify protected routes:
+Edit `proxy.ts` to add or modify protected pages:
 
 ```typescript
-const x402PaymentMiddleware = paymentMiddleware(
-  address,
+export const proxy = paymentProxy(
   {
     '/premium': {
-      price: '$1.00',
-      config: {
-        description: 'Premium content access',
-      },
-      network: 'solana-mainnet-beta',
+      accepts: { scheme: 'exact', price: '$1.00', network, payTo },
+      description: 'Premium content access',
+      mimeType: 'text/html',
     },
-    '/api/data': {
-      price: '$0.05',
-      config: {
-        description: 'API data access',
-      },
-      network: 'solana-mainnet-beta',
-    },
+    // ... other routes
   },
-  // ... rest of config
+  server,
+  undefined, // paywallConfig: already set on the paywall above
+  paywall,
 )
 ```
+
+For API routes, wrap the handler with `withX402` as in `app/api/cat-fact/route.ts`.
 
 ### Network Selection
 
 You can use different networks:
 
-- `solana-devnet` - For testing (use test tokens)
-- `solana-mainnet-beta` - For production (real money!)
-- `solana-testnet` - Alternative test network
+- `solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1` - Devnet, for testing (use test tokens)
+- `solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp` - Mainnet, for production (real money!)
+
+x402 v2 identifies networks by [CAIP-2](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-2.md) id. The v1 names (`solana-devnet`, `solana`) are not accepted: any other value makes `proxy.ts` throw an error that lists these two ids.
 
 ---
 
@@ -243,7 +297,7 @@ You can use different networks:
 
 ### Creating Protected Content
 
-Simply create pages under protected routes defined in your middleware:
+Simply create pages under protected routes defined in your proxy:
 
 ```tsx
 // app/content/premium/page.tsx
@@ -260,26 +314,29 @@ export default async function PremiumPage() {
 
 ### Adding New Price Tiers
 
-1. Add the route configuration in `middleware.ts`
+1. Add the route configuration in `proxy.ts`
 2. Create the corresponding page component
 3. Users will automatically be prompted to pay when accessing the route
 
 ### Testing with Devnet
 
-When using `solana-devnet`:
+When using devnet:
 
 - Payments use test tokens (no real money)
 - Perfect for development and testing
-- Get test tokens from [Solana Faucet](https://faucet.solana.com/)
+- Get devnet USDC from the [Circle Faucet](https://faucet.circle.com/). The paying wallet doesn't need SOL: the facilitator pays the transaction fee
 
 ### Going to Production
 
 To accept real payments:
 
-1. Change network to `solana-mainnet-beta` in `middleware.ts`
-2. Update your wallet address to your production wallet
-3. Test thoroughly before deploying!
-4. Consider implementing additional security measures
+1. Set `NEXT_PUBLIC_NETWORK=solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp`
+2. Set `NEXT_PUBLIC_FACILITATOR_URL` to a facilitator that supports Solana mainnet (see the note at the top of this README). With the testnet-only default, the server exits with `Facilitator does not support scheme "exact" on network "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"`.
+3. Update your wallet address to your production wallet
+4. Test thoroughly before deploying!
+5. Consider implementing additional security measures
+
+> **Note:** the built-in browser paywall (`@x402/paywall`) reads the payer's USDC balance and the token mint through the public mainnet RPC (`https://api.mainnet-beta.solana.com`), which rejects requests from browsers with `403 Access forbidden`. `@x402/paywall` has no option to change this RPC yet, so on mainnet the paywall can fail at the balance step (see [#196](https://github.com/solana-foundation/templates/issues/196)). Non-browser clients that send the `PAYMENT-SIGNATURE` header themselves, such as `@x402/fetch`, are not affected.
 
 ---
 
@@ -290,28 +347,32 @@ This template uses minimal dependencies:
 ```json
 {
   "dependencies": {
-    "next": "16.0.10",
+    "@x402/core": "^2.27.0",
+    "@x402/next": "^2.27.0",
+    "@x402/paywall": "^2.27.0",
+    "@x402/svm": "^2.27.0",
+    "next": "16.3.4",
     "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "viem": "^2.38.5",
-    "x402-next": "^1.1.0"
+    "react-dom": "19.2.0"
   }
 }
 ```
 
 - **next** - Next.js framework
 - **react** / **react-dom** - React library
-- **viem** - Type-safe Ethereum/Solana types
-- **x402-next** - X402 payment middleware (handles all payment logic)
+- **@x402/next** - x402 payment proxy and `withX402` route wrapper for Next.js
+- **@x402/core** - x402 resource server and facilitator client
+- **@x402/svm** - Solana payment scheme
+- **@x402/paywall** - Browser paywall for Solana wallets
 
 ---
 
 ## Learn More
 
-### X402 Protocol
+### x402 Protocol
 
-- [X402 Specification](https://github.com/coinbase/x402) - Official protocol documentation
-- [X402 Next Package](https://www.npmjs.com/package/x402-next) - Middleware used in this template
+- [x402 Specification](https://github.com/x402-foundation/x402) - Official protocol documentation
+- [x402 Next Package](https://www.npmjs.com/package/@x402/next) - Proxy and route wrapper used in this template
 
 ### Solana
 
@@ -328,22 +389,16 @@ This template uses minimal dependencies:
 
 ### Payment Not Working
 
-1. Check that your wallet address in `middleware.ts` is correct
+1. Check that `NEXT_PUBLIC_RECEIVER_ADDRESS` in `.env.local` is correct
 2. Verify you're using the correct network (devnet vs mainnet)
 3. Check browser console for errors
-4. Ensure Coinbase Pay client key is valid
+4. Make sure the paying wallet holds USDC on that network
 
 ### 402 Errors Not Displaying
 
-1. Check middleware matcher configuration in `middleware.ts`
+1. Check the proxy matcher configuration in `proxy.ts`
 2. Verify route paths match your page structure
 3. Clear Next.js cache: `rm -rf .next && pnpm dev`
-
-### Session Not Persisting
-
-1. Check that cookies are enabled in your browser
-2. Verify session token endpoint is configured
-3. Check for CORS issues if using custom domains
 
 ### During installation, viewing `--silent --ignore-scripts` flag
 
@@ -363,7 +418,7 @@ pnpm install
 
 For issues specific to this template, please open an issue on the repository.
 
-For X402 protocol questions, refer to the [official documentation](https://github.com/coinbase/x402).
+For x402 protocol questions, refer to the [official documentation](https://github.com/x402-foundation/x402).
 
 ---
 
