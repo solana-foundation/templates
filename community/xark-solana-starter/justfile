@@ -78,10 +78,11 @@ demo program="anchor":
     #!/usr/bin/env bash
     set -euo pipefail
     starter() { cargo run -q -p client --bin starter -- --program {{program}} --url {{url}} --keypair {{keypair}} "$@"; }
-    code=$(mktemp -u).code
+    dir=$(mktemp -d)
+    trap 'rm -rf "$dir"' EXIT
+    code="$dir/secret.code"
     starter new-code --out "$code"
     starter initialize || echo "(already initialized)"
     starter register --code "$code"
     starter claim --code "$code"
     starter status --code "$code"
-    rm -f "$code"

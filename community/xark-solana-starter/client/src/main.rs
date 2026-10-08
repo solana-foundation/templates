@@ -80,12 +80,6 @@ fn main() -> Result<()> {
     let program_id = cli.program.id();
 
     if let Command::NewCode { out } = &cli.command {
-        if out.exists() {
-            bail!(
-                "{} already exists; refusing to overwrite a code",
-                out.display()
-            );
-        }
         let code = Code::random()?;
         code.save(out)?;
         println!("Wrote secret code to {} (keep it private)", out.display());
@@ -131,13 +125,17 @@ fn main() -> Result<()> {
         Command::Status { code } => {
             let commitment = Code::load(code)?.commitment();
             let address = ix::code_address(&program_id, &commitment);
-            match rpc.get_account_data(&address) {
-                Err(_) => println!("Not registered (no account at {address})"),
-                Ok(data) if data.len() != state::CODE_LEN => {
-                    bail!("unexpected code account size {}", data.len())
+            let account = rpc
+                .get_account_with_commitment(&address, rpc.commitment())
+                .context("fetching code account")?
+                .value;
+            match account {
+                None => println!("Not registered (no account at {address})"),
+                Some(account) if account.data.len() != state::CODE_LEN => {
+                    bail!("unexpected code account size {}", account.data.len())
                 }
-                Ok(data) => {
-                    let claimed_by = Address::try_from(&data[8..40]).expect("32 bytes");
+                Some(account) => {
+                    let claimed_by = Address::try_from(&account.data[8..40]).expect("32 bytes");
                     if claimed_by == Address::default() {
                         println!("Registered, unclaimed ({address})");
                     } else {

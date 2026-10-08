@@ -1,4 +1,4 @@
-use std::{fmt, path::Path, str::FromStr};
+use std::{fmt, fs::OpenOptions, io::Write, path::Path, str::FromStr};
 
 use anyhow::{Context, Result};
 use ark_bn254::Fr;
@@ -27,8 +27,16 @@ impl Code {
         self.0.to_string()
     }
 
+    /// Creates `path` readable by the owner only; fails if it already exists.
     pub fn save(&self, path: &Path) -> Result<()> {
-        std::fs::write(path, format!("{}\n", self.to_decimal()))
+        let mut options = OpenOptions::new();
+        options.write(true).create_new(true);
+        #[cfg(unix)]
+        std::os::unix::fs::OpenOptionsExt::mode(&mut options, 0o600);
+        let mut file = options
+            .open(path)
+            .with_context(|| format!("creating {}", path.display()))?;
+        writeln!(file, "{}", self.to_decimal())
             .with_context(|| format!("writing {}", path.display()))
     }
 
