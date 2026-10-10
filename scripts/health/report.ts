@@ -11,19 +11,43 @@ const statusLine = (template: TemplateReport): string => {
   const parts: string[] = []
   if (template.build.status !== 'skip') parts.push(`build ${ICON[template.build.status]}`)
   if (template.rust?.available) parts.push(`rust ${ICON[template.rust.status]}${template.rust.tested ? '+test' : ''}`)
+  // An advisory check that could not run (registry down, timeout) must stay visible: a
+  // clean-looking line would otherwise hide that nobody checked.
   if (template.deps.available)
     parts.push(
       `deps ${ICON[template.deps.status]}(${template.deps.major}M/${template.deps.minor}m/${template.deps.patch}p)`,
     )
+  else if (template.deps.status === 'skip' && template.deps.note) parts.push(`deps ${ICON.skip}(unavailable)`)
   if (template.audit.available && template.audit.critical + template.audit.high + template.audit.moderate > 0)
     parts.push(
       `vuln ${ICON[template.audit.status]}(${template.audit.critical}C/${template.audit.high}H/${template.audit.moderate}M)`,
     )
+  else if (!template.audit.available && template.audit.status === 'skip' && template.audit.note)
+    parts.push(`vuln ${ICON.skip}(unavailable)`)
   if (template.deprecation.packages.length)
     parts.push(`deprecated ${ICON[template.deprecation.status]}(${template.deprecation.packages.length})`)
   if (template.docDrift.missingScripts.length) parts.push(`docs ${ICON[template.docDrift.status]}`)
   if (template.boot) parts.push(`boot ${ICON[template.boot.status]}`)
   return parts.join(' · ')
+}
+
+/**
+ * Advisory checks that did not complete for a template, with the reason the runner recorded
+ * (e.g. `npm audit` hit ECONNREFUSED). Rendered next to the completed checks so a report never
+ * reads as clean when part of it never ran.
+ */
+export const unavailableChecks = (template: TemplateReport): string[] => {
+  const out: string[] = []
+  if (!template.deps.available && template.deps.status === 'skip' && template.deps.note)
+    out.push(`deps: ${template.deps.note.split('\n')[0]}`)
+  if (!template.audit.available && template.audit.status === 'skip' && template.audit.note)
+    out.push(`vuln: ${template.audit.note.split('\n')[0]}`)
+  return out
+}
+
+const incompleteLine = (template: TemplateReport): string | null => {
+  const missing = unavailableChecks(template)
+  return missing.length ? `⏭️ incomplete: ${missing.join(' · ')}` : null
 }
 
 export const toMarkdown = (report: HealthReport): string => {
@@ -73,6 +97,8 @@ export const toMarkdown = (report: HealthReport): string => {
           `- README references missing scripts: ${template.docDrift.missingScripts.map((script) => `\`${script}\``).join(', ')}`,
         )
       if (template.needsSecrets) lines.push(`- ⓘ needs external credentials to fully verify (runtime not checked here)`)
+      const incomplete = incompleteLine(template)
+      if (incomplete) lines.push(`- ${incomplete}`)
       lines.push('')
     }
   }
@@ -80,7 +106,9 @@ export const toMarkdown = (report: HealthReport): string => {
   if (passes.length) {
     lines.push('## ✅ Passing', '')
     for (const template of passes)
-      lines.push(`- **${template.id}** — ${statusLine(template)}${template.flaky ? ' ⚡ flaky' : ''}`)
+      lines.push(
+        `- **${template.id}** — ${statusLine(template)}${template.flaky ? ' ⚡ flaky' : ''}${incompleteLine(template) ? ` · ${incompleteLine(template)}` : ''}`,
+      )
     lines.push('')
   }
 
@@ -129,6 +157,8 @@ const failureBlock = (template: TemplateReport, options: HealthReport['options']
   const out: string[] = []
   out.push(`### ❌ ${template.id}`)
   out.push(`- **Kind:** ${template.kind} · **PM:** ${template.packageManager}`)
+  const incomplete = incompleteLine(template)
+  if (incomplete) out.push(`- ${incomplete}`)
   // Show whichever functional check actually failed (npm build, cargo, or boot).
   const failed =
     template.rust?.status === 'fail'

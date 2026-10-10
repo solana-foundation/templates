@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { diffReports, reproCommand, skipReason, toMarkdown } from './report.js'
+import { diffReports, reproCommand, skipReason, toMarkdown, unavailableChecks } from './report.js'
 import type { HealthReport, TemplateReport } from './types.js'
 
 // diffReports only reads id + status, so minimal stand-ins are enough.
@@ -141,4 +141,81 @@ test('skipped templates show why: the rust note surfaces when cargo is missing',
   })
   assert.match(md, /## ⏭️ Skipped/)
   assert.match(md, /community\/pinocchio.*rust: cargo not installed/)
+})
+
+test('advisory checks that could not run stay visible in every section', () => {
+  const base = {
+    group: 'kit',
+    kind: 'vite',
+    needsSecrets: false,
+    packageManager: 'npm',
+    build: {
+      status: 'pass',
+      phase: 'ci',
+      command: 'npm run ci',
+      exitCode: 0,
+      timedOut: false,
+      durationMs: 1,
+      tail: '',
+    },
+    deps: {
+      status: 'skip',
+      available: false,
+      total: 0,
+      major: 0,
+      minor: 0,
+      patch: 0,
+      outdated: [],
+      note: 'npm outdated: ECONNREFUSED registry.npmjs.org',
+    },
+    audit: {
+      status: 'skip',
+      available: false,
+      critical: 0,
+      high: 0,
+      moderate: 0,
+      low: 0,
+      info: 0,
+      note: 'npm audit timed out after 120s',
+    },
+    deprecation: { status: 'pass', packages: [] },
+    docDrift: { status: 'pass', missingScripts: [] },
+  }
+  const passing = { ...base, id: 'kit/react-vite', status: 'pass' } as unknown as TemplateReport
+  const warning = {
+    ...base,
+    id: 'kit/react-vite-anchor',
+    status: 'warn',
+    deprecation: { status: 'warn', packages: ['eslint'] },
+  } as unknown as TemplateReport
+  const failing = {
+    ...base,
+    id: 'kit/nextjs',
+    status: 'fail',
+    build: { ...base.build, status: 'fail', exitCode: 1, tail: 'boom' },
+  } as unknown as TemplateReport
+  assert.deepEqual(unavailableChecks(passing), [
+    'deps: npm outdated: ECONNREFUSED registry.npmjs.org',
+    'vuln: npm audit timed out after 120s',
+  ])
+  const md = toMarkdown({
+    schemaVersion: 1,
+    generatedAt: '2026-10-10T00:00:00.000Z',
+    packageManager: 'npm',
+    options: { build: true, boot: false, source: 'local' },
+    summary: { total: 3, pass: 1, warn: 1, fail: 1, skip: 0 },
+    templates: [failing, warning, passing],
+  })
+  // status line marks both checks as unavailable instead of dropping them
+  assert.match(md, /\*\*kit\/react-vite\*\* — build ✅ · deps ⏭️\(unavailable\) · vuln ⏭️\(unavailable\)/)
+  // and each section carries the reason
+  const sections = md.split('\n## ')
+  for (const heading of ['❌ Failures', '⚠️ Warnings', '✅ Passing']) {
+    const section = sections.find((part) => part.startsWith(heading))
+    assert.ok(section, `section ${heading} present`)
+    assert.match(
+      section,
+      /incomplete: deps: npm outdated: ECONNREFUSED registry\.npmjs\.org · vuln: npm audit timed out after 120s/,
+    )
+  }
 })
