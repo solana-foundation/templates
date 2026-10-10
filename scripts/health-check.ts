@@ -35,7 +35,7 @@ import {
 } from './health/checks.js'
 import { parseDotenv } from './health/env.js'
 import { diffReports, diffToMarkdown, toMarkdown } from './health/report.js'
-import { overallStatus } from './health/status.js'
+import { templateStatus } from './health/status.js'
 import type { HealthReport, Status, TemplateRef, TemplateReport } from './health/types.js'
 import { writeFile, writeJsonFile } from './shared/fs-utils.js'
 
@@ -144,9 +144,7 @@ const toTemplateReport = (ref: TemplateRef, checked: Awaited<ReturnType<typeof c
     checked.deprecation.status,
     checked.docDrift.status,
   ]
-  // needs-setup dominates: we couldn't actually validate the template, so it's "skip",
-  // not pass/warn from incidental advisory checks.
-  const status: Status = checked.needsSetupSkip ? 'skip' : overallStatus(functional, advisory)
+  const status: Status = templateStatus(functional, advisory, checked.needsSetupSkip)
   return {
     id: ref.id,
     group: ref.group,

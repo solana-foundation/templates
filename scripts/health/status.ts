@@ -20,6 +20,17 @@ export const overallStatus = (functional: Status[], advisory: Status[]): Status 
   return 'pass'
 }
 
+/**
+ * Overall status for one template. A needs-setup skip (the build couldn't run without
+ * credentials) only speaks for the build dimension: an independent functional failure
+ * (rust, boot) still fails the template, otherwise it reads "skip" rather than being
+ * bubbled up to pass/warn by advisory checks.
+ */
+export const templateStatus = (functional: Status[], advisory: Status[], needsSetupSkip: boolean): Status => {
+  if (needsSetupSkip && !functional.includes('fail')) return 'skip'
+  return overallStatus(functional, advisory)
+}
+
 /** Pick the worst of a set of statuses (fail > warn > pass > skip), for summaries. */
 export const worst = (statuses: Status[]): Status => {
   if (statuses.includes('fail')) return 'fail'

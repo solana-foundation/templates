@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { overallStatus, worst } from './status.js'
+import { overallStatus, templateStatus, worst } from './status.js'
 
 test('a functional failure makes the template fail', () => {
   assert.equal(overallStatus(['fail'], ['pass']), 'fail')
@@ -34,6 +34,17 @@ test('all functional skipped is skip even with advisory pass', () => {
 test('one verified functional check alongside skipped ones still counts', () => {
   assert.equal(overallStatus(['pass', 'skip'], ['pass']), 'pass')
   assert.equal(overallStatus(['pass', 'skip'], ['warn']), 'warn')
+})
+
+test('a needs-setup build skip still fails the template when rust or boot failed', () => {
+  // build: setup-skip, rust: fail -> fail wins
+  assert.equal(templateStatus(['skip', 'fail'], ['pass'], true), 'fail')
+  // build: setup-skip, rust: pass -> still skip (we could not validate the build)
+  assert.equal(templateStatus(['skip', 'pass'], ['pass'], true), 'skip')
+  assert.equal(templateStatus(['skip'], ['warn'], true), 'skip')
+  // without setup-skip the ordinary rules apply
+  assert.equal(templateStatus(['pass'], ['warn'], false), 'warn')
+  assert.equal(templateStatus(['skip'], ['pass'], false), 'skip')
 })
 
 test('worst picks the highest severity present', () => {

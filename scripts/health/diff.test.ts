@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { diffReports } from './report.js'
-import { buildFailureMentionsCredentials } from './checks.js'
+import { buildFailureMentionsCredentials, unsuppliedCredentialKeys } from './checks.js'
 import type { HealthReport, Status } from './types.js'
 
 const report = (entries: Record<string, Status>): HealthReport =>
@@ -43,6 +43,19 @@ test('credential causation requires a key name in the failure output', () => {
   assert.equal(buildFailureMentionsCredentials('error: missing supabase_service_role_key in env', keys), true)
   assert.equal(buildFailureMentionsCredentials("Type error: Property 'cluster' is missing", keys), false)
   assert.equal(buildFailureMentionsCredentials('✖ 17 problems (9 errors, 8 warnings)', keys), false)
+})
+
+test('a credential that was explicitly supplied cannot explain a failure', () => {
+  const keys = ['NEXT_PUBLIC_SUPABASE_ANON_KEY', 'SUPABASE_SERVICE_ROLE_KEY']
+  const tailText = 'Error: NEXT_PUBLIC_SUPABASE_ANON_KEY is not set'
+  // nothing supplied: the mention establishes causation -> setup skip
+  assert.equal(buildFailureMentionsCredentials(tailText, unsuppliedCredentialKeys(keys, {})), true)
+  // the mentioned key was supplied via --env-file: it was not missing -> stays a failure
+  const supplied = { NEXT_PUBLIC_SUPABASE_ANON_KEY: 'anon' }
+  assert.deepEqual(unsuppliedCredentialKeys(keys, supplied), ['SUPABASE_SERVICE_ROLE_KEY'])
+  assert.equal(buildFailureMentionsCredentials(tailText, unsuppliedCredentialKeys(keys, supplied)), false)
+  // all supplied: nothing is left to blame
+  assert.deepEqual(unsuppliedCredentialKeys(keys, { ...supplied, SUPABASE_SERVICE_ROLE_KEY: 'x' }), [])
 })
 
 test('prose-detected templates never establish causation', () => {

@@ -7,7 +7,7 @@
 import { spawn, spawnSync, type ChildProcess } from 'child_process'
 import { cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'fs'
 import { tmpdir } from 'os'
-import { basename, join, relative } from 'path'
+import { basename, join, relative, sep } from 'path'
 import type {
   AuditResult,
   BootResult,
@@ -66,16 +66,15 @@ const MAX_CAPTURE_BYTES = 1_000_000
  * Directory names never copied into the isolated template copy: build output and installs
  * are recreated fresh, and `.git` is never needed to install or build.
  */
-export const EXCLUDED_DIRS: readonly string[] = [
-  'node_modules',
-  '.git',
-  '.next',
-  'dist',
-  'build',
-  'target',
-  '.expo',
-  '.turbo',
-]
+export const EXCLUDED_DIRS: readonly string[] = ['node_modules', '.git', '.next', 'dist', 'build', '.expo', '.turbo']
+
+/**
+ * Cargo output under any `target/` dir. `target` is NOT excluded wholesale: Anchor templates
+ * commit `anchor/target/idl/*.json` and `anchor/target/types/*.ts` that their TS code imports.
+ * Inside a git checkout the tracked/untracked distinction is used instead (see copyTemplate).
+ */
+export const CARGO_OUTPUT_PATTERN =
+  /(^|\/)target\/(debug|release|deploy|sbf-solana-solana|\.rustc_info\.json|CACHEDIR\.TAG)(\/|$)/
 
 /** The only `.env*` files that are safe to copy: placeholders, never real values. */
 export const ENV_TEMPLATE_FILES: readonly string[] = ['.env.example', '.env.sample', '.env.template']
@@ -88,15 +87,42 @@ export const ENV_TEMPLATE_FILES: readonly string[] = ['.env.example', '.env.samp
 export const isPrivateEnvFile = (name: string): boolean =>
   name === '.env' || (name.startsWith('.env.') && !ENV_TEMPLATE_FILES.includes(name))
 
-/** cpSync filter: drop excluded dirs and private env files at any depth. */
-const copyFilter = (source: string): boolean => {
-  const name = basename(source)
-  return !EXCLUDED_DIRS.includes(name) && !isPrivateEnvFile(name)
+/**
+ * Pure: the cpSync filter for a template at `src`. Drops EXCLUDED_DIRS and private env files
+ * at any depth. Under a `target/` dir, keeps only git-tracked entries when `tracked` (the
+ * template's `git ls-files` output, template-relative) is known, otherwise drops Cargo output.
+ */
+export const copyFilterFor = (src: string, tracked: ReadonlySet<string> | null): ((source: string) => boolean) => {
+  // Every ancestor dir of a tracked file, so cpSync descends into dirs that hold tracked files.
+  const trackedDirs = new Set<string>()
+  for (const file of tracked ?? []) {
+    const parts = file.split('/')
+    for (let depth = 1; depth < parts.length; depth++) trackedDirs.add(parts.slice(0, depth).join('/'))
+  }
+  return (source: string): boolean => {
+    const name = basename(source)
+    if (EXCLUDED_DIRS.includes(name) || isPrivateEnvFile(name)) return false
+    const rel = relative(src, source).split(sep).join('/')
+    if (rel === '' || !/(^|\/)target(\/|$)/.test(rel)) return true
+    if (tracked) return tracked.has(rel) || trackedDirs.has(rel)
+    return !CARGO_OUTPUT_PATTERN.test(rel)
+  }
 }
 
-/** Copy a template directory into dest, leaving out EXCLUDED_DIRS and private env files. */
+/** Template-relative paths git tracks under `dir`, or null outside a git checkout. */
+const gitTrackedFiles = (dir: string): Set<string> | null => {
+  const result = spawnSync('git', ['ls-files', '-z'], {
+    cwd: dir,
+    encoding: 'utf-8',
+    stdio: ['ignore', 'pipe', 'ignore'],
+  })
+  if (result.status !== 0 || typeof result.stdout !== 'string') return null
+  return new Set(result.stdout.split('\0').filter((file) => file.length > 0))
+}
+
+/** Copy a template directory into dest, leaving out EXCLUDED_DIRS, private env files and Cargo output. */
 export const copyTemplate = (src: string, dest: string): void => {
-  cpSync(src, dest, { recursive: true, filter: copyFilter })
+  cpSync(src, dest, { recursive: true, filter: copyFilterFor(src, gitTrackedFiles(src)) })
 }
 
 // Tools like Next.js hard-code ANSI colors into their error strings even with
@@ -275,6 +301,12 @@ export const cleanupActiveTempDirs = (): void => {
  * the failure. Prose-detected templates have no key names, so they never match:
  * causation cannot be established and their failures stay failures.
  */
+/** The credential keys a template still lacks: those not explicitly supplied for this run. */
+export const unsuppliedCredentialKeys = (
+  credentialKeys: readonly string[],
+  templateEnv: Readonly<Record<string, string>>,
+): string[] => credentialKeys.filter((key) => !(key in templateEnv))
+
 export const buildFailureMentionsCredentials = (tail: string, credentialKeys: readonly string[]): boolean => {
   if (credentialKeys.length === 0) return false
   const haystack = tail.toLowerCase()
@@ -704,9 +736,6 @@ const bootDevServer = async (workDir: string, opts: ResolvedRunOptions): Promise
   child.stderr.on('data', (chunk: Buffer) => (output += chunk.toString()))
   child.on('exit', () => (exited = true))
 
-  // Match only the URL the dev server announces for itself. We never probe guessed ports,
-  // since an unrelated service already listening on 3000/5173 would otherwise read as a pass.
-  const urlPattern = /https?:\/\/(?:localhost|127\.0\.0\.1):(\d+)/
   const deadline = Date.now() + 60_000
 
   // Error statuses (4xx/5xx) don't pass, but they don't fail immediately either: dev
@@ -722,9 +751,9 @@ const bootDevServer = async (workDir: string, opts: ResolvedRunOptions): Promise
           note: `dev server exited before responding\n${tail(output, 15)}`,
         }
       }
-      const printed = output.match(urlPattern)
-      if (printed) {
-        const url = `http://localhost:${printed[1]}`
+      // A dev script may start several servers (a Rust API plus Next.js): probe every
+      // announced URL each poll, web-framework ones first, and accept the first that answers.
+      for (const url of announcedUrls(output)) {
         const httpStatus = await tryFetch(url)
         if (httpStatus !== null && httpStatus >= 200 && httpStatus < 400) {
           return { status: 'pass', available: true, url, httpStatus, durationMs: Date.now() - start }
@@ -748,7 +777,7 @@ const bootDevServer = async (workDir: string, opts: ResolvedRunOptions): Promise
       status: 'fail',
       available: true,
       durationMs: Date.now() - start,
-      note: urlPattern.test(output)
+      note: announcedUrls(output).length
         ? `dev server printed a URL but did not respond within 60s\n${tail(output, 15)}`
         : `dev server did not print a localhost URL within 60s\n${tail(output, 15)}`,
     }
@@ -756,6 +785,29 @@ const bootDevServer = async (workDir: string, opts: ResolvedRunOptions): Promise
     killProcessTree(child)
     activeChildren.delete(child)
   }
+}
+
+// Match only URLs the dev server announces for itself. We never probe guessed ports, since
+// an unrelated service already listening on 3000/5173 would otherwise read as a pass.
+const LOCAL_URL_PATTERN = /https?:\/\/(?:localhost|127\.0\.0\.1):(\d+)/g
+const FRAMEWORK_LINE_PATTERN = /\bLocal:|\bready\b|started server on/i
+
+/**
+ * Pure: every localhost URL announced in dev-server output, one per port, normalised to
+ * http://localhost:<port>. URLs on web-framework lines (`Local:`, `ready`, `started server
+ * on`) come first so a Rust API announced earlier doesn't shadow the web app.
+ */
+export const announcedUrls = (output: string): string[] => {
+  const preferred: string[] = []
+  const others: string[] = []
+  for (const line of stripAnsi(output).split('\n')) {
+    for (const match of line.matchAll(LOCAL_URL_PATTERN)) {
+      const url = `http://localhost:${match[1]}`
+      const bucket = FRAMEWORK_LINE_PATTERN.test(line) ? preferred : others
+      if (!preferred.includes(url) && !others.includes(url)) bucket.push(url)
+    }
+  }
+  return [...preferred, ...others.filter((url) => !preferred.includes(url))]
 }
 
 const tryFetch = async (url: string): Promise<number | null> => {
@@ -897,13 +949,15 @@ export const checkTemplate = async (ref: TemplateRef, opts: RunOptions) => {
 
     // needs-setup: a template that declares env/credentials and can't build without that setup
     // step isn't "broken" — mark it skip so the fail list only holds genuinely broken templates.
-    // This dominates the overall status (see toTemplateReport): we genuinely couldn't validate
-    // it, so it must read "skip", not get bubbled up to pass/warn by advisory checks.
+    // The skip applies to the build dimension; templateStatus() keeps it from masking an
+    // independent rust/boot failure while still not letting advisory checks bubble it to pass.
+    // A key the maintainer explicitly supplied (--env-file/--allow-env) was NOT missing, so
+    // only the unsupplied keys can explain the failure.
     let needsSetupSkip = false
     if (
       ref.needsSecrets &&
       build.status === 'fail' &&
-      buildFailureMentionsCredentials(build.tail, ref.credentialKeys)
+      buildFailureMentionsCredentials(build.tail, unsuppliedCredentialKeys(ref.credentialKeys, effOpts.templateEnv))
     ) {
       // Only downgrade to skip when the failure output actually references one of the
       // credential var names: needing secrets does not prove the secrets caused THIS

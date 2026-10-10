@@ -3,7 +3,14 @@ import assert from 'node:assert/strict'
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { copyTemplate, EXCLUDED_DIRS, isPrivateEnvFile } from './checks.js'
+import {
+  announcedUrls,
+  CARGO_OUTPUT_PATTERN,
+  copyFilterFor,
+  copyTemplate,
+  EXCLUDED_DIRS,
+  isPrivateEnvFile,
+} from './checks.js'
 import { ENV_ALLOWLIST, parentSecretValues, sanitizedEnv } from './env.js'
 
 const fixture = (): string => {
@@ -52,9 +59,85 @@ test('private env file detection', () => {
     assert.equal(isPrivateEnvFile(name), false, name)
 })
 
-test('excluded dirs cover installs, build output and git metadata', () => {
-  for (const name of ['node_modules', '.git', '.next', 'dist', 'target', '.turbo'])
-    assert.ok(EXCLUDED_DIRS.includes(name))
+test('excluded dirs cover installs, build output and git metadata, but not target wholesale', () => {
+  for (const name of ['node_modules', '.git', '.next', 'dist', '.turbo']) assert.ok(EXCLUDED_DIRS.includes(name))
+  assert.ok(!EXCLUDED_DIRS.includes('target'))
+})
+
+const targetFixture = (): string => {
+  const dir = mkdtempSync(join(tmpdir(), 'health-target-test-'))
+  mkdirSync(join(dir, 'anchor', 'target', 'idl'), { recursive: true })
+  writeFileSync(join(dir, 'anchor', 'target', 'idl', 'x.json'), '{}\n')
+  mkdirSync(join(dir, 'anchor', 'target', 'types'), { recursive: true })
+  writeFileSync(join(dir, 'anchor', 'target', 'types', 'x.ts'), 'export {}\n')
+  mkdirSync(join(dir, 'target', 'debug'), { recursive: true })
+  writeFileSync(join(dir, 'target', 'debug', 'junk'), 'bin\n')
+  mkdirSync(join(dir, 'target', 'deploy'), { recursive: true })
+  writeFileSync(join(dir, 'target', 'deploy', 'x.so'), 'so\n')
+  writeFileSync(join(dir, 'target', 'CACHEDIR.TAG'), 'tag\n')
+  mkdirSync(join(dir, 'target', 'other'))
+  writeFileSync(join(dir, 'target', 'other', 'untracked.txt'), 'x\n')
+  writeFileSync(join(dir, 'package.json'), '{}\n')
+  return dir
+}
+
+test('outside git, committed-looking target entries are kept and Cargo output is dropped', () => {
+  const src = targetFixture()
+  const dest = mkdtempSync(join(tmpdir(), 'health-target-dest-'))
+  try {
+    copyTemplate(src, dest)
+    assert.ok(existsSync(join(dest, 'anchor', 'target', 'idl', 'x.json')))
+    assert.ok(existsSync(join(dest, 'anchor', 'target', 'types', 'x.ts')))
+    assert.ok(!existsSync(join(dest, 'target', 'debug')))
+    assert.ok(!existsSync(join(dest, 'target', 'deploy')))
+    assert.ok(!existsSync(join(dest, 'target', 'CACHEDIR.TAG')))
+    // not Cargo output and no git to consult: kept
+    assert.ok(existsSync(join(dest, 'target', 'other', 'untracked.txt')))
+  } finally {
+    rmSync(src, { recursive: true, force: true })
+    rmSync(dest, { recursive: true, force: true })
+  }
+})
+
+test('inside git, only tracked target entries are copied', () => {
+  const src = targetFixture()
+  const tracked = new Set(['package.json', 'anchor/target/idl/x.json', 'anchor/target/types/x.ts'])
+  const keep = copyFilterFor(src, tracked)
+  assert.equal(keep(src), true)
+  assert.equal(keep(join(src, 'package.json')), true)
+  assert.equal(keep(join(src, 'anchor')), true)
+  assert.equal(keep(join(src, 'anchor', 'target')), true)
+  assert.equal(keep(join(src, 'anchor', 'target', 'idl')), true)
+  assert.equal(keep(join(src, 'anchor', 'target', 'idl', 'x.json')), true)
+  assert.equal(keep(join(src, 'target')), false)
+  assert.equal(keep(join(src, 'target', 'debug', 'junk')), false)
+  assert.equal(keep(join(src, 'target', 'other', 'untracked.txt')), false)
+  rmSync(src, { recursive: true, force: true })
+  for (const rel of ['target/debug', 'anchor/target/deploy/x.so', 'target/.rustc_info.json', 'target/CACHEDIR.TAG'])
+    assert.ok(CARGO_OUTPUT_PATTERN.test(rel), rel)
+  for (const rel of ['anchor/target/idl/x.json', 'target/types/x.ts', 'src/target/index.ts'])
+    assert.ok(!CARGO_OUTPUT_PATTERN.test(rel), rel)
+})
+
+test('announced URLs: web framework lines first, one per port, 127.0.0.1 normalised', () => {
+  const output = [
+    '[rust] listening on http://127.0.0.1:8080',
+    '[next]   ▲ Next.js 15.0.0',
+    '[next]   - Local:        http://localhost:3000',
+    '[next]   - Network:      http://192.168.1.2:3000',
+    '[next]  ✓ Ready in 1.2s',
+    '[rust] also http://127.0.0.1:8080/health',
+  ].join('\n')
+  assert.deepEqual(announcedUrls(output), ['http://localhost:3000', 'http://localhost:8080'])
+  assert.deepEqual(announcedUrls('  VITE v7  ready in 300 ms\n  ➜  Local:   http://localhost:5173/'), [
+    'http://localhost:5173',
+  ])
+  assert.deepEqual(announcedUrls('compiling...'), [])
+  // a plain URL on a non-framework line still counts, after any framework ones
+  assert.deepEqual(announcedUrls('api at http://localhost:4000\n- Local: http://localhost:3000'), [
+    'http://localhost:3000',
+    'http://localhost:4000',
+  ])
 })
 
 test('sanitized env drops secrets and keeps what tools need', () => {
