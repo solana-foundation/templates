@@ -21,7 +21,7 @@ import type {
   TemplateRef,
 } from './types.js'
 import { bumpKind } from './semver.js'
-import { credentialsForTemplate, redactDeep, sanitizedEnv } from './env.js'
+import { credentialsForTemplate, parentSecretValues, redactDeep, sanitizedEnv, secretValues } from './env.js'
 
 export type RunOptions = {
   /** force a package manager; null means "use each template's pinned one (npm if unset)" */
@@ -333,6 +333,23 @@ export const runBuild = async (
   // Prefer the template's own `ci` script (the canonical health command); fall back to build.
   const hasCi = Boolean(ref.scripts.ci)
   const hasBuild = Boolean(ref.scripts.build)
+  const entry = hasCi ? 'ci' : hasBuild ? 'build' : null
+  // A ci/build chain that shells out to cargo cannot run without cargo; that's an
+  // unverifiable template on this machine, not a broken one (the Rust check says the same).
+  if (entry && scriptChainReferencesCargo(ref.scripts, entry) && !hasBinary('cargo', ['--version'])) {
+    return {
+      build: {
+        status: 'skip',
+        phase: entry,
+        command: `${pm} run ${entry}`,
+        exitCode: null,
+        timedOut: false,
+        durationMs: install.durationMs,
+        tail: `${entry} script requires cargo, which is not installed`,
+      },
+      deprecation,
+    }
+  }
   if (!hasCi && !hasBuild) {
     return {
       build: {
@@ -350,6 +367,25 @@ export const runBuild = async (
   const script = hasCi ? 'ci' : 'build'
   const built = await run(pm, ['run', script], workDir, opts.buildTimeoutMs, opts.templateEnv)
   return { build: buildResult(hasCi ? 'ci' : 'build', `${pm} run ${script}`, built), deprecation }
+}
+
+/**
+ * Pure: true when the named script, or any script it chains into (`npm run x`, `pnpm x`,
+ * `yarn x`, `{pm} run x`), invokes cargo.
+ */
+export const scriptChainReferencesCargo = (scripts: Readonly<Record<string, string>>, entry: string): boolean => {
+  const seen = new Set<string>()
+  const queue = [entry]
+  while (queue.length) {
+    const name = queue.shift()!
+    if (seen.has(name)) continue
+    seen.add(name)
+    const body = scripts[name]
+    if (!body) continue
+    if (/\bcargo\b/.test(body)) return true
+    for (const next of scriptsInCommands(body)) if (next in scripts) queue.push(next)
+  }
+  return false
 }
 
 const buildResult = (phase: BuildResult['phase'], command: string, exec: Exec): BuildResult => ({
@@ -892,7 +928,7 @@ export const checkTemplate = async (ref: TemplateRef, opts: RunOptions) => {
     // Forwarded credential values must never reach a report: scrub every tail/note/command.
     return redactDeep(
       { build, deprecation, deps, audit, docDrift, boot, rust, packageManager: pm, pmNote, needsSetupSkip },
-      Object.values(opts.forwardedEnv),
+      [...secretValues(opts.forwardedEnv), ...parentSecretValues()],
     )
   } finally {
     if (workDir) disposeTempDir(workDir)

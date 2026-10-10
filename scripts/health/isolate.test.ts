@@ -4,7 +4,7 @@ import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync 
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { copyTemplate, EXCLUDED_DIRS, isPrivateEnvFile } from './checks.js'
-import { ENV_ALLOWLIST, sanitizedEnv } from './env.js'
+import { ENV_ALLOWLIST, parentSecretValues, sanitizedEnv } from './env.js'
 
 const fixture = (): string => {
   const dir = mkdtempSync(join(tmpdir(), 'health-isolate-test-'))
@@ -81,4 +81,42 @@ test('sanitized env drops secrets and keeps what tools need', () => {
   assert.ok(!('AWS_SECRET_ACCESS_KEY' in env))
   assert.ok(!('UNDEFINED_ONE' in env))
   assert.ok(ENV_ALLOWLIST.includes('PATH'))
+})
+
+test('prefix-allowlisted registry and toolchain tokens never reach the child env', () => {
+  const source = {
+    NODE_OPTIONS: '--max-old-space-size=4096',
+    NODE_ENV: 'test',
+    npm_config_registry: 'https://registry.npmjs.org/',
+    PNPM_HOME: '/home/me/.local/share/pnpm',
+    NODE_AUTH_TOKEN: 'npm_abcdef123456',
+    YARN_NPM_AUTH_TOKEN: 'yarn-token-123456',
+    NPM_TOKEN: 'npm-token-123456',
+    npm_config__authToken: 'legacy-auth-123456',
+    'npm_config_//registry.npmjs.org/:_authToken': 'scoped-auth-123456',
+    NODE_TLS_SECRET: 'tls-secret-123456',
+    PNPM_API_KEY: 'pnpm-key-123456',
+    XDG_CONFIG_HOME: '/home/me/.config',
+  }
+  const env = sanitizedEnv(source)
+  assert.equal(env.NODE_OPTIONS, '--max-old-space-size=4096')
+  assert.equal(env.NODE_ENV, 'test')
+  assert.equal(env.npm_config_registry, 'https://registry.npmjs.org/')
+  assert.equal(env.PNPM_HOME, '/home/me/.local/share/pnpm')
+  assert.equal(env.XDG_CONFIG_HOME, '/home/me/.config')
+  for (const key of [
+    'NODE_AUTH_TOKEN',
+    'YARN_NPM_AUTH_TOKEN',
+    'NPM_TOKEN',
+    'npm_config__authToken',
+    'npm_config_//registry.npmjs.org/:_authToken',
+    'NODE_TLS_SECRET',
+    'PNPM_API_KEY',
+  ])
+    assert.ok(!(key in env), key)
+  // and their values join the redaction set regardless
+  const redacted = parentSecretValues(source)
+  assert.ok(redacted.includes('npm_abcdef123456'))
+  assert.ok(redacted.includes('yarn-token-123456'))
+  assert.ok(!redacted.includes('https://registry.npmjs.org/'))
 })

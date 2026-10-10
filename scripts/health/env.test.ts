@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { credentialsForTemplate, parseDotenv, redactDeep, redactSecrets } from './env.js'
+import { credentialsForTemplate, parseDotenv, redactDeep, redactSecrets, secretValues } from './env.js'
+import { envKeysDeclared, envKeysRequiringCredentials } from './enumerate.js'
 import { toMarkdown } from './report.js'
 import type { HealthReport, TemplateReport } from './types.js'
 
@@ -33,19 +34,45 @@ test('parseDotenv handles comments, export, quotes and inline comments', () => {
 
 test('forwarded credentials only reach templates that declare them', () => {
   const forwarded = { AI_GATEWAY_API_KEY: 'k1', SUPABASE_SERVICE_ROLE_KEY: 'k2' }
+  const declares = (...keys: string[]) => ({ needsSecrets: true, credentialKeys: keys, declaredEnvKeys: keys })
   // declares one key: receives that one only
-  assert.deepEqual(credentialsForTemplate({ needsSecrets: true, credentialKeys: ['AI_GATEWAY_API_KEY'] }, forwarded), {
-    AI_GATEWAY_API_KEY: 'k1',
-  })
+  assert.deepEqual(credentialsForTemplate(declares('AI_GATEWAY_API_KEY'), forwarded), { AI_GATEWAY_API_KEY: 'k1' })
   // declares a key nobody forwarded: receives nothing
-  assert.deepEqual(credentialsForTemplate({ needsSecrets: true, credentialKeys: ['OTHER_KEY'] }, forwarded), {})
-  // prose-detected need (no key names): receives every forwarded key
-  assert.deepEqual(credentialsForTemplate({ needsSecrets: true, credentialKeys: [] }, forwarded), forwarded)
-  // needs no secrets: never receives any
-  assert.deepEqual(credentialsForTemplate({ needsSecrets: false, credentialKeys: [] }, forwarded), {})
+  assert.deepEqual(credentialsForTemplate(declares('OTHER_KEY'), forwarded), {})
+  // prose-detected need (no key names at all): receives every forwarded key
+  assert.deepEqual(credentialsForTemplate(declares(), forwarded), forwarded)
+  // needs no secrets and declares nothing: never receives any
   assert.deepEqual(
-    credentialsForTemplate({ needsSecrets: false, credentialKeys: ['AI_GATEWAY_API_KEY'] }, forwarded),
+    credentialsForTemplate({ needsSecrets: false, credentialKeys: [], declaredEnvKeys: [] }, forwarded),
     {},
+  )
+})
+
+test('declared public config is forwarded too; only secret-looking values are redacted', () => {
+  const envExample = [
+    '# Supabase',
+    'NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"',
+    'SUPABASE_SERVICE_ROLE_KEY=',
+  ].join('\n')
+  const declaredEnvKeys = envKeysDeclared(envExample)
+  const credentialKeys = envKeysRequiringCredentials(envExample)
+  assert.deepEqual(declaredEnvKeys, ['NEXT_PUBLIC_SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'])
+  assert.deepEqual(credentialKeys, ['SUPABASE_SERVICE_ROLE_KEY'])
+
+  const forwarded = {
+    NEXT_PUBLIC_SUPABASE_URL: 'https://abc.supabase.co',
+    SUPABASE_SERVICE_ROLE_KEY: 'service-role-9f8e7d',
+    UNRELATED_TOKEN: 'never-forwarded',
+  }
+  const env = credentialsForTemplate({ needsSecrets: true, credentialKeys, declaredEnvKeys }, forwarded)
+  assert.deepEqual(env, {
+    NEXT_PUBLIC_SUPABASE_URL: 'https://abc.supabase.co',
+    SUPABASE_SERVICE_ROLE_KEY: 'service-role-9f8e7d',
+  })
+  assert.deepEqual(secretValues(forwarded).sort(), ['never-forwarded', 'service-role-9f8e7d'])
+  assert.equal(
+    redactSecrets('url https://abc.supabase.co key service-role-9f8e7d', secretValues(forwarded)),
+    'url https://abc.supabase.co key ***',
   )
 })
 

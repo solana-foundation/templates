@@ -43,6 +43,8 @@ export type TemplateRef = {
   readonly secretsReason?: string
   /** the exact env var names that require credentials (empty when detection came from prose) */
   readonly credentialKeys: readonly string[]
+  /** every env var name the template declares in its .env.example/.env.sample/.env.template (superset of credentialKeys) */
+  readonly declaredEnvKeys: readonly string[]
 }
 
 export type BuildResult = {

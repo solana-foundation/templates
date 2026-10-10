@@ -88,6 +88,7 @@ const ref = (dir: string, scripts: Record<string, string>): TemplateRef => ({
   packageManager: 'npm',
   needsSecrets: false,
   credentialKeys: [],
+  declaredEnvKeys: [],
 })
 
 test('checkDocDrift: the old false positives are gone, real drift is still reported', () => {

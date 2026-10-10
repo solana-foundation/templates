@@ -41,16 +41,21 @@ const allDeps = (pkg: AnyPkg): Record<string, string> => ({
   ...(pkg.devDependencies ?? {}),
 })
 
-const classify = (dir: string, pkg: AnyPkg | null): TemplateKind => {
-  if (existsSync(join(dir, 'Cargo.toml')) || existsSync(join(dir, 'program', 'Cargo.toml'))) {
-    return 'rust'
-  }
-  if (!pkg) return 'unknown'
+/**
+ * Web/mobile capability is decided from package.json deps and scripts first, independently
+ * of any Cargo manifest: a template that ships a Rust backend AND a Next.js app (its dev
+ * script starts both) is `next` so it gets the boot check, while cargoManifestDir (detected
+ * separately) still gives it the Rust check. Only a template with no web signal is `rust`.
+ */
+export const classify = (dir: string, pkg: AnyPkg | null): TemplateKind => {
+  const hasCargo = existsSync(join(dir, 'Cargo.toml')) || existsSync(join(dir, 'program', 'Cargo.toml'))
+  if (!pkg) return hasCargo ? 'rust' : 'unknown'
   const deps = allDeps(pkg)
   const scripts = Object.values(pkg.scripts ?? {}).join(' ')
   if ('expo' in deps || scripts.includes('expo')) return 'expo'
   if ('next' in deps || scripts.includes('next ')) return 'next'
-  if ('vite' in deps || scripts.includes('vite')) return 'vite'
+  if ('vite' in deps || /\bvite\b/.test(scripts)) return 'vite'
+  if (hasCargo) return 'rust'
   if (pkg.scripts?.build || pkg.scripts?.start) return 'node'
   return 'unknown'
 }
@@ -122,17 +127,41 @@ const CREDENTIAL_KEY_PATTERN = /(API_?KEY|SECRET|PASSWORD|CREDENTIAL|PRIVATE_?KE
  *  because they carry KEY/SECRET/etc. in the name, e.g. NEXT_PUBLIC_SUPABASE_ANON_KEY. */
 const NON_CREDENTIAL_KEY_PATTERN = /(MINT|PROGRAM|ADDRESS|RPC|URL|PUBKEY|PUBLIC_KEY|APP_ID|CLIENT_ID|PROJECT_ID)/i
 
+/** Every variable name declared in an env template file (names only; comments and values never count). */
+export const envKeysDeclared = (envBody: string): string[] =>
+  envBody
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && !line.startsWith('#'))
+    .map(
+      (line) =>
+        line
+          .replace(/^export\s+/, '')
+          .split('=')[0]
+          ?.trim() ?? '',
+    )
+    .filter((key) => /^[A-Za-z_][A-Za-z0-9_]*$/.test(key))
+
 /**
  * Extract the variable names in an .env.example that require real credentials.
  * Parses line by line and matches names only, so comments and values never count.
  */
 export const envKeysRequiringCredentials = (envBody: string): string[] =>
-  envBody
-    .split('\n')
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0 && !line.startsWith('#'))
-    .map((line) => line.split('=')[0]?.trim() ?? '')
-    .filter((key) => CREDENTIAL_KEY_PATTERN.test(key) && !NON_CREDENTIAL_KEY_PATTERN.test(key))
+  envKeysDeclared(envBody).filter((key) => CREDENTIAL_KEY_PATTERN.test(key) && !NON_CREDENTIAL_KEY_PATTERN.test(key))
+
+/** The env template files a template may ship; the only `.env*` files the health check reads. */
+const ENV_TEMPLATE_FILES = ['.env.example', '.env.sample', '.env.template']
+
+/** All env var names a template declares across its env template files (deduplicated, in order). */
+const declaredEnvKeys = (dir: string): string[] => {
+  const keys: string[] = []
+  for (const name of ENV_TEMPLATE_FILES) {
+    const file = join(dir, name)
+    if (!existsSync(file)) continue
+    for (const key of envKeysDeclared(readFileSync(file, 'utf-8'))) if (!keys.includes(key)) keys.push(key)
+  }
+  return keys
+}
 
 const detectSecrets = (dir: string, pkg: AnyPkg | null): { needs: boolean; reason?: string; keys: string[] } => {
   // An .env.example with credential-looking variable names is the strongest signal.
@@ -208,6 +237,7 @@ export const enumerateTemplates = (root: string): TemplateRef[] => {
         needsSecrets: needs,
         secretsReason: reason,
         credentialKeys: keys,
+        declaredEnvKeys: declaredEnvKeys(dir),
       })
     }
   }
