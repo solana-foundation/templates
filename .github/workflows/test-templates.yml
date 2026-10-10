@@ -65,7 +65,7 @@ jobs:
             fi
 
             # Extract template paths from changed files (excluding community)
-            AFFECTED_TEMPLATES=$(echo "$CHANGED_FILES" | grep -E '^(kit|mobile|web3js)/' | cut -d'/' -f1-2 | sort -u || true)
+            AFFECTED_TEMPLATES=$(echo "$CHANGED_FILES" | grep -E '^(kit|mobile|web3js)/' | sed -E 's#^(web3js/legacy/[^/]+|[^/]+/[^/]+).*#\1#' | sort -u || true)
 
             if [[ -z "$AFFECTED_TEMPLATES" ]]; then
               echo "No template files changed, skipping template tests"
@@ -104,6 +104,11 @@ jobs:
             template: kit/nextjs-hardware-signin
           - node: 22
             template: kit/nextjs-das-nfts
+          # @solana/web3.js v3 pins @solana-program/stake 0.9.0, which requires Node >=24
+          - node: 22
+            template: web3js/web3js-nextjs
+          - node: 22
+            template: web3js/web3js-react-vite
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -134,6 +139,11 @@ jobs:
             template: kit/nextjs-hardware-signin
           - node: 22
             template: kit/nextjs-das-nfts
+          # @solana/web3.js v3 pins @solana-program/stake 0.9.0, which requires Node >=24
+          - node: 22
+            template: web3js/web3js-nextjs
+          - node: 22
+            template: web3js/web3js-react-vite
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -164,6 +174,11 @@ jobs:
             template: kit/nextjs-hardware-signin
           - node: 22
             template: kit/nextjs-das-nfts
+          # @solana/web3.js v3 pins @solana-program/stake 0.9.0, which requires Node >=24
+          - node: 22
+            template: web3js/web3js-nextjs
+          - node: 22
+            template: web3js/web3js-react-vite
     steps:
       - name: Checkout
         uses: actions/checkout@v4

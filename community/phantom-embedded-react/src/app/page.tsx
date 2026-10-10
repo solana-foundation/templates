@@ -36,7 +36,7 @@ export default function Home() {
               <ul className="space-y-3 text-text-default">
                 <li className="flex items-start gap-3">
                   <span className="text-brand font-bold">1.</span>
-                  <span>Click "Login with Phantom" above</span>
+                  <span>Click &quot;Login with Phantom&quot; above</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-brand font-bold">2.</span>

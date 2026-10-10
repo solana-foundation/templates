@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { useDisconnect, useAccounts, usePhantom, useModal, useDiscoveredWallets, useSolana } from '@phantom/react-sdk'
+import { useDisconnect, useAccounts, usePhantom, useModal, useDiscoveredWallets } from '@phantom/react-sdk'
 import { Connection, PublicKey } from '@solana/web3.js'
 import PhantomIcon from './icons/PhantomIcon'
 
@@ -46,10 +46,6 @@ export default function ConnectWalletButton() {
   // Wallet discovery hook - detects all available wallets (runs in background)
   // Note: Don't block UI on this - SDK handles wallet display in modal automatically
   const { wallets: discoveredWallets } = useDiscoveredWallets()
-
-  // Solana-specific operations hook (Beta 26)
-  // Provides signMessage, signTransaction, signAndSendTransaction, etc.
-  const solana = useSolana()
 
   // Check connected state from both accounts and phantom hook
   const isConnected = (accounts && accounts.length > 0) || phantomConnected

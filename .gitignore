@@ -96,3 +96,5 @@ web3js/**/tmp
 
 # templates health check output
 health-reports/
+# advisory template security reports
+security-reports/

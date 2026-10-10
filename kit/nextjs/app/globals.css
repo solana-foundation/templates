@@ -19,8 +19,8 @@
   --accent: #f5f5f5;
   --accent-foreground: #171717;
   --cream: #f5f5f5;
-  --destructive: #ef4444;
-  --destructive-foreground: #ef4444;
+  --destructive: #dc2626;
+  --destructive-foreground: #dc2626;
   --ring: #a3a3a3;
   --radius: 0.625rem;
   --secondary: #f5f5f5;
@@ -46,8 +46,8 @@
   --accent: #262626;
   --accent-foreground: #fafafa;
   --cream: #262626;
-  --destructive: #ef4444;
-  --destructive-foreground: #ef4444;
+  --destructive: #f87171;
+  --destructive-foreground: #f87171;
   --ring: #525252;
   --secondary: #262626;
   --secondary-foreground: #fafafa;
@@ -84,11 +84,16 @@
 
 @layer base {
   * {
-    @apply border-border outline-transparent;
+    @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-sans);
   }
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }

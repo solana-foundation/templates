@@ -59,7 +59,7 @@ This is the **first-ever ChatGPT application** that combines:
 
 ### Prerequisites
 
-- Node.js 18+ and pnpm
+- Node.js 20.9+ and pnpm
 - A Solana wallet with some SOL
 - ChatGPT with developer mode access
 
@@ -73,6 +73,8 @@ cd solana-chatgpt-kit
 # Install dependencies
 pnpm install
 ```
+
+> **Dependency compatibility:** `@modelcontextprotocol/sdk@1.26.0`, `mcp-handler@1.1.0`, and `zod@3.25.76` are intentionally pinned as a tested set. The MCP SDK 1.29 and Zod 3.24 combination caused TypeScript build incompatibilities. Upgrade these packages together and verify the production build before changing the pins.
 
 ### Environment Setup
 
@@ -234,7 +236,7 @@ Smart address resolution supporting:
 
 ### Technology Stack
 
-- **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS
+- **Frontend**: Next.js 16, React 19, TypeScript, Tailwind CSS
 - **Blockchain**: Solana Web3.js, SPL Token
 - **ChatGPT Integration**: OpenAI Apps SDK, Model Context Protocol (MCP)
 - **Swap Infrastructure**: Jupiter Aggregator API

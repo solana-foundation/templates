@@ -23,21 +23,26 @@
     "url": "https://github.com/phantom/phantom-embedded-react-native-starter"
   },
   "main": "expo-router/entry",
+  "engines": {
+    "node": ">=20.19.4"
+  },
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "prebuild": "expo prebuild"
+    "prebuild": "expo prebuild",
+    "test": "node --test tests/auth-routing.test.cjs"
   },
   "create-solana-dapp": {
     "instructions": [
       "Your Phantom Embedded React Native starter is ready!",
       "",
       "Next steps:",
-      "+1. Copy .env.example to .env and add your Phantom App ID",
-      "+2. Get your App ID at https://phantom.com/portal",
-      "+3. Read the docs at https://docs.phantom.com/sdks/react-native-sdk",
+      "+1. Confirm access to a Phantom Portal App ID: https://phantom.com/portal",
+      "+2. Copy .env.example to .env and add your App ID",
+      "+3. Match EXPO_PUBLIC_APP_SCHEME to app.json and allowlist the full callback URL in Phantom Portal",
+      "+4. Follow README.md to configure your native app identifiers and development build",
       "",
       "Start developing:",
       "+{pm} start",
@@ -69,15 +74,20 @@
     "@expo/vector-icons": "^15.0.3",
     "@phantom/react-native-sdk": "^2.0.2",
     "@solana/web3.js": "^1.95.0",
-    "expo": "~54.0.0",
+    "expo": "~54.0.37",
     "expo-auth-session": "~7.0.9",
     "expo-clipboard": "~8.0.7",
+    "expo-font": "~14.0.12",
     "expo-router": "~6.0.15",
     "expo-secure-store": "~15.0.7",
     "expo-web-browser": "~15.0.9",
     "react": "19.1.0",
+    "react-dom": "19.1.0",
     "react-native": "0.81.5",
     "react-native-get-random-values": "~1.11.0",
+    "react-native-nitro-modules": "0.37.1",
+    "react-native-quick-base64": "3.0.1",
+    "react-native-quick-crypto": "1.1.7",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
     "react-native-svg": "15.12.1"
@@ -85,8 +95,10 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/node": "^24.10.0",
-    "@types/react": "~19.0.14",
-    "typescript": "~5.8.3"
+    "@types/react": "~19.1.10",
+    "@types/react-dom": "~19.1.0",
+    "babel-preset-expo": "~54.0.0",
+    "typescript": "~5.9.2"
   },
   "packageManager": "pnpm@10.20.0"
 }

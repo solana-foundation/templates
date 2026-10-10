@@ -11,6 +11,9 @@ minimumReleaseAgeExclude:
   - '@solana-program/system'
   - '@solana-program/token'
   - '@solana-program/memo'
+  - '@solana/web3.js'
+  - '@solana/wallet-adapter'
+  - '@solana/wallet-standard-util'
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@tailwindcss/oxide'
@@ -20,8 +23,15 @@ onlyBuiltDependencies:
   - sharp
   - unrs-resolver
   - utf-8-validate
+overrides:
+  'basic-ftp@>=5.0.0 <5.3.1': 5.3.1
+  'handlebars@>=4.0.0 <4.7.9': 4.7.9
+  'protobufjs@>=7.0.0 <7.6.5': 7.6.5
+  'tar@>=6.0.0 <=7.5.18': 7.5.22
+  'vitest@>=3.0.0 <3.2.6': 3.2.7
 packages:
   - community/*
   - kit/*
   - pinocchio/*
   - web3js/*
+  - web3js/legacy/*

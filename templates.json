@@ -291,14 +291,58 @@
     ]
   },
   {
-    "description": "Templates using @solana/web3.js (legacy)",
+    "description": "Templates using @solana/web3.js v3 and @solana/wallet-adapter",
     "name": "Web3.js Templates",
     "path": "web3js",
     "templates": [
       {
+        "description": "Next.js, Tailwind, @solana/web3.js v3, Wallet Adapter v3, SIWS, SPL tokens",
+        "id": "gh:solana-foundation/templates/web3js/web3js-nextjs",
+        "image": "web3js/web3js-nextjs/og-image.png",
+        "keywords": [
+          "nextjs",
+          "react",
+          "siws",
+          "solana-web3js",
+          "spl-token",
+          "tailwind",
+          "typescript",
+          "wallet-adapter"
+        ],
+        "name": "web3js-nextjs",
+        "path": "web3js/web3js-nextjs",
+        "displayName": "Web3.js v3 Next.js",
+        "usecase": "Starter"
+      },
+      {
+        "description": "React + Vite, Tailwind, @solana/web3.js v3, Wallet Adapter v3, SPL tokens",
+        "id": "gh:solana-foundation/templates/web3js/web3js-react-vite",
+        "image": "web3js/web3js-react-vite/og-image.png",
+        "keywords": [
+          "react",
+          "solana-web3js",
+          "spl-token",
+          "tailwind",
+          "typescript",
+          "vite",
+          "wallet-adapter"
+        ],
+        "name": "web3js-react-vite",
+        "path": "web3js/web3js-react-vite",
+        "displayName": "Web3.js v3 React + Vite",
+        "usecase": "Starter"
+      }
+    ]
+  },
+  {
+    "description": "Templates using @solana/web3.js v1 and the legacy wallet adapter packages",
+    "name": "Web3.js Templates (legacy)",
+    "path": "web3js/legacy",
+    "templates": [
+      {
         "description": "Next.js, Tailwind, @solana/web3.js, Wallet Adapter",
-        "id": "gh:solana-foundation/templates/web3js/web3js-next-tailwind",
-        "image": "web3js/web3js-next-tailwind/og-image.png",
+        "id": "gh:solana-foundation/templates/web3js/legacy/web3js-next-tailwind",
+        "image": "web3js/legacy/web3js-next-tailwind/og-image.png",
         "keywords": [
           "nextjs",
           "react",
@@ -308,14 +352,14 @@
           "wallet-adapter"
         ],
         "name": "web3js-next-tailwind",
-        "path": "web3js/web3js-next-tailwind",
+        "path": "web3js/legacy/web3js-next-tailwind",
         "displayName": "Web3js Boilerplate",
         "usecase": "Legacy"
       },
       {
         "description": "Next.js, Tailwind, @solana/web3.js, Wallet Adapter, basic Anchor program",
-        "id": "gh:solana-foundation/templates/web3js/web3js-next-tailwind-basic",
-        "image": "web3js/web3js-next-tailwind-basic/og-image.png",
+        "id": "gh:solana-foundation/templates/web3js/legacy/web3js-next-tailwind-basic",
+        "image": "web3js/legacy/web3js-next-tailwind-basic/og-image.png",
         "keywords": [
           "anchor-basic",
           "nextjs",
@@ -326,14 +370,14 @@
           "wallet-adapter"
         ],
         "name": "web3js-next-tailwind-basic",
-        "path": "web3js/web3js-next-tailwind-basic",
+        "path": "web3js/legacy/web3js-next-tailwind-basic",
         "displayName": "Web3js Basic",
         "usecase": "Legacy"
       },
       {
         "description": "Next.js, Tailwind, @solana/web3.js, Wallet Adapter, Anchor Counter program",
-        "id": "gh:solana-foundation/templates/web3js/web3js-next-tailwind-counter",
-        "image": "web3js/web3js-next-tailwind-counter/og-image.png",
+        "id": "gh:solana-foundation/templates/web3js/legacy/web3js-next-tailwind-counter",
+        "image": "web3js/legacy/web3js-next-tailwind-counter/og-image.png",
         "keywords": [
           "anchor-counter",
           "nextjs",
@@ -344,14 +388,14 @@
           "wallet-adapter"
         ],
         "name": "web3js-next-tailwind-counter",
-        "path": "web3js/web3js-next-tailwind-counter",
+        "path": "web3js/legacy/web3js-next-tailwind-counter",
         "displayName": "Web3js Counter",
         "usecase": "Legacy"
       },
       {
         "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter",
-        "id": "gh:solana-foundation/templates/web3js/web3js-react-vite-tailwind",
-        "image": "web3js/web3js-react-vite-tailwind/og-image.png",
+        "id": "gh:solana-foundation/templates/web3js/legacy/web3js-react-vite-tailwind",
+        "image": "web3js/legacy/web3js-react-vite-tailwind/og-image.png",
         "keywords": [
           "react",
           "solana-web3js",
@@ -361,14 +405,14 @@
           "wallet-adapter"
         ],
         "name": "web3js-react-vite-tailwind",
-        "path": "web3js/web3js-react-vite-tailwind",
+        "path": "web3js/legacy/web3js-react-vite-tailwind",
         "displayName": "Web3js Boilerplate (Vite)",
         "usecase": "Legacy"
       },
       {
         "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter, basic Anchor program",
-        "id": "gh:solana-foundation/templates/web3js/web3js-react-vite-tailwind-basic",
-        "image": "web3js/web3js-react-vite-tailwind-basic/og-image.png",
+        "id": "gh:solana-foundation/templates/web3js/legacy/web3js-react-vite-tailwind-basic",
+        "image": "web3js/legacy/web3js-react-vite-tailwind-basic/og-image.png",
         "keywords": [
           "anchor-basic",
           "react",
@@ -379,14 +423,14 @@
           "wallet-adapter"
         ],
         "name": "web3js-react-vite-tailwind-basic",
-        "path": "web3js/web3js-react-vite-tailwind-basic",
+        "path": "web3js/legacy/web3js-react-vite-tailwind-basic",
         "displayName": "Web3js Basic",
         "usecase": "Legacy"
       },
       {
         "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter, Anchor Counter program",
-        "id": "gh:solana-foundation/templates/web3js/web3js-react-vite-tailwind-counter",
-        "image": "web3js/web3js-react-vite-tailwind-counter/og-image.png",
+        "id": "gh:solana-foundation/templates/web3js/legacy/web3js-react-vite-tailwind-counter",
+        "image": "web3js/legacy/web3js-react-vite-tailwind-counter/og-image.png",
         "keywords": [
           "anchor-counter",
           "web3js",
@@ -398,7 +442,7 @@
           "wallet-adapter"
         ],
         "name": "web3js-react-vite-tailwind-counter",
-        "path": "web3js/web3js-react-vite-tailwind-counter",
+        "path": "web3js/legacy/web3js-react-vite-tailwind-counter",
         "displayName": "Web3js Counter",
         "usecase": "Legacy"
       }

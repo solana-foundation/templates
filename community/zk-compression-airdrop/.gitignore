@@ -56,3 +56,5 @@ dev-wallet.json
 scripts/test-wallets.json
 scripts/compressed-mint-config.json
 scripts/airdrop-recipients.json
+scripts/airdrop-setup.json
+scripts/*.tmp

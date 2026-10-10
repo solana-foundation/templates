@@ -10,15 +10,25 @@ import {
 } from "@testing-library/react";
 import { useMemo } from "react";
 import { Toaster } from "sonner";
-import { afterAll, afterEach, beforeAll, expect, test } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  expect,
+  test,
+} from "vitest";
 import { AirdropCard } from "../app/components/actions/airdrop-card";
 import { MemoCard } from "../app/components/actions/memo-card";
 import { TransferSolCard } from "../app/components/actions/transfer-sol-card";
 import { ClusterProvider } from "../app/components/cluster-context";
 import { WalletButton } from "../app/components/wallet-button";
-import { ellipsify } from "../app/lib/explorer";
 import { createAppClient } from "../app/lib/solana-client";
-import { mockWalletAddress, registerMockWallet } from "./mock-wallet";
+import {
+  mockWalletAddress,
+  registerMockWallet,
+  resetMockWallet,
+} from "./mock-wallet";
 
 const LAMPORTS_PER_SOL = 1_000_000_000;
 
@@ -34,6 +44,11 @@ beforeAll(() => {
 
 afterAll(() => {
   surfnet?.stop();
+});
+
+beforeEach(() => {
+  localStorage.clear();
+  resetMockWallet();
 });
 
 afterEach(cleanup);
@@ -68,10 +83,12 @@ async function getBalance(owner: string): Promise<bigint> {
 }
 
 async function connectWallet() {
-  fireEvent.click(screen.getByRole("button", { name: "Connect Wallet" }));
+  fireEvent.click(
+    await screen.findByRole("button", { name: "Connect Wallet" })
+  );
   fireEvent.click(await screen.findByRole("button", { name: "Mock Wallet" }));
   return await screen.findByRole("button", {
-    name: ellipsify(mockWalletAddress),
+    name: `Wallet ${mockWalletAddress}`,
   });
 }
 

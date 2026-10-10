@@ -57,7 +57,7 @@ This template demonstrates a streamlined implementation of the X402 payment prot
 
 ### Prerequisites
 
-- Node.js 18+ or Bun
+- Node.js 20.9+ or Bun
 - pnpm, npm, or yarn
 - A Solana wallet address to receive payments
 
@@ -347,7 +347,7 @@ This template uses minimal dependencies:
 
 ### During installation, viewing `--silent --ignore-scripts` flag
 
-1. If you are using npm with Node 18+ and pnpm is not yet installed, some required scripts may be skipped due to the flags used.
+1. If you are using npm with Node 20.9+ and pnpm is not yet installed, some required scripts may be skipped due to the flags used.
 2. Although the project files are generated, you will need to install pnpm to ensure all scripts run correctly and fix the setup.
 3. Clean any partial install and install pnpm:
 

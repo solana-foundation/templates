@@ -21,31 +21,32 @@ export default function Home() {
   const [copied, setCopied] = useState(false)
   const [txStatus, setTxStatus] = useState<string>('')
 
+  const walletValidationError = wallet
+    ? !wallet.passkeyPubkey || wallet.passkeyPubkey.length === 0
+      ? 'Error: Wallet data corrupted. Please disconnect and reconnect your wallet.'
+      : wallet.passkeyPubkey.length !== 33
+        ? 'Error: Invalid wallet data. Please disconnect and reconnect your wallet.'
+        : ''
+    : ''
+  const displayedTxStatus = walletValidationError || txStatus
+
   useEffect(() => {
-    if (wallet) {
-      if (!wallet.passkeyPubkey || wallet.passkeyPubkey.length === 0) {
-        setTxStatus('Error: Wallet data corrupted. Please disconnect and reconnect your wallet.')
-        return
-      }
-
-      if (wallet.passkeyPubkey.length !== 33) {
-        setTxStatus('Error: Invalid wallet data. Please disconnect and reconnect your wallet.')
-        return
-      }
-
+    if (wallet && !walletValidationError) {
       const storedCredId = localStorage.getItem('CREDENTIAL_ID')
       if (wallet.credentialId && !storedCredId) {
         localStorage.setItem('CREDENTIAL_ID', wallet.credentialId)
       }
 
+      // A valid wallet supersedes stale connection and validation messages.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTxStatus('')
     }
-  }, [wallet, isConnected])
+  }, [wallet, walletValidationError])
 
   const handleConnect = async () => {
     try {
       await connect()
-    } catch (err) {
+    } catch {
       setTxStatus('Connection failed. Please try again.')
     }
   }
@@ -56,7 +57,7 @@ export default function Home() {
         await navigator.clipboard.writeText(smartWalletPubkey.toString())
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
-      } catch (err) {
+      } catch {
         setTxStatus('Failed to copy address')
       }
     }
@@ -76,7 +77,7 @@ export default function Home() {
       let recipientPubkey: PublicKey
       try {
         recipientPubkey = new PublicKey(recipientAddress)
-      } catch (err) {
+      } catch {
         setTxStatus('Error: Invalid recipient address')
         return
       }
@@ -216,11 +217,11 @@ export default function Home() {
                 </button>
               </form>
 
-              {txStatus && (
+              {displayedTxStatus && (
                 <div
-                  className={`mt-4 p-3 rounded ${txStatus.startsWith('Success') ? 'bg-green-900/50 text-green-200' : 'bg-red-900/50 text-red-200'}`}
+                  className={`mt-4 p-3 rounded ${displayedTxStatus.startsWith('Success') ? 'bg-green-900/50 text-green-200' : 'bg-red-900/50 text-red-200'}`}
                 >
-                  <p className="text-sm break-all">{txStatus}</p>
+                  <p className="text-sm break-all">{displayedTxStatus}</p>
                 </div>
               )}
             </div>
