@@ -29,6 +29,10 @@ Output lands in `health-reports/<timestamp>.json` and `health-reports/<timestamp
 
 The script is read-only on the repo, copies each template to a temp dir before installing (never mutates the working tree), and never touches mainnet, real funds, or real keys.
 
+### Credentials and the environment
+
+The isolated copy never includes a template's private config: `.env`, `.env.local` and every other `.env.*` file (only `.env.example` / `.env.sample` / `.env.template` are copied), along with `node_modules`, `.git`, build output and `target`. Child processes (installs, builds, dev servers) get an allowlisted environment (`PATH`, `HOME`, locale, `NODE_*`, `npm_config_*`/`PNPM_*`/`YARN_*`, `CARGO_HOME`/`RUSTUP_HOME`, proxies, color flags), not a copy of the parent shell, so a developer's exported keys never reach a template's scripts by accident. **Local `.env` files are never read from the template dir; pass credentials explicitly.** To verify a template that needs an API key, opt in with `--env-file <path>` (dotenv-style file, no interpolation) and/or `--allow-env KEY1,KEY2` (forward named variables from your shell). A forwarded variable only reaches templates whose `.env.example` declares that key (templates flagged `needsSecrets` from prose alone receive every forwarded key), and its value is redacted (`***`) from every tail, note and command in the reports. Templates that need credentials and receive none keep reading as "skipped, requires credentials".
+
 ### What the script checks (the five dimensions)
 
 | Dimension             | How                                                                        | Gates status?                                                 |

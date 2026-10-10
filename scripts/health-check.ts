@@ -33,6 +33,7 @@ import {
   sweepOrphanTempDirs,
   type RunOptions,
 } from './health/checks.js'
+import { parseDotenv } from './health/env.js'
 import { diffReports, diffToMarkdown, toMarkdown } from './health/report.js'
 import { overallStatus } from './health/status.js'
 import type { HealthReport, Status, TemplateRef, TemplateReport } from './health/types.js'
@@ -47,6 +48,10 @@ type Cli = {
   boot: boolean
   cargoTest: boolean
   pm: string | null
+  /** dotenv-style file whose variables are forwarded to templates that declare them */
+  envFile: string | null
+  /** names of parent-process variables forwarded to templates that declare them */
+  allowEnv: string[]
   out: string
   concurrency: number
   baseline: string | null
@@ -61,6 +66,8 @@ const parseArgs = (argv: string[]): Cli => {
     boot: false,
     cargoTest: false,
     pm: null,
+    envFile: null,
+    allowEnv: [],
     out: join(ROOT, 'health-reports'),
     concurrency: 3,
     baseline: null,
@@ -85,6 +92,14 @@ const parseArgs = (argv: string[]): Cli => {
     else if (arg === '--boot') cli.boot = true
     else if (arg === '--cargo-test') cli.cargoTest = true
     else if (arg === '--pm') cli.pm = next()
+    else if (arg === '--env-file') cli.envFile = next()
+    else if (arg === '--allow-env')
+      cli.allowEnv.push(
+        ...next()
+          .split(',')
+          .map((key) => key.trim())
+          .filter(Boolean),
+      )
     else if (arg === '--out') cli.out = next()
     else if (arg === '--concurrency') cli.concurrency = numArg(next(), 3, 1)
     else if (arg === '--baseline') cli.baseline = next()
@@ -106,6 +121,12 @@ const printHelp = () => {
   --boot              boot web templates and confirm the dev server responds
   --cargo-test        also run cargo test for Rust templates (needs solana platform tools for programs)
   --pm <manager>      force a package manager (default: each template's pinned one, else npm)
+  --env-file <path>   dotenv-style file of credentials to forward to templates that declare them
+  --allow-env <keys>  comma-separated parent env vars to forward to templates that declare them
+
+  Child processes get an allowlisted environment, and a template's own .env files are never
+  copied or read. Pass credentials explicitly with --env-file / --allow-env; each template only
+  receives the keys it declares, and values are redacted from the reports.
   --out <dir>         output directory (default: health-reports/)
   --concurrency <n>   templates to check in parallel (default: 3)
   --baseline <file>   previous report JSON to diff against
@@ -217,7 +238,11 @@ const main = async () => {
     cargoTest: cli.cargoTest,
     installTimeoutMs: 8 * 60_000,
     buildTimeoutMs: 12 * 60_000,
+    forwardedEnv: forwardedEnv(cli),
   }
+  const forwardedKeys = Object.keys(opts.forwardedEnv)
+  if (forwardedKeys.length)
+    console.error(`Forwarding ${forwardedKeys.length} credential(s) to templates that declare them.`)
 
   const runTemplate = async (ref: TemplateRef, label: string): Promise<TemplateReport> => {
     const startedAt = Date.now()
@@ -264,7 +289,7 @@ const main = async () => {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
     packageManager: cli.pm ?? 'auto (per-template)',
-    options: { build: cli.build, boot: cli.boot, source: 'local' },
+    options: { build: cli.build, boot: cli.boot, source: 'local', cargoTest: cli.cargoTest, pm: cli.pm },
     summary,
     templates: reports,
   }
@@ -306,6 +331,27 @@ const main = async () => {
 
   // Non-zero exit when something is broken, so CI can gate on it.
   process.exit(summary.fail > 0 ? 1 : 0)
+}
+
+/**
+ * Credentials the maintainer explicitly chose to forward: the --env-file contents, then the
+ * named --allow-env variables from this process (later wins). Values never reach the report.
+ */
+const forwardedEnv = (cli: Cli): Record<string, string> => {
+  const env: Record<string, string> = {}
+  if (cli.envFile) {
+    if (!existsSync(cli.envFile)) {
+      console.error(`--env-file not found: ${cli.envFile}`)
+      process.exit(1)
+    }
+    Object.assign(env, parseDotenv(readFileSync(cli.envFile, 'utf-8')))
+  }
+  for (const key of cli.allowEnv) {
+    const value = process.env[key]
+    if (value === undefined) console.error(`--allow-env: ${key} is not set in this environment, skipping`)
+    else env[key] = value
+  }
+  return env
 }
 
 const statusIcon = (status: Status) => ({ pass: '✅', warn: '⚠️', fail: '❌', skip: '⏭️' })[status]

@@ -11,6 +11,9 @@ import type { Status } from './types.js'
 
 export const overallStatus = (functional: Status[], advisory: Status[]): Status => {
   if (functional.includes('fail')) return 'fail'
+  // Nothing functional could be verified (e.g. a Rust-only template on a machine without
+  // cargo): advisory results alone never vouch for a template, so it stays "skip".
+  if (functional.length > 0 && functional.every((status) => status === 'skip')) return 'skip'
   const all = [...functional, ...advisory]
   if (all.includes('warn') || advisory.includes('fail')) return 'warn'
   if (all.length > 0 && all.every((status) => status === 'skip')) return 'skip'

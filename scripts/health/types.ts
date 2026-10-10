@@ -153,6 +153,10 @@ export type HealthReport = {
     readonly build: boolean
     readonly boot: boolean
     readonly source: 'local' | 'scaffold'
+    /** `--cargo-test` was passed (absent in reports written before this field existed) */
+    readonly cargoTest?: boolean
+    /** explicit `--pm` override, null/absent when each template's pinned manager was used */
+    readonly pm?: string | null
   }
   readonly summary: {
     readonly total: number

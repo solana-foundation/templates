@@ -5,9 +5,9 @@
  */
 
 import { spawn, spawnSync, type ChildProcess } from 'child_process'
-import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'fs'
+import { cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'fs'
 import { tmpdir } from 'os'
-import { join, relative } from 'path'
+import { basename, join, relative } from 'path'
 import type {
   AuditResult,
   BootResult,
@@ -21,6 +21,7 @@ import type {
   TemplateRef,
 } from './types.js'
 import { bumpKind } from './semver.js'
+import { credentialsForTemplate, redactDeep, sanitizedEnv } from './env.js'
 
 export type RunOptions = {
   /** force a package manager; null means "use each template's pinned one (npm if unset)" */
@@ -31,12 +32,22 @@ export type RunOptions = {
   readonly cargoTest: boolean
   readonly installTimeoutMs: number
   readonly buildTimeoutMs: number
+  /**
+   * Credentials the maintainer chose to forward (`--env-file` / `--allow-env`). Each template
+   * only ever receives the keys it declares (see credentialsForTemplate), and the values are
+   * redacted from every report field.
+   */
+  readonly forwardedEnv: Readonly<Record<string, string>>
 }
 
-/** RunOptions after checkTemplate has picked the effective package manager for a template. */
-type ResolvedRunOptions = RunOptions & { readonly packageManager: string }
+/** RunOptions after checkTemplate has picked the effective package manager and credentials for a template. */
+type ResolvedRunOptions = RunOptions & {
+  readonly packageManager: string
+  /** the subset of forwardedEnv this template declared, handed to install/build/boot */
+  readonly templateEnv: Readonly<Record<string, string>>
+}
 
-type Exec = {
+export type Exec = {
   code: number | null
   /** combined stdout+stderr, for human-facing notes */
   output: string
@@ -48,6 +59,45 @@ type Exec = {
 
 const TAIL_LINES = 30
 const MAX_CAPTURE_BYTES = 1_000_000
+
+// ---------- isolation: what never reaches the temp copy or the child processes ----------
+
+/**
+ * Directory names never copied into the isolated template copy: build output and installs
+ * are recreated fresh, and `.git` is never needed to install or build.
+ */
+export const EXCLUDED_DIRS: readonly string[] = [
+  'node_modules',
+  '.git',
+  '.next',
+  'dist',
+  'build',
+  'target',
+  '.expo',
+  '.turbo',
+]
+
+/** The only `.env*` files that are safe to copy: placeholders, never real values. */
+export const ENV_TEMPLATE_FILES: readonly string[] = ['.env.example', '.env.sample', '.env.template']
+
+/**
+ * True for private env files (`.env`, `.env.local`, `.env.production.local`, ...). A
+ * developer's gitignored `.env` would otherwise ride along into the temp copy and Next.js /
+ * Vite would load real credentials during the build, so these are never copied.
+ */
+export const isPrivateEnvFile = (name: string): boolean =>
+  name === '.env' || (name.startsWith('.env.') && !ENV_TEMPLATE_FILES.includes(name))
+
+/** cpSync filter: drop excluded dirs and private env files at any depth. */
+const copyFilter = (source: string): boolean => {
+  const name = basename(source)
+  return !EXCLUDED_DIRS.includes(name) && !isPrivateEnvFile(name)
+}
+
+/** Copy a template directory into dest, leaving out EXCLUDED_DIRS and private env files. */
+export const copyTemplate = (src: string, dest: string): void => {
+  cpSync(src, dest, { recursive: true, filter: copyFilter })
+}
 
 // Tools like Next.js hard-code ANSI colors into their error strings even with
 // FORCE_COLOR=0/NO_COLOR set, which turns report notes into `[36m` soup. Strip
@@ -67,7 +117,7 @@ const activeChildren = new Set<ChildProcess>()
  * SIGKILL a child's entire process group. Package managers spawn grandchildren (next dev,
  * vite, cargo, ...) that a plain child.kill() would orphan — an orphaned dev server holding
  * a port could then answer a LATER template's boot probe. Process groups are POSIX-only,
- * which this tool already assumes (see the cp -R note in isolate()).
+ * which this tool already assumes (CI runs on ubuntu, dev on macOS).
  */
 const killProcessTree = (child: ChildProcess): void => {
   try {
@@ -93,12 +143,18 @@ export const killActiveChildren = (): number => {
 /** Spawn a command, capture stdout+stderr, enforce a timeout. Spawned detached so the
  *  command becomes its own process-group leader and killProcessTree can take out its
  *  whole tree on timeout. */
-const run = (command: string, args: string[], cwd: string, timeoutMs: number): Promise<Exec> =>
+const run = (
+  command: string,
+  args: string[],
+  cwd: string,
+  timeoutMs: number,
+  extraEnv: Readonly<Record<string, string>> = {},
+): Promise<Exec> =>
   new Promise((resolve) => {
     const start = Date.now()
     const child = spawn(command, args, {
       cwd,
-      env: { ...process.env, CI: '1', FORCE_COLOR: '0', NO_COLOR: '1' },
+      env: { ...sanitizedEnv(), ...extraEnv, CI: '1', FORCE_COLOR: '0', NO_COLOR: '1' },
       shell: false,
       detached: true,
     })
@@ -152,12 +208,12 @@ const activeTempDirs = new Set<string>()
 const isolate = (ref: TemplateRef): string => {
   const dest = mkdtempSync(join(tmpdir(), `${RUN_TEMP_PREFIX}${ref.id.replace(/\//g, '-')}-`))
   activeTempDirs.add(dest)
-  // cp -R copies into dest; trailing /. copies contents.
-  // (CI runs on ubuntu, dev on macOS - both have cp -R.)
-  const cp = spawnSyncCp(ref.dir, dest)
-  if (!cp) throw new Error(`failed to copy ${ref.id}`)
-  for (const junk of ['node_modules', '.next', 'dist', 'build', 'target', '.expo']) {
-    rmSync(join(dest, junk), { recursive: true, force: true })
+  // Filtered copy: build output / installs are recreated fresh, and private env files
+  // (.env, .env.local, ...) never leave the working tree. See copyTemplate.
+  try {
+    copyTemplate(ref.dir, dest)
+  } catch (error) {
+    throw new Error(`failed to copy ${ref.id}: ${String(error)}`)
   }
   return dest
 }
@@ -211,12 +267,6 @@ export const cleanupActiveTempDirs = (): void => {
   activeTempDirs.clear()
 }
 
-// Small synchronous cp helper kept separate so isolate() reads cleanly.
-const spawnSyncCp = (src: string, dest: string): boolean => {
-  const result = spawnSync('cp', ['-R', `${src}/.`, dest], { stdio: 'ignore' })
-  return result.status === 0
-}
-
 // ---------- setup-skip causation (pure, unit-tested) ----------
 
 /**
@@ -260,7 +310,7 @@ export const runBuild = async (
   opts: ResolvedRunOptions,
 ): Promise<{ build: BuildResult; deprecation: DeprecationResult }> => {
   const pm = opts.packageManager
-  const install = await run(pm, ['install'], workDir, opts.installTimeoutMs)
+  const install = await run(pm, ['install'], workDir, opts.installTimeoutMs, opts.templateEnv)
 
   // Registry deprecation warnings surface during install ("npm warn deprecated X@1: ...").
   const deprecated = extractDeprecations(install.output, ref.directDeps)
@@ -298,7 +348,7 @@ export const runBuild = async (
     }
   }
   const script = hasCi ? 'ci' : 'build'
-  const built = await run(pm, ['run', script], workDir, opts.buildTimeoutMs)
+  const built = await run(pm, ['run', script], workDir, opts.buildTimeoutMs, opts.templateEnv)
   return { build: buildResult(hasCi ? 'ci' : 'build', `${pm} run ${script}`, built), deprecation }
 }
 
@@ -332,30 +382,69 @@ export const checkOutdated = async (workDir: string, pm: string): Promise<DepsRe
   // Both exit non-zero when something is outdated - that's not an error for us. npm and pnpm
   // emit a package-keyed JSON object with { current, latest }, so one parser handles both.
   const args = pm === 'pnpm' ? ['outdated', '--format', 'json'] : ['outdated', '--json']
-  const result = await run(pm, args, workDir, 120_000)
-  let parsed: Record<string, { current?: string; latest?: string }>
-  try {
-    // Parse stdout only: npm/pnpm print warnings to stderr, and mixing streams corrupts the JSON.
-    parsed = JSON.parse(result.stdout || '{}')
-  } catch {
-    return {
-      status: 'skip',
-      available: false,
-      total: 0,
-      major: 0,
-      minor: 0,
-      patch: 0,
-      outdated: [],
-      note: `could not parse ${pm} outdated output`,
-    }
+  return parseOutdated(pm, await run(pm, args, workDir, 120_000))
+}
+
+/**
+ * Why a `--json` command's result can't be trusted, or null when it can. Both npm and pnpm
+ * print `{ "error": { "code", "summary" } }` to stdout for operational failures (registry
+ * unreachable, auth, missing lockfile) and exit non-zero; a timeout or spawn failure leaves
+ * stdout empty. None of those may read as "zero findings".
+ */
+const operationalError = (
+  pm: string,
+  verb: string,
+  exec: Pick<Exec, 'code' | 'stdout' | 'timedOut'>,
+): string | null => {
+  if (exec.timedOut) return `${pm} ${verb} timed out`
+  if (exec.code === -1) return `${pm} ${verb} could not be started`
+  if (exec.stdout.trim() === '') {
+    // Empty stdout is only legitimate on a clean exit (nothing to report).
+    return exec.code === 0 ? null : `${pm} ${verb} exited with code ${exec.code} and produced no output`
   }
+  return null
+}
+
+type JsonError = { code?: unknown; summary?: unknown; detail?: unknown }
+
+/** Parse stdout only (stderr warnings would corrupt it); null when it isn't a JSON object. */
+const parseJsonObject = (stdout: string): Record<string, unknown> | null => {
+  if (stdout.trim() === '') return {}
+  try {
+    const parsed: unknown = JSON.parse(stdout)
+    return parsed !== null && typeof parsed === 'object' && !Array.isArray(parsed)
+      ? (parsed as Record<string, unknown>)
+      : null
+  } catch {
+    return null
+  }
+}
+
+const describeJsonError = (error: unknown): string | null => {
+  if (error === null || typeof error !== 'object') return null
+  const { code, summary } = error as JsonError
+  const parts = [code, summary].filter((part): part is string => typeof part === 'string' && part.length > 0)
+  return parts.length ? parts.join(': ') : 'unknown error'
+}
+
+/** Pure: turn `npm outdated --json` / `pnpm outdated --format json` output into a DepsResult. */
+export const parseOutdated = (pm: string, exec: Pick<Exec, 'code' | 'stdout' | 'timedOut'>): DepsResult => {
+  const failure = operationalError(pm, 'outdated', exec)
+  if (failure) return skipDeps(failure)
+  const parsed = parseJsonObject(exec.stdout)
+  if (!parsed) return skipDeps(`could not parse ${pm} outdated output`)
+  const errorNote = describeJsonError(parsed.error)
+  if (errorNote) return skipDeps(`${pm} outdated failed: ${errorNote}`)
   const outdated: OutdatedDep[] = Object.entries(parsed)
-    .filter(([, dep]) => dep.current && dep.latest && dep.current !== dep.latest)
+    .map(([name, dep]) => [name, (dep ?? {}) as { current?: unknown; latest?: unknown }] as const)
+    .filter(
+      ([, dep]) => typeof dep.current === 'string' && typeof dep.latest === 'string' && dep.current !== dep.latest,
+    )
     .map(([name, dep]) => ({
       name,
-      current: dep.current!,
-      latest: dep.latest!,
-      bump: bumpKind(dep.current!, dep.latest!),
+      current: dep.current as string,
+      latest: dep.latest as string,
+      bump: bumpKind(dep.current as string, dep.latest as string),
     }))
   const major = outdated.filter((dep) => dep.bump === 'major').length
   const minor = outdated.filter((dep) => dep.bump === 'minor').length
@@ -387,60 +476,149 @@ export const checkAudit = async (workDir: string, pm: string): Promise<AuditResu
     }
   }
   // npm and pnpm both expose metadata.vulnerabilities in their --json audit output.
-  const result = await run(pm, ['audit', '--json'], workDir, 120_000)
-  try {
-    // Parse stdout only: npm/pnpm print warnings to stderr, and mixing streams corrupts the JSON.
-    const auditJson = JSON.parse(result.stdout || '{}') as {
-      metadata?: { vulnerabilities?: Record<string, number> }
-    }
-    const vulnerabilities = auditJson.metadata?.vulnerabilities ?? {}
-    const critical = vulnerabilities.critical ?? 0
-    const high = vulnerabilities.high ?? 0
-    const moderate = vulnerabilities.moderate ?? 0
-    const low = vulnerabilities.low ?? 0
-    const info = vulnerabilities.info ?? 0
-    const status: Status = critical > 0 || high > 0 ? 'fail' : moderate > 0 ? 'warn' : 'pass'
-    return { status, available: true, critical, high, moderate, low, info }
-  } catch {
-    return {
-      status: 'skip',
-      available: false,
-      critical: 0,
-      high: 0,
-      moderate: 0,
-      low: 0,
-      info: 0,
-      note: `could not parse ${pm} audit output`,
-    }
+  return parseAudit(pm, await run(pm, ['audit', '--json'], workDir, 120_000))
+}
+
+/**
+ * Pure: turn `npm audit --json` / `pnpm audit --json` output into an AuditResult. The
+ * response must carry `metadata.vulnerabilities`; anything else (an error object, empty
+ * output, prose) is reported as unavailable, never as a clean pass.
+ */
+export const parseAudit = (pm: string, exec: Pick<Exec, 'code' | 'stdout' | 'timedOut'>): AuditResult => {
+  const failure = operationalError(pm, 'audit', exec)
+  if (failure) return skipAudit(failure)
+  const parsed = parseJsonObject(exec.stdout)
+  if (!parsed) return skipAudit(`could not parse ${pm} audit output`)
+  const errorNote = describeJsonError(parsed.error)
+  if (errorNote) return skipAudit(`${pm} audit failed: ${errorNote}`)
+  const metadata = parsed.metadata as { vulnerabilities?: unknown } | undefined
+  const vulnerabilities = metadata?.vulnerabilities
+  if (vulnerabilities === null || typeof vulnerabilities !== 'object') {
+    return skipAudit(`${pm} audit output has no metadata.vulnerabilities (exit code ${exec.code})`)
   }
+  const count = (severity: string): number => {
+    const value = (vulnerabilities as Record<string, unknown>)[severity]
+    return typeof value === 'number' && Number.isFinite(value) ? value : 0
+  }
+  const critical = count('critical')
+  const high = count('high')
+  const moderate = count('moderate')
+  const low = count('low')
+  const info = count('info')
+  const status: Status = critical > 0 || high > 0 ? 'fail' : moderate > 0 ? 'warn' : 'pass'
+  return { status, available: true, critical, high, moderate, low, info }
 }
 
 // ---------- dimension 5: doc / reality drift ----------
 
+/** Package-manager built-ins that can follow `pnpm`/`yarn` but are never user scripts. */
+const PM_BUILTINS = new Set([
+  'install',
+  'i',
+  'add',
+  'remove',
+  'rm',
+  'update',
+  'up',
+  'create',
+  'dlx',
+  'exec',
+  'init',
+  'link',
+  'why',
+  'list',
+  'ls',
+  'outdated',
+  'audit',
+  'login',
+  'publish',
+  'pack',
+  'run',
+])
+
+/**
+ * Pure: the command contexts of a Markdown document — fenced code blocks and inline code
+ * spans. Prose like "pnpm is the package manager" is not a command and never counts.
+ */
+export const commandContexts = (markdown: string): string[] => {
+  const contexts: string[] = []
+  const withoutFences = markdown.replace(/```[^\n]*\n([\s\S]*?)```/g, (_match, body: string) => {
+    contexts.push(body)
+    return '\n'
+  })
+  for (const match of withoutFences.matchAll(/`([^`\n]+)`/g)) contexts.push(match[1])
+  return contexts
+}
+
+/**
+ * Pure: script names invoked in command text — `pnpm run <x>`, `pnpm <x>`, `npm run <x>`,
+ * `yarn <x>`, `bun run <x>` and the `{pm} <x>` placeholder create-solana-dapp uses. Package
+ * manager built-ins (`pnpm install`, `pnpm add`, ...) are not scripts and are ignored;
+ * `npm <x>` without `run` only reaches a script through npm's own `start`/`test` aliases;
+ * a bare `pnpm <x>` naming a direct dependency runs that package's binary, not a script.
+ * Command lines that `cd` somewhere first target another package.json and are not checked.
+ */
+export const scriptsInCommands = (commands: string, directDeps: readonly string[] = []): string[] => {
+  const referenced = new Set<string>()
+  const binaries = new Set(directDeps.map((dep) => dep.replace(/^@[^/]+\//, '')))
+  // Leading `+` is create-solana-dapp's "this line is a command" marker in instructions.
+  const pattern = /(?:^|[\s;&|(+])(npm|pnpm|yarn|bun|\{pm\})(?:[ \t]+(run))?[ \t]+([a-z][a-z0-9:_-]*)(?=$|[\s;&|)])/gi
+  for (const line of commands.split('\n')) {
+    if (/^[\s+$>]*cd\s/.test(line)) continue
+    for (const match of line.matchAll(pattern)) {
+      const [, manager, runVerb, script] = match
+      const name = script.toLowerCase()
+      if (PM_BUILTINS.has(name)) continue
+      if (manager.toLowerCase() === 'npm' && !runVerb && name !== 'start' && name !== 'test') continue
+      if (!runVerb && binaries.has(name)) continue
+      referenced.add(name)
+    }
+  }
+  return [...referenced]
+}
+
+/** Script names from the package.json of each immediate subdirectory (never node_modules). */
+const nestedScripts = (dir: string): string[] => {
+  const names: string[] = []
+  let entries: string[] = []
+  try {
+    entries = readdirSync(dir)
+  } catch {
+    return names
+  }
+  for (const entry of entries) {
+    if (EXCLUDED_DIRS.includes(entry)) continue
+    const pkgPath = join(dir, entry, 'package.json')
+    if (!existsSync(pkgPath)) continue
+    try {
+      const scripts = JSON.parse(readFileSync(pkgPath, 'utf-8')).scripts
+      if (scripts && typeof scripts === 'object') names.push(...Object.keys(scripts))
+    } catch {
+      /* unreadable nested manifest: nothing to add */
+    }
+  }
+  return names
+}
+
 export const checkDocDrift = (ref: TemplateRef): DocDriftResult => {
-  const sources: string[] = []
+  const commands: string[] = []
   const readme = join(ref.dir, 'README.md')
-  if (existsSync(readme)) sources.push(readFileSync(readme, 'utf-8'))
+  if (existsSync(readme)) commands.push(...commandContexts(readFileSync(readme, 'utf-8')))
   const pkgPath = join(ref.dir, 'package.json')
   if (existsSync(pkgPath)) {
     try {
+      // Instruction strings are command lines already (`+{pm} dev`), not prose to filter.
       const instr = JSON.parse(readFileSync(pkgPath, 'utf-8'))['create-solana-dapp']?.instructions
-      if (Array.isArray(instr)) sources.push(instr.join('\n'))
-      else if (typeof instr === 'string') sources.push(instr)
+      if (Array.isArray(instr)) commands.push(...instr.filter((line): line is string => typeof line === 'string'))
+      else if (typeof instr === 'string') commands.push(instr)
     } catch {
       /* ignore */
     }
   }
-  const text = sources.join('\n')
-  // Match `npm run <x>`, `pnpm <x>`, `pnpm run <x>`, `yarn <x>`.
-  const referenced = new Set<string>()
-  for (const match of text.matchAll(/\b(?:npm run|pnpm run|yarn run|pnpm|yarn)\s+([a-z][a-z0-9:_-]+)/gi)) {
-    const name = match[1].toLowerCase()
-    // skip package-manager subcommands that aren't user scripts
-    if (['install', 'i', 'add', 'create', 'dlx', 'exec', 'why', 'audit', 'outdated', 'update'].includes(name)) continue
-    referenced.add(name)
-  }
-  const scripts = new Set(Object.keys(ref.scripts))
+  const referenced = scriptsInCommands(commands.join('\n'), ref.directDeps)
+  // Multi-package templates (a Rust backend with a `frontend/` app, ...) document scripts that
+  // live in a nested package.json, so those count as existing too.
+  const scripts = new Set([...Object.keys(ref.scripts), ...nestedScripts(ref.dir)])
   const missing = [...referenced].filter((script) => !scripts.has(script)).sort()
   return {
     status: missing.length === 0 ? 'pass' : 'warn',
@@ -480,7 +658,7 @@ const bootDevServer = async (workDir: string, opts: ResolvedRunOptions): Promise
   // the finally below takes out the whole tree (pm -> next/vite -> workers), not just the pm.
   const child = spawn(opts.packageManager, ['run', 'dev'], {
     cwd: workDir,
-    env: { ...process.env, FORCE_COLOR: '0', NO_COLOR: '1' },
+    env: { ...sanitizedEnv(), ...opts.templateEnv, FORCE_COLOR: '0', NO_COLOR: '1' },
     detached: true,
   })
   activeChildren.add(child)
@@ -599,29 +777,13 @@ export const checkRust = async (workDir: string, ref: TemplateRef, opts: RunOpti
   const verb = ref.isProgram ? 'check' : 'build'
   const compileDir = ref.isProgram ? programDir : manifestDir
   const compile = await run('cargo', [verb], compileDir, opts.buildTimeoutMs)
-  const base: RustResult = {
-    status: compile.timedOut ? 'fail' : compile.code === 0 ? 'pass' : 'fail',
-    available: true,
-    command: ref.isProgram ? 'cargo check (program)' : 'cargo build',
-    exitCode: compile.code,
-    timedOut: compile.timedOut,
-    durationMs: compile.durationMs,
-    tail: compile.timedOut ? `TIMED OUT\n${tail(compile.output)}` : tail(compile.output),
-    tested: false,
-  }
+  const base = rustPhase(skipRust(''), ref.isProgram ? 'cargo check (program)' : 'cargo build', compile, false)
   if (base.status !== 'pass' || !opts.cargoTest) return base
 
   // Host binary: a plain cargo test is enough.
   if (!ref.isProgram) {
     const testRun = await run('cargo', ['test'], manifestDir, opts.buildTimeoutMs)
-    return {
-      ...base,
-      status: testRun.timedOut || testRun.code !== 0 ? 'fail' : 'pass',
-      command: 'cargo build && cargo test',
-      tail: tail(testRun.output),
-      durationMs: base.durationMs + testRun.durationMs,
-      tested: true,
-    }
+    return rustPhase(base, 'cargo build && cargo test', testRun, true)
   }
 
   // Program: tests load the compiled .so, so they need the Solana SBF toolchain.
@@ -631,18 +793,37 @@ export const checkRust = async (workDir: string, ref: TemplateRef, opts: RunOpti
   }
   const built = await run('cargo-build-sbf', [], programDir, opts.buildTimeoutMs)
   if (built.timedOut || built.code !== 0) {
-    return { ...base, status: 'fail', command: 'cargo-build-sbf', tail: tail(built.output), tested: true }
+    return rustPhase(base, 'cargo check && cargo-build-sbf', built, true)
   }
   const testRun = await run('cargo', ['test'], manifestDir, opts.buildTimeoutMs)
-  return {
-    ...base,
-    status: testRun.timedOut || testRun.code !== 0 ? 'fail' : 'pass',
-    command: 'cargo check && cargo-build-sbf && cargo test',
-    tail: tail(testRun.output),
-    durationMs: base.durationMs + built.durationMs + testRun.durationMs,
-    tested: true,
-  }
+  const afterSbf = { ...base, durationMs: base.durationMs + built.durationMs }
+  return rustPhase(afterSbf, 'cargo check && cargo-build-sbf && cargo test', testRun, true)
 }
+
+/**
+ * Pure: fold one cargo phase into the running Rust result. Status, exit code, timeout flag,
+ * command and tail all describe THIS phase (a failing `cargo test` must not keep the passing
+ * `cargo check`'s exitCode 0 / timedOut false); durationMs accumulates across phases.
+ */
+export const rustPhase = (
+  previous: RustResult,
+  command: string,
+  exec: Pick<Exec, 'code' | 'output' | 'timedOut' | 'durationMs'>,
+  tested: boolean,
+): RustResult => ({
+  ...previous,
+  status: exec.timedOut ? 'fail' : exec.code === 0 ? 'pass' : 'fail',
+  available: true,
+  command,
+  exitCode: exec.code,
+  timedOut: exec.timedOut,
+  durationMs: previous.durationMs + exec.durationMs,
+  tail: exec.timedOut
+    ? `TIMED OUT after ${Math.round(exec.durationMs / 1000)}s\n${tail(exec.output)}`
+    : tail(exec.output),
+  tested,
+  note: undefined,
+})
 
 // ---------- per-template orchestration ----------
 
@@ -660,7 +841,11 @@ export const checkTemplate = async (ref: TemplateRef, opts: RunOptions) => {
       pmNote = `${pm} not installed — fell back to npm`
       pm = 'npm'
     }
-    const effOpts: ResolvedRunOptions = { ...opts, packageManager: pm }
+    const effOpts: ResolvedRunOptions = {
+      ...opts,
+      packageManager: pm,
+      templateEnv: credentialsForTemplate(ref, opts.forwardedEnv),
+    }
 
     let { build, deprecation } = await runBuild(workDir, ref, effOpts)
     const installed = build.phase !== 'install' || build.status === 'pass'
@@ -704,7 +889,11 @@ export const checkTemplate = async (ref: TemplateRef, opts: RunOptions) => {
     const audit = installed ? await checkAudit(workDir, pm) : skipAudit('install failed')
     const docDrift = checkDocDrift(ref)
     const boot = opts.boot && installed && build.status === 'pass' ? await checkBoot(workDir, ref, effOpts) : undefined
-    return { build, deprecation, deps, audit, docDrift, boot, rust, packageManager: pm, pmNote, needsSetupSkip }
+    // Forwarded credential values must never reach a report: scrub every tail/note/command.
+    return redactDeep(
+      { build, deprecation, deps, audit, docDrift, boot, rust, packageManager: pm, pmNote, needsSetupSkip },
+      Object.values(opts.forwardedEnv),
+    )
   } finally {
     if (workDir) disposeTempDir(workDir)
   }

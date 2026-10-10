@@ -25,6 +25,17 @@ test('everything skipped is skip', () => {
   assert.equal(overallStatus(['skip'], ['skip', 'skip']), 'skip')
 })
 
+test('all functional skipped is skip even with advisory pass', () => {
+  // e.g. a Rust-only template on a machine without cargo: deps/audit passing proves nothing.
+  assert.equal(overallStatus(['skip'], ['pass', 'pass']), 'skip')
+  assert.equal(overallStatus(['skip', 'skip'], ['pass', 'warn']), 'skip')
+})
+
+test('one verified functional check alongside skipped ones still counts', () => {
+  assert.equal(overallStatus(['pass', 'skip'], ['pass']), 'pass')
+  assert.equal(overallStatus(['pass', 'skip'], ['warn']), 'warn')
+})
+
 test('worst picks the highest severity present', () => {
   assert.equal(worst(['skip', 'pass', 'warn']), 'warn')
   assert.equal(worst(['skip', 'pass']), 'pass')

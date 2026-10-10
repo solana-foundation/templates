@@ -47,7 +47,7 @@ export const toMarkdown = (report: HealthReport): string => {
 
   if (fails.length) {
     lines.push('## ❌ Failures', '')
-    for (const template of fails) lines.push(...failureBlock(template))
+    for (const template of fails) lines.push(...failureBlock(template, report.options))
   }
 
   if (warns.length) {
@@ -86,10 +86,7 @@ export const toMarkdown = (report: HealthReport): string => {
 
   if (skips.length) {
     lines.push('## ⏭️ Skipped', '')
-    for (const template of skips) {
-      const reason = template.build.tail || template.deps.note || 'see notes'
-      lines.push(`- **${template.id}** (${template.kind}) — ${reason.split('\n')[0]}`)
-    }
+    for (const template of skips) lines.push(`- **${template.id}** (${template.kind}) — ${skipReason(template)}`)
     lines.push('')
   }
 
@@ -100,7 +97,35 @@ export const toMarkdown = (report: HealthReport): string => {
   return lines.join('\n') + '\n'
 }
 
-const failureBlock = (template: TemplateReport): string[] => {
+/**
+ * Why a template could not be verified, for the Skipped section. Every skipped functional
+ * check contributes its own reason (a Rust template without cargo says so, instead of only
+ * the npm side's "no build script" note).
+ */
+export const skipReason = (template: TemplateReport): string => {
+  const reasons: string[] = []
+  if (template.build.status === 'skip' && template.build.tail) reasons.push(template.build.tail)
+  if (template.rust?.status === 'skip' && template.rust.note) reasons.push(`rust: ${template.rust.note}`)
+  if (template.boot?.status === 'skip' && template.boot.note) reasons.push(`boot: ${template.boot.note}`)
+  if (reasons.length === 0 && template.deps.note) reasons.push(template.deps.note)
+  return reasons.length ? reasons.map((reason) => reason.split('\n')[0]).join(' · ') : 'see notes'
+}
+
+/**
+ * The exact command that reproduces a template's run: carries the flags that shaped it
+ * (`--boot`, `--cargo-test`, `--pm`, `--no-build`). Older reports lack the newer option
+ * fields, so they're read as "not passed".
+ */
+export const reproCommand = (id: string, options: HealthReport['options']): string => {
+  const parts = ['pnpm health', '--only', id]
+  if (!options.build) parts.push('--no-build')
+  if (options.boot) parts.push('--boot')
+  if (options.cargoTest) parts.push('--cargo-test')
+  if (options.pm) parts.push('--pm', options.pm)
+  return parts.join(' ')
+}
+
+const failureBlock = (template: TemplateReport, options: HealthReport['options']): string[] => {
   const out: string[] = []
   out.push(`### ❌ ${template.id}`)
   out.push(`- **Kind:** ${template.kind} · **PM:** ${template.packageManager}`)
@@ -123,7 +148,7 @@ const failureBlock = (template: TemplateReport): string[] => {
   out.push('```')
   out.push(failed.tail.slice(0, 2500))
   out.push('```')
-  out.push(`- **Repro:** \`pnpm health --only ${template.id}\``)
+  out.push(`- **Repro:** \`${reproCommand(template.id, options)}\``)
   out.push('')
   return out
 }
