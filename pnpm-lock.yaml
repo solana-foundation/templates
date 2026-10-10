@@ -1866,6 +1866,9 @@ importers:
       globals:
         specifier: ^16.4.0
         version: 16.5.0
+      jsdom:
+        specifier: ^26.1.0
+        version: 26.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -1878,6 +1881,9 @@ importers:
       vite:
         specifier: ^7.1.6
         version: 7.2.7(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.2)(tsx@4.20.6)(yaml@2.8.4)
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@20.19.21)(jsdom@26.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(vite@7.2.7(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.2)(tsx@4.20.6)(yaml@2.8.4))
 
   kit/react-vite-anchor:
     dependencies:
