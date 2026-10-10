@@ -14,6 +14,8 @@ test('parseDotenv handles comments, export, quotes and inline comments', () => {
       'export EXPORTED=yes',
       'SPACED = padded ',
       'INLINE=value # trailing comment',
+      'QUOTED_COMMENT="test-key-123" # sandbox',
+      "SINGLE_COMMENT='abc' # note",
       'DOUBLE="with # hash\\nand newline"',
       "SINGLE='keep \\n literal'",
       'EMPTY=',
@@ -26,6 +28,8 @@ test('parseDotenv handles comments, export, quotes and inline comments', () => {
     EXPORTED: 'yes',
     SPACED: 'padded',
     INLINE: 'value',
+    QUOTED_COMMENT: 'test-key-123',
+    SINGLE_COMMENT: 'abc',
     DOUBLE: 'with # hash\nand newline',
     SINGLE: 'keep \\n literal',
     EMPTY: '',
@@ -63,13 +67,16 @@ test('declared public config is forwarded too; only secret-looking values are re
     NEXT_PUBLIC_SUPABASE_URL: 'https://abc.supabase.co',
     SUPABASE_SERVICE_ROLE_KEY: 'service-role-9f8e7d',
     UNRELATED_TOKEN: 'never-forwarded',
+    MONEYGRAM_SK: 'mg-sk-77',
+    VITE_API_URL: 'https://api.example.com',
   }
   const env = credentialsForTemplate({ needsSecrets: true, credentialKeys, declaredEnvKeys }, forwarded)
   assert.deepEqual(env, {
     NEXT_PUBLIC_SUPABASE_URL: 'https://abc.supabase.co',
     SUPABASE_SERVICE_ROLE_KEY: 'service-role-9f8e7d',
   })
-  assert.deepEqual(secretValues(forwarded).sort(), ['never-forwarded', 'service-role-9f8e7d'])
+  // Every forwarded value is redacted unless it is a public-prefixed, non-secret-looking name.
+  assert.deepEqual(secretValues(forwarded).sort(), ['mg-sk-77', 'never-forwarded', 'service-role-9f8e7d'])
   assert.equal(
     redactSecrets('url https://abc.supabase.co key service-role-9f8e7d', secretValues(forwarded)),
     'url https://abc.supabase.co key ***',

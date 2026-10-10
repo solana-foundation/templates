@@ -55,7 +55,11 @@ export const ENV_ALLOWLIST_PREFIXES: readonly string[] = [
  * (NODE_AUTH_TOKEN, npm_config_//registry.npmjs.org/:_authToken, ...) so a prefix never
  * smuggles a token through, and to forwarded keys to decide what gets redacted.
  */
-export const SENSITIVE_NAME_PATTERN = /(AUTH|TOKEN|SECRET|PASSWORD|PASSWD|_KEY$|API_?KEY|CREDENTIAL|PRIVATE_?KEY)/i
+export const SENSITIVE_NAME_PATTERN =
+  /(AUTH|TOKEN|SECRET|PASSWORD|PASSWD|_KEY$|API_?KEY|CREDENTIAL|PRIVATE_?KEY|(^|_)SK$)/i
+
+/** Framework conventions for values that are shipped to browsers: the only forwarded values we leave readable in reports. */
+export const PUBLIC_NAME_PATTERN = /^(NEXT_PUBLIC_|VITE_|PUBLIC_|EXPO_PUBLIC_|REACT_APP_|NUXT_PUBLIC_)/
 
 /** Known registry/toolchain auth variables, excluded by name on top of the pattern. */
 export const ENV_EXCLUDED: readonly string[] = [
@@ -113,8 +117,11 @@ export const parseDotenv = (text: string): Record<string, string> => {
     const [, key, rawValue] = match
     let value = rawValue.trim()
     const quote = value[0]
-    if ((quote === '"' || quote === "'") && value.length >= 2 && value.endsWith(quote)) {
-      value = value.slice(1, -1)
+    const closing = quote === '"' || quote === "'" ? value.indexOf(quote, 1) : -1
+    if (closing > 0) {
+      // Quoted value: take what is inside the quotes and drop anything after the closing quote
+      // (a trailing `# comment` is common and must not end up inside the credential).
+      value = value.slice(1, closing)
       if (quote === '"') value = value.replace(/\\n/g, '\n')
     } else {
       value = value.replace(/\s+#.*$/, '').trim()
@@ -147,7 +154,10 @@ export const credentialsForTemplate = (
 /** Forwarded values that must never appear in a report: those under a secret-looking name. */
 export const secretValues = (forwarded: Readonly<Record<string, string>>): string[] =>
   Object.entries(forwarded)
-    .filter(([key]) => looksSecret(key))
+    // Conservative: every forwarded value is redacted unless its name follows a public-prefix
+    // convention (NEXT_PUBLIC_, VITE_, ...) AND does not look like a secret. A template may name
+    // its key anything (community/moneygram-onramp uses MONEYGRAM_SK), so names alone can't be trusted.
+    .filter(([key]) => looksSecret(key) || !PUBLIC_NAME_PATTERN.test(key))
     .map(([, value]) => value)
 
 /** Replace every occurrence of a forwarded value in text with `***`. */
