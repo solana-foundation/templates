@@ -1,0 +1,835 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-02T08:00:00.000Z",
+  "packageManager": "auto (per-template)",
+  "options": {
+    "build": true,
+    "boot": true,
+    "source": "local"
+  },
+  "summary": {
+    "total": 18,
+    "pass": 2,
+    "warn": 5,
+    "fail": 10,
+    "skip": 1
+  },
+  "templates": [
+    {
+      "id": "kit/lockfile-demo",
+      "group": "kit",
+      "kind": "next",
+      "status": "fail",
+      "needsSecrets": false,
+      "packageManager": "pnpm",
+      "build": {
+        "status": "fail",
+        "phase": "install",
+        "command": "pnpm install",
+        "exitCode": 1,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": "Lockfile is up to date, resolution step is skipped\n ERR_PNPM_OUTDATED_LOCKFILE  Cannot install with \"frozen-lockfile\" because pnpm-lock.yaml is not up to date with package.json\nNote that in CI environments this setting is true by default."
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      }
+    },
+    {
+      "id": "kit/peer-demo",
+      "group": "kit",
+      "kind": "next",
+      "status": "fail",
+      "needsSecrets": false,
+      "packageManager": "npm",
+      "build": {
+        "status": "fail",
+        "phase": "install",
+        "command": "npm install",
+        "exitCode": 1,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": "npm error code ERESOLVE\nnpm error ERESOLVE unable to resolve dependency tree\nnpm error While resolving: peer-demo@0.0.0\nnpm error Found: react@19.2.0\nnpm error Could not resolve dependency:\nnpm error peer react@\"^18.0.0\" from @old/lib@1.0.0"
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      }
+    },
+    {
+      "id": "kit/missing-module-demo",
+      "group": "kit",
+      "kind": "next",
+      "status": "fail",
+      "needsSecrets": false,
+      "packageManager": "npm",
+      "build": {
+        "status": "fail",
+        "phase": "build",
+        "command": "npm run build",
+        "exitCode": 1,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": "> next build\n\nFailed to compile.\n\n./src/app/page.tsx\nModule not found: Can't resolve '@solana/kit-plugin-wallet'\n\nError: Cannot find module '@solana/kit-plugin-wallet'"
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      }
+    },
+    {
+      "id": "kit/ts-demo",
+      "group": "kit",
+      "kind": "next",
+      "status": "pass",
+      "needsSecrets": false,
+      "packageManager": "npm",
+      "build": {
+        "status": "pass",
+        "phase": "ci",
+        "command": "npm run ci",
+        "exitCode": 0,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": ""
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      }
+    },
+    {
+      "id": "kit/framework-demo",
+      "group": "kit",
+      "kind": "next",
+      "status": "fail",
+      "needsSecrets": false,
+      "packageManager": "npm",
+      "build": {
+        "status": "fail",
+        "phase": "build",
+        "command": "npm run build",
+        "exitCode": 1,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": "⚠ Invalid next.config.ts options detected:\n⚠     Unrecognized key(s) in object: 'swcMinify'\n⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config\nError: experimental.serverActions has been moved in Next.js 15"
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      }
+    },
+    {
+      "id": "kit/network-demo",
+      "group": "kit",
+      "kind": "next",
+      "status": "fail",
+      "needsSecrets": false,
+      "packageManager": "npm",
+      "build": {
+        "status": "fail",
+        "phase": "install",
+        "command": "npm install",
+        "exitCode": 1,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": "npm error code ECONNRESET\nnpm error network request to https://registry.npmjs.org/next failed, reason: socket hang up\nnpm error network This is a problem related to network connectivity."
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      }
+    },
+    {
+      "id": "kit/infra-demo",
+      "group": "kit",
+      "kind": "next",
+      "status": "fail",
+      "needsSecrets": false,
+      "packageManager": "npm",
+      "build": {
+        "status": "fail",
+        "phase": "build",
+        "command": "npm run build",
+        "exitCode": 1,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": "Error: ENOTEMPTY: directory not empty, rmdir '/private/var/folders/x1/sf-templates-health-4242-kit-infra-demo-abc/.next/cache'\n    at Object.rmdirSync (node:fs:1234:3)"
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      }
+    },
+    {
+      "id": "community/creds-demo",
+      "group": "community",
+      "kind": "node",
+      "status": "fail",
+      "needsSecrets": true,
+      "packageManager": "npm",
+      "build": {
+        "status": "fail",
+        "phase": "build",
+        "command": "npm run build",
+        "exitCode": 1,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": "Error: Missing required env: OPENAI_API_KEY\n    at loadConfig (src/config.ts:4:11)"
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      }
+    },
+    {
+      "id": "community/creds-skip",
+      "group": "community",
+      "kind": "node",
+      "status": "skip",
+      "needsSecrets": true,
+      "packageManager": "npm",
+      "build": {
+        "status": "fail",
+        "phase": "build",
+        "command": "npm run build",
+        "exitCode": 1,
+        "timedOut": false,
+        "durationMs": 900,
+        "tail": "SUPABASE_URL is not set\nError: supabaseUrl is required."
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      }
+    },
+    {
+      "id": "kit/rust-demo",
+      "group": "kit",
+      "kind": "rust",
+      "status": "fail",
+      "needsSecrets": false,
+      "packageManager": "npm",
+      "build": {
+        "status": "skip",
+        "phase": "none",
+        "command": "(no package.json)",
+        "exitCode": null,
+        "timedOut": false,
+        "durationMs": 0,
+        "tail": ""
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      },
+      "rust": {
+        "status": "fail",
+        "available": true,
+        "command": "cargo check --manifest-path program/Cargo.toml",
+        "exitCode": 101,
+        "timedOut": false,
+        "durationMs": 5000,
+        "tail": "error[E0433]: failed to resolve: use of undeclared crate or module `pinocchio_log`\n --> src/lib.rs:3:5\nerror: could not compile `counter` (lib) due to 1 previous error",
+        "tested": false
+      }
+    },
+    {
+      "id": "kit/boot-demo",
+      "group": "kit",
+      "kind": "next",
+      "status": "warn",
+      "needsSecrets": false,
+      "packageManager": "npm",
+      "build": {
+        "status": "pass",
+        "phase": "ci",
+        "command": "npm run ci",
+        "exitCode": 0,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": ""
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "warn",
+        "missingScripts": ["tset"]
+      }
+    },
+    {
+      "id": "kit/qa-demo",
+      "group": "kit",
+      "kind": "next",
+      "status": "fail",
+      "needsSecrets": false,
+      "packageManager": "npm",
+      "build": {
+        "status": "pass",
+        "phase": "ci",
+        "command": "npm run ci",
+        "exitCode": 0,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": ""
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      },
+      "boot": {
+        "status": "pass",
+        "available": true,
+        "url": "http://localhost:3000",
+        "httpStatus": 200,
+        "durationMs": 4000
+      },
+      "qa": {
+        "status": "fail",
+        "note": "Next.js error overlay detected: Hydration failed because the server rendered HTML did not match the client",
+        "screenshot": "qa/kit-qa-demo.png"
+      }
+    },
+    {
+      "id": "kit/outdated-demo",
+      "group": "kit",
+      "kind": "next",
+      "status": "warn",
+      "needsSecrets": false,
+      "packageManager": "npm",
+      "build": {
+        "status": "pass",
+        "phase": "ci",
+        "command": "npm run ci",
+        "exitCode": 0,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": ""
+      },
+      "deps": {
+        "status": "warn",
+        "available": true,
+        "total": 3,
+        "major": 2,
+        "minor": 1,
+        "patch": 0,
+        "outdated": [
+          {
+            "name": "next",
+            "current": "15.5.0",
+            "latest": "16.1.0",
+            "bump": "major"
+          },
+          {
+            "name": "tailwindcss",
+            "current": "3.4.17",
+            "latest": "4.1.0",
+            "bump": "major"
+          },
+          {
+            "name": "eslint",
+            "current": "9.30.0",
+            "latest": "9.39.0",
+            "bump": "minor"
+          }
+        ]
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      }
+    },
+    {
+      "id": "kit/vuln-demo",
+      "group": "kit",
+      "kind": "next",
+      "status": "warn",
+      "needsSecrets": false,
+      "packageManager": "npm",
+      "build": {
+        "status": "pass",
+        "phase": "ci",
+        "command": "npm run ci",
+        "exitCode": 0,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": ""
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "fail",
+        "available": true,
+        "critical": 0,
+        "high": 1,
+        "moderate": 2,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      }
+    },
+    {
+      "id": "kit/deprecated-demo",
+      "group": "kit",
+      "kind": "next",
+      "status": "warn",
+      "needsSecrets": false,
+      "packageManager": "npm",
+      "build": {
+        "status": "pass",
+        "phase": "ci",
+        "command": "npm run ci",
+        "exitCode": 0,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": ""
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "warn",
+        "packages": ["@solana/wallet-adapter-react@0.15.35"]
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      }
+    },
+    {
+      "id": "kit/docs-demo",
+      "group": "kit",
+      "kind": "next",
+      "status": "warn",
+      "needsSecrets": false,
+      "packageManager": "npm",
+      "build": {
+        "status": "pass",
+        "phase": "ci",
+        "command": "npm run ci",
+        "exitCode": 0,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": ""
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "warn",
+        "missingScripts": ["biuld"],
+        "note": "README/instructions reference scripts not in package.json"
+      }
+    },
+    {
+      "id": "kit/unknown-demo",
+      "group": "kit",
+      "kind": "next",
+      "status": "fail",
+      "needsSecrets": false,
+      "packageManager": "npm",
+      "build": {
+        "status": "fail",
+        "phase": "build",
+        "command": "npm run build",
+        "exitCode": 1,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": "Build failed because of webpack errors\nSee the output above for details."
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      }
+    },
+    {
+      "id": "kit/pass-demo",
+      "group": "kit",
+      "kind": "next",
+      "status": "pass",
+      "needsSecrets": false,
+      "packageManager": "npm",
+      "build": {
+        "status": "pass",
+        "phase": "ci",
+        "command": "npm run ci",
+        "exitCode": 0,
+        "timedOut": false,
+        "durationMs": 1000,
+        "tail": ""
+      },
+      "deps": {
+        "status": "pass",
+        "available": true,
+        "total": 0,
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "outdated": []
+      },
+      "audit": {
+        "status": "pass",
+        "available": true,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0
+      },
+      "deprecation": {
+        "status": "pass",
+        "packages": []
+      },
+      "docDrift": {
+        "status": "pass",
+        "missingScripts": []
+      }
+    }
+  ]
+}

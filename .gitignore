@@ -96,5 +96,7 @@ web3js/**/tmp
 
 # templates health check output
 health-reports/
+# triage findings + patch proposals derived from them
+triage-reports/
 # advisory template security reports
 security-reports/
