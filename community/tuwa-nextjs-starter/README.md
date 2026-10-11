@@ -15,7 +15,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with a Solana wallet extension (for example Phantom or Solflare) set to devnet. Node.js 20.9 or newer is required. For local development every variable in `.env` is optional; `build` and `start` need `SIWX_DEMO_SIGNING_SECRET`. The scripts below are shown with pnpm; they run the same way with npm or yarn.
+Open [http://localhost:3000](http://localhost:3000) with a Solana wallet extension (for example Phantom or Solflare) set to devnet. Node.js 20.19+, 22.13+ or 24+ is required (the `engines` range of ESLint 10). For local development every variable in `.env` is optional; `build` and `start` need `SIWX_DEMO_SIGNING_SECRET`. The scripts below are shown with pnpm; they run the same way with npm or yarn.
 
 ---
 

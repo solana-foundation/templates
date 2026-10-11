@@ -28,6 +28,9 @@
   "private": true,
   "author": "Oleksandr Tkach",
   "license": "MIT-0",
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",

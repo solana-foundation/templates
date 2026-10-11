@@ -21,6 +21,7 @@ export const TransactionsBlockWrapper = () => {
   const accounts = useStore((state) => state.accounts);
   const getAccounts = useStore((state) => state.getAccounts);
   const accountsLoading = useStore((state) => state.accountsLoading);
+  const accountsError = useStore((state) => state.accountsError);
   const getAdapter = usePulsarStore((state) => state.getAdapter);
 
   const foundAdapter = selectAdapterByKey({
@@ -125,6 +126,19 @@ export const TransactionsBlockWrapper = () => {
                   <div className="flex flex-col items-center justify-center h-40">
                     <div className="w-8 h-8 border-4 border-t-4 border-[var(--tuwa-border-primary)] rounded-full animate-spin mb-4"></div>
                     <p className="text-lg text-[var(--tuwa-text-secondary)]">Fetching accounts...</p>
+                  </div>
+                ) : accountsError ? (
+                  <div className="flex flex-col items-center justify-center h-40 text-center">
+                    <p className="text-lg text-[var(--tuwa-text-secondary)] mb-4">
+                      Could not fetch the counters from devnet.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => getAccounts()}
+                      className="px-4 py-2 text-sm font-medium text-[var(--tuwa-text-primary)] border border-[var(--tuwa-border-primary)] rounded-[var(--tuwa-rounded-corners)] hover:bg-[var(--tuwa-bg-secondary)] cursor-pointer"
+                    >
+                      Retry
+                    </button>
                   </div>
                 ) : (
                   sortedAccounts.map(([key, value]) => (

@@ -6,6 +6,8 @@ import { StoreApi, useStore as uS } from 'zustand';
 export type Store = {
   accounts: Record<string, number>;
   accountsLoading: boolean;
+  /** Why the last fetch of the counters failed, or `null`. */
+  accountsError: string | null;
   getAccounts: () => Promise<void>;
   removeAccFromStore: (address: string) => void;
 };

@@ -58,7 +58,8 @@ import {
   type SetInput,
 } from '../instructions';
 
-export const SOLANATEST_PROGRAM_ADDRESS = '' as Address<''>;
+export const SOLANATEST_PROGRAM_ADDRESS =
+  '9ZP7sicxMz99LwbTfngJcwziYmfZ3e77Z2B8r88d7GXJ' as Address<'9ZP7sicxMz99LwbTfngJcwziYmfZ3e77Z2B8r88d7GXJ'>;
 
 export enum SolanatestAccount {
   Solanatest,
@@ -146,7 +147,7 @@ export function identifySolanatestInstruction(
   });
 }
 
-export type ParsedSolanatestInstruction<TProgram extends string = ''> =
+export type ParsedSolanatestInstruction<TProgram extends string = '9ZP7sicxMz99LwbTfngJcwziYmfZ3e77Z2B8r88d7GXJ'> =
   | ({ instructionType: SolanatestInstruction.Close } & ParsedCloseInstruction<TProgram>)
   | ({ instructionType: SolanatestInstruction.Decrement } & ParsedDecrementInstruction<TProgram>)
   | ({ instructionType: SolanatestInstruction.Increment } & ParsedIncrementInstruction<TProgram>)
