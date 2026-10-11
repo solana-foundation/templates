@@ -3,7 +3,8 @@
  * (passing last run, failing now) jump out - that's the highest-signal output.
  */
 
-import type { HealthReport, Status, TemplateReport } from './types.js'
+import type { HealthReport, QaResult, Status, TemplateReport } from './types.js'
+import { classifyRender, oneLine } from './qa.js'
 
 const ICON: Record<Status, string> = { pass: '✅', warn: '⚠️', fail: '❌', skip: '⏭️' }
 
@@ -28,6 +29,7 @@ const statusLine = (template: TemplateReport): string => {
     parts.push(`deprecated ${ICON[template.deprecation.status]}(${template.deprecation.packages.length})`)
   if (template.docDrift.missingScripts.length) parts.push(`docs ${ICON[template.docDrift.status]}`)
   if (template.boot) parts.push(`boot ${ICON[template.boot.status]}`)
+  if (template.qa) parts.push(`qa ${ICON[template.qa.status]}`)
   return parts.join(' · ')
 }
 
@@ -91,6 +93,42 @@ const incompleteLine = (template: TemplateReport): string | null => {
   return missing.length ? `⏭️ incomplete: ${missing.join(' · ')}` : null
 }
 
+/** Why the render QA said what it said: classified reasons plus any harness note. */
+const qaReasons = (qa: QaResult): string[] => {
+  const reasons = classifyRender({
+    ...qa,
+    pageErrorsTotal: qa.pageErrorsTotal ?? qa.pageErrors.length,
+    overlay: qa.overlay ?? null,
+    overlayText: qa.overlayText ?? null,
+  }).reasons
+  if (qa.note && !reasons.length) reasons.push(qa.note)
+  return reasons
+}
+
+/** Evidence lines for a template's render QA (used in failure and warning blocks). */
+const qaLines = (qa: QaResult): string[] => {
+  const out: string[] = []
+  const reasons = qaReasons(qa)
+  if (reasons.length) out.push(`- **QA:** ${reasons.join('; ')}`)
+  if (qa.pageErrors.length)
+    out.push(
+      `- **Page errors:** ${qa.pageErrors
+        .slice(0, 3)
+        .map((error) => `\`${oneLine(error)}\``)
+        .join(' · ')}`,
+    )
+  if (qa.consoleErrors.length)
+    out.push(
+      `- **Console errors:** ${qa.consoleErrors
+        .slice(0, 3)
+        .map((error) => `\`${oneLine(error)}\``)
+        .join(' · ')}`,
+    )
+  if (qa.failedRequests.length) out.push(`- **Failed requests:** ${qa.failedRequests.slice(0, 5).join(', ')}`)
+  if (qa.screenshot) out.push(`- **Screenshot:** [${qa.screenshot}](${qa.screenshot})`)
+  return out
+}
+
 export const toMarkdown = (report: HealthReport): string => {
   const { summary } = report
   const lines: string[] = []
@@ -104,7 +142,7 @@ export const toMarkdown = (report: HealthReport): string => {
   )
   lines.push('')
   lines.push(
-    `_Package manager: ${report.packageManager} · source: ${report.options.source} · build: ${report.options.build} · boot: ${report.options.boot}_`,
+    `_Package manager: ${report.packageManager} · source: ${report.options.source} · build: ${report.options.build} · boot: ${report.options.boot}${report.options.qa ? ' · qa: true' : ''}_`,
   )
   lines.push('')
 
@@ -141,6 +179,7 @@ export const toMarkdown = (report: HealthReport): string => {
         lines.push(
           `- README references missing scripts: ${template.docDrift.missingScripts.map((script) => `\`${script}\``).join(', ')}`,
         )
+      if (template.qa && template.qa.status === 'warn') lines.push(...qaLines(template.qa))
       if (template.needsSecrets) lines.push(`- ⓘ needs external credentials to fully verify (runtime not checked here)`)
       const incomplete = incompleteLine(template)
       if (incomplete) lines.push(`- ${incomplete}`)
@@ -173,6 +212,20 @@ export const toMarkdown = (report: HealthReport): string => {
     lines.push('')
   }
 
+  const shots = report.templates.filter((template) => template.qa?.screenshot)
+  if (shots.length) {
+    lines.push('## 📸 Screenshots', '')
+    lines.push(
+      '_Full-page render of each web template as the dev server served it (links are relative to this file)._',
+      '',
+    )
+    for (const template of shots) {
+      const qa = template.qa!
+      lines.push(`### ${template.id} ${ICON[qa.status]}`, '')
+      lines.push(`![${template.id}](${qa.screenshot})`, '')
+    }
+  }
+
   lines.push('---')
   lines.push(
     '_Dimensions not decided by this script (whole-stack relevance, on-chain runtime correctness) live in `docs/agents/health-check.md`._',
@@ -190,6 +243,8 @@ export const skipReason = (template: TemplateReport): string => {
   if (template.build.status === 'skip' && template.build.tail) reasons.push(template.build.tail)
   if (template.rust?.status === 'skip' && template.rust.note) reasons.push(`rust: ${template.rust.note}`)
   if (template.boot?.status === 'skip' && template.boot.note) reasons.push(`boot: ${template.boot.note}`)
+  // A render that only failed for want of a declared config value ("requires configuration: KEY").
+  if (template.qa?.status === 'skip' && template.qa.note) reasons.push(`qa: ${template.qa.note}`)
   if (reasons.length === 0 && template.deps.note) reasons.push(template.deps.note)
   return reasons.length ? reasons.map((reason) => reason.split('\n')[0]).join(' · ') : 'see notes'
 }
@@ -202,7 +257,9 @@ export const skipReason = (template: TemplateReport): string => {
 export const reproCommand = (id: string, options: HealthReport['options']): string => {
   const parts = ['pnpm health', '--only', id]
   if (!options.build) parts.push('--no-build')
-  if (options.boot) parts.push('--boot')
+  // --qa implies --boot, so one flag reproduces both.
+  if (options.qa) parts.push('--qa')
+  else if (options.boot) parts.push('--boot')
   if (options.cargoTest) parts.push('--cargo-test')
   if (options.pm) parts.push('--pm', options.pm)
   return parts.join(' ')
@@ -220,11 +277,17 @@ const failureBlock = (template: TemplateReport, options: HealthReport['options']
       ? { what: 'rust', command: template.rust.command, tail: template.rust.tail }
       : template.boot?.status === 'fail'
         ? { what: 'boot', command: 'dev server', tail: template.boot.note ?? '' }
-        : {
-            what: `build (${template.build.phase})${template.build.timedOut ? ' timed out' : ''}`,
-            command: template.build.command,
-            tail: template.build.tail,
-          }
+        : template.qa?.status === 'fail'
+          ? {
+              what: 'qa (render)',
+              command: `headless browser → ${template.qa.url ?? 'dev server'}`,
+              tail: qaTail(template.qa),
+            }
+          : {
+              what: `build (${template.build.phase})${template.build.timedOut ? ' timed out' : ''}`,
+              command: template.build.command,
+              tail: template.build.tail,
+            }
   out.push(`- **Failed:** ${failed.what}`)
   out.push(`- **Command:** \`${failed.command}\``)
   if (template.audit.critical + template.audit.high > 0)
@@ -234,9 +297,24 @@ const failureBlock = (template: TemplateReport, options: HealthReport['options']
   out.push('```')
   out.push(failed.tail.slice(0, 2500))
   out.push('```')
+  if (template.qa && template.qa.status !== 'fail') out.push(...qaLines(template.qa))
+  else if (template.qa?.screenshot) out.push(`- **Screenshot:** [${template.qa.screenshot}](${template.qa.screenshot})`)
   out.push(`- **Repro:** \`${reproCommand(template.id, options)}\``)
   out.push('')
   return out
+}
+
+/** Plain-text evidence block for a failed render check. */
+const qaTail = (qa: QaResult): string => {
+  const lines: string[] = [...qaReasons(qa)]
+  if (qa.note && lines.length && !lines.includes(qa.note)) lines.push(qa.note)
+  if (qa.overlayText) lines.push(`overlay text: ${oneLine(qa.overlayText)}`)
+  for (const error of qa.pageErrors.slice(0, 5)) lines.push(`page error: ${oneLine(error)}`)
+  if (qa.pageErrorsTotal && qa.pageErrorsTotal > qa.pageErrors.length)
+    lines.push(`(${qa.pageErrorsTotal} page errors in total, ${qa.pageErrors.length} kept)`)
+  for (const error of qa.consoleErrors.slice(0, 5)) lines.push(`console error: ${oneLine(error)}`)
+  for (const request of qa.failedRequests.slice(0, 5)) lines.push(`failed request: ${request}`)
+  return lines.join('\n')
 }
 
 // ---------- diff vs a previous run ----------

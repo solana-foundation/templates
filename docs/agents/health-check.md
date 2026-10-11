@@ -20,12 +20,13 @@ pnpm health                       # every template: install + build/ci, all advi
 pnpm health --only kit/nextjs     # a single template (comma-separated ids ok)
 pnpm health --group community     # one repokit group (kit|web3js|mobile|community)
 pnpm health --boot                # also boot web templates and confirm the dev server responds
+pnpm health --qa                  # boot, then open each web template in a headless browser and screenshot it
 pnpm health --no-build            # install + deps/audit only (fast inventory pass)
 pnpm health --concurrency 4       # how many templates to check in parallel (default 3)
 pnpm health --baseline health-reports/2026-06-20T09-00-00.json   # diff against a previous run
 ```
 
-Output lands in `health-reports/<timestamp>.json` and `health-reports/<timestamp>.md` (gitignored), one pair per run. The JSON is the source of truth; the Markdown is rendered from it. Exit code is non-zero when any template **fails**, so CI can gate on it.
+Output lands in `health-reports/<timestamp>.json` and `health-reports/<timestamp>.md` (gitignored), one pair per run. With `--qa`, screenshots land in `health-reports/screenshots/<group>__<template>.png` (one per web template, overwritten on each run) and the Markdown ends with a gallery that links to them. The JSON is the source of truth; the Markdown is rendered from it. Exit code is non-zero when any template **fails**, so CI can gate on it.
 
 The script is read-only on the repo, copies each template to a temp dir before installing (never mutates the working tree), and never touches mainnet, real funds, or real keys.
 
@@ -42,6 +43,7 @@ The isolated copy never includes a template's private config: `.env`, `.env.loca
 | Build health          | install + the template's `ci` script (or `build`)                          | **Yes — build/rust/boot are the only checks that can `fail`** |
 | Rust compile          | `cargo check` (programs) / `cargo build` (host); `--cargo-test` adds tests | Yes (templates with a `Cargo.toml`)                           |
 | Runtime boot          | `--boot` starts the dev server, polls for an HTTP response                 | Yes (web templates only)                                      |
+| Render QA             | `--qa` opens the booted page in a headless browser, screenshots it         | Yes (web templates only, see below)                           |
 | Dependency freshness  | `npm outdated`, bucketed into major / minor / patch                        | Advisory → caps at `warn`                                     |
 | Known vulnerabilities | `npm audit` severity counts, plus the affected packages by name            | Advisory → caps at `warn`                                     |
 | Deprecation           | registry "deprecated" warnings for **direct** deps only                    | Advisory → caps at `warn`                                     |
@@ -51,7 +53,23 @@ For known vulnerabilities the report also names the affected packages (worst sev
 
 **`fail` means broken** (doesn't build, compile, or boot). **`warn` means works but needs attention** (outdated, vulnerable, deprecated, drifted). This is deliberate: a template with a transitive advisory still works, and flagging it `fail` would just duplicate dependabot.
 
-**Requirements:** Node + npm for all templates; `cargo` for Rust templates (they're reported as skipped if it's missing); the Solana platform tools (`cargo-build-sbf`) only for `--cargo-test` on on-chain programs.
+### Render QA (`--qa`)
+
+`--boot` proves the dev server answers. `--qa` goes one step further and looks at the page the way a person would. It implies `--boot`, and runs while the dev server from the boot check is still up (one template at a time, under the same boot lock). For each web template it:
+
+- opens the URL the dev server announced in headless Chrome (30 s navigation timeout, then a short settle wait for hydration),
+- collects: console messages of type error (plus warnings that mention hydration), uncaught page exceptions, failed same-origin requests (status 400 or above, favicon and hot-reload endpoints excluded), framework error overlays (Next.js `nextjs-portal` with an open error dialog, Vite `vite-error-overlay`), and a blank-page heuristic (under 20 characters of visible text and no img/canvas/svg),
+- takes a full-page screenshot either way.
+
+Verdict: an overlay, an uncaught page error, or a blank page is a `fail` (the page is visibly broken, so it gates like boot). Console errors or failed requests alone are a `warn` (it rendered, something is off). Only a Next.js dialog that is actually open and visible counts as an overlay: the dev indicator badge ("3 Issues" in the corner) on its own is not a failure, the console errors behind it are reported as a `warn`. A QA failure whose page/console error or overlay text names a value the template declares in `.env.example` but received none of in this run (for example `appId is required` without `NEXT_PUBLIC_PHANTOM_APP_ID`) is reported as `skip` with the note `requires configuration: <KEY> (...)`, the same bucket as the build-phase needs-setup skip, and the template reads "skipped, requires configuration" rather than `fail`. Key names match whole words only, and only the full key name counts on its own (shortened forms such as `appId` need "required"/"missing" wording within a few words of them in the same clause, and a JavaScript `ReferenceError` / "is not defined" never counts through a shortened form). The downgrade needs configuration to explain every hard signal: if another page error, the overlay's message (its title, code frame and stack are ignored for matching, though the full text stays in the report), a blank page, or a harness failure (navigation timeout, unreachable server) is not accounted for, the template stays `fail` and the note only adds that the key appears unset. The JSON keeps the raw signals under `qa` so the report can show the evidence: reasons, the first page/console errors, failed request paths, and the screenshot link. `pass → fail` on `qa` shows up as a regression in `--baseline` diffs like any other functional check.
+
+If no browser can be launched (no Chrome download, sandbox restrictions), `qa` reads `skip` with the launch error in its note and the template keeps its boot result. On CI (`CI` set) Chrome runs with `--no-sandbox`; locally the sandbox stays on.
+
+**Why puppeteer, not Playwright.** The issue that motivated this (#452) and `docs/agents/ui-testing-plan.md` talk about Playwright. The first rung uses puppeteer because it is already a devDependency (`scripts/create-image.ts` renders OG images with it), so the browser layer adds zero dependencies, and the boot machinery that hands over the live URL already existed. Only `checkRender` in `scripts/health/qa.ts` talks to the browser; the verdict (`classifyRender`) and the signal shape are browser-agnostic. Swapping to Playwright later means replacing the launch, event hooks, and screenshot calls in that one function, nothing else. If the later rungs (wallet init scripts, visual diffing) make Playwright's tooling worth the dependency, that is the moment to swap.
+
+This is rung 1 of the UI testing ladder. It does not click anything, connect a wallet, or diff against a baseline image.
+
+**Requirements:** Node + npm for all templates; `cargo` for Rust templates (they're reported as skipped if it's missing); the Solana platform tools (`cargo-build-sbf`) only for `--cargo-test` on on-chain programs; for `--qa`, the Chrome build puppeteer downloads on install (if the install ran with `--ignore-scripts`, fetch it with `npx puppeteer browsers install chrome`).
 
 ---
 
@@ -61,7 +79,7 @@ The script intentionally stops where reproducible facts end. These need a person
 
 ### A. Runtime correctness beyond "boots"
 
-`--boot` proves the dev server answers an HTTP request. It does **not** prove the app works. For a real runtime pass on a web template:
+`--boot` proves the dev server answers an HTTP request, and `--qa` proves the page renders without an error overlay, a crash, or a blank screen. Neither proves the app works. For a real runtime pass on a web template:
 
 - Connect a wallet, trigger the template's core action, and confirm it lands **on devnet**.
 - Use a throwaway devnet keypair funded by an airdrop. **Never** a real wallet, mainnet, or real funds.

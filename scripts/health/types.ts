@@ -7,6 +7,7 @@
  *   3. Runtime health     - does the dev server actually boot? (web templates, opt-in)
  *   4. Deprecation         - are any installed packages flagged deprecated by the registry?
  *   5. Doc/reality drift   - do README / create-solana-dapp instructions match real scripts?
+ *   6. Render QA           - does the booted page render without errors? (web templates, opt-in)
  *
  * The deeper judgment calls (is a whole stack still the recommended 2026 choice, does a
  * transaction actually land on devnet) are NOT decided here. This script produces the
@@ -151,6 +152,39 @@ export type BootResult = {
   readonly note?: string
 }
 
+/**
+ * Render QA (opt-in via --qa): the booted dev server opened in a headless browser.
+ * Signals are kept raw so the report can show evidence; the verdict is derived by
+ * the pure `classifyRender` in qa.ts (overlay / page error / blank page -> fail,
+ * console errors or failed requests only -> warn).
+ */
+export type QaResult = {
+  readonly status: Status
+  /** false when no browser could be launched (environment problem, not a template fault) */
+  readonly available: boolean
+  readonly url?: string
+  /** screenshot path relative to the report output dir, e.g. "screenshots/kit__nextjs.png" */
+  readonly screenshot?: string
+  /** console messages of type error, plus warnings that mention hydration */
+  readonly consoleErrors: readonly string[]
+  /** uncaught exceptions thrown by page scripts (first 20; newlines kept) */
+  readonly pageErrors: readonly string[]
+  /** how many page errors fired in total (absent in reports written before this field existed) */
+  readonly pageErrorsTotal?: number
+  /** same-origin requests that failed or answered >= 400 (favicon and hot-reload endpoints excluded) */
+  readonly failedRequests: readonly string[]
+  /** which framework error overlay was found, if any */
+  readonly overlay?: string
+  /** the overlay's visible text, bounded to ~500 chars, when one was found */
+  readonly overlayText?: string
+  /** body text under ~20 chars and no img/canvas/svg */
+  readonly blank: boolean
+  /** set when the harness itself failed (navigation timeout, unreachable server, inspection error): the signals above are partial */
+  readonly harnessError?: string
+  readonly durationMs: number
+  readonly note?: string
+}
+
 /** Functional check for Rust templates: `cargo check` (programs) or `cargo build` (host bins). */
 export type RustResult = {
   readonly status: Status
@@ -184,6 +218,7 @@ export type TemplateReport = {
   readonly docDrift: DocDriftResult
   readonly boot?: BootResult
   readonly rust?: RustResult
+  readonly qa?: QaResult
 }
 
 export type HealthReport = {
@@ -193,6 +228,8 @@ export type HealthReport = {
   readonly options: {
     readonly build: boolean
     readonly boot: boolean
+    /** present (true) only on runs that opened templates in a headless browser */
+    readonly qa?: boolean
     readonly source: 'local' | 'scaffold'
     /** `--cargo-test` was passed (absent in reports written before this field existed) */
     readonly cargoTest?: boolean

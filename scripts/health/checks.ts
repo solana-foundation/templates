@@ -18,18 +18,24 @@ import type {
   DeprecationResult,
   DocDriftResult,
   OutdatedDep,
+  QaResult,
   RustResult,
   Status,
   TemplateRef,
 } from './types.js'
 import { bumpKind } from './semver.js'
 import { credentialsForTemplate, parentSecretValues, redactDeep, sanitizedEnv, secretValues } from './env.js'
+import { checkRender, explainByConfig, oneLine } from './qa.js'
 
 export type RunOptions = {
   /** force a package manager; null means "use each template's pinned one (npm if unset)" */
   readonly packageManager: string | null
   readonly build: boolean
   readonly boot: boolean
+  /** open each booted web template in a headless browser (implies boot) */
+  readonly qa: boolean
+  /** report output dir; QA screenshots are written under `<outDir>/screenshots/` */
+  readonly outDir: string
   /** also run `cargo test` (host) / build-sbf + test (programs) for Rust templates */
   readonly cargoTest: boolean
   readonly installTimeoutMs: number
@@ -303,7 +309,7 @@ export const cleanupActiveTempDirs = (): void => {
  * the failure. Prose-detected templates have no key names, so they never match:
  * causation cannot be established and their failures stay failures.
  */
-/** The credential keys a template still lacks: those not explicitly supplied for this run. */
+/** The keys (credential or declared config) a template still lacks: those not explicitly supplied for this run. */
 export const unsuppliedCredentialKeys = (
   credentialKeys: readonly string[],
   templateEnv: Readonly<Record<string, string>>,
@@ -855,17 +861,36 @@ const withBootLock = <T>(task: () => Promise<T>): Promise<T> => {
   return result
 }
 
-export const checkBoot = async (workDir: string, ref: TemplateRef, opts: ResolvedRunOptions): Promise<BootResult> => {
+/** The boot result plus whatever `onReady` produced while the dev server was still up. */
+export type BootOutcome<T> = { readonly boot: BootResult; readonly ready?: T }
+
+/**
+ * Boot the dev server and, when it responds, run `onReady(url)` while it is still up and
+ * the boot lock is held. The server is killed as soon as `onReady` settles. This is the
+ * seam the render QA (and any later browser-driven rung) attaches to.
+ */
+export const checkBoot = async <T = never>(
+  workDir: string,
+  ref: TemplateRef,
+  opts: ResolvedRunOptions,
+  onReady?: (url: string) => Promise<T>,
+): Promise<BootOutcome<T>> => {
   if (ref.kind !== 'next' && ref.kind !== 'vite') {
-    return { status: 'skip', available: false, note: `boot check only applies to web templates (kind: ${ref.kind})` }
+    return {
+      boot: { status: 'skip', available: false, note: `boot check only applies to web templates (kind: ${ref.kind})` },
+    }
   }
   if (!ref.scripts.dev) {
-    return { status: 'skip', available: false, note: 'no dev script' }
+    return { boot: { status: 'skip', available: false, note: 'no dev script' } }
   }
-  return withBootLock(() => bootDevServer(workDir, opts))
+  return withBootLock(() => bootDevServer(workDir, opts, onReady))
 }
 
-const bootDevServer = async (workDir: string, opts: ResolvedRunOptions): Promise<BootResult> => {
+const bootDevServer = async <T>(
+  workDir: string,
+  opts: ResolvedRunOptions,
+  onReady?: (url: string) => Promise<T>,
+): Promise<BootOutcome<T>> => {
   const start = Date.now()
   // detached: the dev command becomes its own process-group leader, so killProcessTree in
   // the finally below takes out the whole tree (pm -> next/vite -> workers), not just the pm.
@@ -890,10 +915,12 @@ const bootDevServer = async (workDir: string, opts: ResolvedRunOptions): Promise
     while (Date.now() < deadline) {
       if (exited) {
         return {
-          status: 'fail',
-          available: true,
-          durationMs: Date.now() - start,
-          note: `dev server exited before responding\n${tail(output, 15)}`,
+          boot: {
+            status: 'fail',
+            available: true,
+            durationMs: Date.now() - start,
+            note: `dev server exited before responding\n${tail(output, 15)}`,
+          },
         }
       }
       // A dev script may start several servers (a Rust API plus Next.js): probe every
@@ -901,7 +928,9 @@ const bootDevServer = async (workDir: string, opts: ResolvedRunOptions): Promise
       for (const url of announcedUrls(output)) {
         const httpStatus = await tryFetch(url)
         if (httpStatus !== null && httpStatus >= 200 && httpStatus < 400) {
-          return { status: 'pass', available: true, url, httpStatus, durationMs: Date.now() - start }
+          const boot: BootResult = { status: 'pass', available: true, url, httpStatus, durationMs: Date.now() - start }
+          // The hook runs inside the try, so the finally below still kills the server if it throws.
+          return onReady ? { boot, ready: await onReady(url) } : { boot }
         }
         if (httpStatus !== null) {
           lastErrorStatus = httpStatus
@@ -911,20 +940,24 @@ const bootDevServer = async (workDir: string, opts: ResolvedRunOptions): Promise
     }
     if (lastErrorStatus !== null) {
       return {
-        status: 'fail',
-        available: true,
-        httpStatus: lastErrorStatus,
-        durationMs: Date.now() - start,
-        note: `dev server kept responding with HTTP ${lastErrorStatus} until the 60s deadline\n${tail(output, 15)}`,
+        boot: {
+          status: 'fail',
+          available: true,
+          httpStatus: lastErrorStatus,
+          durationMs: Date.now() - start,
+          note: `dev server kept responding with HTTP ${lastErrorStatus} until the 60s deadline\n${tail(output, 15)}`,
+        },
       }
     }
     return {
-      status: 'fail',
-      available: true,
-      durationMs: Date.now() - start,
-      note: announcedUrls(output).length
-        ? `dev server printed a URL but did not respond within 60s\n${tail(output, 15)}`
-        : `dev server did not print a localhost URL within 60s\n${tail(output, 15)}`,
+      boot: {
+        status: 'fail',
+        available: true,
+        durationMs: Date.now() - start,
+        note: announcedUrls(output).length
+          ? `dev server printed a URL but did not respond within 60s\n${tail(output, 15)}`
+          : `dev server did not print a localhost URL within 60s\n${tail(output, 15)}`,
+      },
     }
   } finally {
     killProcessTree(child)
@@ -1123,10 +1156,49 @@ export const checkTemplate = async (ref: TemplateRef, opts: RunOptions) => {
     const deps = installed ? await checkOutdated(workDir, pm) : skipDeps('install failed')
     const audit = installed ? await checkAudit(workDir, pm) : skipAudit('install failed')
     const docDrift = checkDocDrift(ref)
-    const boot = opts.boot && installed && build.status === 'pass' ? await checkBoot(workDir, ref, effOpts) : undefined
-    // Forwarded credential values must never reach a report: scrub every tail/note/command.
+    // Render QA runs inside the boot window (dev server up, boot lock held) and only when
+    // boot passed: the hook is invoked after the server answered 2xx/3xx. checkRender never
+    // throws, so a QA problem can't take the boot result down with it. The browser gets the
+    // URL only: forwarded credentials reach the dev server process, never the QA step.
+    const qaHook = opts.qa
+      ? (url: string): Promise<QaResult> => checkRender(url, ref, { outDir: opts.outDir })
+      : undefined
+    const booted =
+      opts.boot && installed && build.status === 'pass' ? await checkBoot(workDir, ref, effOpts, qaHook) : undefined
+    const boot = booted?.boot
+    let qa = booted?.ready
+    // requires-configuration: a page that cannot run without a value the user did not supply
+    // (phantom-embedded-react throws "appId is required" without NEXT_PUBLIC_PHANTOM_APP_ID)
+    // is the QA twin of the build-phase needs-setup skip. Same causation rule: only a page /
+    // console error or overlay that references a declared, unsupplied key can explain the
+    // failure; any other QA failure stays a failure. Public-prefixed keys count here even
+    // though they are not credentials: the page needs the value either way.
+    // The downgrade only happens when configuration explains EVERY hard signal: an unrelated
+    // page error next to the config error keeps the failure, with the config hint appended.
+    const configVerdict =
+      qa && qa.status === 'fail'
+        ? explainByConfig(qa, unsuppliedCredentialKeys(ref.declaredEnvKeys, effOpts.templateEnv), ref.declaredEnvKeys)
+        : null
+    if (qa && configVerdict) {
+      const { cause, unexplained } = configVerdict
+      if (unexplained.length === 0) {
+        needsSetupSkip = true
+        qa = {
+          ...qa,
+          status: 'skip',
+          note: `requires configuration: ${cause.key} (${cause.source}: ${oneLine(cause.message)})`,
+        }
+      } else {
+        qa = {
+          ...qa,
+          note: `${qa.note ?? 'render failed'}; also: ${cause.key} appears unset (${cause.source}: ${oneLine(cause.message)}); not explained by it: ${unexplained.map(oneLine).join('; ')}`,
+        }
+      }
+    }
+    // Forwarded credential values must never reach a report: scrub every tail/note/command,
+    // including qa notes and console samples (a dev server can echo a key into the console).
     return redactDeep(
-      { build, deprecation, deps, audit, docDrift, boot, rust, packageManager: pm, pmNote, needsSetupSkip },
+      { build, deprecation, deps, audit, docDrift, boot, qa, rust, packageManager: pm, pmNote, needsSetupSkip },
       [...secretValues(opts.forwardedEnv), ...parentSecretValues()],
     )
   } finally {
