@@ -9,6 +9,8 @@ import { cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } fr
 import { tmpdir } from 'os'
 import { basename, join, relative, sep } from 'path'
 import type {
+  Advisory,
+  AdvisorySeverity,
   AuditResult,
   BootResult,
   BuildResult,
@@ -540,6 +542,7 @@ export const checkAudit = async (workDir: string, pm: string): Promise<AuditResu
       moderate: 0,
       low: 0,
       info: 0,
+      advisories: [],
       note: `audit supports npm and pnpm (ran with ${pm})`,
     }
   }
@@ -574,7 +577,149 @@ export const parseAudit = (pm: string, exec: Pick<Exec, 'code' | 'stdout' | 'tim
   const low = count('low')
   const info = count('info')
   const status: Status = critical > 0 || high > 0 ? 'fail' : moderate > 0 ? 'warn' : 'pass'
-  return { status, available: true, critical, high, moderate, low, info }
+  const { advisories, truncated } = collectAdvisories(pm, parsed)
+  return {
+    status,
+    available: true,
+    critical,
+    high,
+    moderate,
+    low,
+    info,
+    advisories,
+    ...(truncated ? { advisoriesTruncated: true } : {}),
+  }
+}
+
+const SEVERITY_RANK: Record<AdvisorySeverity, number> = { critical: 0, high: 1, moderate: 2, low: 3, info: 4 }
+/** Enough to act on; a template with more than this has a shared root cause, not 26 distinct fixes. */
+const MAX_ADVISORIES = 25
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  value !== null && typeof value === 'object' && !Array.isArray(value)
+
+const asSeverity = (value: unknown): AdvisorySeverity | null =>
+  typeof value === 'string' && value in SEVERITY_RANK ? (value as AdvisorySeverity) : null
+
+const toAdvisory = (
+  name: string,
+  severity: AdvisorySeverity,
+  direct: boolean,
+  fixAvailable: boolean,
+  via?: string,
+): Advisory =>
+  via && !direct ? { name, severity, direct, fixAvailable, via } : { name, severity, direct, fixAvailable }
+
+/**
+ * Per-package advisories from whichever shape the audit produced: npm 7+ keys
+ * `vulnerabilities` by package, pnpm (npm 6 style) keys `advisories` by id. The counts
+ * above come from `metadata` regardless; a missing or malformed list only means the names
+ * are unknown, never that the audit failed. Worst severity first, then by name, capped.
+ */
+const collectAdvisories = (
+  pm: string,
+  parsed: Record<string, unknown>,
+): { advisories: Advisory[]; truncated: boolean } => {
+  const all = isRecord(parsed.vulnerabilities)
+    ? npmAdvisories(parsed.vulnerabilities)
+    : isRecord(parsed.advisories)
+      ? pnpmAdvisories(parsed.advisories, pm === 'pnpm')
+      : []
+  all.sort(
+    (left, right) =>
+      SEVERITY_RANK[left.severity] - SEVERITY_RANK[right.severity] || left.name.localeCompare(right.name),
+  )
+  return { advisories: all.slice(0, MAX_ADVISORIES), truncated: all.length > MAX_ADVISORIES }
+}
+
+/**
+ * npm 7+: `via` mixes advisory objects (the package's own findings, carrying `url`/`title`)
+ * with the names of vulnerable packages it CONSUMES; `effects` names what depends on it.
+ * So the parent that pulls a transitive package in is the first name in `effects` (with
+ * app -> middle -> leaf, `middle` has via ['leaf'] and effects ['app']); a `via` string
+ * points the other way and is never used as the parent.
+ */
+const npmAdvisories = (vulnerabilities: Record<string, unknown>): Advisory[] => {
+  const out: Advisory[] = []
+  for (const [key, entry] of Object.entries(vulnerabilities)) {
+    if (!isRecord(entry)) continue
+    const severity = asSeverity(entry.severity)
+    if (!severity) continue
+    const name = typeof entry.name === 'string' && entry.name ? entry.name : key
+    const direct = entry.isDirect === true
+    const fixAvailable = entry.fixAvailable === true || isRecord(entry.fixAvailable)
+    const via = direct ? undefined : firstPackageName(entry.effects)
+    out.push(toAdvisory(name, severity, direct, fixAvailable, via))
+  }
+  return out
+}
+
+const firstPackageName = (list: unknown): string | undefined => {
+  if (!Array.isArray(list)) return undefined
+  for (const item of list) {
+    if (typeof item === 'string' && item) return item
+    if (isRecord(item) && typeof item.name === 'string' && item.name && !('url' in item) && !('source' in item))
+      return item.name
+  }
+  return undefined
+}
+
+/**
+ * The dependency chain of a finding path. pnpm prefixes every path with the workspace
+ * importer (`.` for the root, `packages__app` or `app` for a workspace package), which
+ * nothing distinguishes from a package name, so for pnpm the first segment is always
+ * dropped: `.>lodash` reads as [lodash], `app>mkdirp>minimist` as [mkdirp, minimist].
+ * npm 6 paths carry no importer: `lodash` and `mkdirp>minimist` are used as they are.
+ */
+const dependencyChain = (path: string, importerPrefixed: boolean): string[] => {
+  const chain = path
+    .split('>')
+    .map((segment) => segment.trim())
+    .filter(Boolean)
+  return importerPrefixed ? chain.slice(1) : chain
+}
+
+/**
+ * pnpm / npm 6: one entry per advisory id, so a package with two advisories is folded into
+ * one line (worst severity, fixable only when every advisory has a patched version).
+ * `findings[].paths` are `parent>child>...` chains (see `dependencyChain`); a chain of one
+ * (or none, when a pnpm path is just the importer) means a direct dependency, otherwise its
+ * first package is what pulls it in.
+ */
+const pnpmAdvisories = (advisories: Record<string, unknown>, importerPrefixed: boolean): Advisory[] => {
+  const byName = new Map<string, Advisory>()
+  for (const entry of Object.values(advisories)) {
+    if (!isRecord(entry)) continue
+    const severity = asSeverity(entry.severity)
+    const name = typeof entry.module_name === 'string' ? entry.module_name : ''
+    if (!severity || !name) continue
+    const chains = Array.isArray(entry.findings)
+      ? entry.findings.flatMap((finding: unknown) =>
+          isRecord(finding) && Array.isArray(finding.paths)
+            ? finding.paths
+                .filter((path: unknown): path is string => typeof path === 'string')
+                .map((path) => dependencyChain(path, importerPrefixed))
+            : [],
+        )
+      : []
+    const direct = chains.some((chain) => chain.length <= 1 || chain[0] === name)
+    const fixAvailable = typeof entry.patched_versions === 'string' && entry.patched_versions !== '<0.0.0'
+    const via = direct ? undefined : chains.find((chain) => chain.length > 1)?.[0]
+    const previous = byName.get(name)
+    byName.set(
+      name,
+      previous
+        ? toAdvisory(
+            name,
+            SEVERITY_RANK[severity] < SEVERITY_RANK[previous.severity] ? severity : previous.severity,
+            previous.direct || direct,
+            previous.fixAvailable && fixAvailable,
+            previous.via ?? via,
+          )
+        : toAdvisory(name, severity, direct, fixAvailable, via),
+    )
+  }
+  return [...byName.values()]
 }
 
 // ---------- dimension 5: doc / reality drift ----------
@@ -1007,5 +1152,6 @@ const skipAudit = (note: string): AuditResult => ({
   moderate: 0,
   low: 0,
   info: 0,
+  advisories: [],
   note,
 })

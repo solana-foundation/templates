@@ -253,3 +253,156 @@ test('unrecognized entries get their own section and status-line count, absent w
   // the section comes after Skipped territory, before the footer
   assert.ok(md.indexOf('## ❓ Unrecognized') < md.indexOf('\n---\n'))
 })
+
+test('markdown names the vulnerable packages, direct ones with fix status, transitive ones with their parent', () => {
+  const base = {
+    group: 'kit',
+    kind: 'next',
+    needsSecrets: false,
+    packageManager: 'npm',
+    build: {
+      status: 'pass',
+      phase: 'ci',
+      command: 'npm run ci',
+      exitCode: 0,
+      timedOut: false,
+      durationMs: 1,
+      tail: '',
+    },
+    deps: { status: 'pass', available: true, total: 0, major: 0, minor: 0, patch: 0, outdated: [] },
+    deprecation: { status: 'pass', packages: [] },
+    docDrift: { status: 'pass', missingScripts: [] },
+  }
+  const advisories = [
+    { name: 'next', severity: 'critical', direct: true, fixAvailable: true },
+    { name: 'puppeteer', severity: 'high', direct: true, fixAvailable: false },
+    { name: 'tar-fs', severity: 'high', direct: false, fixAvailable: false, via: 'puppeteer' },
+    { name: 'esbuild', severity: 'moderate', direct: false, fixAvailable: true },
+  ]
+  const warning = {
+    ...base,
+    id: 'kit/nextjs-warn',
+    status: 'warn',
+    audit: { status: 'warn', available: true, critical: 0, high: 0, moderate: 4, low: 0, info: 0, advisories },
+  } as unknown as TemplateReport
+  const failing = {
+    ...base,
+    id: 'kit/nextjs',
+    status: 'fail',
+    build: { ...base.build, status: 'fail', exitCode: 1, tail: 'boom' },
+    audit: { status: 'fail', available: true, critical: 1, high: 2, moderate: 1, low: 0, info: 0, advisories },
+  } as unknown as TemplateReport
+  const md = toMarkdown({
+    schemaVersion: 1,
+    generatedAt: '2026-10-10T00:00:00.000Z',
+    packageManager: 'npm',
+    options: { build: true, boot: false, source: 'local' },
+    summary: { total: 2, pass: 0, warn: 1, fail: 1, skip: 0 },
+    templates: [failing, warning],
+  })
+  // the status line is unchanged; the names follow it on their own lines
+  assert.match(md, /- build ✅ · deps ✅\(0M\/0m\/0p\) · vuln ⚠️\(0C\/0H\/4M\)\n- \*\*Direct:\*\*/)
+  assert.match(
+    md,
+    /\*\*Vulnerabilities:\*\* 1 critical, 2 high\n- \*\*Direct:\*\* `next` \(critical, fix available\), `puppeteer` \(high, no fix yet\)\n/,
+  )
+  assert.match(md, /- \*\*Transitive:\*\* `tar-fs` via `puppeteer` \(high\), `esbuild` \(moderate\)\n/)
+  const sections = md.split('\n## ')
+  for (const heading of ['❌ Failures', '⚠️ Warnings']) {
+    const section = sections.find((part) => part.startsWith(heading))
+    assert.ok(section, `section ${heading} present`)
+    assert.match(section, /`next` \(critical, fix available\)/)
+    assert.match(section, /`tar-fs` via `puppeteer` \(high\)/)
+  }
+  assert.doesNotMatch(md, /\+\d+ more/)
+  assert.doesNotMatch(md, /capped at/)
+})
+
+test('markdown shows +N more past the per-section cap and notes a truncated advisory list', () => {
+  const advisories = Array.from({ length: 25 }, (_, index) => ({
+    name: `pkg-${String(index).padStart(2, '0')}`,
+    severity: 'high',
+    direct: index < 10,
+    fixAvailable: true,
+    via: index < 10 ? undefined : 'parent',
+  }))
+  const template = {
+    id: 'kit/many',
+    group: 'kit',
+    kind: 'vite',
+    status: 'warn',
+    needsSecrets: false,
+    packageManager: 'pnpm',
+    build: {
+      status: 'pass',
+      phase: 'ci',
+      command: 'pnpm run ci',
+      exitCode: 0,
+      timedOut: false,
+      durationMs: 1,
+      tail: '',
+    },
+    deps: { status: 'pass', available: true, total: 0, major: 0, minor: 0, patch: 0, outdated: [] },
+    audit: {
+      status: 'warn',
+      available: true,
+      critical: 0,
+      high: 30,
+      moderate: 0,
+      low: 0,
+      info: 0,
+      advisories,
+      advisoriesTruncated: true,
+    },
+    deprecation: { status: 'pass', packages: [] },
+    docDrift: { status: 'pass', missingScripts: [] },
+  } as unknown as TemplateReport
+  const md = toMarkdown({
+    schemaVersion: 1,
+    generatedAt: '2026-10-10T00:00:00.000Z',
+    packageManager: 'pnpm',
+    options: { build: true, boot: false, source: 'local' },
+    summary: { total: 1, pass: 0, warn: 1, fail: 0, skip: 0 },
+    templates: [template],
+  })
+  assert.match(md, /`pkg-07` \(high, fix available\), \+2 more\n/)
+  assert.match(md, /`pkg-13` via `parent` \(high\), \+11 more\n/)
+  assert.match(md, /advisory list capped at 25; run `pnpm audit` for the full set/)
+})
+
+test('markdown with an empty advisory list (or a report predating the field) renders exactly as before', () => {
+  const base = {
+    group: 'kit',
+    kind: 'next',
+    status: 'fail',
+    needsSecrets: false,
+    packageManager: 'npm',
+    build: {
+      status: 'fail',
+      phase: 'ci',
+      command: 'npm run ci',
+      exitCode: 1,
+      timedOut: false,
+      durationMs: 1,
+      tail: 'boom',
+    },
+    deps: { status: 'pass', available: true, total: 0, major: 0, minor: 0, patch: 0, outdated: [] },
+    deprecation: { status: 'pass', packages: [] },
+    docDrift: { status: 'pass', missingScripts: [] },
+  }
+  const counts = { status: 'fail', available: true, critical: 1, high: 1, moderate: 0, low: 0, info: 0 }
+  const render = (audit: unknown): string =>
+    toMarkdown({
+      schemaVersion: 1,
+      generatedAt: '2026-10-10T00:00:00.000Z',
+      packageManager: 'npm',
+      options: { build: true, boot: false, source: 'local' },
+      summary: { total: 1, pass: 0, warn: 0, fail: 1, skip: 0 },
+      templates: [{ ...base, id: 'kit/nextjs', audit } as unknown as TemplateReport],
+    })
+  const withEmpty = render({ ...counts, advisories: [] })
+  const legacy = render(counts)
+  assert.equal(withEmpty, legacy)
+  assert.match(withEmpty, /\*\*Vulnerabilities:\*\* 1 critical, 1 high\n- \*\*Output:\*\*/)
+  assert.doesNotMatch(withEmpty, /\*\*Direct:\*\*|\*\*Transitive:\*\*|capped at/)
+})

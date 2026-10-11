@@ -45,6 +45,47 @@ export const unavailableChecks = (template: TemplateReport): string[] => {
   return out
 }
 
+const MAX_DIRECT_ADVISORIES = 8
+const MAX_TRANSITIVE_ADVISORIES = 4
+
+/**
+ * Name the vulnerable packages so a severity count becomes a fix: direct dependencies first
+ * (bumpable in the template itself), then what pulls the transitive ones in. Nothing is
+ * rendered for reports written before `audit.advisories` existed or when the list is empty.
+ */
+const advisoryLines = (template: TemplateReport): string[] => {
+  const advisories = template.audit.advisories ?? []
+  if (!advisories.length) return []
+  const direct = advisories.filter((advisory) => advisory.direct)
+  const transitive = advisories.filter((advisory) => !advisory.direct)
+  const more = (hidden: number): string => (hidden > 0 ? `, +${hidden} more` : '')
+  const out: string[] = []
+  if (direct.length)
+    out.push(
+      `- **Direct:** ${direct
+        .slice(0, MAX_DIRECT_ADVISORIES)
+        .map(
+          (advisory) =>
+            `\`${advisory.name}\` (${advisory.severity}, ${advisory.fixAvailable ? 'fix available' : 'no fix yet'})`,
+        )
+        .join(', ')}${more(direct.length - MAX_DIRECT_ADVISORIES)}`,
+    )
+  if (transitive.length)
+    out.push(
+      `- **Transitive:** ${transitive
+        .slice(0, MAX_TRANSITIVE_ADVISORIES)
+        .map(
+          (advisory) => `\`${advisory.name}\`${advisory.via ? ` via \`${advisory.via}\`` : ''} (${advisory.severity})`,
+        )
+        .join(', ')}${more(transitive.length - MAX_TRANSITIVE_ADVISORIES)}`,
+    )
+  if (template.audit.advisoriesTruncated)
+    out.push(
+      `- _advisory list capped at ${advisories.length}; run \`${template.packageManager} audit\` for the full set_`,
+    )
+  return out
+}
+
 const incompleteLine = (template: TemplateReport): string | null => {
   const missing = unavailableChecks(template)
   return missing.length ? `⏭️ incomplete: ${missing.join(' · ')}` : null
@@ -84,6 +125,7 @@ export const toMarkdown = (report: HealthReport): string => {
         `### ${template.id}${template.flaky ? ' ⚡ (flaky — failed under load, passed on isolated retry)' : ''}`,
       )
       lines.push(`- ${statusLine(template)}`)
+      lines.push(...advisoryLines(template))
       if (template.deps.major > 0)
         lines.push(
           `- ${template.deps.major} major version(s) behind: ${template.deps.outdated
@@ -187,6 +229,7 @@ const failureBlock = (template: TemplateReport, options: HealthReport['options']
   out.push(`- **Command:** \`${failed.command}\``)
   if (template.audit.critical + template.audit.high > 0)
     out.push(`- **Vulnerabilities:** ${template.audit.critical} critical, ${template.audit.high} high`)
+  out.push(...advisoryLines(template))
   out.push('- **Output:**')
   out.push('```')
   out.push(failed.tail.slice(0, 2500))
