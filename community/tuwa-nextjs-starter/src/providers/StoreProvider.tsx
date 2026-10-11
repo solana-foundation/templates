@@ -12,12 +12,15 @@ import { getSolanatestProgramAccounts } from '@/programs';
 
 // The counter accounts of the demo Solana program on devnet, shown by the Solana block
 export function StoreProvider({ children }: PropsWithChildren) {
-  const [store] = useState(() =>
-    createStore<Store>()((set, get) => ({
+  const [store] = useState(() => {
+    // Only the latest fetch may update the list: a slower, older response never overwrites a newer one
+    let latestRequest = 0;
+    return createStore<Store>()((set, get) => ({
       accounts: {},
       accountsLoading: true,
       accountsError: null,
       getAccounts: async () => {
+        const request = ++latestRequest;
         // A retry after a failed fetch shows the spinner again
         if (get().accountsError) set({ accountsLoading: true, accountsError: null });
         try {
@@ -25,6 +28,7 @@ export function StoreProvider({ children }: PropsWithChildren) {
             createSolanaRPC({ rpcUrlOrMoniker: 'devnet', rpcUrls: solanaRPCUrls }),
             PROGRAM_ID,
           );
+          if (request !== latestRequest) return;
           // The response is the full list: counters closed elsewhere disappear as well
           set({
             accounts: Object.fromEntries(counters.map((counter) => [counter.address, counter.data.count])),
@@ -32,6 +36,7 @@ export function StoreProvider({ children }: PropsWithChildren) {
             accountsError: null,
           });
         } catch (error) {
+          if (request !== latestRequest) return;
           set({ accountsLoading: false, accountsError: error instanceof Error ? error.message : String(error) });
         }
       },
@@ -42,8 +47,8 @@ export function StoreProvider({ children }: PropsWithChildren) {
           }),
         );
       },
-    })),
-  );
+    }));
+  });
 
   return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>;
 }
