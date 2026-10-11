@@ -15,6 +15,8 @@ This file gives AI coding agents the minimum context needed to work safely in th
 - `pnpm generate` regenerates template metadata and docs.
 - `pnpm lint` validates template structure, metadata, Open Graph images, and formatting.
 - `pnpm format` formats repo files.
+- `pnpm health` runs the templates health check (install + build + deps/audit/deprecation/doc-drift). See `docs/agents/health-check.md`.
+- `pnpm health:test` runs the health check's own unit tests.
 
 ## Editing Rules
 
@@ -34,3 +36,5 @@ This file gives AI coding agents the minimum context needed to work safely in th
 - `docs/agents/testing-and-ci.md`
 - `docs/agents/review-checklist.md`
 - `docs/agents/known-gotchas.md`
+- `docs/agents/health-check.md`
+- `docs/agents/ui-testing-plan.md`

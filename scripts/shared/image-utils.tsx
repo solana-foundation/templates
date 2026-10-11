@@ -119,12 +119,14 @@ export const generateOgImage = async (
     if (!screenshotResult.ok) {
       return err(`Failed to capture screenshot: ${screenshotResult.error}`)
     }
-    // Return the screenshot buffer directly as ArrayBuffer
+    // Return the screenshot buffer directly as ArrayBuffer. The slice of a Buffer's
+    // backing store is typed ArrayBufferLike, but Buffers puppeteer returns are never
+    // SharedArrayBuffer-backed, so the assertion is safe.
     return ok(
       screenshotResult.value.buffer.slice(
         screenshotResult.value.byteOffset,
         screenshotResult.value.byteOffset + screenshotResult.value.byteLength,
-      ),
+      ) as ArrayBuffer,
     )
   }
 
