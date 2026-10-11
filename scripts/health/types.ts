@@ -78,6 +78,24 @@ export type DepsResult = {
   readonly note?: string
 }
 
+export type AdvisorySeverity = 'critical' | 'high' | 'moderate' | 'low' | 'info'
+
+/**
+ * One vulnerable package from the audit. Counts alone ("3 critical") can't be acted on;
+ * this says which package, whether the template depends on it directly, and whether a
+ * patched version exists.
+ */
+export type Advisory = {
+  readonly name: string
+  readonly severity: AdvisorySeverity
+  /** true when the template's own package.json depends on it (bump it here, not upstream) */
+  readonly direct: boolean
+  /** a patched version exists (npm `fixAvailable`, pnpm `patched_versions`) */
+  readonly fixAvailable: boolean
+  /** for transitive packages: the dependency that pulls it in, when the audit says */
+  readonly via?: string
+}
+
 export type AuditResult = {
   readonly status: Status
   readonly available: boolean
@@ -86,6 +104,13 @@ export type AuditResult = {
   readonly moderate: number
   readonly low: number
   readonly info: number
+  /**
+   * worst severity first, then by name; capped (see `advisoriesTruncated`); empty when the
+   * audit did not run. Absent only in reports written before this field existed.
+   */
+  readonly advisories?: readonly Advisory[]
+  /** true when more advisories existed than the cap kept */
+  readonly advisoriesTruncated?: boolean
   readonly note?: string
 }
 

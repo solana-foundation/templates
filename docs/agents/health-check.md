@@ -41,9 +41,11 @@ The isolated copy never includes a template's private config: `.env`, `.env.loca
 | Rust compile          | `cargo check` (programs) / `cargo build` (host); `--cargo-test` adds tests | Yes (templates with a `Cargo.toml`)                           |
 | Runtime boot          | `--boot` starts the dev server, polls for an HTTP response                 | Yes (web templates only)                                      |
 | Dependency freshness  | `npm outdated`, bucketed into major / minor / patch                        | Advisory → caps at `warn`                                     |
-| Known vulnerabilities | `npm audit` severity counts                                                | Advisory → caps at `warn`                                     |
+| Known vulnerabilities | `npm audit` severity counts, plus the affected packages by name            | Advisory → caps at `warn`                                     |
 | Deprecation           | registry "deprecated" warnings for **direct** deps only                    | Advisory → caps at `warn`                                     |
 | Doc / reality drift   | scripts referenced in README / csd-instructions that don't exist           | Advisory → caps at `warn`                                     |
+
+For known vulnerabilities the report also names the affected packages (worst severity first, capped at 25), says whether each is a direct dependency of the template or what pulls it in, and whether a patched version is available, so a count like "3 critical" comes with something to act on.
 
 **`fail` means broken** (doesn't build, compile, or boot). **`warn` means works but needs attention** (outdated, vulnerable, deprecated, drifted). This is deliberate: a template with a transitive advisory still works, and flagging it `fail` would just duplicate dependabot.
 
