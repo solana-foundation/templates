@@ -1153,6 +1153,8 @@ importers:
         specifier: ^5
         version: 5.9.3
 
+  community/xark-solana-starter: {}
+
   community/zk-compression-airdrop:
     dependencies:
       '@lightprotocol/compressed-token':

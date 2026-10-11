@@ -370,6 +370,14 @@ Templates maintained by the Solana community
 
 `solana` `nextjs` `x402` `template` `starter`
 
+### [xark-solana-starter](community/xark-solana-starter)
+
+`gh:solana-foundation/templates/community/xark-solana-starter`
+
+> Zero-knowledge proofs in Rust: an xark circuit verified by Anchor and Pinocchio programs
+
+`solana` `zk` `zero-knowledge` `groth16` `privacy` `xark` `anchor` `pinocchio` `rust` `litesvm`
+
 ### [zk-compression-airdrop](community/zk-compression-airdrop)
 
 `gh:solana-foundation/templates/community/zk-compression-airdrop`
