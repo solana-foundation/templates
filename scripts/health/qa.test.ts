@@ -619,3 +619,10 @@ test('a shortened form never claims a message that names an undeclared identifie
   }
   assert.equal(missingConfigCause(plain, [key], [key])?.key, key)
 })
+
+test('the prefix-free form of a declared key written as an identifier is not foreign', () => {
+  const declared = ['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY']
+  const qa = { pageErrors: ['SUPABASE_URL is required'], consoleErrors: [], failedRequests: [], blank: false }
+  assert.equal(missingConfigCause(qa, ['NEXT_PUBLIC_SUPABASE_URL'], declared)?.key, 'NEXT_PUBLIC_SUPABASE_URL')
+  assert.equal(missingConfigCause(qa, ['NEXT_PUBLIC_SUPABASE_ANON_KEY'], declared), null, 'names the other key')
+})

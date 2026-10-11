@@ -183,7 +183,11 @@ const mentionsExactKey = (message: string, key: string): boolean => {
 const SNAKE_IDENTIFIER = /(?<![A-Za-z0-9_])[A-Za-z][A-Za-z0-9]*(?:_[A-Za-z0-9]+)+(?![A-Za-z0-9_])/g
 
 const namesForeignIdentifier = (message: string, declaredKeys: readonly string[]): boolean => {
-  const declared = new Set(declaredKeys.map((key) => key.toUpperCase()))
+  // A declared key is known in full and in its prefix-free form (SUPABASE_URL for
+  // NEXT_PUBLIC_SUPABASE_URL); anything else written as an identifier is foreign.
+  const declared = new Set(
+    declaredKeys.flatMap((key) => [key.toUpperCase(), key.replace(PUBLIC_PREFIX, '').toUpperCase()]),
+  )
   return Array.from(message.matchAll(SNAKE_IDENTIFIER)).some((match) => !declared.has(match[0].toUpperCase()))
 }
 
