@@ -354,6 +354,14 @@ Templates maintained by the Solana community
 
 `solana` `supabase` `indexing` `realtime` `nextjs` `typescript`
 
+### [tuwa-nextjs-starter](community/tuwa-nextjs-starter)
+
+`gh:solana-foundation/templates/community/tuwa-nextjs-starter`
+
+> Wallet connect, wallet sign-in and transactions tracked to finalized, built on TUWA
+
+`solana` `kit` `nextjs` `react` `tailwind` `wallet-standard` `sign-in` `caip-122` `siwx` `transaction-tracking` `tuwa`
+
 ### [x402-solana-rust](community/x402-solana-rust)
 
 `gh:solana-foundation/templates/community/x402-solana-rust`

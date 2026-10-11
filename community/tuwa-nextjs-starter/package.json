@@ -1,0 +1,78 @@
+{
+  "name": "tuwa-nextjs-starter",
+  "displayName": "TUWA Starter (Next.js)",
+  "description": "Wallet connect, wallet sign-in and transactions tracked to finalized, built on TUWA",
+  "usecase": "Starter",
+  "keywords": [
+    "solana",
+    "kit",
+    "nextjs",
+    "react",
+    "tailwind",
+    "wallet-standard",
+    "sign-in",
+    "caip-122",
+    "siwx",
+    "transaction-tracking",
+    "tuwa"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Start the app:",
+      "+{pm} run dev",
+      "Open http://localhost:3000 with a Solana wallet set to devnet.",
+      "Before building or deploying, set SIWX_DEMO_SIGNING_SECRET and NEXT_PUBLIC_APP_URL (see .env.example)."
+    ]
+  },
+  "version": "1.0.0",
+  "private": true,
+  "author": "Oleksandr Tkach",
+  "license": "MIT-0",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "start": "next start",
+    "generate:solana": "codama run js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@solana/kit": "^8.4.0",
+    "@solana/webcrypto-ed25519-polyfill": "^8.4.0",
+    "@tuwaio/sdk": "^0.5.0",
+    "@tuwaio/solana-sdk": "^0.5.0",
+    "@wallet-standard/app": "^1.1.1",
+    "@wallet-standard/base": "^1.1.1",
+    "@wallet-standard/features": "^1.1.1",
+    "@wallet-standard/react": "^1.0.3",
+    "@wallet-standard/ui": "^1.0.3",
+    "@wallet-standard/ui-registry": "^1.1.1",
+    "framer-motion": "14.0.0",
+    "immer": "^11.1.21",
+    "next": "16.3.8",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@codama/cli": "^1.6.3",
+    "@codama/nodes-from-anchor": "^1.5.6",
+    "@codama/renderers-js": "^2.5.0",
+    "@eslint/js": "^10.0.1",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "^10.12.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.6",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-simple-import-sort": "^14.0.0",
+    "globals": "^17.13.0",
+    "postcss": "^8.5.29",
+    "prettier": "^3.9.9",
+    "tailwindcss": "^4.3.3",
+    "typescript": "6.0.3",
+    "typescript-eslint": "^8.71.1"
+  }
+}
