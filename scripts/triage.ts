@@ -21,7 +21,7 @@ import { dirname, join, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { enumerateTemplates } from './health/enumerate.js'
 import { writeFile, writeJsonFile } from './shared/fs-utils.js'
-import { classifyReport, statusOf } from './triage/classify.js'
+import { classifyReport, reproOptionsOf, statusOf } from './triage/classify.js'
 import { classifyIssue, fetchIssue, fetchOpenIssues } from './triage/issue.js'
 import { latestReportPath, loadHealthReport, regressionIds } from './triage/load.js'
 import { applyPatch, patchFileStem, proposePatch, type PatchTarget } from './triage/patcher.js'
@@ -163,7 +163,7 @@ const main = (): number => {
 
   let templates = loaded.value.templates as readonly TriagedTemplateReport[]
   if (cli.only) templates = templates.filter((template) => cli.only!.includes(template.id))
-  const findings = classifyReport(templates, regressionIds(loaded.value, baseline))
+  const findings = classifyReport(templates, regressionIds(loaded.value, baseline), reproOptionsOf(loaded.value))
 
   const triage: TriageReport = {
     schemaVersion: 1,

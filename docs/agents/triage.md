@@ -40,18 +40,18 @@ Output lands in `triage-reports/` (gitignored). The JSON is the source of truth;
 
 ### What a finding contains
 
-| Field               | Meaning                                                                                  |
-| ------------------- | ---------------------------------------------------------------------------------------- |
-| `templateId`        | group-relative id, e.g. `kit/nextjs`                                                     |
-| `class`             | one of the classes below                                                                 |
-| `severity`          | `fail` = functionally broken, `warn` = works but needs attention                         |
-| `confidence`        | `high`, `medium`, `low`: how sure the rule is, a single regex hit is not proof           |
-| `evidence`          | the matched output lines, at most five                                                   |
-| `reproduce`         | `pnpm health --only <id>` plus the failing phase command from the report                 |
-| `recommendedAction` | one sentence                                                                             |
-| `autoPatchable`     | true when `scripts/triage/patcher.ts` has a recipe for the class                         |
-| `regression`        | true when the template passed or warned in the `--baseline` report and fails now         |
-| `dedupeKey`         | `<id>#<class>#<hash>`; stable across runs so the same break is recognisable in a tracker |
+| Field               | Meaning                                                                                                                                                                                    |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `templateId`        | group-relative id, e.g. `kit/nextjs`                                                                                                                                                       |
+| `class`             | one of the classes below                                                                                                                                                                   |
+| `severity`          | `fail` = functionally broken, `warn` = works but needs attention                                                                                                                           |
+| `confidence`        | `high`, `medium`, `low`: how sure the rule is, a single regex hit is not proof                                                                                                             |
+| `evidence`          | the matched output lines, at most five                                                                                                                                                     |
+| `reproduce`         | `pnpm health --only <id>` with the flags the phase needs (`--boot`, `--cargo-test`, `--pm` from the report options), plus the failing phase command when the report records a runnable one |
+| `recommendedAction` | one sentence                                                                                                                                                                               |
+| `autoPatchable`     | true when `scripts/triage/patcher.ts` has a recipe for the class                                                                                                                           |
+| `regression`        | true when the template passed or warned in the `--baseline` report and fails now                                                                                                           |
+| `dedupeKey`         | `<id>#<class>#<hash>`; stable across runs so the same break is recognisable in a tracker                                                                                                   |
 
 A template gets one primary finding for its functional failure (build, rust, boot, qa) plus zero or more advisory findings from the structured fields. A template that passed gets nothing.
 
@@ -80,7 +80,7 @@ A template gets one primary finding for its functional failure (build, rust, boo
 
 Rules are ordered from most specific to least. Credential and infra signals win over generic ones: a tail that contains both `ENOTEMPTY` and `error TS2307` is classified as `temp-dir-or-process`, because the infra noise has to be ruled out first.
 
-Most templates in this repo do not track their own lockfile (only the root `pnpm-lock.yaml` is committed), so the lockfile and audit recipes will usually report "manual" with the reason. They are there for the templates that do carry one.
+Most templates in this repo do not track their own lockfile (only the root `pnpm-lock.yaml` is committed), so the lockfile and audit recipes will usually report "manual" with the reason. They check `git ls-files`, not just the disk: a gitignored lockfile left behind by a local install is never patched. They are there for the templates that do carry one.
 
 ---
 

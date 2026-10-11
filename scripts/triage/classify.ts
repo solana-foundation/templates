@@ -51,7 +51,7 @@ export const RULES: readonly Rule[] = [
       /\b(ENOTEMPTY|EADDRINUSE|EBUSY|EMFILE|ENFILE|ENOSPC|ENOMEM|EPERM|EACCES)\b/,
       /JavaScript heap out of memory/i,
       /\bSIGKILL\b|\bKilled\b/,
-      /^TIMED OUT after \d+s/m,
+      /^TIMED OUT( after \d+s)?$/m,
       /address already in use/i,
     ],
     action: 'Re-run the template alone (pnpm health --only <id>) before treating this as a template bug.',
@@ -186,23 +186,82 @@ type FailingPhase = {
   readonly what: 'rust' | 'boot' | 'qa' | 'build'
   readonly command: string
   readonly tail: string
+  /** structured timeout flag from the health check; beats any text match */
+  readonly timedOut: boolean
+}
+
+/**
+ * Run options the health check recorded. `boot` and `cargoTest` and `pm` are being added
+ * to HealthReport.options on the health-check branch; read them when present and fall
+ * back to what the finding class implies otherwise.
+ */
+export type ReproOptions = {
+  readonly boot?: boolean
+  readonly cargoTest?: boolean
+  readonly pm?: string | null
+}
+
+/** `pnpm health --only <id>` plus the flags needed to reach the failing phase again. */
+const healthCommand = (template: TriagedTemplateReport, phase: FailingPhase | null, options: ReproOptions): string => {
+  const flags = [`--only ${template.id}`]
+  const boot = options.boot ?? (phase?.what === 'boot' || phase?.what === 'qa')
+  if (boot) flags.push('--boot')
+  const cargoTest = options.cargoTest ?? Boolean(phase?.what === 'rust' && template.rust?.tested)
+  if (cargoTest) flags.push('--cargo-test')
+  if (typeof options.pm === 'string' && options.pm.length > 0) flags.push(`--pm ${options.pm}`)
+  return `pnpm health ${flags.join(' ')}`
+}
+
+/**
+ * The health check labels Rust results with human text ("cargo check (program)",
+ * "cargo check && cargo-build-sbf && cargo test"). Map that back to the single cargo
+ * command that failed. The manifest dir is only known when the report records it.
+ */
+const rustManualCommand = (template: TriagedTemplateReport): string | null => {
+  const rust = template.rust as (TriagedTemplateReport['rust'] & { manifestDir?: string }) | undefined
+  if (!rust?.manifestDir) return null
+  const label = rust.command
+  const verb = label.includes('cargo test')
+    ? 'cargo test'
+    : label.includes('cargo-build-sbf')
+      ? 'cargo-build-sbf'
+      : label.startsWith('cargo build')
+        ? 'cargo build'
+        : 'cargo check'
+  const dir = rust.manifestDir === '.' ? template.id : `${template.id}/${rust.manifestDir}`
+  return `cd ${dir} && ${verb}`
 }
 
 /** Mirror of report.ts failureBlock: rust beats boot beats build, so the repro points at the real break. */
 const failingPhase = (template: TriagedTemplateReport): FailingPhase | null => {
   if (template.rust?.status === 'fail')
-    return { what: 'rust', command: template.rust.command, tail: template.rust.tail }
+    return {
+      what: 'rust',
+      command: rustManualCommand(template) ?? '',
+      tail: template.rust.tail,
+      timedOut: template.rust.timedOut,
+    }
   if (template.boot?.status === 'fail')
-    return { what: 'boot', command: `${template.packageManager} run dev`, tail: template.boot.note ?? '' }
-  if (template.qa?.status === 'fail') return { what: 'qa', command: 'pnpm health --boot', tail: template.qa.note ?? '' }
+    return {
+      what: 'boot',
+      command: `cd ${template.id} && ${template.packageManager} run dev`,
+      tail: template.boot.note ?? '',
+      timedOut: false,
+    }
+  if (template.qa?.status === 'fail') return { what: 'qa', command: '', tail: template.qa.note ?? '', timedOut: false }
   if (template.build.status === 'fail')
-    return { what: 'build', command: template.build.command, tail: template.build.tail }
+    return {
+      what: 'build',
+      command: template.build.command.startsWith('(') ? '' : `cd ${template.id} && ${template.build.command}`,
+      tail: template.build.tail,
+      timedOut: template.build.timedOut,
+    }
   return null
 }
 
-const reproFor = (template: TriagedTemplateReport, phaseCommand?: string): string => {
-  const parts = [`pnpm health --only ${template.id}`]
-  if (phaseCommand && !phaseCommand.startsWith('(')) parts.push(`cd ${template.id} && ${phaseCommand}`)
+const reproFor = (template: TriagedTemplateReport, phase: FailingPhase | null, options: ReproOptions): string => {
+  const parts = [healthCommand(template, phase, options)]
+  if (phase?.command) parts.push(phase.command)
   return parts.join('\n')
 }
 
@@ -229,7 +288,11 @@ const finding = (
 })
 
 /** The one finding that explains why a template is `fail` (or `skip` for credentials). */
-export const classifyPrimary = (template: TriagedTemplateReport, regression: boolean): Finding | null => {
+export const classifyPrimary = (
+  template: TriagedTemplateReport,
+  regression: boolean,
+  options: ReproOptions = {},
+): Finding | null => {
   // The health check turns a credential-caused build failure into `skip` while leaving the
   // build result as `fail`. Surface it as a warn so the human knows the template was not
   // verified, without calling it broken. Any other skip is "could not verify": no finding.
@@ -241,7 +304,7 @@ export const classifyPrimary = (template: TriagedTemplateReport, regression: boo
       'warn',
       'high',
       lastLines(template.build.tail),
-      reproFor(template, template.build.command),
+      reproFor(template, null, options),
       'Verify with a sandbox credential, or leave as "skipped: requires credentials"; not a code break.',
       false,
     )
@@ -250,7 +313,24 @@ export const classifyPrimary = (template: TriagedTemplateReport, regression: boo
   const phase = failingPhase(template)
   if (!phase) return null
 
-  const repro = reproFor(template, phase.command)
+  const repro = reproFor(template, phase, options)
+
+  // The structured flag is authoritative: a timed out cargo or npm run is infra noise to
+  // retry alone, whatever the output text says.
+  if (phase.timedOut) {
+    const timeoutRule = RULES.find((rule) => rule.class === 'temp-dir-or-process')!
+    const hits = matchLines(phase.tail, timeoutRule.patterns)
+    return finding(
+      template,
+      'temp-dir-or-process',
+      'fail',
+      'medium',
+      hits.length ? hits : [`timed out (${phase.what})`, ...lastLines(phase.tail, 4)],
+      repro,
+      timeoutRule.action,
+      regression,
+    )
+  }
 
   for (const rule of RULES) {
     const hits = matchLines(phase.tail, rule.patterns)
@@ -309,9 +389,9 @@ const auditCount = (template: TriagedTemplateReport): number =>
   template.audit.critical + template.audit.high + template.audit.moderate
 
 /** Advisory findings from the structured fields. These never carry `fail`. */
-export const classifyAdvisory = (template: TriagedTemplateReport): Finding[] => {
+export const classifyAdvisory = (template: TriagedTemplateReport, options: ReproOptions = {}): Finding[] => {
   const out: Finding[] = []
-  const repro = reproFor(template)
+  const repro = reproFor(template, null, options)
 
   if (template.deps.available && template.deps.major > 0) {
     const majors = template.deps.outdated.filter((dep) => dep.bump === 'major')
@@ -380,10 +460,14 @@ export const classifyAdvisory = (template: TriagedTemplateReport): Finding[] => 
   return out
 }
 
-export const classifyTemplate = (template: TriagedTemplateReport, regression: boolean): Finding[] => {
+export const classifyTemplate = (
+  template: TriagedTemplateReport,
+  regression: boolean,
+  options: ReproOptions = {},
+): Finding[] => {
   if (template.status === 'pass') return []
-  const primary = classifyPrimary(template, regression)
-  return [...(primary ? [primary] : []), ...classifyAdvisory(template)]
+  const primary = classifyPrimary(template, regression, options)
+  return [...(primary ? [primary] : []), ...classifyAdvisory(template, options)]
 }
 
 const severityRank: Record<Severity, number> = { fail: 0, warn: 1 }
@@ -400,7 +484,19 @@ export const sortFindings = (findings: readonly Finding[]): Finding[] =>
 export const classifyReport = (
   templates: readonly TriagedTemplateReport[],
   regressions: ReadonlySet<string>,
-): Finding[] => sortFindings(templates.flatMap((template) => classifyTemplate(template, regressions.has(template.id))))
+  options: ReproOptions = {},
+): Finding[] =>
+  sortFindings(templates.flatMap((template) => classifyTemplate(template, regressions.has(template.id), options)))
+
+/** Pull the repro-relevant run options out of a report; missing fields stay undefined. */
+export const reproOptionsOf = (report: { readonly options: object }): ReproOptions => {
+  const raw = report.options as { boot?: unknown; cargoTest?: unknown; pm?: unknown }
+  return {
+    boot: typeof raw.boot === 'boolean' ? raw.boot : undefined,
+    cargoTest: typeof raw.cargoTest === 'boolean' ? raw.cargoTest : undefined,
+    pm: typeof raw.pm === 'string' ? raw.pm : undefined,
+  }
+}
 
 /** For the issue classifier: a template's health status from the latest report. */
 export const statusOf = (templates: readonly TriagedTemplateReport[], id: string): Status | 'unknown' =>

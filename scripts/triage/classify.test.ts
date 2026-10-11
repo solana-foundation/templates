@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { HealthReport } from '../health/types.js'
-import { classifyReport, classifyTemplate, RULES } from './classify.js'
+import { classifyReport, classifyTemplate, reproOptionsOf, RULES } from './classify.js'
 import { regressionIds } from './load.js'
 import type { FindingClass, TriagedTemplateReport } from './types.js'
 import { FINDING_CLASSES } from './types.js'
@@ -73,7 +73,68 @@ test('evidence holds the matched lines, capped at five, and the repro names the 
   assert.match(finding.reproduce, /^pnpm health --only kit\/peer-demo\n/)
   assert.match(finding.reproduce, /cd kit\/peer-demo && npm install$/)
   const rust = primaryOf('kit/rust-demo')
-  assert.match(rust.reproduce, /cargo check --manifest-path program\/Cargo.toml/)
+  assert.equal(rust.reproduce, 'pnpm health --only kit/rust-demo\ncd kit/rust-demo/program && cargo check')
+})
+
+test('repro flags follow the failing phase: --boot for boot and qa, --cargo-test for rust test runs', () => {
+  assert.match(
+    primaryOf('kit/boot-demo').reproduce,
+    /^pnpm health --only kit\/boot-demo --boot\ncd kit\/boot-demo && npm run dev$/,
+  )
+  assert.equal(primaryOf('kit/qa-demo').reproduce, 'pnpm health --only kit/qa-demo --boot')
+  const rustBase = byId('kit/rust-demo')
+  const tested: TriagedTemplateReport = {
+    ...rustBase,
+    rust: { ...rustBase.rust!, tested: true, command: 'cargo check && cargo-build-sbf && cargo test' },
+  }
+  assert.equal(
+    classifyTemplate(tested, false)[0].reproduce,
+    'pnpm health --only kit/rust-demo --cargo-test\ncd kit/rust-demo/program && cargo test',
+  )
+  // a rust label is never pasted as a shell command when the manifest dir is unknown
+  const { manifestDir: _ignored, ...withoutDir } = rustBase.rust as typeof rustBase.rust & { manifestDir?: string }
+  assert.equal(
+    classifyTemplate({ ...rustBase, rust: withoutDir }, false)[0].reproduce,
+    'pnpm health --only kit/rust-demo',
+  )
+})
+
+test('report options override the class-derived flags and add --pm', () => {
+  const options = { boot: true, cargoTest: true, pm: 'pnpm' }
+  assert.equal(
+    classifyTemplate(byId('kit/ts-demo'), false, options)[0].reproduce,
+    'pnpm health --only kit/ts-demo --boot --cargo-test --pm pnpm\ncd kit/ts-demo && npm run ci',
+  )
+  assert.equal(
+    classifyTemplate(byId('kit/boot-demo'), false, { boot: false })[0].reproduce,
+    'pnpm health --only kit/boot-demo\ncd kit/boot-demo && npm run dev',
+  )
+  assert.deepEqual(reproOptionsOf(sample), { boot: true, cargoTest: undefined, pm: undefined })
+})
+
+test('a structured timeout is infra (retry), never rust-compile or unknown, in both text formats', () => {
+  const rustBase = byId('kit/rust-demo')
+  const rustTimeout: TriagedTemplateReport = {
+    ...rustBase,
+    rust: { ...rustBase.rust!, timedOut: true, tail: 'TIMED OUT\n   Compiling solana-program v2.1.0' },
+  }
+  const rustFinding = classifyTemplate(rustTimeout, false)[0]
+  assert.equal(rustFinding.class, 'temp-dir-or-process')
+  assert.deepEqual(rustFinding.evidence, ['TIMED OUT'])
+  const buildBase = byId('kit/unknown-demo')
+  const buildTimeout: TriagedTemplateReport = {
+    ...buildBase,
+    build: { ...buildBase.build, timedOut: true, tail: 'TIMED OUT after 720s\n> next build' },
+  }
+  assert.equal(classifyTemplate(buildTimeout, false)[0].class, 'temp-dir-or-process')
+  // flag set but no marker line in the tail: still infra, with a synthetic evidence line
+  const bare: TriagedTemplateReport = {
+    ...buildBase,
+    build: { ...buildBase.build, timedOut: true, tail: '> next build' },
+  }
+  const bareFinding = classifyTemplate(bare, false)[0]
+  assert.equal(bareFinding.class, 'temp-dir-or-process')
+  assert.equal(bareFinding.evidence[0], 'timed out (build)')
 })
 
 test('infra and credential rules beat generic ones even when a TS or module line is also present', () => {

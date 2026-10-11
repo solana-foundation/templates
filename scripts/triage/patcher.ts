@@ -183,6 +183,13 @@ export const patchDocDrift = (finding: Finding, target: PatchTarget): PatchPropo
 
 // ---------- recipe: lockfile-out-of-date ----------
 
+/**
+ * True only when git tracks the file. Per-template lockfiles are gitignored in this repo,
+ * so one left behind by a local install exists on disk but must never be patched.
+ */
+export const isTracked = (dir: string, file: string): boolean =>
+  spawnSync('git', ['ls-files', '--error-unmatch', '--', file], { cwd: dir, stdio: 'ignore' }).status === 0
+
 const LOCKFILES: Record<string, string> = {
   npm: 'package-lock.json',
   pnpm: 'pnpm-lock.yaml',
@@ -197,7 +204,7 @@ const lockfileOnlyArgs = (pm: string): string[] | null => {
 
 export const patchLockfile = (finding: Finding, target: PatchTarget, options: PatchOptions): PatchProposal => {
   const lockfile = LOCKFILES[target.packageManager]
-  if (!lockfile || !existsSync(join(target.dir, lockfile)))
+  if (!lockfile || !existsSync(join(target.dir, lockfile)) || !isTracked(target.dir, lockfile))
     return {
       patchable: false,
       finding,
@@ -268,7 +275,7 @@ export const patchVulnerableDeps = (finding: Finding, target: PatchTarget, optio
       finding,
       reason: `manual: ${target.packageManager} has no equivalent of npm audit fix (${counts})`,
     }
-  if (!existsSync(join(target.dir, 'package-lock.json')))
+  if (!existsSync(join(target.dir, 'package-lock.json')) || !isTracked(target.dir, 'package-lock.json'))
     return {
       patchable: false,
       finding,

@@ -7,6 +7,7 @@ import { join } from 'node:path'
 import {
   closestScript,
   editDistance,
+  isTracked,
   patchDocDrift,
   patchFileStem,
   proposePatch,
@@ -92,11 +93,33 @@ test('doc-drift recipe emits a TODO instead of a patch when nothing is close', (
   if (!proposal.patchable) assert.match(proposal.reason, /no close match for deploy/)
 })
 
-test('recipes that need a package manager refuse to run unless installs are allowed', () => {
+test('dependency recipes refuse an untracked (gitignored) lockfile left behind by a local install', () => {
   const { target } = fixtureRepo('x')
   writeFileSync(join(target.dir, 'package-lock.json'), '{}')
+  assert.equal(isTracked(target.dir, 'package-lock.json'), false)
   const lock = proposePatch(
-    { ...docDriftFinding([]), class: 'lockfile-out-of-date', evidence: ['ERR_PNPM_OUTDATED_LOCKFILE'] },
+    { ...docDriftFinding([]), class: 'lockfile-out-of-date', evidence: ['npm ci can only install packages when'] },
+    target,
+    { allowInstall: true, timeoutMs: 1000 },
+  )
+  assert.equal(lock.patchable, false)
+  if (!lock.patchable) assert.match(lock.reason, /no tracked package-lock\.json/)
+  const audit = proposePatch(
+    { ...docDriftFinding([]), class: 'vulnerable-deps', evidence: ['0 critical, 1 high, 0 moderate (npm audit)'] },
+    target,
+    { allowInstall: true, timeoutMs: 1000 },
+  )
+  assert.equal(audit.patchable, false)
+  if (!audit.patchable) assert.match(audit.reason, /manual: no tracked package-lock\.json/)
+})
+
+test('with a tracked lockfile the dependency recipes proceed, but still refuse to run installs in tests', () => {
+  const { root, target } = fixtureRepo('x')
+  writeFileSync(join(target.dir, 'package-lock.json'), '{}')
+  spawnSync('git', ['add', 'fixture/demo/package-lock.json'], { cwd: root })
+  assert.equal(isTracked(target.dir, 'package-lock.json'), true)
+  const lock = proposePatch(
+    { ...docDriftFinding([]), class: 'lockfile-out-of-date', evidence: ['npm ci can only install packages when'] },
     target,
     { allowInstall: false, timeoutMs: 1000 },
   )
@@ -104,11 +127,18 @@ test('recipes that need a package manager refuse to run unless installs are allo
   if (!lock.patchable) assert.match(lock.reason, /needs a package manager run/)
   const audit = proposePatch(
     { ...docDriftFinding([]), class: 'vulnerable-deps', evidence: ['0 critical, 1 high, 0 moderate (npm audit)'] },
-    { ...target, packageManager: 'pnpm' },
+    target,
     { allowInstall: false, timeoutMs: 1000 },
   )
   assert.equal(audit.patchable, false)
-  if (!audit.patchable) assert.match(audit.reason, /manual: pnpm/)
+  if (!audit.patchable) assert.match(audit.reason, /needs a package manager run/)
+  const pnpmAudit = proposePatch(
+    { ...docDriftFinding([]), class: 'vulnerable-deps', evidence: ['0 critical, 1 high, 0 moderate (pnpm audit)'] },
+    { ...target, packageManager: 'pnpm' },
+    { allowInstall: false, timeoutMs: 1000 },
+  )
+  assert.equal(pnpmAudit.patchable, false)
+  if (!pnpmAudit.patchable) assert.match(pnpmAudit.reason, /manual: pnpm/)
 })
 
 test('classes without a recipe are reported as not patchable', () => {

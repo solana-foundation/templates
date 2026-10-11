@@ -201,7 +201,7 @@
         "exitCode": 1,
         "timedOut": false,
         "durationMs": 1000,
-        "tail": "⚠ Invalid next.config.ts options detected:\n⚠     Unrecognized key(s) in object: 'swcMinify'\n⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config\nError: experimental.serverActions has been moved in Next.js 15"
+        "tail": "\u26a0 Invalid next.config.ts options detected:\n\u26a0     Unrecognized key(s) in object: 'swcMinify'\n\u26a0 See more info here: https://nextjs.org/docs/messages/invalid-next-config\nError: experimental.serverActions has been moved in Next.js 15"
       },
       "deps": {
         "status": "pass",
@@ -447,12 +447,13 @@
       "rust": {
         "status": "fail",
         "available": true,
-        "command": "cargo check --manifest-path program/Cargo.toml",
+        "command": "cargo check (program)",
         "exitCode": 101,
         "timedOut": false,
         "durationMs": 5000,
         "tail": "error[E0433]: failed to resolve: use of undeclared crate or module `pinocchio_log`\n --> src/lib.rs:3:5\nerror: could not compile `counter` (lib) due to 1 previous error",
-        "tested": false
+        "tested": false,
+        "manifestDir": "program"
       }
     },
     {

@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { classifyIssue, referencedTemplates, titleSimilarity, toIssueInput } from './issue.js'
+import { classifyIssue, normalizeTemplateLinks, referencedTemplates, titleSimilarity, toIssueInput } from './issue.js'
 import type { IssueInput } from './types.js'
 
 const catalog = ['kit/nextjs', 'kit/nextjs-anchor', 'kit/react-vite', 'web3js/web3js-nextjs', 'mobile/kit-expo-minimal']
@@ -40,6 +40,27 @@ test('referencedTemplates matches full ids, unambiguous dir names and csd flags'
   // "nextjs" alone reads as prose, not a template reference: no match
   assert.deepEqual(referencedTemplates('the nextjs template', catalog), [])
   assert.deepEqual(referencedTemplates('kit-expo-minimal crashes on Android', catalog), ['mobile/kit-expo-minimal'])
+})
+
+test('referencedTemplates understands gh: shorthands and GitHub tree/blob URLs', () => {
+  assert.deepEqual(referencedTemplates('scaffolded from gh:solana-foundation/templates/kit/nextjs', catalog), [
+    'kit/nextjs',
+  ])
+  assert.deepEqual(
+    referencedTemplates(
+      'see https://github.com/solana-foundation/templates/tree/main/kit/nextjs-anchor for the code',
+      catalog,
+    ),
+    ['kit/nextjs-anchor'],
+  )
+  assert.deepEqual(
+    referencedTemplates(
+      'https://github.com/solana-foundation/templates/blob/feat/x/web3js/web3js-nextjs/README.md',
+      catalog,
+    ),
+    ['web3js/web3js-nextjs'],
+  )
+  assert.equal(normalizeTemplateLinks('gh:solana-foundation/templates/kit/nextjs'), ' kit/nextjs')
 })
 
 test('titleSimilarity is 1 for the same words and low for unrelated titles', () => {

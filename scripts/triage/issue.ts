@@ -132,7 +132,7 @@ export const mostSimilarOpenIssue = (
  * `create-solana-dapp -t <id>` style flags.
  */
 export const referencedTemplates = (text: string, catalog: readonly string[]): string[] => {
-  const haystack = text.toLowerCase()
+  const haystack = normalizeTemplateLinks(text.toLowerCase())
   const found = new Set<string>()
   const byBase = new Map<string, string[]>()
   for (const id of catalog) {
@@ -140,7 +140,8 @@ export const referencedTemplates = (text: string, catalog: readonly string[]): s
     byBase.set(base, [...(byBase.get(base) ?? []), id])
   }
   for (const id of catalog) {
-    if (new RegExp(`(^|[^a-z0-9/_-])${escapeRegExp(id.toLowerCase())}(?![a-z0-9_-])`).test(haystack)) found.add(id)
+    // A full id may follow a `/` (a URL whose branch has slashes); no id is a `/`-suffix of another.
+    if (new RegExp(`(^|[^a-z0-9_-])${escapeRegExp(id.toLowerCase())}(?![a-z0-9_-])`).test(haystack)) found.add(id)
   }
   for (const [base, ids] of byBase) {
     // Bare names only when they are compound (`react-vite`) or long; `nextjs` alone is prose.
@@ -150,6 +151,16 @@ export const referencedTemplates = (text: string, catalog: readonly string[]): s
   }
   return [...found].sort()
 }
+
+/**
+ * `gh:solana-foundation/templates/kit/nextjs` and
+ * `https://github.com/solana-foundation/templates/tree/main/kit/nextjs` both name a
+ * template; strip the prefix so the id sits on a word boundary for the catalog match.
+ */
+export const normalizeTemplateLinks = (text: string): string =>
+  text
+    .replace(/https?:\/\/(www\.)?github\.com\/solana-foundation\/templates\/(tree|blob)\/[^/\s]+\//g, ' ')
+    .replace(/\bgh:solana-foundation\/templates\//g, ' ')
 
 const escapeRegExp = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
