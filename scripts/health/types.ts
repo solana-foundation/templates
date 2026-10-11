@@ -47,6 +47,20 @@ export type TemplateRef = {
   readonly declaredEnvKeys: readonly string[]
 }
 
+/**
+ * A directory under a repokit group (or a configured group itself) that the health check could
+ * not classify as a template. Reported in its own section with the reason, never counted as
+ * pass, warn, fail or skip: "we could not check this" is not a verdict on the template.
+ */
+export type UnrecognizedEntry = {
+  /** group-relative id like a template's, e.g. "community/foo"; the group path alone for a missing group */
+  readonly id: string
+  /** absolute path to the directory */
+  readonly path: string
+  /** why it was not recognised, e.g. "no package.json or Cargo.toml" */
+  readonly reason: string
+}
+
 export type BuildResult = {
   readonly status: Status
   /** which phase ended the run */
@@ -168,4 +182,10 @@ export type HealthReport = {
     readonly skip: number
   }
   readonly templates: readonly TemplateReport[]
+  /**
+   * Directories under the groups that could not be checked (always written, `[]` when none).
+   * Not part of `summary`. Optional in the type only so reports written before this field
+   * existed still load.
+   */
+  readonly unrecognized?: readonly UnrecognizedEntry[]
 }

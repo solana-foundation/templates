@@ -219,3 +219,37 @@ test('advisory checks that could not run stay visible in every section', () => {
     )
   }
 })
+
+test('unrecognized entries get their own section and status-line count, absent when empty', () => {
+  const base: HealthReport = {
+    schemaVersion: 1,
+    generatedAt: '2026-10-11T00:00:00.000Z',
+    packageManager: 'npm',
+    options: { build: true, boot: false, source: 'local' },
+    summary: { total: 0, pass: 0, warn: 0, fail: 0, skip: 0 },
+    templates: [],
+    unrecognized: [],
+  }
+  const clean = toMarkdown(base)
+  assert.doesNotMatch(clean, /Unrecognized/)
+  assert.doesNotMatch(clean, /unrecognized/)
+  assert.match(clean, /\*\*0 pass · 0 warn · 0 fail · 0 skip\*\* out of 0 templates\n/)
+  // reports written before the field existed render the same way
+  assert.doesNotMatch(toMarkdown({ ...base, unrecognized: undefined }), /nrecognized/)
+
+  const md = toMarkdown({
+    ...base,
+    unrecognized: [
+      { id: 'community/empty', path: '/repo/community/empty', reason: 'no package.json or Cargo.toml' },
+      { id: 'kit/broken', path: '/repo/kit/broken', reason: 'package.json is not valid JSON: Unexpected end' },
+    ],
+  })
+  assert.match(md, /\*\*0 pass · 0 warn · 0 fail · 0 skip\*\* out of 0 templates · 2 unrecognized\n/)
+  const section = md.split('\n## ').find((part) => part.startsWith('❓ Unrecognized'))
+  assert.ok(section, 'Unrecognized section present')
+  assert.match(section, /^- `community\/empty` — no package\.json or Cargo\.toml$/m)
+  assert.match(section, /^- `kit\/broken` — package\.json is not valid JSON: Unexpected end$/m)
+  assert.match(section, /docs\/agents\/template-authoring\.md/)
+  // the section comes after Skipped territory, before the footer
+  assert.ok(md.indexOf('## ❓ Unrecognized') < md.indexOf('\n---\n'))
+})
