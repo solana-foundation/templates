@@ -23,7 +23,7 @@ import type {
 } from './types.js'
 import { bumpKind } from './semver.js'
 import { credentialsForTemplate, parentSecretValues, redactDeep, sanitizedEnv, secretValues } from './env.js'
-import { checkRender } from './qa.js'
+import { checkRender, explainByConfig, oneLine } from './qa.js'
 
 export type RunOptions = {
   /** force a package manager; null means "use each template's pinned one (npm if unset)" */
@@ -307,7 +307,7 @@ export const cleanupActiveTempDirs = (): void => {
  * the failure. Prose-detected templates have no key names, so they never match:
  * causation cannot be established and their failures stay failures.
  */
-/** The credential keys a template still lacks: those not explicitly supplied for this run. */
+/** The keys (credential or declared config) a template still lacks: those not explicitly supplied for this run. */
 export const unsuppliedCredentialKeys = (
   credentialKeys: readonly string[],
   templateEnv: Readonly<Record<string, string>>,
@@ -1021,7 +1021,35 @@ export const checkTemplate = async (ref: TemplateRef, opts: RunOptions) => {
     const booted =
       opts.boot && installed && build.status === 'pass' ? await checkBoot(workDir, ref, effOpts, qaHook) : undefined
     const boot = booted?.boot
-    const qa = booted?.ready
+    let qa = booted?.ready
+    // requires-configuration: a page that cannot run without a value the user did not supply
+    // (phantom-embedded-react throws "appId is required" without NEXT_PUBLIC_PHANTOM_APP_ID)
+    // is the QA twin of the build-phase needs-setup skip. Same causation rule: only a page /
+    // console error or overlay that references a declared, unsupplied key can explain the
+    // failure; any other QA failure stays a failure. Public-prefixed keys count here even
+    // though they are not credentials: the page needs the value either way.
+    // The downgrade only happens when configuration explains EVERY hard signal: an unrelated
+    // page error next to the config error keeps the failure, with the config hint appended.
+    const configVerdict =
+      qa && qa.status === 'fail'
+        ? explainByConfig(qa, unsuppliedCredentialKeys(ref.declaredEnvKeys, effOpts.templateEnv), ref.declaredEnvKeys)
+        : null
+    if (qa && configVerdict) {
+      const { cause, unexplained } = configVerdict
+      if (unexplained.length === 0) {
+        needsSetupSkip = true
+        qa = {
+          ...qa,
+          status: 'skip',
+          note: `requires configuration: ${cause.key} (${cause.source}: ${oneLine(cause.message)})`,
+        }
+      } else {
+        qa = {
+          ...qa,
+          note: `${qa.note ?? 'render failed'}; also: ${cause.key} appears unset (${cause.source}: ${oneLine(cause.message)}); not explained by it: ${unexplained.map(oneLine).join('; ')}`,
+        }
+      }
+    }
     // Forwarded credential values must never reach a report: scrub every tail/note/command,
     // including qa notes and console samples (a dev server can echo a key into the console).
     return redactDeep(

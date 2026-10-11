@@ -128,14 +128,20 @@ export type QaResult = {
   readonly screenshot?: string
   /** console messages of type error, plus warnings that mention hydration */
   readonly consoleErrors: readonly string[]
-  /** uncaught exceptions thrown by page scripts */
+  /** uncaught exceptions thrown by page scripts (first 20; newlines kept) */
   readonly pageErrors: readonly string[]
+  /** how many page errors fired in total (absent in reports written before this field existed) */
+  readonly pageErrorsTotal?: number
   /** same-origin requests that failed or answered >= 400 (favicon and hot-reload endpoints excluded) */
   readonly failedRequests: readonly string[]
   /** which framework error overlay was found, if any */
   readonly overlay?: string
+  /** the overlay's visible text, bounded to ~500 chars, when one was found */
+  readonly overlayText?: string
   /** body text under ~20 chars and no img/canvas/svg */
   readonly blank: boolean
+  /** set when the harness itself failed (navigation timeout, unreachable server, inspection error): the signals above are partial */
+  readonly harnessError?: string
   readonly durationMs: number
   readonly note?: string
 }

@@ -4,7 +4,7 @@
  */
 
 import type { HealthReport, QaResult, Status, TemplateReport } from './types.js'
-import { classifyRender } from './qa.js'
+import { classifyRender, oneLine } from './qa.js'
 
 const ICON: Record<Status, string> = { pass: '✅', warn: '⚠️', fail: '❌', skip: '⏭️' }
 
@@ -54,7 +54,12 @@ const incompleteLine = (template: TemplateReport): string | null => {
 
 /** Why the render QA said what it said: classified reasons plus any harness note. */
 const qaReasons = (qa: QaResult): string[] => {
-  const reasons = classifyRender({ ...qa, overlay: qa.overlay ?? null }).reasons
+  const reasons = classifyRender({
+    ...qa,
+    pageErrorsTotal: qa.pageErrorsTotal ?? qa.pageErrors.length,
+    overlay: qa.overlay ?? null,
+    overlayText: qa.overlayText ?? null,
+  }).reasons
   if (qa.note && !reasons.length) reasons.push(qa.note)
   return reasons
 }
@@ -68,14 +73,14 @@ const qaLines = (qa: QaResult): string[] => {
     out.push(
       `- **Page errors:** ${qa.pageErrors
         .slice(0, 3)
-        .map((error) => `\`${error}\``)
+        .map((error) => `\`${oneLine(error)}\``)
         .join(' · ')}`,
     )
   if (qa.consoleErrors.length)
     out.push(
       `- **Console errors:** ${qa.consoleErrors
         .slice(0, 3)
-        .map((error) => `\`${error}\``)
+        .map((error) => `\`${oneLine(error)}\``)
         .join(' · ')}`,
     )
   if (qa.failedRequests.length) out.push(`- **Failed requests:** ${qa.failedRequests.slice(0, 5).join(', ')}`)
@@ -183,6 +188,8 @@ export const skipReason = (template: TemplateReport): string => {
   if (template.build.status === 'skip' && template.build.tail) reasons.push(template.build.tail)
   if (template.rust?.status === 'skip' && template.rust.note) reasons.push(`rust: ${template.rust.note}`)
   if (template.boot?.status === 'skip' && template.boot.note) reasons.push(`boot: ${template.boot.note}`)
+  // A render that only failed for want of a declared config value ("requires configuration: KEY").
+  if (template.qa?.status === 'skip' && template.qa.note) reasons.push(`qa: ${template.qa.note}`)
   if (reasons.length === 0 && template.deps.note) reasons.push(template.deps.note)
   return reasons.length ? reasons.map((reason) => reason.split('\n')[0]).join(' · ') : 'see notes'
 }
@@ -245,8 +252,11 @@ const failureBlock = (template: TemplateReport, options: HealthReport['options']
 const qaTail = (qa: QaResult): string => {
   const lines: string[] = [...qaReasons(qa)]
   if (qa.note && lines.length && !lines.includes(qa.note)) lines.push(qa.note)
-  for (const error of qa.pageErrors.slice(0, 5)) lines.push(`page error: ${error}`)
-  for (const error of qa.consoleErrors.slice(0, 5)) lines.push(`console error: ${error}`)
+  if (qa.overlayText) lines.push(`overlay text: ${oneLine(qa.overlayText)}`)
+  for (const error of qa.pageErrors.slice(0, 5)) lines.push(`page error: ${oneLine(error)}`)
+  if (qa.pageErrorsTotal && qa.pageErrorsTotal > qa.pageErrors.length)
+    lines.push(`(${qa.pageErrorsTotal} page errors in total, ${qa.pageErrors.length} kept)`)
+  for (const error of qa.consoleErrors.slice(0, 5)) lines.push(`console error: ${oneLine(error)}`)
   for (const request of qa.failedRequests.slice(0, 5)) lines.push(`failed request: ${request}`)
   return lines.join('\n')
 }
