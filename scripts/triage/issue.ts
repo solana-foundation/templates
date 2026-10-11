@@ -14,7 +14,7 @@ import type { Confidence, IssueInput, IssueKind, IssueTriage, OpenIssueRef } fro
 
 export const DUPLICATE_THRESHOLD = 0.6
 
-// ---------- gh wrappers (not unit-tested; they just shell out) ----------
+// ---------- gh wrappers (tested through an injected runner; the default one shells out) ----------
 
 type GhIssue = {
   number?: number
@@ -22,27 +22,50 @@ type GhIssue = {
   body?: string
   labels?: Array<{ name: string }>
   comments?: Array<{ body: string }>
+  authorAssociation?: string
 }
 
-const gh = (args: string[]): Result<string> => {
-  const result = spawnSync('gh', args, { encoding: 'utf-8', timeout: 30_000 })
+/** Authors whose issues are roadmap notes or reports to act on, never reports to interrogate. */
+const MAINTAINER_ASSOCIATIONS: ReadonlySet<string> = new Set(['OWNER', 'MEMBER', 'COLLABORATOR'])
+
+/** Runs `gh <args>` and returns stdout. Injectable so the fetchers are testable without gh. */
+export type GhRunner = (args: readonly string[]) => Result<string>
+
+export const runGh: GhRunner = (args) => {
+  const result = spawnSync('gh', [...args], { encoding: 'utf-8', timeout: 30_000 })
   if (result.error) return err(`gh is not installed or not on PATH (${result.error.message})`)
   if (result.status !== 0) return err(`gh ${args.slice(0, 2).join(' ')} failed: ${(result.stderr || '').trim()}`)
   return ok(result.stdout)
 }
 
-export const fetchIssue = (number: number, repo: string): Result<IssueInput> => {
-  const raw = gh(['issue', 'view', String(number), '-R', repo, '--json', 'number,title,body,labels,comments'])
+/** True when a gh error means gh itself is missing or not logged in, so a setup hint is the right advice. */
+export const isGhSetupError = (error: string): boolean =>
+  /not installed|not on PATH|ENOENT|gh auth login|not logged in|authentication|HTTP 401|Unauthorized/i.test(error)
+
+/**
+ * `gh issue view --json` has no authorAssociation field (gh 2.96 rejects it), so it comes
+ * from the REST payload. Best-effort: any failure or empty output yields undefined.
+ */
+export const fetchAuthorAssociation = (number: number, repo: string, run: GhRunner = runGh): string | undefined => {
+  const raw = run(['api', `repos/${repo}/issues/${number}`, '--jq', '.author_association'])
+  if (!raw.ok) return undefined
+  const association = raw.value.trim().toUpperCase()
+  return association.length > 0 ? association : undefined
+}
+
+export const fetchIssue = (number: number, repo: string, run: GhRunner = runGh): Result<IssueInput> => {
+  const raw = run(['issue', 'view', String(number), '-R', repo, '--json', 'number,title,body,labels,comments'])
   if (!raw.ok) return raw
   try {
-    return ok(toIssueInput(JSON.parse(raw.value) as GhIssue, number))
+    const parsed = JSON.parse(raw.value) as GhIssue
+    return ok(toIssueInput({ ...parsed, authorAssociation: fetchAuthorAssociation(number, repo, run) }, number))
   } catch (error) {
     return err(`could not parse gh output: ${String(error)}`)
   }
 }
 
-export const fetchOpenIssues = (repo: string): Result<OpenIssueRef[]> => {
-  const raw = gh(['issue', 'list', '-R', repo, '--state', 'open', '--json', 'number,title', '--limit', '100'])
+export const fetchOpenIssues = (repo: string, run: GhRunner = runGh): Result<OpenIssueRef[]> => {
+  const raw = run(['issue', 'list', '-R', repo, '--state', 'open', '--json', 'number,title', '--limit', '100'])
   if (!raw.ok) return raw
   try {
     return ok(JSON.parse(raw.value) as OpenIssueRef[])
@@ -58,6 +81,7 @@ export const toIssueInput = (issue: GhIssue, fallbackNumber: number): IssueInput
   body: issue.body ?? '',
   labels: (issue.labels ?? []).map((label) => label.name.toLowerCase()),
   comments: (issue.comments ?? []).map((comment) => comment.body),
+  ...(issue.authorAssociation ? { authorAssociation: issue.authorAssociation.toUpperCase() } : {}),
 })
 
 // ---------- pure classification ----------
@@ -164,14 +188,17 @@ export const normalizeTemplateLinks = (text: string): string =>
 
 const escapeRegExp = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
+// A bullet counts as a repro step only when it STARTS with an imperative or a package manager
+// command, allowing Markdown formatting first ("1. `npm run dev`", "2. **Click** Connect");
+// "- Attach the screenshots to a run artifact" is an idea, not a step.
 const REPRO_RE =
-  /steps? to reproduce|reproduc(e|tion)|repro\b|^\s*(\d+[.)]|-)\s+.*\b(run|open|click|install|create)\b/im
+  /steps? to reproduce|reproduc(e|tion)|repro\b|^\s*(\d+[.)]|-)[\s`*_~[\]()]*(run|open|click|install|create|go to|npm|pnpm|yarn|npx)\b/im
 const VERSIONS_RE =
   /\b(node|npm|pnpm|yarn|bun|next(\.js)?|expo|react|anchor|rust|cargo|solana|kit)\b[^\n]{0,30}\bv?\d+\.\d+(\.\d+)?/i
 const ERROR_OUTPUT_RE =
   /npm ERR!|ERR_[A-Z_]+|\bTS\d{4}\b|error\[E\d{4}\]|Error:|Cannot find module|ERESOLVE|Module not found|panicked at|stack trace|at .+\(.+:\d+:\d+\)/
 const FEATURE_RE =
-  /feature request|proposal|would be (nice|great|useful)|add support for|should (also )?support|please add|idea:|enhancement|new template|suggest(ion)?/i
+  /feature request|proposal|would be (nice|great|useful)|nice to have|add support for|should (also )?support|please add|idea:|the idea is to|some ideas|we could|we should (add|build|have)|would let us|roadmap|enhancement|new template|suggest(ion)?/i
 const QUESTION_RE = /^(how|why|what|which|where|can|could|should|is it|does|do i|any way)\b|\?\s*$/i
 const BUG_RE =
   /\b(bug|broken|crash(es|ed)?|fail(s|ed|ing)?|doesn'?t work|not working|does not work|unexpected|regression)\b/i
@@ -196,24 +223,38 @@ export const classifyIssue = (
   }
   const duplicate = mostSimilarOpenIssue(issue, context.openIssues)
   const labels = new Set(issue.labels)
+  const maintainer = MAINTAINER_ASSOCIATIONS.has(issue.authorAssociation ?? '')
+  // A bug word in explanatory prose ("renders a broken hydration state") proves nothing on its
+  // own: the bug path needs the word in the title, an error block, or prose backed by repro
+  // steps and versions. Feature wording only wins when none of the hard signals hold: an
+  // explicit bug label, error output, a titled bug with versions, or prose with repro + versions.
+  const bugInTitle = BUG_RE.test(issue.title)
+  const bugInProse = BUG_RE.test(text) && signals.hasReproSteps && signals.hasVersions
+  const hardBugSignal = labels.has('bug') || signals.hasErrorOutput || (bugInTitle && signals.hasVersions) || bugInProse
 
   let kind: IssueKind
   let confidence: Confidence
   if (duplicate) {
     kind = 'duplicate'
     confidence = duplicate.score >= 0.8 ? 'high' : 'medium'
-  } else if (labels.has('enhancement') || labels.has('feature') || (FEATURE_RE.test(text) && !signals.hasErrorOutput)) {
+  } else if (labels.has('enhancement') || labels.has('feature')) {
     kind = 'feature'
-    confidence = labels.has('enhancement') || labels.has('feature') ? 'high' : 'medium'
+    confidence = 'high'
   } else if (labels.has('question') || (QUESTION_RE.test(issue.title.trim()) && !signals.hasErrorOutput)) {
+    // A question-shaped title beats feature wording in the body ("what is the recommended way").
     kind = 'question'
     confidence = labels.has('question') ? 'high' : 'medium'
-  } else if (labels.has('bug') || signals.hasErrorOutput || BUG_RE.test(text)) {
+  } else if (FEATURE_RE.test(text) && !hardBugSignal) {
+    kind = 'feature'
+    confidence = 'medium'
+  } else if (labels.has('bug') || signals.hasErrorOutput || bugInTitle || bugInProse) {
     const enough = signals.hasErrorOutput || (signals.hasReproSteps && signals.hasVersions)
-    kind = enough ? 'bug' : 'needs-info'
-    confidence = enough && (labels.has('bug') || signals.hasReproSteps) ? 'high' : enough ? 'medium' : 'medium'
+    // A maintainer's own report is acted on, not sent back for Node versions.
+    kind = enough || maintainer ? 'bug' : 'needs-info'
+    confidence = enough && (labels.has('bug') || signals.hasReproSteps) ? 'high' : 'medium'
   } else {
-    kind = 'needs-info'
+    // Nothing matched. From a maintainer that is a roadmap note; from anyone else we ask.
+    kind = maintainer ? 'feature' : 'needs-info'
     confidence = 'low'
   }
 

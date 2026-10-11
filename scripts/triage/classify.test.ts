@@ -4,9 +4,9 @@ import { readFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { HealthReport } from '../health/types.js'
-import { classifyReport, classifyTemplate, reproOptionsOf, RULES } from './classify.js'
+import { AUTO_PATCHABLE, classifyReport, classifyTemplate, reproOptionsOf, RULES } from './classify.js'
 import { regressionIds } from './load.js'
-import type { FindingClass, TriagedTemplateReport } from './types.js'
+import type { Finding, FindingClass, TriagedTemplateReport } from './types.js'
 import { FINDING_CLASSES } from './types.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -76,12 +76,13 @@ test('evidence holds the matched lines, capped at five, and the repro names the 
   assert.equal(rust.reproduce, 'pnpm health --only kit/rust-demo\ncd kit/rust-demo/program && cargo check')
 })
 
-test('repro flags follow the failing phase: --boot for boot and qa, --cargo-test for rust test runs', () => {
+test('repro flags follow the failing phase: --boot for boot, --boot --qa for qa, --cargo-test for rust test runs', () => {
   assert.match(
     primaryOf('kit/boot-demo').reproduce,
     /^pnpm health --only kit\/boot-demo --boot\ncd kit\/boot-demo && npm run dev$/,
   )
-  assert.equal(primaryOf('kit/qa-demo').reproduce, 'pnpm health --only kit/qa-demo --boot')
+  // a qa failure carries the pair on purpose: a health CLI without --qa still runs the boot check
+  assert.equal(primaryOf('kit/qa-demo').reproduce, 'pnpm health --only kit/qa-demo --boot --qa')
   const rustBase = byId('kit/rust-demo')
   const tested: TriagedTemplateReport = {
     ...rustBase,
@@ -109,7 +110,30 @@ test('report options override the class-derived flags and add --pm', () => {
     classifyTemplate(byId('kit/boot-demo'), false, { boot: false })[0].reproduce,
     'pnpm health --only kit/boot-demo\ncd kit/boot-demo && npm run dev',
   )
-  assert.deepEqual(reproOptionsOf(sample), { boot: true, cargoTest: undefined, pm: undefined })
+  assert.deepEqual(reproOptionsOf(sample), { boot: true, qa: undefined, cargoTest: undefined, pm: undefined })
+})
+
+test('a report produced with --qa yields repros carrying --boot --qa, exactly once each', () => {
+  const qaRun = { options: { build: true, boot: true, qa: true, source: 'local' } }
+  const options = reproOptionsOf(qaRun)
+  assert.equal(options.qa, true)
+  assert.equal(
+    classifyTemplate(byId('kit/ts-demo'), false, options)[0].reproduce,
+    'pnpm health --only kit/ts-demo --boot --qa\ncd kit/ts-demo && npm run ci',
+  )
+  const qaFinding = classifyTemplate(byId('kit/qa-demo'), false, options)[0]
+  assert.equal(qaFinding.class, 'qa-render-failure')
+  assert.equal(qaFinding.reproduce, 'pnpm health --only kit/qa-demo --boot --qa')
+  // qa implies boot even when the report did not record boot (or recorded it false)
+  assert.equal(
+    classifyTemplate(byId('kit/ts-demo'), false, { qa: true, boot: false })[0].reproduce,
+    'pnpm health --only kit/ts-demo --boot --qa\ncd kit/ts-demo && npm run ci',
+  )
+  // an explicit qa: false in the report options falls back to the class-derived --boot
+  assert.equal(
+    classifyTemplate(byId('kit/boot-demo'), false, { qa: false })[0].reproduce,
+    'pnpm health --only kit/boot-demo --boot\ncd kit/boot-demo && npm run dev',
+  )
 })
 
 test('a structured timeout is infra (retry), never rust-compile or unknown, in both text formats', () => {
@@ -157,11 +181,46 @@ test('rules are ordered most specific first and name a different class each', ()
   assert.ok(classes.indexOf('registry-or-network') < classes.indexOf('lockfile-out-of-date'))
 })
 
-test('auto-patchable flag is set only for classes with a recipe', () => {
-  const findings = classifyReport(templates, new Set())
-  const patchable = new Set(findings.filter((finding) => finding.autoPatchable).map((finding) => finding.class))
-  assert.deepEqual([...patchable].sort(), ['doc-drift', 'lockfile-out-of-date', 'vulnerable-deps'])
-  assert.ok(findings.filter((finding) => !patchable.has(finding.class)).every((finding) => !finding.autoPatchable))
+test('auto-patchable needs a recipe AND its precondition: lockfile recipes only with a tracked lockfile', () => {
+  const flagged = (findings: readonly Finding[]) =>
+    [...new Set(findings.filter((finding) => finding.autoPatchable).map((finding) => finding.class))].sort()
+  const ofClass = (findings: readonly Finding[], cls: FindingClass) => {
+    const found = findings.find((finding) => finding.class === cls)
+    assert.ok(found, `has ${cls}`)
+    return found
+  }
+
+  // default (no tracked set): only doc-drift keeps the flag, the two lockfile recipes say why not
+  const untracked = classifyReport(templates, new Set())
+  assert.deepEqual(flagged(untracked), ['doc-drift'])
+  assert.ok(
+    untracked.filter((finding) => !AUTO_PATCHABLE.has(finding.class)).every((finding) => !finding.autoPatchable),
+  )
+  const vuln = ofClass(untracked, 'vulnerable-deps')
+  assert.match(vuln.recommendedAction, / \(no tracked lockfile: bump the ranges in package\.json by hand\)$/)
+  assert.match(
+    ofClass(untracked, 'lockfile-out-of-date').recommendedAction,
+    / \(no tracked lockfile: regenerate it by hand\)$/,
+  )
+
+  // with the template's lockfile tracked, both recipes are advertised and the action is untouched
+  const tracked = classifyReport(templates, new Set(), {
+    trackedLockfiles: new Set(['kit/lockfile-demo', 'kit/vuln-demo']),
+  })
+  assert.deepEqual(flagged(tracked), ['doc-drift', 'lockfile-out-of-date', 'vulnerable-deps'])
+  assert.doesNotMatch(ofClass(tracked, 'vulnerable-deps').recommendedAction, /by hand/)
+  // the appended reason never changes the dedupe key
+  assert.equal(vuln.dedupeKey, ofClass(tracked, 'vulnerable-deps').dedupeKey)
+
+  // pnpm has no audit fix, so a tracked pnpm-lock.yaml still leaves vulnerable-deps manual
+  const pnpmVuln = ofClass(
+    classifyTemplate({ ...byId('kit/vuln-demo'), packageManager: 'pnpm' }, false, {
+      trackedLockfiles: new Set(['kit/vuln-demo']),
+    }),
+    'vulnerable-deps',
+  )
+  assert.equal(pnpmVuln.autoPatchable, false)
+  assert.match(pnpmVuln.recommendedAction, /\(pnpm has no audit fix: bump the ranges in package\.json by hand\)$/)
 })
 
 test('regressions come from the baseline diff and sort first', () => {

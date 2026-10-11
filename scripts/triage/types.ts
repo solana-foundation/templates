@@ -63,7 +63,7 @@ export type Finding = {
   readonly reproduce: string
   /** one sentence: what to do about it */
   readonly recommendedAction: string
-  /** true when patcher.ts has a recipe for this class */
+  /** true when patcher.ts has a recipe for this class AND its precondition holds (lockfile recipes need a tracked lockfile) */
   readonly autoPatchable: boolean
   /** true when the template passed (or warned) in the baseline and fails now */
   readonly regression: boolean
@@ -72,8 +72,8 @@ export type Finding = {
 }
 
 /**
- * The health check does not emit a `qa` field yet (issue #452). When it does, the triage
- * layer is ready for it: a failed render becomes a qa-render-failure finding.
+ * The health check emits a `qa` field when the report was produced with `--qa` (the render
+ * check from issue #452). A failed render becomes a qa-render-failure finding.
  */
 export type QaResult = {
   readonly status: Status
@@ -138,6 +138,8 @@ export type IssueInput = {
   readonly body: string
   readonly labels: readonly string[]
   readonly comments: readonly string[]
+  /** gh `authorAssociation` (OWNER, MEMBER, COLLABORATOR, CONTRIBUTOR, NONE...); absent in older fixtures */
+  readonly authorAssociation?: string
 }
 
 export type OpenIssueRef = {

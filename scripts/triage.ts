@@ -22,9 +22,15 @@ import { fileURLToPath } from 'url'
 import { enumerateTemplates } from './health/enumerate.js'
 import { writeFile, writeJsonFile } from './shared/fs-utils.js'
 import { classifyReport, reproOptionsOf, statusOf } from './triage/classify.js'
-import { classifyIssue, fetchIssue, fetchOpenIssues } from './triage/issue.js'
+import { classifyIssue, fetchIssue, fetchOpenIssues, isGhSetupError } from './triage/issue.js'
 import { latestReportPath, loadHealthReport, regressionIds } from './triage/load.js'
-import { applyPatch, patchFileStem, proposePatch, type PatchTarget } from './triage/patcher.js'
+import {
+  applyPatch,
+  patchFileStem,
+  proposePatch,
+  trackedLockfileTemplates,
+  type PatchTarget,
+} from './triage/patcher.js'
 import { pruneReports, summarize, toMarkdown } from './triage/report.js'
 import type { TriageReport, TriagedTemplateReport } from './triage/types.js'
 
@@ -101,7 +107,10 @@ const runIssue = (number: number): number => {
   const issue = fetchIssue(number, REPO)
   if (!issue.ok) {
     console.error(`Could not fetch issue #${number}: ${issue.error}`)
-    console.error('Install the GitHub CLI (https://cli.github.com) and run `gh auth login`, then retry.')
+    // Only send people to install or log in when that is actually the problem; otherwise the
+    // gh stderr above (unknown field, bad issue number, rate limit) is the real message.
+    if (isGhSetupError(issue.error))
+      console.error('Install the GitHub CLI (https://cli.github.com) and run `gh auth login`, then retry.')
     return 0
   }
   const open = fetchOpenIssues(REPO)
@@ -163,7 +172,12 @@ const main = (): number => {
 
   let templates = loaded.value.templates as readonly TriagedTemplateReport[]
   if (cli.only) templates = templates.filter((template) => cli.only!.includes(template.id))
-  const findings = classifyReport(templates, regressionIds(loaded.value, baseline), reproOptionsOf(loaded.value))
+  // Lockfile recipes are only auto-patchable for templates that track a lockfile (a handful here).
+  const catalog = enumerateTemplates(ROOT)
+  const findings = classifyReport(templates, regressionIds(loaded.value, baseline), {
+    ...reproOptionsOf(loaded.value),
+    trackedLockfiles: trackedLockfileTemplates(ROOT, catalog),
+  })
 
   const triage: TriageReport = {
     schemaVersion: 1,
@@ -192,7 +206,7 @@ const main = (): number => {
   console.log(markdown)
 
   if (cli.patch) {
-    const refs = new Map(enumerateTemplates(ROOT).map((template) => [template.id, template]))
+    const refs = new Map(catalog.map((template) => [template.id, template]))
     const patchDir = join(cli.out, 'patches')
     if (!existsSync(patchDir)) mkdirSync(patchDir, { recursive: true })
     let written = 0

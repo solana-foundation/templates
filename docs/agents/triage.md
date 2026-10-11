@@ -40,18 +40,18 @@ Output lands in `triage-reports/` (gitignored). The JSON is the source of truth;
 
 ### What a finding contains
 
-| Field               | Meaning                                                                                                                                                                                    |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `templateId`        | group-relative id, e.g. `kit/nextjs`                                                                                                                                                       |
-| `class`             | one of the classes below                                                                                                                                                                   |
-| `severity`          | `fail` = functionally broken, `warn` = works but needs attention                                                                                                                           |
-| `confidence`        | `high`, `medium`, `low`: how sure the rule is, a single regex hit is not proof                                                                                                             |
-| `evidence`          | the matched output lines, at most five                                                                                                                                                     |
-| `reproduce`         | `pnpm health --only <id>` with the flags the phase needs (`--boot`, `--cargo-test`, `--pm` from the report options), plus the failing phase command when the report records a runnable one |
-| `recommendedAction` | one sentence                                                                                                                                                                               |
-| `autoPatchable`     | true when `scripts/triage/patcher.ts` has a recipe for the class                                                                                                                           |
-| `regression`        | true when the template passed or warned in the `--baseline` report and fails now                                                                                                           |
-| `dedupeKey`         | `<id>#<class>#<hash>`; stable across runs so the same break is recognisable in a tracker                                                                                                   |
+| Field               | Meaning                                                                                                                                                                                                                                                                    |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `templateId`        | group-relative id, e.g. `kit/nextjs`                                                                                                                                                                                                                                       |
+| `class`             | one of the classes below                                                                                                                                                                                                                                                   |
+| `severity`          | `fail` = functionally broken, `warn` = works but needs attention                                                                                                                                                                                                           |
+| `confidence`        | `high`, `medium`, `low`: how sure the rule is, a single regex hit is not proof                                                                                                                                                                                             |
+| `evidence`          | the matched output lines, at most five                                                                                                                                                                                                                                     |
+| `reproduce`         | `pnpm health --only <id>` with the flags the phase needs (`--boot`, `--boot --qa` as a pair for qa runs so a health CLI without `--qa` still boots, `--cargo-test`, `--pm` from the report options), plus the failing phase command when the report records a runnable one |
+| `recommendedAction` | one sentence; when a recipe exists but cannot run here, the reason is appended in parentheses                                                                                                                                                                              |
+| `autoPatchable`     | true when `scripts/triage/patcher.ts` has a recipe for the class and its precondition holds (the lockfile and audit recipes need a git-tracked lockfile; audit is npm-only)                                                                                                |
+| `regression`        | true when the template passed or warned in the `--baseline` report and fails now                                                                                                                                                                                           |
+| `dedupeKey`         | `<id>#<class>#<hash>`; stable across runs so the same break is recognisable in a tracker                                                                                                                                                                                   |
 
 A template gets one primary finding for its functional failure (build, rust, boot, qa) plus zero or more advisory findings from the structured fields. A template that passed gets nothing.
 
@@ -71,7 +71,7 @@ A template gets one primary finding for its functional failure (build, rust, boo
 | `needs-credentials`         | build output names a required env var or API key; also the health check's credential `skip`    | fail/warn | no: verify with a sandbox key or leave as skipped                                       |
 | `rust-compile`              | `cargo check`/`cargo build` failed                                                             | fail      | no                                                                                      |
 | `boot-failure`              | build passed but the dev server exited or never answered                                       | fail      | no                                                                                      |
-| `qa-render-failure`         | the (future, issue #452) QA step saw an error overlay or blank page                            | fail      | no                                                                                      |
+| `qa-render-failure`         | the `--qa` render check (issue #452) saw an error overlay or blank page                        | fail      | no                                                                                      |
 | `outdated-major`            | direct deps a major version behind                                                             | warn      | no: plan bumps one at a time                                                            |
 | `vulnerable-deps`           | audit reports critical/high/moderate advisories                                                | warn      | npm with a tracked lockfile only: `npm audit fix --package-lock-only`; pnpm/yarn manual |
 | `deprecated-direct-dep`     | the registry flagged a direct dependency as deprecated                                         | warn      | no                                                                                      |
@@ -80,7 +80,7 @@ A template gets one primary finding for its functional failure (build, rust, boo
 
 Rules are ordered from most specific to least. Credential and infra signals win over generic ones: a tail that contains both `ENOTEMPTY` and `error TS2307` is classified as `temp-dir-or-process`, because the infra noise has to be ruled out first.
 
-Most templates in this repo do not track their own lockfile (only the root `pnpm-lock.yaml` is committed), so the lockfile and audit recipes will usually report "manual" with the reason. They check `git ls-files`, not just the disk: a gitignored lockfile left behind by a local install is never patched. They are there for the templates that do carry one.
+Most templates in this repo do not track their own lockfile (only the root `pnpm-lock.yaml` and the `mobile/*` lockfiles are committed), so the lockfile and audit recipes will usually report "manual" with the reason. They check `git ls-files`, not just the disk: a gitignored lockfile left behind by a local install is never patched. They are there for the templates that do carry one. The report already reflects this: `pnpm triage` runs one `git ls-files` at the root and marks a `lockfile-out-of-date` or `vulnerable-deps` finding `autoPatchable: no` with the reason when the template has no tracked lockfile, instead of promising a patch that `--patch` would then refuse.
 
 ---
 
@@ -121,7 +121,7 @@ The patcher never opens the PR itself. A human and CI stay in the loop, which is
 pnpm triage --issue 454
 ```
 
-Fetches the issue with `gh issue view --json title,body,labels,comments` and the open issue list with `gh issue list --json number,title --limit 100`. If `gh` is missing or not authenticated it prints what to install and exits 0. The output is JSON:
+Fetches the issue with `gh issue view --json number,title,body,labels,comments`, the author association with a best-effort `gh api repos/<owner>/<repo>/issues/<n> --jq .author_association` (`gh issue view` has no such JSON field; if this call fails the association is simply absent), and the open issue list with `gh issue list --json number,title --limit 100`. If `gh` is missing or not authenticated it prints what to install and exits 0; any other gh error is printed as is. The output is JSON:
 
 - `kind`: `bug`, `question`, `feature`, `duplicate` or `needs-info`
 - `confidence`
@@ -131,7 +131,7 @@ Fetches the issue with `gh issue view --json title,body,labels,comments` and the
 - `duplicateOf`: the most similar open issue when title similarity crosses the threshold
 - `commentDraft`: a reply a maintainer can paste after reading the issue
 
-The rules are intentionally simple (labels first, then title shape, then presence of error output). It is a starting point for the "reproduce before accepting" habit in issue #454: a `bug` with a referenced template that the latest health report shows as `pass` deserves a second look before anyone starts fixing. Nothing is posted to GitHub.
+The rules are intentionally simple (labels first, then title shape, then presence of error output). A bug word in explanatory prose is not a bug report on its own: the bug path needs the word in the title, an error block, or repro steps plus versions, and a feature phrasing ("the idea is to", "we could") wins over prose alone. Issues from OWNER, MEMBER or COLLABORATOR authors are never `needs-info`: a maintainer's note is a `feature` (roadmap) or a `bug` by signals. It is a starting point for the "reproduce before accepting" habit in issue #454: a `bug` with a referenced template that the latest health report shows as `pass` deserves a second look before anyone starts fixing. Nothing is posted to GitHub.
 
 ---
 

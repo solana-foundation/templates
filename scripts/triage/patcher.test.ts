@@ -12,6 +12,7 @@ import {
   patchFileStem,
   proposePatch,
   rewriteScriptReferences,
+  trackedLockfileTemplates,
 } from './patcher.js'
 import type { Finding } from './types.js'
 
@@ -91,6 +92,19 @@ test('doc-drift recipe emits a TODO instead of a patch when nothing is close', (
   const proposal = patchDocDrift(docDriftFinding(['deploy']), target)
   assert.equal(proposal.patchable, false)
   if (!proposal.patchable) assert.match(proposal.reason, /no close match for deploy/)
+})
+
+test('trackedLockfileTemplates lists templates whose own lockfile git tracks; empty outside a repo', () => {
+  const { root, target } = fixtureRepo('x')
+  // same directory, different package manager: a tracked package-lock.json is not a pnpm-lock.yaml
+  const templates = [target, { ...target, id: 'fixture/pnpm-twin', packageManager: 'pnpm' }]
+  writeFileSync(join(target.dir, 'package-lock.json'), '{}')
+  assert.deepEqual(trackedLockfileTemplates(root, templates), new Set())
+  spawnSync('git', ['add', 'fixture/demo/package-lock.json'], { cwd: root })
+  assert.deepEqual(trackedLockfileTemplates(root, templates), new Set(['fixture/demo']))
+  const notARepo = realpathSync(mkdtempSync(join(tmpdir(), 'sf-triage-nogit-')))
+  temporaryDirectories.push(notARepo)
+  assert.deepEqual(trackedLockfileTemplates(notARepo, templates), new Set())
 })
 
 test('dependency recipes refuse an untracked (gitignored) lockfile left behind by a local install', () => {

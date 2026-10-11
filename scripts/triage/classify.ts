@@ -191,21 +191,37 @@ type FailingPhase = {
 }
 
 /**
- * Run options the health check recorded. `boot` and `cargoTest` and `pm` are being added
- * to HealthReport.options on the health-check branch; read them when present and fall
- * back to what the finding class implies otherwise.
+ * Run options the health check recorded (`boot`, `qa`, `cargoTest`, `pm` in
+ * HealthReport.options); read them when present and fall back to what the finding class
+ * implies otherwise.
  */
 export type ReproOptions = {
   readonly boot?: boolean
+  readonly qa?: boolean
   readonly cargoTest?: boolean
   readonly pm?: string | null
+}
+
+/**
+ * Everything classification needs besides the report. `trackedLockfiles` holds the ids of
+ * the templates whose lockfile git tracks (see patcher.ts trackedLockfileTemplates); the
+ * lockfile recipes only count as auto-patchable for those. Empty by default, which keeps
+ * classify pure and makes every lockfile recipe "manual" until the CLI says otherwise.
+ */
+export type ClassifyOptions = ReproOptions & {
+  readonly trackedLockfiles?: ReadonlySet<string>
 }
 
 /** `pnpm health --only <id>` plus the flags needed to reach the failing phase again. */
 const healthCommand = (template: TriagedTemplateReport, phase: FailingPhase | null, options: ReproOptions): string => {
   const flags = [`--only ${template.id}`]
-  const boot = options.boot ?? (phase?.what === 'boot' || phase?.what === 'qa')
+  // A qa run deliberately emits BOTH --boot --qa: the QA implementation treats --qa as implying
+  // boot (so the pair is harmless there), while a health CLI without --qa yet still runs the
+  // boot check instead of silently dropping it.
+  const qa = options.qa ?? phase?.what === 'qa'
+  const boot = qa || (options.boot ?? phase?.what === 'boot')
   if (boot) flags.push('--boot')
+  if (qa) flags.push('--qa')
   const cargoTest = options.cargoTest ?? Boolean(phase?.what === 'rust' && template.rust?.tested)
   if (cargoTest) flags.push('--cargo-test')
   if (typeof options.pm === 'string' && options.pm.length > 0) flags.push(`--pm ${options.pm}`)
@@ -287,11 +303,39 @@ const finding = (
   dedupeKey: dedupeKeyFor(template.id, cls, evidence),
 })
 
+/**
+ * Why the recipe for this class cannot run on this template, or null when it can. The
+ * lockfile and audit recipes commit a regenerated lockfile, so git must track one (most
+ * templates in this repo do not); the audit recipe is npm-only. doc-drift edits the README
+ * and has no precondition.
+ */
+const patchBlocker = (cls: FindingClass, template: TriagedTemplateReport, options: ClassifyOptions): string | null => {
+  const tracked = options.trackedLockfiles?.has(template.id) ?? false
+  if (cls === 'lockfile-out-of-date') return tracked ? null : 'no tracked lockfile: regenerate it by hand'
+  if (cls === 'vulnerable-deps') {
+    if (template.packageManager !== 'npm')
+      return `${template.packageManager} has no audit fix: bump the ranges in package.json by hand`
+    return tracked ? null : 'no tracked lockfile: bump the ranges in package.json by hand'
+  }
+  return null
+}
+
+/** A recipe is only advertised when its precondition holds; otherwise say why in the action. */
+const withPatchPrecondition = (
+  candidate: Finding,
+  template: TriagedTemplateReport,
+  options: ClassifyOptions,
+): Finding => {
+  const blocker = candidate.autoPatchable ? patchBlocker(candidate.class, template, options) : null
+  if (!blocker) return candidate
+  return { ...candidate, autoPatchable: false, recommendedAction: `${candidate.recommendedAction} (${blocker})` }
+}
+
 /** The one finding that explains why a template is `fail` (or `skip` for credentials). */
 export const classifyPrimary = (
   template: TriagedTemplateReport,
   regression: boolean,
-  options: ReproOptions = {},
+  options: ClassifyOptions = {},
 ): Finding | null => {
   // The health check turns a credential-caused build failure into `skip` while leaving the
   // build result as `fail`. Surface it as a warn so the human knows the template was not
@@ -337,7 +381,11 @@ export const classifyPrimary = (
     if (hits.length === 0) continue
     // A rust tail that matches a generic rule (network, temp dir) keeps that class: the
     // generic cause is still the right first thing to rule out.
-    return finding(template, rule.class, 'fail', rule.confidence, hits, repro, rule.action, regression)
+    return withPatchPrecondition(
+      finding(template, rule.class, 'fail', rule.confidence, hits, repro, rule.action, regression),
+      template,
+      options,
+    )
   }
 
   if (phase.what === 'rust')
@@ -389,7 +437,7 @@ const auditCount = (template: TriagedTemplateReport): number =>
   template.audit.critical + template.audit.high + template.audit.moderate
 
 /** Advisory findings from the structured fields. These never carry `fail`. */
-export const classifyAdvisory = (template: TriagedTemplateReport, options: ReproOptions = {}): Finding[] => {
+export const classifyAdvisory = (template: TriagedTemplateReport, options: ClassifyOptions = {}): Finding[] => {
   const out: Finding[] = []
   const repro = reproFor(template, null, options)
 
@@ -412,17 +460,21 @@ export const classifyAdvisory = (template: TriagedTemplateReport, options: Repro
   if (template.audit.available && auditCount(template) > 0) {
     const { critical, high, moderate } = template.audit
     out.push(
-      finding(
+      withPatchPrecondition(
+        finding(
+          template,
+          'vulnerable-deps',
+          'warn',
+          'high',
+          [`${critical} critical, ${high} high, ${moderate} moderate (${template.packageManager} audit)`],
+          repro,
+          critical + high > 0
+            ? 'Bump the vulnerable dependency ranges now; critical or high advisories overlap dependabot but should not wait.'
+            : 'Bump the vulnerable dependency ranges in the next maintenance pass.',
+          false,
+        ),
         template,
-        'vulnerable-deps',
-        'warn',
-        'high',
-        [`${critical} critical, ${high} high, ${moderate} moderate (${template.packageManager} audit)`],
-        repro,
-        critical + high > 0
-          ? 'Bump the vulnerable dependency ranges now; critical or high advisories overlap dependabot but should not wait.'
-          : 'Bump the vulnerable dependency ranges in the next maintenance pass.',
-        false,
+        options,
       ),
     )
   }
@@ -463,7 +515,7 @@ export const classifyAdvisory = (template: TriagedTemplateReport, options: Repro
 export const classifyTemplate = (
   template: TriagedTemplateReport,
   regression: boolean,
-  options: ReproOptions = {},
+  options: ClassifyOptions = {},
 ): Finding[] => {
   if (template.status === 'pass') return []
   const primary = classifyPrimary(template, regression, options)
@@ -484,15 +536,16 @@ export const sortFindings = (findings: readonly Finding[]): Finding[] =>
 export const classifyReport = (
   templates: readonly TriagedTemplateReport[],
   regressions: ReadonlySet<string>,
-  options: ReproOptions = {},
+  options: ClassifyOptions = {},
 ): Finding[] =>
   sortFindings(templates.flatMap((template) => classifyTemplate(template, regressions.has(template.id), options)))
 
 /** Pull the repro-relevant run options out of a report; missing fields stay undefined. */
 export const reproOptionsOf = (report: { readonly options: object }): ReproOptions => {
-  const raw = report.options as { boot?: unknown; cargoTest?: unknown; pm?: unknown }
+  const raw = report.options as { boot?: unknown; qa?: unknown; cargoTest?: unknown; pm?: unknown }
   return {
     boot: typeof raw.boot === 'boolean' ? raw.boot : undefined,
+    qa: typeof raw.qa === 'boolean' ? raw.qa : undefined,
     cargoTest: typeof raw.cargoTest === 'boolean' ? raw.cargoTest : undefined,
     pm: typeof raw.pm === 'string' ? raw.pm : undefined,
   }

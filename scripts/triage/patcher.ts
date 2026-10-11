@@ -196,6 +196,29 @@ const LOCKFILES: Record<string, string> = {
   yarn: 'yarn.lock',
 }
 
+/**
+ * Ids of the templates whose lockfile (for their package manager) git tracks, from a
+ * single `git ls-files` at the repo root. Empty when git is missing or `root` is not a
+ * repo, so classification just reports every lockfile recipe as manual.
+ */
+export const trackedLockfileTemplates = (
+  root: string,
+  templates: readonly Pick<PatchTarget, 'id' | 'dir' | 'packageManager'>[],
+): Set<string> => {
+  const pathspecs = Object.values(LOCKFILES).map((file) => `*${file}`)
+  const listed = spawnSync('git', ['ls-files', '-z', '--', ...pathspecs], { cwd: root, encoding: 'utf-8' })
+  if (listed.error || listed.status !== 0) return new Set()
+  const tracked = new Set(listed.stdout.split('\0').filter(Boolean))
+  const ids = new Set<string>()
+  for (const template of templates) {
+    const lockfile = LOCKFILES[template.packageManager]
+    if (!lockfile) continue
+    const dir = relative(root, template.dir).split('\\').join('/')
+    if (tracked.has(`${dir}/${lockfile}`)) ids.add(template.id)
+  }
+  return ids
+}
+
 const lockfileOnlyArgs = (pm: string): string[] | null => {
   if (pm === 'npm') return ['install', '--package-lock-only', '--ignore-scripts', '--no-audit', '--no-fund']
   if (pm === 'pnpm') return ['install', '--lockfile-only', '--ignore-scripts']
