@@ -90,6 +90,10 @@ const PAGES: Record<string, string> = {
   '/blank': '<!doctype html><html><body></body></html>',
   '/overlay':
     '<!doctype html><html><body><h1>Rendered, but the dev overlay is open</h1><vite-error-overlay></vite-error-overlay></body></html>',
+  '/hidden-graphic':
+    '<!doctype html><html><body><svg style="display:none" width="0" height="0"><symbol id="icon"><rect width="10" height="10"/></symbol></svg><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" style="display:none"></body></html>',
+  '/hang':
+    '<!doctype html><html><body><h1>Document arrived, but one resource never finishes</h1><img src="/never"></body></html>',
   '/noisy':
     '<!doctype html><html><body><h1>Rendered with a console error and a broken asset</h1><script>console.error("something odd"); fetch("/missing.json")</script></body></html>',
 }
@@ -132,6 +136,10 @@ test('checkRender classifies real pages in a headless browser', { timeout: 60_00
     assert.equal(blank.status, 'fail', JSON.stringify(blank))
     assert.equal(blank.blank, true)
 
+    const hidden = await checkRender(`${base}/hidden-graphic`, ref('fixture/hidden-graphic'), opts)
+    assert.equal(hidden.status, 'fail', JSON.stringify(hidden))
+    assert.equal(hidden.blank, true, 'hidden sprite and display:none img must not count as graphics')
+
     const overlay = await checkRender(`${base}/overlay`, ref('fixture/overlay'), opts)
     assert.equal(overlay.status, 'fail', JSON.stringify(overlay))
     assert.equal(overlay.overlay, 'vite: vite-error-overlay')
@@ -141,6 +149,40 @@ test('checkRender classifies real pages in a headless browser', { timeout: 60_00
     assert.match(noisy.consoleErrors.join(), /something odd/)
     assert.match(noisy.failedRequests.join(), /404 \/missing\.json/)
   } finally {
+    server.close()
+    rmSync(outDir, { recursive: true, force: true })
+  }
+})
+
+test('a navigation that never finishes still yields a screenshot', { timeout: 60_000 }, async (t) => {
+  const pending: Array<() => void> = []
+  const server = createServer((request, response) => {
+    if (request.url === '/never') {
+      // Hold the response open until the test tears the server down.
+      pending.push(() => response.destroy())
+      return
+    }
+    response.writeHead(200, { 'content-type': 'text/html' })
+    response.end(PAGES['/hang'])
+  })
+  const base = await listen(server)
+  const outDir = mkdtempSync(join(tmpdir(), 'health-qa-test-'))
+  try {
+    const result = await checkRender(`${base}/hang`, ref('fixture/hang'), {
+      outDir,
+      navigationTimeoutMs: 1_500,
+      settleMs: 100,
+    })
+    if (!result.available) {
+      t.skip(`no headless browser here: ${result.note}`)
+      return
+    }
+    assert.equal(result.status, 'fail', JSON.stringify(result))
+    assert.equal(result.screenshot, 'screenshots/fixture__hang.png')
+    assert.ok(existsSync(join(outDir, 'screenshots', 'fixture__hang.png')), 'screenshot written on failure')
+    assert.match(result.note ?? '', /screenshot captured after the failed navigation/)
+  } finally {
+    for (const close of pending) close()
     server.close()
     rmSync(outDir, { recursive: true, force: true })
   }

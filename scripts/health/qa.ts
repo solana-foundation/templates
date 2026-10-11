@@ -59,6 +59,7 @@ export type RenderOptions = {
 const DEFAULT_NAVIGATION_TIMEOUT_MS = 30_000
 const DEFAULT_SETTLE_MS = 1_500
 const BROWSER_CLOSE_TIMEOUT_MS = 5_000
+const FAILURE_SCREENSHOT_TIMEOUT_MS = 5_000
 const MAX_SAMPLES = 20
 const MAX_SAMPLE_CHARS = 300
 const BLANK_TEXT_THRESHOLD = 20
@@ -118,7 +119,19 @@ const INSPECT_SCRIPT = `(() => {
     const match = bodyText.match(/Unhandled Runtime Error|Build Error|Failed to compile/i)
     if (match) overlay = 'page text: ' + match[0]
   }
-  const hasGraphics = Boolean(document.querySelector('img, canvas, svg, video'))
+  // Only graphics that actually paint count: an SVG sprite sheet or a display:none image
+  // must not rescue a visibly blank page.
+  const paints = (el) => {
+    if (!el.isConnected) return false
+    const box = el.getBoundingClientRect()
+    if (box.width <= 0 || box.height <= 0) return false
+    if (typeof el.checkVisibility === 'function') {
+      return el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })
+    }
+    const style = getComputedStyle(el)
+    return style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity) > 0
+  }
+  const hasGraphics = Array.from(document.querySelectorAll('img, canvas, svg, video')).some(paints)
   return { overlay, textLength: bodyText.trim().length, hasGraphics }
 })()`
 
@@ -160,11 +173,13 @@ export const checkRender = async (url: string, ref: TemplateRef, opts: RenderOpt
   let screenshot: string | undefined
   let signals: RenderSignals | undefined
   let note: string | undefined
+  // Kept outside the session so a failed navigation can still be screenshotted in the catch.
+  let page: import('puppeteer').Page | undefined
   try {
     // Hard ceiling on the whole page session: a hung renderer must not stall the run.
     const ceilingMs = navigationTimeoutMs + settleMs + 15_000
     const session = (async (): Promise<RenderSignals> => {
-      const page = await browser.newPage()
+      page = await browser.newPage()
       await page.setViewport(opts.viewport ?? { width: 1280, height: 800 })
       page.on('console', (message) => {
         const type = message.type()
@@ -196,11 +211,7 @@ export const checkRender = async (url: string, ref: TemplateRef, opts: RenderOpt
       const inspected = (await page.evaluate(INSPECT_SCRIPT)) as Inspected
       const blank = inspected.textLength < BLANK_TEXT_THRESHOLD && !inspected.hasGraphics
 
-      const screenshotDir = join(opts.outDir, 'screenshots')
-      mkdirSync(screenshotDir, { recursive: true })
-      const fileName = screenshotName(ref.id)
-      await page.screenshot({ path: join(screenshotDir, fileName), fullPage: true })
-      screenshot = `screenshots/${fileName}`
+      screenshot = await takeScreenshot(page, opts.outDir, ref.id)
 
       return { consoleErrors, pageErrors, failedRequests, overlay: inspected.overlay, blank }
     })()
@@ -213,6 +224,17 @@ export const checkRender = async (url: string, ref: TemplateRef, opts: RenderOpt
     ]).finally(() => clearTimeout(ceiling))
   } catch (error) {
     note = sample(String(error))
+    // Best effort, bounded: whatever the page shows after a failed or timed-out navigation
+    // is exactly the evidence a failure report needs. Never let it stall the boot window.
+    if (page && !screenshot) {
+      let timer: NodeJS.Timeout | undefined
+      screenshot = await Promise.race([
+        takeScreenshot(page, opts.outDir, ref.id).catch(() => undefined),
+        new Promise<undefined>((resolve) => {
+          timer = setTimeout(() => resolve(undefined), FAILURE_SCREENSHOT_TIMEOUT_MS)
+        }),
+      ]).finally(() => clearTimeout(timer))
+    }
   } finally {
     await closeBrowser(browser)
   }
@@ -225,7 +247,9 @@ export const checkRender = async (url: string, ref: TemplateRef, opts: RenderOpt
       screenshot,
       ...empty,
       durationMs: Date.now() - start,
-      note: `page did not load cleanly: ${note ?? 'unknown error'}`,
+      note: `page did not load cleanly: ${note ?? 'unknown error'}${
+        screenshot ? ' (screenshot captured after the failed navigation)' : ' (no screenshot could be captured)'
+      }`,
     }
   }
   const verdict = classifyRender(signals)
@@ -242,6 +266,15 @@ export const checkRender = async (url: string, ref: TemplateRef, opts: RenderOpt
     durationMs: Date.now() - start,
     note: verdict.reasons.length ? verdict.reasons.join('; ') : undefined,
   }
+}
+
+/** Full-page screenshot to `<outDir>/screenshots/<id>.png`; returns the report-relative path. */
+const takeScreenshot = async (page: import('puppeteer').Page, outDir: string, templateId: string): Promise<string> => {
+  const screenshotDir = join(outDir, 'screenshots')
+  mkdirSync(screenshotDir, { recursive: true })
+  const fileName = screenshotName(templateId)
+  await page.screenshot({ path: join(screenshotDir, fileName), fullPage: true })
+  return `screenshots/${fileName}`
 }
 
 /** Close the browser, and SIGKILL it if close() hangs, so the boot window can always end. */
