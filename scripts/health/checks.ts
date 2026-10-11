@@ -16,18 +16,24 @@ import type {
   DeprecationResult,
   DocDriftResult,
   OutdatedDep,
+  QaResult,
   RustResult,
   Status,
   TemplateRef,
 } from './types.js'
 import { bumpKind } from './semver.js'
 import { credentialsForTemplate, parentSecretValues, redactDeep, sanitizedEnv, secretValues } from './env.js'
+import { checkRender } from './qa.js'
 
 export type RunOptions = {
   /** force a package manager; null means "use each template's pinned one (npm if unset)" */
   readonly packageManager: string | null
   readonly build: boolean
   readonly boot: boolean
+  /** open each booted web template in a headless browser (implies boot) */
+  readonly qa: boolean
+  /** report output dir; QA screenshots are written under `<outDir>/screenshots/` */
+  readonly outDir: string
   /** also run `cargo test` (host) / build-sbf + test (programs) for Rust templates */
   readonly cargoTest: boolean
   readonly installTimeoutMs: number
@@ -710,17 +716,36 @@ const withBootLock = <T>(task: () => Promise<T>): Promise<T> => {
   return result
 }
 
-export const checkBoot = async (workDir: string, ref: TemplateRef, opts: ResolvedRunOptions): Promise<BootResult> => {
+/** The boot result plus whatever `onReady` produced while the dev server was still up. */
+export type BootOutcome<T> = { readonly boot: BootResult; readonly ready?: T }
+
+/**
+ * Boot the dev server and, when it responds, run `onReady(url)` while it is still up and
+ * the boot lock is held. The server is killed as soon as `onReady` settles. This is the
+ * seam the render QA (and any later browser-driven rung) attaches to.
+ */
+export const checkBoot = async <T = never>(
+  workDir: string,
+  ref: TemplateRef,
+  opts: ResolvedRunOptions,
+  onReady?: (url: string) => Promise<T>,
+): Promise<BootOutcome<T>> => {
   if (ref.kind !== 'next' && ref.kind !== 'vite') {
-    return { status: 'skip', available: false, note: `boot check only applies to web templates (kind: ${ref.kind})` }
+    return {
+      boot: { status: 'skip', available: false, note: `boot check only applies to web templates (kind: ${ref.kind})` },
+    }
   }
   if (!ref.scripts.dev) {
-    return { status: 'skip', available: false, note: 'no dev script' }
+    return { boot: { status: 'skip', available: false, note: 'no dev script' } }
   }
-  return withBootLock(() => bootDevServer(workDir, opts))
+  return withBootLock(() => bootDevServer(workDir, opts, onReady))
 }
 
-const bootDevServer = async (workDir: string, opts: ResolvedRunOptions): Promise<BootResult> => {
+const bootDevServer = async <T>(
+  workDir: string,
+  opts: ResolvedRunOptions,
+  onReady?: (url: string) => Promise<T>,
+): Promise<BootOutcome<T>> => {
   const start = Date.now()
   // detached: the dev command becomes its own process-group leader, so killProcessTree in
   // the finally below takes out the whole tree (pm -> next/vite -> workers), not just the pm.
@@ -745,10 +770,12 @@ const bootDevServer = async (workDir: string, opts: ResolvedRunOptions): Promise
     while (Date.now() < deadline) {
       if (exited) {
         return {
-          status: 'fail',
-          available: true,
-          durationMs: Date.now() - start,
-          note: `dev server exited before responding\n${tail(output, 15)}`,
+          boot: {
+            status: 'fail',
+            available: true,
+            durationMs: Date.now() - start,
+            note: `dev server exited before responding\n${tail(output, 15)}`,
+          },
         }
       }
       // A dev script may start several servers (a Rust API plus Next.js): probe every
@@ -756,7 +783,9 @@ const bootDevServer = async (workDir: string, opts: ResolvedRunOptions): Promise
       for (const url of announcedUrls(output)) {
         const httpStatus = await tryFetch(url)
         if (httpStatus !== null && httpStatus >= 200 && httpStatus < 400) {
-          return { status: 'pass', available: true, url, httpStatus, durationMs: Date.now() - start }
+          const boot: BootResult = { status: 'pass', available: true, url, httpStatus, durationMs: Date.now() - start }
+          // The hook runs inside the try, so the finally below still kills the server if it throws.
+          return onReady ? { boot, ready: await onReady(url) } : { boot }
         }
         if (httpStatus !== null) {
           lastErrorStatus = httpStatus
@@ -766,20 +795,24 @@ const bootDevServer = async (workDir: string, opts: ResolvedRunOptions): Promise
     }
     if (lastErrorStatus !== null) {
       return {
-        status: 'fail',
-        available: true,
-        httpStatus: lastErrorStatus,
-        durationMs: Date.now() - start,
-        note: `dev server kept responding with HTTP ${lastErrorStatus} until the 60s deadline\n${tail(output, 15)}`,
+        boot: {
+          status: 'fail',
+          available: true,
+          httpStatus: lastErrorStatus,
+          durationMs: Date.now() - start,
+          note: `dev server kept responding with HTTP ${lastErrorStatus} until the 60s deadline\n${tail(output, 15)}`,
+        },
       }
     }
     return {
-      status: 'fail',
-      available: true,
-      durationMs: Date.now() - start,
-      note: announcedUrls(output).length
-        ? `dev server printed a URL but did not respond within 60s\n${tail(output, 15)}`
-        : `dev server did not print a localhost URL within 60s\n${tail(output, 15)}`,
+      boot: {
+        status: 'fail',
+        available: true,
+        durationMs: Date.now() - start,
+        note: announcedUrls(output).length
+          ? `dev server printed a URL but did not respond within 60s\n${tail(output, 15)}`
+          : `dev server did not print a localhost URL within 60s\n${tail(output, 15)}`,
+      },
     }
   } finally {
     killProcessTree(child)
@@ -978,10 +1011,21 @@ export const checkTemplate = async (ref: TemplateRef, opts: RunOptions) => {
     const deps = installed ? await checkOutdated(workDir, pm) : skipDeps('install failed')
     const audit = installed ? await checkAudit(workDir, pm) : skipAudit('install failed')
     const docDrift = checkDocDrift(ref)
-    const boot = opts.boot && installed && build.status === 'pass' ? await checkBoot(workDir, ref, effOpts) : undefined
-    // Forwarded credential values must never reach a report: scrub every tail/note/command.
+    // Render QA runs inside the boot window (dev server up, boot lock held) and only when
+    // boot passed: the hook is invoked after the server answered 2xx/3xx. checkRender never
+    // throws, so a QA problem can't take the boot result down with it. The browser gets the
+    // URL only: forwarded credentials reach the dev server process, never the QA step.
+    const qaHook = opts.qa
+      ? (url: string): Promise<QaResult> => checkRender(url, ref, { outDir: opts.outDir })
+      : undefined
+    const booted =
+      opts.boot && installed && build.status === 'pass' ? await checkBoot(workDir, ref, effOpts, qaHook) : undefined
+    const boot = booted?.boot
+    const qa = booted?.ready
+    // Forwarded credential values must never reach a report: scrub every tail/note/command,
+    // including qa notes and console samples (a dev server can echo a key into the console).
     return redactDeep(
-      { build, deprecation, deps, audit, docDrift, boot, rust, packageManager: pm, pmNote, needsSetupSkip },
+      { build, deprecation, deps, audit, docDrift, boot, qa, rust, packageManager: pm, pmNote, needsSetupSkip },
       [...secretValues(opts.forwardedEnv), ...parentSecretValues()],
     )
   } finally {

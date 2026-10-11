@@ -5,7 +5,9 @@
  * Scaffold-free by default: copies each template into an isolated temp dir, installs,
  * runs its `ci`/`build` script, and reports across five dimensions — build health,
  * dependency freshness, known vulnerabilities, registry-deprecated packages, and
- * doc/reality drift. Optionally boots web templates to confirm the dev server responds.
+ * doc/reality drift. Optionally boots web templates to confirm the dev server responds,
+ * and (--qa) opens each booted page in a headless browser to catch error overlays, blank
+ * pages and console errors, with a screenshot per template.
  *
  * Outputs a machine-readable JSON artifact and a human Markdown report. Pass a previous
  * JSON as --baseline to surface regressions.
@@ -15,6 +17,7 @@
  *   pnpm health --only kit/nextjs        # one template (csv ok)
  *   pnpm health --group community        # one group
  *   pnpm health --boot                   # also boot web dev servers
+ *   pnpm health --qa                     # boot + open each page in a headless browser (screenshots)
  *   pnpm health --no-build               # install + deps/audit only (fast)
  *   pnpm health --baseline health-reports/2026-06-20T09-00-00.json
  *   pnpm health --out health-reports --concurrency 4
@@ -46,6 +49,7 @@ type Cli = {
   group: string | null
   build: boolean
   boot: boolean
+  qa: boolean
   cargoTest: boolean
   pm: string | null
   /** dotenv-style file whose variables are forwarded to templates that declare them */
@@ -64,6 +68,7 @@ const parseArgs = (argv: string[]): Cli => {
     group: null,
     build: true,
     boot: false,
+    qa: false,
     cargoTest: false,
     pm: null,
     envFile: null,
@@ -90,7 +95,11 @@ const parseArgs = (argv: string[]): Cli => {
     else if (arg === '--group') cli.group = next()
     else if (arg === '--no-build') cli.build = false
     else if (arg === '--boot') cli.boot = true
-    else if (arg === '--cargo-test') cli.cargoTest = true
+    else if (arg === '--qa') {
+      // QA needs a live dev server, so it implies --boot.
+      cli.qa = true
+      cli.boot = true
+    } else if (arg === '--cargo-test') cli.cargoTest = true
     else if (arg === '--pm') cli.pm = next()
     else if (arg === '--env-file') cli.envFile = next()
     else if (arg === '--allow-env')
@@ -119,6 +128,8 @@ const printHelp = () => {
   --group <name>      limit to a repokit group (kit|web3js|mobile|community)
   --no-build          install + deps/audit only, skip the build/ci script
   --boot              boot web templates and confirm the dev server responds
+  --qa                boot, then open each web template in a headless browser: fails on error overlay,
+                      uncaught page error or blank page; warns on console errors; screenshots to <out>/screenshots/
   --cargo-test        also run cargo test for Rust templates (needs solana platform tools for programs)
   --pm <manager>      force a package manager (default: each template's pinned one, else npm)
   --env-file <path>   dotenv-style file of credentials to forward to templates that declare them
@@ -137,6 +148,8 @@ const printHelp = () => {
 const toTemplateReport = (ref: TemplateRef, checked: Awaited<ReturnType<typeof checkTemplate>>): TemplateReport => {
   const functional: Status[] = [checked.build.status]
   if (checked.boot) functional.push(checked.boot.status)
+  // qa fail means the page is visibly broken (overlay, uncaught error, blank), so it gates like boot.
+  if (checked.qa) functional.push(checked.qa.status)
   if (checked.rust) functional.push(checked.rust.status)
   const advisory: Status[] = [
     checked.deps.status,
@@ -159,6 +172,7 @@ const toTemplateReport = (ref: TemplateRef, checked: Awaited<ReturnType<typeof c
     docDrift: checked.docDrift,
     boot: checked.boot,
     rust: checked.rust,
+    qa: checked.qa,
   }
 }
 
@@ -233,6 +247,8 @@ const main = async () => {
     packageManager: cli.pm,
     build: cli.build,
     boot: cli.boot,
+    qa: cli.qa,
+    outDir: cli.out,
     cargoTest: cli.cargoTest,
     installTimeoutMs: 8 * 60_000,
     buildTimeoutMs: 12 * 60_000,
@@ -287,7 +303,14 @@ const main = async () => {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
     packageManager: cli.pm ?? 'auto (per-template)',
-    options: { build: cli.build, boot: cli.boot, source: 'local', cargoTest: cli.cargoTest, pm: cli.pm },
+    options: {
+      build: cli.build,
+      boot: cli.boot,
+      ...(cli.qa ? { qa: true } : {}),
+      source: 'local',
+      cargoTest: cli.cargoTest,
+      pm: cli.pm,
+    },
     summary,
     templates: reports,
   }
