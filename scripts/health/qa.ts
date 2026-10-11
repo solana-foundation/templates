@@ -187,7 +187,24 @@ export const checkRender = async (url: string, ref: TemplateRef, opts: RenderOpt
         // Chrome logs every failed resource load as a console error too. Those are already
         // tracked (and filtered for noise like favicon) by the response/requestfailed hooks.
         if (/^Failed to load resource/.test(text)) return
-        if (type === 'error' || (type === 'warn' && /hydrat/i.test(text))) pushSample(consoleErrors, text)
+        if (type !== 'error' && !(type === 'warn' && /hydrat/i.test(text))) return
+        // `console.error(new Error(...))` prints as "JSHandle@error": resolve the real messages
+        // from the arguments so the report says what broke, not that something did.
+        if (!/JSHandle@/.test(text)) {
+          pushSample(consoleErrors, text)
+          return
+        }
+        void Promise.all(
+          message
+            .args()
+            .map((arg) =>
+              arg
+                .evaluate((value: unknown) =>
+                  value instanceof Error ? `${value.name}: ${value.message}` : String(value),
+                )
+                .catch(() => 'JSHandle@error'),
+            ),
+        ).then((parts) => pushSample(consoleErrors, parts.join(' ')))
       })
       page.on('pageerror', (error) => pushSample(pageErrors, error.message || String(error)))
       page.on('response', (response) => {

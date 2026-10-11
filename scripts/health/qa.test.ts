@@ -95,7 +95,7 @@ const PAGES: Record<string, string> = {
   '/hang':
     '<!doctype html><html><body><h1>Document arrived, but one resource never finishes</h1><img src="/never"></body></html>',
   '/noisy':
-    '<!doctype html><html><body><h1>Rendered with a console error and a broken asset</h1><script>console.error("something odd"); fetch("/missing.json")</script></body></html>',
+    '<!doctype html><html><body><h1>Rendered with a console error and a broken asset</h1><script>console.error("something odd"); console.error(new Error("boom from an Error object")); fetch("/missing.json")</script></body></html>',
 }
 
 const listen = (server: Server): Promise<string> =>
@@ -147,6 +147,8 @@ test('checkRender classifies real pages in a headless browser', { timeout: 60_00
     const noisy = await checkRender(`${base}/noisy`, ref('fixture/noisy'), opts)
     assert.equal(noisy.status, 'warn', JSON.stringify(noisy))
     assert.match(noisy.consoleErrors.join(), /something odd/)
+    assert.match(noisy.consoleErrors.join(), /Error: boom from an Error object/)
+    assert.doesNotMatch(noisy.consoleErrors.join(), /JSHandle@/)
     assert.match(noisy.failedRequests.join(), /404 \/missing\.json/)
   } finally {
     server.close()
