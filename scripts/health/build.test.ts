@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { scriptChainReferencesCargo } from './checks.js'
+import { scriptChainReferencesCargo } from './build.js'
 
 // kit/axum-keychain-style package.json: ci chains into rust:* scripts that call cargo.
 const scripts = {

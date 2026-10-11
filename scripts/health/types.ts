@@ -251,3 +251,33 @@ export type HealthReport = {
    */
   readonly unrecognized?: readonly UnrecognizedEntry[]
 }
+
+// ---------- runner options ----------
+
+export type RunOptions = {
+  /** force a package manager; null means "use each template's pinned one (npm if unset)" */
+  readonly packageManager: string | null
+  readonly build: boolean
+  readonly boot: boolean
+  /** open each booted web template in a headless browser (implies boot) */
+  readonly qa: boolean
+  /** report output dir; QA screenshots are written under `<outDir>/screenshots/` */
+  readonly outDir: string
+  /** also run `cargo test` (host) / build-sbf + test (programs) for Rust templates */
+  readonly cargoTest: boolean
+  readonly installTimeoutMs: number
+  readonly buildTimeoutMs: number
+  /**
+   * Credentials the maintainer chose to forward (`--env-file` / `--allow-env`). Each template
+   * only ever receives the keys it declares (see credentialsForTemplate), and the values are
+   * redacted from every report field.
+   */
+  readonly forwardedEnv: Readonly<Record<string, string>>
+}
+
+/** RunOptions after checkTemplate has picked the effective package manager and credentials for a template. */
+export type ResolvedRunOptions = RunOptions & {
+  readonly packageManager: string
+  /** the subset of forwardedEnv this template declared, handed to install/build/boot */
+  readonly templateEnv: Readonly<Record<string, string>>
+}

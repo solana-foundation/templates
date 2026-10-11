@@ -4,7 +4,7 @@ This is the agreed direction for testing that templates **actually work in the b
 
 ## The fidelity ladder
 
-Each rung catches more and costs more. Rung 0 exists today (`pnpm health --boot`), and rung 1 shipped as `pnpm health --qa` (issue #452): `scripts/health/qa.ts` holds the browser step and the pure `classifyRender` verdict, `checkBoot` in `scripts/health/checks.ts` runs it through its `onReady` hook while the dev server is up, and the Markdown report ends with a screenshot gallery. Details in `docs/agents/health-check.md`, section "Render QA".
+Each rung catches more and costs more. Rung 0 exists today (`pnpm health --boot`), and rung 1 shipped as `pnpm health --qa` (issue #452): `scripts/health/qa.ts` holds the browser step and the pure `classifyRender` verdict, `checkBoot` in `scripts/health/boot.ts` runs it through its `onReady` hook while the dev server is up, and the Markdown report ends with a screenshot gallery. Details in `docs/agents/health-check.md`, section "Render QA".
 
 | Rung     | Checks                                                                           | Catches                                       | Wallet            | Generic? |
 | -------- | -------------------------------------------------------------------------------- | --------------------------------------------- | ----------------- | -------- |

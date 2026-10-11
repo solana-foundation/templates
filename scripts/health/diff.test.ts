@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { diffReports, diffToMarkdown } from './report.js'
-import { buildFailureMentionsCredentials, unsuppliedCredentialKeys } from './checks.js'
+import { buildFailureMentionsCredentials, unsuppliedCredentialKeys } from './build.js'
 import type { HealthReport, Status } from './types.js'
 
 const report = (entries: Record<string, Status>, unrecognized?: Record<string, string>): HealthReport =>

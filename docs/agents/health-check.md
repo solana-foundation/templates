@@ -73,6 +73,27 @@ This is rung 1 of the UI testing ladder. It does not click anything, connect a w
 
 ---
 
+### Code layout
+
+`scripts/health-check.ts` is the CLI (flags, concurrency, retries, report files). The per-template work lives under `scripts/health/`, one module per concern, so a change to one dimension does not touch the others:
+
+| Module         | Responsibility                                                                                   | Tests                                  |
+| -------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------- |
+| `enumerate.ts` | find templates, classify each one, list the directories it could not understand (`unrecognized`) | `enumerate.test.ts`                    |
+| `checks.ts`    | `checkTemplate`: isolate, run the dimensions below in order, apply the needs-setup rules         |                                        |
+| `process.ts`   | spawn with timeout and process-group kill, output capture, ANSI stripping, `hasBinary`           | (covered through the modules below)    |
+| `isolation.ts` | the filtered temp copy, this run's temp dirs, orphan sweep                                       | `isolate.test.ts`                      |
+| `build.ts`     | install + `ci`/`build`, deprecation warnings, the needs-setup causation rules                    | `build.test.ts`, `deprecation.test.ts` |
+| `advisory.ts`  | `outdated` and `audit` JSON parsing, advisory names, unavailable-not-clean rule                  | `advisory.test.ts`                     |
+| `docdrift.ts`  | README / instructions scripts versus package.json                                                | `docdrift.test.ts`                     |
+| `boot.ts`      | dev server boot, announced URLs, the `onReady` seam the QA hooks into                            | `isolate.test.ts` (`announcedUrls`)    |
+| `rust.ts`      | `cargo check` / `cargo build`, optional tests                                                    | `rust.test.ts`                         |
+| `qa.ts`        | headless browser render check, `classifyRender`, config-skip matcher                             | `qa.test.ts`                           |
+| `env.ts`       | environment allowlist, credential forwarding, redaction                                          | `env.test.ts`, `secrets.test.ts`       |
+| `report.ts`    | JSON to Markdown, baseline diff                                                                  | `report.test.ts`, `diff.test.ts`       |
+| `status.ts`    | the pass/warn/fail/skip rollup rule                                                              | `status.test.ts`                       |
+| `types.ts`     | the report schema and the runner options                                                         |                                        |
+
 ## Part 2 — The judgment dimensions the script leaves to you
 
 The script intentionally stops where reproducible facts end. These need a person or an agent.

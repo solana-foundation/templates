@@ -29,13 +29,9 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync } from 'fs'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 import { enumerateRepo } from './health/enumerate.js'
-import {
-  checkTemplate,
-  cleanupActiveTempDirs,
-  killActiveChildren,
-  sweepOrphanTempDirs,
-  type RunOptions,
-} from './health/checks.js'
+import { checkTemplate, type RunOptions } from './health/checks.js'
+import { cleanupActiveTempDirs, sweepOrphanTempDirs } from './health/isolation.js'
+import { killActiveChildren } from './health/process.js'
 import { parseDotenv } from './health/env.js'
 import { diffReports, diffToMarkdown, toMarkdown } from './health/report.js'
 import { templateStatus } from './health/status.js'

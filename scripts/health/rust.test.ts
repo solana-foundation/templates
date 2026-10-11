@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { rustPhase } from './checks.js'
+import { rustPhase } from './rust.js'
 import type { RustResult } from './types.js'
 
 const initial: RustResult = {

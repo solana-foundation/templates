@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { checkDocDrift, commandContexts, scriptsInCommands } from './checks.js'
+import { checkDocDrift, commandContexts, scriptsInCommands } from './docdrift.js'
 import type { TemplateRef } from './types.js'
 
 test('prose never yields script references', () => {

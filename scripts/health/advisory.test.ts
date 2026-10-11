@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { parseAudit, parseOutdated } from './checks.js'
+import { parseAudit, parseOutdated } from './advisory.js'
 
 const ok = (stdout: string, code = 0) => ({ code, stdout, timedOut: false })
 
