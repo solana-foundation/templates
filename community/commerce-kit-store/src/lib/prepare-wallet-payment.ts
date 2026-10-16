@@ -27,6 +27,8 @@ export async function prepareWalletPayment(client: AppClient, request: HeadlessP
     mint,
     tokenProgram: TOKEN_PROGRAM_ADDRESS,
   })
+  const sourceAccount = await client.rpc.getAccountInfo(source, { encoding: 'base64' }).send()
+  if (!sourceAccount.value) throw new Error('Not enough USDC to pay for this order. Fund your wallet with USDC first.')
   const balance = await client.rpc.getTokenAccountBalance(source).send()
   if (balance.value.decimals !== 6) throw new Error('Expected a six-decimal USDC mint.')
   if (BigInt(balance.value.amount) < amount) throw new Error('Not enough USDC to pay for this order.')

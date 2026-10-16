@@ -58,8 +58,25 @@ describe('payment instruction preparation', () => {
     token.mockResolvedValue({ value: { amount: '999999', decimals: 6 } })
     await expect(prepareWalletPayment(client, request)).rejects.toThrow('Not enough USDC')
   })
+  it('reports insufficient USDC when the payer has no token account', async () => {
+    account.mockResolvedValueOnce({ value: null })
+    await expect(prepareWalletPayment(client, request)).rejects.toThrow('Not enough USDC')
+    expect(token).not.toHaveBeenCalled()
+    expect(balance).not.toHaveBeenCalled()
+  })
+  it('preserves account lookup RPC errors instead of treating them as an empty wallet', async () => {
+    const error = new Error('RPC unavailable')
+    account.mockRejectedValueOnce(error)
+    await expect(prepareWalletPayment(client, request)).rejects.toBe(error)
+    expect(token).not.toHaveBeenCalled()
+  })
+  it('preserves token balance RPC errors instead of treating them as insufficient USDC', async () => {
+    const error = new Error('Token balance RPC unavailable')
+    token.mockRejectedValueOnce(error)
+    await expect(prepareWalletPayment(client, request)).rejects.toBe(error)
+  })
   it('includes rent when the merchant ATA does not exist', async () => {
-    account.mockResolvedValue({ value: null })
+    account.mockResolvedValueOnce({ value: {} }).mockResolvedValueOnce({ value: null })
     balance.mockResolvedValue({ value: 5000n })
     await expect(prepareWalletPayment(client, request)).rejects.toThrow('Not enough SOL')
     expect(rent).toHaveBeenCalled()

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, cleanup, renderHook, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 const mocks = vi.hoisted(() => ({
@@ -8,6 +8,11 @@ const mocks = vi.hoisted(() => ({
   signatures: vi.fn(),
 }))
 vi.mock('@solana/react', () => ({ useClient: () => client }))
+vi.mock('../src/components/wallet-ui', () => ({ WalletUI: () => null }))
+vi.mock('../src/components/app-explorer-link', () => ({ AppExplorerLink: () => null }))
+vi.mock('../src/hooks/use-wallet-payment', () => ({
+  useWalletPayment: () => ({ busy: false, submitted: false, error: null, pay: vi.fn() }),
+}))
 vi.mock('@solana/kit', () => ({
   address: (value: string) => value,
   generateKeyPair: async () => ({ publicKey: 'reference' }),
@@ -24,6 +29,7 @@ vi.mock('../src/lib/verify-payment', async (importOriginal) => ({
 }))
 const client = { rpc: { getSignaturesForAddress: () => ({ send: mocks.signatures }) } }
 import { useHeadlessCheckout } from '../src/hooks/use-headless-checkout'
+import { HeadlessCheckoutDialog } from '../src/components/checkout/headless-checkout-dialog'
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -119,6 +125,36 @@ test('recovers the same reference after a temporary RPC failure', async () => {
   await waitFor(() => expect(result.current.status).toBe('confirmed'), { timeout: 6000 })
   expect(result.current.paymentRequest?.reference).toBe(reference)
   expect(result.current.error).toBeNull()
+  expect(onPaymentVerified).toHaveBeenCalledTimes(1)
+})
+
+test('keeps the checkout visible through RPC trouble and confirms after retrying', async () => {
+  mocks.signatures
+    .mockRejectedValueOnce(new Error('RPC unavailable'))
+    .mockResolvedValue([{ signature: 'payment', err: null }])
+  mocks.generate.mockResolvedValue({
+    url: new URL('https://example.com'),
+    qr: '<svg aria-label="Payment QR code"></svg>',
+  })
+  const onPaymentVerified = vi.fn()
+  function Checkout() {
+    const checkout = useHeadlessCheckout({ onPaymentVerified })
+    return (
+      <>
+        <button onClick={() => void checkout.openCheckout(1)}>Open checkout</button>
+        <HeadlessCheckoutDialog {...checkout} onClose={checkout.closeCheckout} />
+      </>
+    )
+  }
+  render(<Checkout />)
+  fireEvent.click(screen.getByRole('button', { name: 'Open checkout' }))
+  await waitFor(() => expect(screen.getByRole('alert').textContent).toContain('Retrying automatically'))
+  expect(screen.queryByText('Payment Failed')).toBeNull()
+  expect(screen.getByLabelText('Payment QR code')).toBeTruthy()
+  expect(screen.getByText('11111111111111111111111111111114')).toBeTruthy()
+  await waitFor(() => expect(screen.getByText('Payment Confirmed!')).toBeTruthy(), { timeout: 6000 })
+  expect(screen.queryByRole('alert')).toBeNull()
+  expect(mocks.generate).toHaveBeenCalledTimes(1)
   expect(onPaymentVerified).toHaveBeenCalledTimes(1)
 })
 

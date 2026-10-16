@@ -28,6 +28,14 @@ vi.mock('../src/components/ui/dialog', () => {
 })
 import { HeadlessCheckoutDialog } from '../src/components/checkout/headless-checkout-dialog'
 
+const paymentRequest = {
+  url: new URL('https://example.com'),
+  qr: '<svg aria-label="Payment QR code"></svg>',
+  reference: 'checkout-reference',
+  amount: 1,
+  recipient: 'merchant',
+}
+
 beforeEach(() => {
   state.busy = false
   state.submitted = false
@@ -68,10 +76,26 @@ describe('payment-safe checkout dismissal', () => {
   })
   it('does not bypass the guard through the verification error screen', () => {
     state.submitted = true
-    const close = setup({ error: new Error('RPC temporarily unavailable'), status: 'verifying' })
-    fireEvent.click(screen.getByRole('button', { name: 'Close' }))
+    const close = setup({ error: new Error('RPC temporarily unavailable'), status: 'verifying', paymentRequest })
+    expect((screen.getByRole('button', { name: 'Cancel' }) as HTMLButtonElement).disabled).toBe(true)
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
     act(() => state.onOpenChange?.(false))
     expect(close).not.toHaveBeenCalled()
+  })
+  it('keeps the QR and reference visible during temporary verification errors', () => {
+    setup({ error: new Error('RPC temporarily unavailable'), status: 'verifying', paymentRequest })
+    expect(screen.queryByText('Payment Failed')).toBeNull()
+    expect(screen.getByText('Pay with Solana')).toBeTruthy()
+    expect(screen.getByLabelText('Payment QR code')).toBeTruthy()
+    expect(screen.getByText(paymentRequest.reference)).toBeTruthy()
+    expect(screen.getByRole('alert').textContent).toContain('Retrying automatically')
+    expect(screen.getByRole('alert').textContent).toContain('do not pay again')
+    expect((screen.getByRole('button', { name: 'Pay with connected wallet' }) as HTMLButtonElement).disabled).toBe(true)
+  })
+  it('reserves the failure screen for a failed checkout', () => {
+    setup({ status: 'failed', error: new Error('Could not create payment request') })
+    expect(screen.getByText('Payment Failed')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Close' })).toBeTruthy()
   })
   it('allows dismissal once the payment is confirmed', () => {
     state.submitted = true

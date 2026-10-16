@@ -66,6 +66,7 @@ export function HeadlessCheckoutDialog({
   const isPending = status === 'pending'
   const isVerifying = status === 'verifying'
   const isGenerating = status === 'generating'
+  const isFailed = status === 'failed'
   const walletPayment = useWalletPayment(paymentRequest, isConfirmed)
   const cannotClose = walletPayment.busy || (walletPayment.submitted && !isConfirmed)
   const close = () => {
@@ -74,7 +75,7 @@ export function HeadlessCheckoutDialog({
 
   const getTitle = () => {
     if (isConfirmed) return 'Payment Confirmed!'
-    if (error) return 'Payment Failed'
+    if (isFailed) return 'Payment Failed'
     return 'Pay with Solana'
   }
 
@@ -83,7 +84,7 @@ export function HeadlessCheckoutDialog({
     if (isPending) return 'Pay with your connected wallet or scan the QR code'
     if (isVerifying) return 'Verifying your payment on-chain...'
     if (isGenerating) return 'Generating payment request...'
-    if (error) return error.message
+    if (isFailed) return error?.message ?? 'Unable to complete checkout'
     return ''
   }
 
@@ -140,10 +141,10 @@ export function HeadlessCheckoutDialog({
                 </Button>
               </div>
             </div>
-          ) : error ? (
+          ) : isFailed ? (
             <div className="space-y-4">
               <div className="p-4 bg-destructive/10 rounded-lg">
-                <p className="text-sm text-destructive">{error.message}</p>
+                <p className="text-sm text-destructive">{error?.message ?? 'Unable to complete checkout'}</p>
               </div>
               <Button variant="outline" disabled={cannotClose} onClick={close} className="w-full">
                 Close
@@ -154,6 +155,12 @@ export function HeadlessCheckoutDialog({
               {paymentRequest && (
                 <div className="flex flex-col items-center gap-4">
                   <WalletUI />
+                  {error && (
+                    <p role="alert" className="text-sm text-muted-foreground">
+                      Payment verification is temporarily unavailable. Retrying automatically. If you already paid, do
+                      not pay again.
+                    </p>
+                  )}
                   <Button
                     className="w-full"
                     disabled={!isPending || walletPayment.busy || walletPayment.submitted}
@@ -186,6 +193,10 @@ export function HeadlessCheckoutDialog({
                         Verifying transaction...
                       </p>
                     )}
+                  </div>
+                  <div className="w-full min-w-0 text-xs text-muted-foreground">
+                    <p>Payment reference</p>
+                    <p className="break-all font-mono">{paymentRequest.reference}</p>
                   </div>
                 </div>
               )}
