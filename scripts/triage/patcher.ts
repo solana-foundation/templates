@@ -11,6 +11,7 @@ import { spawnSync } from 'child_process'
 import { existsSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'fs'
 import { tmpdir } from 'os'
 import { join, relative } from 'path'
+import { copyTemplate } from '../health/isolation.js'
 import type { Finding, PatchProposal } from './types.js'
 
 export type PatchTarget = {
@@ -76,13 +77,15 @@ export const rewriteScriptReferences = (text: string, from: string, to: string):
 
 const escapeRegExp = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-const copyToTemp = (target: PatchTarget): string => {
+export const copyToTemp = (target: PatchTarget): string => {
   const dest = mkdtempSync(join(tmpdir(), `${TEMP_PREFIX}${target.id.replace(/\//g, '-')}-`))
-  const copied = spawnSync('cp', ['-R', `${target.dir}/.`, dest], { stdio: 'ignore' })
-  if (copied.status !== 0) throw new Error(`failed to copy ${target.id} to ${dest}`)
-  for (const junk of ['node_modules', '.next', 'dist', 'build', 'target', '.expo', '.git'])
-    rmSync(join(dest, junk), { recursive: true, force: true })
-  return realpathSync(dest)
+  try {
+    copyTemplate(target.dir, dest)
+    return realpathSync(dest)
+  } catch (error) {
+    rmSync(dest, { recursive: true, force: true })
+    throw new Error(`failed to copy ${target.id}: ${String(error)}`)
+  }
 }
 
 /**

@@ -77,7 +77,8 @@ test('markdown puts regressions before failures before advisories and carries re
 
 test('empty report renders a no-findings line', () => {
   const md = toMarkdown(report([]))
-  assert.match(md, /_No findings: every template passed._/)
+  assert.match(md, /_No findings matched the current triage rules\._/)
+  assert.doesNotMatch(md, /every template passed/)
   assert.match(md, /\| \(none\) \| 0 \|/)
 })
 

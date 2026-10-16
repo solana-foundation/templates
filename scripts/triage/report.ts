@@ -141,7 +141,7 @@ export const toMarkdown = (report: TriageReport): string => {
     lines.push('## ⚠️ Advisories', '')
     for (const finding of warns) lines.push(...findingBlock(finding, report))
   }
-  if (report.findings.length === 0) lines.push('_No findings: every template passed._', '')
+  if (report.findings.length === 0) lines.push('_No findings matched the current triage rules._', '')
 
   lines.push('---')
   lines.push(

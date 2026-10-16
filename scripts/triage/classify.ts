@@ -264,7 +264,16 @@ const failingPhase = (template: TriagedTemplateReport): FailingPhase | null => {
       tail: template.boot.note ?? '',
       timedOut: false,
     }
-  if (template.qa?.status === 'fail') return { what: 'qa', command: '', tail: template.qa.note ?? '', timedOut: false }
+  if (template.qa?.status === 'fail') {
+    const qa = template.qa
+    // Put concrete errors before the count-only note. Older reports may only have a note.
+    const messages = [...(qa.pageErrors ?? []), qa.overlayText, ...(qa.consoleErrors ?? []), qa.harnessError, qa.note]
+    const tail = messages
+      .filter((message): message is string => Boolean(message))
+      .map((message) => message.replace(/\s+/g, ' ').trim())
+      .join('\n')
+    return { what: 'qa', command: '', tail, timedOut: false }
+  }
   if (template.build.status === 'fail')
     return {
       what: 'build',
@@ -337,19 +346,29 @@ export const classifyPrimary = (
   regression: boolean,
   options: ClassifyOptions = {},
 ): Finding | null => {
-  // The health check turns a credential-caused build failure into `skip` while leaving the
-  // build result as `fail`. Surface it as a warn so the human knows the template was not
-  // verified, without calling it broken. Any other skip is "could not verify": no finding.
+  // Setup skips record their cause in the skipped dimension. Public configuration can
+  // block QA even when the template does not need secrets. Retain older build-fail reports.
   if (template.status === 'skip') {
-    if (!template.needsSecrets) return null
+    const qaNote = template.qa?.status === 'skip' ? template.qa.note : undefined
+    const configurationSkip = qaNote?.startsWith('requires configuration:') ?? false
+    const buildSkip =
+      template.build.status === 'skip' && /^SKIPPED — needs setup\/credentials/.test(template.build.tail)
+    const legacyBuildSkip =
+      template.needsSecrets &&
+      template.build.status === 'fail' &&
+      matchLines(template.build.tail, RULES[0].patterns).length > 0
+    if (!configurationSkip && !buildSkip && !legacyBuildSkip) return null
+    const phase: FailingPhase | null = configurationSkip
+      ? { what: 'qa', command: '', tail: qaNote!, timedOut: false }
+      : null
     return finding(
       template,
       'needs-credentials',
       'warn',
       'high',
-      lastLines(template.build.tail),
-      reproFor(template, null, options),
-      'Verify with a sandbox credential, or leave as "skipped: requires credentials"; not a code break.',
+      configurationSkip ? [qaNote!] : lastLines(template.build.tail),
+      reproFor(template, phase, options),
+      'Provide the declared configuration or a sandbox credential and re-run; leave unconfigured templates as skipped.',
       false,
     )
   }
@@ -416,7 +435,7 @@ export const classifyPrimary = (
       'qa-render-failure',
       'fail',
       'medium',
-      lastLines(phase.tail),
+      phase.tail.split('\n').filter(Boolean).slice(0, MAX_EVIDENCE),
       repro,
       'The page rendered an error state; open the template in a browser and check the console.',
       regression,

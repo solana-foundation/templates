@@ -34,7 +34,7 @@ const statusLine = (template: TemplateReport): string => {
 }
 
 /**
- * Advisory checks that did not complete for a template, with the reason the runner recorded
+ * Checks that did not complete for a template, with the reason the runner recorded
  * (e.g. `npm audit` hit ECONNREFUSED). Rendered next to the completed checks so a report never
  * reads as clean when part of it never ran.
  */
@@ -44,6 +44,8 @@ export const unavailableChecks = (template: TemplateReport): string[] => {
     out.push(`deps: ${template.deps.note.split('\n')[0]}`)
   if (!template.audit.available && template.audit.status === 'skip' && template.audit.note)
     out.push(`vuln: ${template.audit.note.split('\n')[0]}`)
+  if (template.qa?.status === 'skip' && !template.qa.available && template.qa.note)
+    out.push(`qa: ${template.qa.note.split('\n')[0]}`)
   return out
 }
 

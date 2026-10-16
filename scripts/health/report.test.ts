@@ -181,15 +181,26 @@ test('advisory checks that could not run stay visible in every section', () => {
     deprecation: { status: 'pass', packages: [] },
     docDrift: { status: 'pass', missingScripts: [] },
   }
-  const passing = { ...base, id: 'kit/react-vite', status: 'pass' } as unknown as TemplateReport
+  const qa = {
+    status: 'skip',
+    available: false,
+    note: 'browser launch failed: Chrome not found\nInstall Chrome first',
+    pageErrors: [],
+    consoleErrors: [],
+    failedRequests: [],
+    blank: false,
+    durationMs: 0,
+  } as const
+  const withQa = { ...base, qa }
+  const passing = { ...withQa, id: 'kit/react-vite', status: 'pass' } as unknown as TemplateReport
   const warning = {
-    ...base,
+    ...withQa,
     id: 'kit/react-vite-anchor',
     status: 'warn',
     deprecation: { status: 'warn', packages: ['eslint'] },
   } as unknown as TemplateReport
   const failing = {
-    ...base,
+    ...withQa,
     id: 'kit/nextjs',
     status: 'fail',
     build: { ...base.build, status: 'fail', exitCode: 1, tail: 'boom' },
@@ -197,6 +208,7 @@ test('advisory checks that could not run stay visible in every section', () => {
   assert.deepEqual(unavailableChecks(passing), [
     'deps: npm outdated: ECONNREFUSED registry.npmjs.org',
     'vuln: npm audit timed out after 120s',
+    'qa: browser launch failed: Chrome not found',
   ])
   const md = toMarkdown({
     schemaVersion: 1,
@@ -215,7 +227,7 @@ test('advisory checks that could not run stay visible in every section', () => {
     assert.ok(section, `section ${heading} present`)
     assert.match(
       section,
-      /incomplete: deps: npm outdated: ECONNREFUSED registry\.npmjs\.org · vuln: npm audit timed out after 120s/,
+      /incomplete: deps: npm outdated: ECONNREFUSED registry\.npmjs\.org · vuln: npm audit timed out after 120s · qa: browser launch failed: Chrome not found/,
     )
   }
 })

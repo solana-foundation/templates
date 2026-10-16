@@ -1,11 +1,12 @@
 import { test, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
   closestScript,
+  copyToTemp,
   editDistance,
   isTracked,
   patchDocDrift,
@@ -92,6 +93,34 @@ test('doc-drift recipe emits a TODO instead of a patch when nothing is close', (
   const proposal = patchDocDrift(docDriftFinding(['deploy']), target)
   assert.equal(proposal.patchable, false)
   if (!proposal.patchable) assert.match(proposal.reason, /no close match for deploy/)
+})
+
+test('patch copies exclude nested installs, build output and private env files but keep tracked Anchor types', () => {
+  const { root, target } = fixtureRepo('Run `pnpm biuld`.\n')
+  const excluded = [
+    'node_modules/pkg/index.js',
+    'app/node_modules/pkg/index.js',
+    'app/.next/cache/data',
+    'app/dist/index.js',
+    'anchor/target/debug/program',
+    'anchor/target/deploy/program.so',
+    '.env',
+    'app/.env.local',
+  ]
+  const kept = ['anchor/target/idl/demo.json', 'anchor/target/types/demo.ts', '.env.example', 'app/src/index.ts']
+  for (const file of [...excluded, ...kept]) {
+    const path = join(target.dir, file)
+    mkdirSync(join(path, '..'), { recursive: true })
+    writeFileSync(path, 'fixture')
+  }
+  const added = spawnSync('git', ['add', '-f', ...kept.map((file) => `fixture/demo/${file}`)], { cwd: root })
+  assert.equal(added.status, 0)
+  const copy = copyToTemp(target)
+  temporaryDirectories.push(copy)
+  for (const file of excluded) assert.equal(existsSync(join(copy, file)), false, file)
+  for (const file of kept) assert.equal(readFileSync(join(copy, file), 'utf-8'), 'fixture', file)
+  assert.ok(patchDocDrift(docDriftFinding(['biuld']), target).patchable)
+  assert.equal(readFileSync(join(target.dir, 'README.md'), 'utf-8'), 'Run `pnpm biuld`.\n')
 })
 
 test('trackedLockfileTemplates lists templates whose own lockfile git tracks; empty outside a repo', () => {

@@ -3,11 +3,12 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { HealthReport } from '../health/types.js'
+import type { HealthReport, QaResult } from '../health/types.js'
 import { AUTO_PATCHABLE, classifyReport, classifyTemplate, reproOptionsOf, RULES } from './classify.js'
 import { regressionIds } from './load.js'
 import type { Finding, FindingClass, TriagedTemplateReport } from './types.js'
 import { FINDING_CLASSES } from './types.js'
+import { draftIssue } from './report.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const load = (name: string): HealthReport =>
@@ -22,6 +23,107 @@ const byId = (id: string): TriagedTemplateReport => {
   return found
 }
 const primaryOf = (id: string) => classifyTemplate(byId(id), false)[0]
+
+const qaResult = (overrides: Partial<QaResult>): QaResult => ({
+  status: 'fail',
+  available: true,
+  pageErrors: [],
+  consoleErrors: [],
+  failedRequests: [],
+  blank: false,
+  durationMs: 10,
+  note: '1 uncaught page error(s)',
+  ...overrides,
+})
+
+test('real QA errors reach draft issues and distinguish crashes with identical count notes', () => {
+  for (const field of ['pageErrors', 'consoleErrors', 'overlayText'] as const) {
+    const classifyCrash = (message: string) =>
+      classifyTemplate(
+        {
+          ...byId('kit/qa-demo'),
+          qa: qaResult({ [field]: field === 'overlayText' ? message : [message] }),
+        },
+        false,
+      )[0]
+    const first = classifyCrash('TypeError: wallet.connect is not a function')
+    const second = classifyCrash('ReferenceError: provider is not defined')
+    assert.equal(first.class, 'qa-render-failure')
+    assert.equal(first.evidence[0], 'TypeError: wallet.connect is not a function')
+    assert.notEqual(first.dedupeKey, second.dedupeKey, field)
+    assert.equal(first.dedupeKey, classifyCrash('TypeError: wallet.connect is not a function').dedupeKey)
+    const draft = draftIssue(first, {
+      source: {
+        report: 'health.json',
+        reportGeneratedAt: sample.generatedAt,
+        baseline: null,
+      },
+    })
+    assert.match(draft.body, /TypeError: wallet\.connect is not a function/)
+  }
+})
+
+test('QA classification uses recorded error messages and keeps the first crash in a bounded sample', () => {
+  const template = byId('kit/qa-demo')
+  const missingModule = classifyTemplate(
+    { ...template, qa: qaResult({ overlayText: "Module not found: Can't resolve 'wallet-adapter'" }) },
+    false,
+  )[0]
+  assert.equal(missingModule.class, 'missing-module')
+  const crash = classifyTemplate(
+    {
+      ...template,
+      qa: qaResult({
+        pageErrors: ['TypeError: first crash\n  at App (app.tsx:10:2)', ...Array(10).fill('Error: later crash')],
+      }),
+    },
+    false,
+  )[0]
+  assert.equal(crash.evidence.length, 5)
+  assert.match(crash.evidence[0], /^TypeError: first crash/)
+})
+
+test('QA configuration skips preserve their cause and repro even for public app IDs', () => {
+  for (const needsSecrets of [false, true]) {
+    const note = 'requires configuration: VITE_PHANTOM_APP_ID (page error: appId is required)'
+    const result = classifyTemplate(
+      {
+        ...byId('kit/pass-demo'),
+        status: 'skip',
+        needsSecrets,
+        qa: qaResult({ status: 'skip', note }),
+      },
+      false,
+    )[0]
+    assert.equal(result.class, 'needs-credentials')
+    assert.equal(result.severity, 'warn')
+    assert.deepEqual(result.evidence, [note])
+    assert.match(result.reproduce, /--boot --qa$/)
+  }
+})
+
+test('build setup skips use the recorded cause; unrelated skips do not imply missing credentials', () => {
+  const template = byId('kit/pass-demo')
+  const tail = 'SKIPPED — needs setup/credentials (env required). Build without setup:\nSUPABASE_URL is not set'
+  const result = classifyTemplate(
+    { ...template, status: 'skip', needsSecrets: true, build: { ...template.build, status: 'skip', tail } },
+    false,
+  )[0]
+  assert.equal(result.class, 'needs-credentials')
+  assert.ok(result.evidence.includes('SUPABASE_URL is not set'))
+  assert.deepEqual(
+    classifyTemplate(
+      {
+        ...template,
+        status: 'skip',
+        needsSecrets: true,
+        qa: qaResult({ status: 'skip', available: false, note: 'browser launch failed' }),
+      },
+      false,
+    ),
+    [],
+  )
+})
 
 const EXPECTED: Record<string, FindingClass> = {
   'kit/lockfile-demo': 'lockfile-out-of-date',
