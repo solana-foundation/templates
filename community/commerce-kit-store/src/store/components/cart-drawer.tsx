@@ -36,7 +36,9 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   })
 
   const handleCheckout = () => {
-    checkout.openCartCheckout(cart.items, generateOrderMemo())
+    void checkout.openCartCheckout(cart.items, generateOrderMemo()).catch(() => {
+      // The checkout dialog displays the generation error.
+    })
   }
 
   const handleCheckoutClose = () => {
