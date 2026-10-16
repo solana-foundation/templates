@@ -55,8 +55,8 @@ export default function App() {
           </h1>
           <p className="max-w-3xl text-base leading-relaxed text-muted">
             Drop in <code className="font-mono">@solana/kit</code>, add the Kit
-            wallet and RPC plugins, and you get wallet connection plus Version 1
-            transaction support without manual RPC wiring.
+            wallet and RPC plugins for wallet discovery, connection, and account
+            updates.
           </p>
           <ul className="mt-4 space-y-2 text-sm text-foreground">
             <li className="flex gap-2">

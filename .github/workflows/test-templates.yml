@@ -99,14 +99,16 @@ jobs:
           # @solana-program/token >=0.14 requires Node >=24
           - node: 22
             template: kit/nextjs
-          # Kit 8 wallet/RPC plugins require Node >=24
-          - node: 22
-            template: kit/react-vite
           # Depends on @solana/kit RPC/wallet stack that requires Node >=24
           - node: 22
             template: kit/nextjs-hardware-signin
           - node: 22
             template: kit/nextjs-das-nfts
+          # @solana/web3.js v3 pins @solana-program/stake 0.9.0, which requires Node >=24
+          - node: 22
+            template: web3js/web3js-nextjs
+          - node: 22
+            template: web3js/web3js-react-vite
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -132,14 +134,16 @@ jobs:
           # @solana-program/token >=0.14 requires Node >=24
           - node: 22
             template: kit/nextjs
-          # Kit 8 wallet/RPC plugins require Node >=24
-          - node: 22
-            template: kit/react-vite
           # Depends on @solana/kit RPC/wallet stack that requires Node >=24
           - node: 22
             template: kit/nextjs-hardware-signin
           - node: 22
             template: kit/nextjs-das-nfts
+          # @solana/web3.js v3 pins @solana-program/stake 0.9.0, which requires Node >=24
+          - node: 22
+            template: web3js/web3js-nextjs
+          - node: 22
+            template: web3js/web3js-react-vite
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -165,14 +169,16 @@ jobs:
           # @solana-program/token >=0.14 requires Node >=24
           - node: 22
             template: kit/nextjs
-          # Kit 8 wallet/RPC plugins require Node >=24
-          - node: 22
-            template: kit/react-vite
           # Depends on @solana/kit RPC/wallet stack that requires Node >=24
           - node: 22
             template: kit/nextjs-hardware-signin
           - node: 22
             template: kit/nextjs-das-nfts
+          # @solana/web3.js v3 pins @solana-program/stake 0.9.0, which requires Node >=24
+          - node: 22
+            template: web3js/web3js-nextjs
+          - node: 22
+            template: web3js/web3js-react-vite
     steps:
       - name: Checkout
         uses: actions/checkout@v4

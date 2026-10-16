@@ -13,6 +13,7 @@ minimumReleaseAgeExclude:
   - '@solana-program/memo'
   - '@solana/web3.js'
   - '@solana/wallet-adapter'
+  - '@solana/wallet-standard-util'
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@tailwindcss/oxide'
