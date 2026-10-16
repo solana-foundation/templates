@@ -18,15 +18,20 @@ export default function TextGlitch({
   glitchProbability = 0.4,
   minInterval = 2000,
   maxInterval = 8000,
-  glitchDuration = Math.floor(Math.random() * (1400 - 500)) + 850,
+  glitchDuration = 1200,
 }: TextGlitchProps) {
   const [isGlitching, setIsGlitching] = useState(false)
+  const [offsets, setOffsets] = useState([0, 0, 0, 0])
 
   useEffect(() => {
+    let nextTimer: ReturnType<typeof setTimeout>
+    let endTimer: ReturnType<typeof setTimeout> | undefined
     const tryGlitch = () => {
       if (Math.random() < glitchProbability) {
+        setOffsets([Math.random() * 10 - 5, Math.random() * 5 - 2.5, Math.random() * 10 - 5, Math.random() * 5 - 2.5])
         setIsGlitching(true)
-        setTimeout(() => {
+        clearTimeout(endTimer)
+        endTimer = setTimeout(() => {
           setIsGlitching(false)
         }, glitchDuration)
       }
@@ -35,15 +40,17 @@ export default function TextGlitch({
     const scheduleNextGlitch = () => {
       const nextInterval = Math.floor(Math.random() * (maxInterval - minInterval)) + minInterval
 
-      return setTimeout(() => {
+      nextTimer = setTimeout(() => {
         tryGlitch()
-        const timerId = scheduleNextGlitch()
-        return () => clearTimeout(timerId)
+        scheduleNextGlitch()
       }, nextInterval)
     }
 
-    const timerId = scheduleNextGlitch()
-    return () => clearTimeout(timerId)
+    scheduleNextGlitch()
+    return () => {
+      clearTimeout(nextTimer)
+      clearTimeout(endTimer)
+    }
   }, [glitchProbability, minInterval, maxInterval, glitchDuration])
 
   return (
@@ -67,7 +74,7 @@ export default function TextGlitch({
               width: '100%',
               height: '100%',
               clipPath: 'polygon(0 0, 100% 0, 100% 45%, 0 45%)',
-              transform: `translate(${Math.random() * 10 - 5}px, ${Math.random() * 5 - 2.5}px)`,
+              transform: `translate(${offsets[0]}px, ${offsets[1]}px)`,
               opacity: 0.8,
               zIndex: 1,
             }}
@@ -84,7 +91,7 @@ export default function TextGlitch({
               width: '100%',
               height: '100%',
               clipPath: 'polygon(0 80%, 100% 20%, 100% 100%, 0 100%)',
-              transform: `translate(${Math.random() * 10 - 5}px, ${Math.random() * 5 - 2.5}px)`,
+              transform: `translate(${offsets[2]}px, ${offsets[3]}px)`,
               opacity: 0.8,
               zIndex: 1,
             }}

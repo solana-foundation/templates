@@ -4,7 +4,9 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { AppExplorerLink } from '@/components/app-explorer-link'
-import { Loader2, CheckCircle2, XCircle } from 'lucide-react'
+import { Loader2, CheckCircle2, XCircle, Send } from 'lucide-react'
+import { useWalletPayment } from '@/hooks/use-wallet-payment'
+import { WalletUI } from '@/components/wallet-ui'
 import type { HeadlessPaymentStatus, HeadlessPaymentRequest } from '@/hooks/use-headless-checkout'
 import type { CartItem } from '@/store/types/cart'
 
@@ -64,6 +66,11 @@ export function HeadlessCheckoutDialog({
   const isPending = status === 'pending'
   const isVerifying = status === 'verifying'
   const isGenerating = status === 'generating'
+  const walletPayment = useWalletPayment(paymentRequest, isConfirmed)
+  const cannotClose = walletPayment.busy || (walletPayment.submitted && !isConfirmed)
+  const close = () => {
+    if (!cannotClose) onClose()
+  }
 
   const getTitle = () => {
     if (isConfirmed) return 'Payment Confirmed!'
@@ -73,7 +80,7 @@ export function HeadlessCheckoutDialog({
 
   const getDescription = () => {
     if (isConfirmed) return 'Your payment has been confirmed successfully'
-    if (isPending) return 'Scan the QR code with your Solana wallet'
+    if (isPending) return 'Pay with your connected wallet or scan the QR code'
     if (isVerifying) return 'Verifying your payment on-chain...'
     if (isGenerating) return 'Generating payment request...'
     if (error) return error.message
@@ -81,8 +88,16 @@ export function HeadlessCheckoutDialog({
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[95vw] max-w-md sm:max-w-lg mx-auto max-h-[90vh] overflow-y-auto overflow-x-hidden">
+    <Dialog open={isOpen} onOpenChange={close}>
+      <DialogContent
+        onEscapeKeyDown={(e) => {
+          if (cannotClose) e.preventDefault()
+        }}
+        onPointerDownOutside={(e) => {
+          if (cannotClose) e.preventDefault()
+        }}
+        className="w-[95vw] max-w-md sm:max-w-lg mx-auto max-h-[90vh] overflow-y-auto overflow-x-hidden"
+      >
         <DialogHeader>
           <div className="flex items-center justify-between gap-2">
             <DialogTitle className="text-base sm:text-lg truncate">{getTitle()}</DialogTitle>
@@ -130,7 +145,7 @@ export function HeadlessCheckoutDialog({
               <div className="p-4 bg-destructive/10 rounded-lg">
                 <p className="text-sm text-destructive">{error.message}</p>
               </div>
-              <Button variant="outline" onClick={onClose} className="w-full">
+              <Button variant="outline" disabled={cannotClose} onClick={close} className="w-full">
                 Close
               </Button>
             </div>
@@ -138,6 +153,24 @@ export function HeadlessCheckoutDialog({
             <>
               {paymentRequest && (
                 <div className="flex flex-col items-center gap-4">
+                  <WalletUI />
+                  <Button
+                    className="w-full"
+                    disabled={!isPending || walletPayment.busy || walletPayment.submitted}
+                    onClick={() => void walletPayment.pay()}
+                  >
+                    {walletPayment.busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                    {walletPayment.busy
+                      ? 'Confirming payment...'
+                      : walletPayment.submitted
+                        ? 'Waiting for payment verification...'
+                        : 'Pay with connected wallet'}
+                  </Button>
+                  {walletPayment.error && (
+                    <p role="alert" className="text-sm text-destructive">
+                      {walletPayment.error}
+                    </p>
+                  )}
                   <div className="p-4 bg-white rounded-lg border">
                     <div
                       className="w-64 h-64 [&>svg]:w-full [&>svg]:h-full"
@@ -171,7 +204,7 @@ export function HeadlessCheckoutDialog({
               )}
 
               <div className="flex justify-end gap-2 pt-4 border-t">
-                <Button variant="outline" onClick={onClose}>
+                <Button variant="outline" disabled={cannotClose} onClick={close}>
                   Cancel
                 </Button>
               </div>

@@ -1,19 +1,16 @@
 'use client'
 
 import { useCallback, useState, useEffect, useRef } from 'react'
-import { useSolanaClient } from '@solana/react-hooks'
+import { useClient } from '@solana/react'
+import type { AppClient } from '@/lib/solana-client'
+import { usdcMinorUnits, verifyUsdcPayment } from '@/lib/verify-payment'
 import { address, getAddressFromPublicKey, generateKeyPair } from '@solana/kit'
-import {
-  createBuyNowRequest,
-  createCartRequest,
-  createSolanaPayRequest,
-  verifyPayment,
-} from '@solana-commerce/headless'
+import { createBuyNowRequest, createCartRequest, createSolanaPayRequest } from '@solana-commerce/headless'
 import type { CartItem } from '@/store/types/cart'
 
 export const USDC_MINT_MAINNET = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
 export const USDC_MINT_DEVNET = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'
-const USDC_MINT = process.env.NEXT_PUBLIC_USDC_MINT || USDC_MINT_MAINNET
+export const USDC_MINT = process.env.NEXT_PUBLIC_USDC_MINT || USDC_MINT_MAINNET
 
 function getMerchantWallet(): string {
   const wallet = process.env.NEXT_PUBLIC_MERCHANT_WALLET
@@ -31,8 +28,6 @@ function getMerchantWallet(): string {
  * but USDC only has 6 decimals. The library internally divides by 10^9 when encoding the URL,
  * so we multiply by 10^9 here to get the correct final amount.
  */
-const SOLANA_PAY_AMOUNT_MULTIPLIER = 1_000_000_000
-const USDC_MINOR_UNITS = 1_000_000
 const POLLING_INTERVAL_MS = 2000
 
 export type HeadlessPaymentStatus = 'idle' | 'generating' | 'pending' | 'verifying' | 'confirmed' | 'failed'
@@ -93,7 +88,7 @@ async function createPaymentRequest(
   const { url, qr } = await createSolanaPayRequest(
     {
       recipient: address(merchantWallet),
-      amount: BigInt(Math.round(totalAmount * SOLANA_PAY_AMOUNT_MULTIPLIER)),
+      amount: usdcMinorUnits(totalAmount) * 1_000n,
       splToken: address(USDC_MINT),
       reference: address(reference),
       label: commerceRequest.label,
@@ -158,7 +153,7 @@ export function useHeadlessCheckout(options: UseHeadlessCheckoutOptions = {}) {
     onPaymentVerified,
   } = options
 
-  const client = useSolanaClient()
+  const client = useClient<AppClient>()
 
   const [isOpen, setIsOpen] = useState(false)
   const [amount, setAmount] = useState(0)
@@ -173,14 +168,25 @@ export function useHeadlessCheckout(options: UseHeadlessCheckoutOptions = {}) {
   } | null>(null)
 
   const callbacksRef = useRef({ onPaymentFound, onPaymentVerified })
+  const generation = useRef(0)
+  useEffect(
+    () => () => {
+      generation.current++
+    },
+    [],
+  )
   useEffect(() => {
     callbacksRef.current = { onPaymentFound, onPaymentVerified }
   }, [onPaymentFound, onPaymentVerified])
 
   const createPaymentForProducts = useCallback(
     async (products: Product[], totalAmount: number, paymentMemo?: string) => {
+      const currentGeneration = ++generation.current
       setStatus('generating')
       setError(null)
+      setPaymentRequest(null)
+      setSignature(null)
+      setVerificationResult(null)
 
       try {
         const reference = await generatePaymentReference()
@@ -191,11 +197,13 @@ export function useHeadlessCheckout(options: UseHeadlessCheckoutOptions = {}) {
           qrSize,
         })
 
+        if (currentGeneration !== generation.current) return
         setPaymentRequest(request)
         setAmount(totalAmount)
         setStatus('pending')
         return request
       } catch (err) {
+        if (currentGeneration !== generation.current) return
         const paymentError = err instanceof Error ? err : new Error('Failed to create payment')
         setError(paymentError)
         setStatus('failed')
@@ -207,53 +215,63 @@ export function useHeadlessCheckout(options: UseHeadlessCheckoutOptions = {}) {
 
   useEffect(() => {
     const reference = paymentRequest?.reference
-    const shouldPoll = isOpen && paymentRequest && client && status === 'pending' && !signature
+    const shouldPoll = isOpen && paymentRequest
 
     if (!shouldPoll || !reference) return
 
     let cancelled = false
+    let failures = 0
 
     const poll = async () => {
       const referenceAddr = address(reference)
 
       while (!cancelled) {
         try {
-          const results = await client.runtime.rpc.getSignaturesForAddress(referenceAddr, { limit: 1 }).send()
+          const results = await client.rpc
+            .getSignaturesForAddress(referenceAddr, { limit: 10, commitment: 'confirmed' })
+            .send()
 
+          if (cancelled) return
+          setError(null)
           if (!results?.length) {
+            failures = 0
+            setStatus('pending')
             await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS))
             continue
           }
 
           if (cancelled) return
 
-          const foundSignature = results[results.length - 1].signature
-          setSignature(foundSignature)
-          callbacksRef.current.onPaymentFound?.(foundSignature)
-          setStatus('verifying')
-
-          // Type cast needed: @solana/client omits `rentEpoch` from account types,
-          // while Commerce Kit (gill) expects it. They're runtime compatible.
-          const result = await verifyPayment(
-            client.runtime.rpc as unknown as Parameters<typeof verifyPayment>[0],
-            foundSignature,
-            Math.round(paymentRequest!.amount * USDC_MINOR_UNITS),
-            getMerchantWallet(),
-            USDC_MINT,
-          )
-
-          setVerificationResult(result)
-          setStatus(result.verified ? 'confirmed' : 'failed')
-          callbacksRef.current.onPaymentVerified?.(result)
-          return
-        } catch (err) {
-          const isNotFound = (err as Error)?.message?.includes('not found')
-          if (isNotFound && !cancelled) {
-            await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS))
-            continue
+          for (const candidate of results) {
+            if (candidate.err) continue
+            setStatus('verifying')
+            const result = await verifyUsdcPayment(client.rpc, candidate.signature, {
+              amount: usdcMinorUnits(paymentRequest.amount),
+              recipient: paymentRequest.recipient,
+              mint: paymentRequest.splToken!,
+              reference,
+            })
+            if (cancelled) return
+            if (!result.verified) continue
+            const verified = { ...result, signature: candidate.signature }
+            setSignature(candidate.signature)
+            setVerificationResult(verified)
+            setStatus('confirmed')
+            callbacksRef.current.onPaymentFound?.(candidate.signature)
+            callbacksRef.current.onPaymentVerified?.(verified)
+            return
           }
-          if (!isNotFound) console.error('Payment polling error:', err)
-          return
+          failures = 0
+          setStatus('pending')
+          await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS))
+        } catch (err) {
+          if (cancelled) return
+          setError(err instanceof Error ? err : new Error('Unable to verify payment'))
+          setStatus('verifying')
+          failures++
+          await new Promise((resolve) =>
+            setTimeout(resolve, Math.min(30_000, POLLING_INTERVAL_MS * 2 ** Math.min(failures, 4))),
+          )
         }
       }
     }
@@ -262,7 +280,7 @@ export function useHeadlessCheckout(options: UseHeadlessCheckoutOptions = {}) {
     return () => {
       cancelled = true
     }
-  }, [isOpen, paymentRequest, signature, client, status])
+  }, [isOpen, paymentRequest, client])
 
   const openCheckout = useCallback(
     async (checkoutAmount: number) => {
@@ -284,6 +302,7 @@ export function useHeadlessCheckout(options: UseHeadlessCheckoutOptions = {}) {
   )
 
   const closeCheckout = useCallback(() => {
+    generation.current++
     setIsOpen(false)
     setPaymentRequest(null)
     setSignature(null)
