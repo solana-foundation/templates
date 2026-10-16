@@ -1,6 +1,3 @@
-import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { MEMO_PROGRAM_ADDRESS } from "@solana-program/memo";
 import { address, createSolanaRpc, type Signature } from "@solana/kit";
 import { fetchMint, fetchToken } from "@solana-program/token";
@@ -42,13 +39,17 @@ let rpc: ReturnType<typeof createSolanaRpc>;
 let lastSignature: Signature | undefined;
 
 beforeAll(async () => {
-  surfnet = await Surfnet.start();
-  const memoProgram = readFileSync(resolve("tests/fixtures/spl_memo.so"));
-  expect(createHash("sha256").update(memoProgram).digest("hex")).toBe(
-    "0c92063c6838d9ad8af50aaefea9a166b5bb41a2bfa2bc6327d7db320849bc78"
-  );
-  surfnet.deploy({ programId: MEMO_PROGRAM_ADDRESS, soBytes: memoProgram });
+  surfnet = Surfnet.startWithConfig({
+    offline: false,
+    remoteRpcUrl:
+      process.env.SOLANA_TEST_REMOTE_RPC_URL ??
+      "https://api.mainnet-beta.solana.com",
+  });
   rpc = createSolanaRpc(surfnet.rpcUrl);
+  const memoProgram = await rpc
+    .getAccountInfo(MEMO_PROGRAM_ADDRESS, { encoding: "base64" })
+    .send();
+  expect(memoProgram.value?.executable).toBe(true);
   registerMockWallet();
 }, 60_000);
 
@@ -292,6 +293,17 @@ test("creates a mint, mints tokens, and transfers to new and existing token acco
       );
       expect((await fetchMint(rpc, mint)).data.supply).toBe(100_000_000_000n);
     },
+    { timeout: 15_000 }
+  );
+  await waitFor(
+    () =>
+      expect(
+        (
+          screen.getByRole("button", {
+            name: "Transfer tokens",
+          }) as HTMLButtonElement
+        ).disabled
+      ).toBe(false),
     { timeout: 15_000 }
   );
   await expectNewV1Transactions();
