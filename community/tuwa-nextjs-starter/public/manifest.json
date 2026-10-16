@@ -8,14 +8,9 @@
   "background_color": "#ffffff",
   "icons": [
     {
-      "src": "https://cdn.jsdelivr.net/gh/TuwaIO/workflows@main/favicon/icon0.svg",
+      "src": "/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml"
-    },
-    {
-      "src": "https://cdn.jsdelivr.net/gh/TuwaIO/workflows@main/favicon/web-app-manifest-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
     }
   ]
 }

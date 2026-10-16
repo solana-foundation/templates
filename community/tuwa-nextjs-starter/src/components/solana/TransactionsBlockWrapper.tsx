@@ -2,7 +2,7 @@
 
 import { address } from '@solana/kit';
 import { useSatelliteConnectStore } from '@tuwaio/sdk/nova-connect/satellite';
-import { textCenterEllipsis } from '@tuwaio/sdk/nova-core';
+import { textCenterEllipsis } from '@tuwaio/sdk/nova-core/utils';
 import { HashLink } from '@tuwaio/sdk/nova-transactions';
 import { OrbitAdapter, selectAdapterByKey, SOLANA_CHAIN_IDS } from '@tuwaio/sdk/orbit';
 import { SolanaConnection } from '@tuwaio/solana-sdk/satellite';
