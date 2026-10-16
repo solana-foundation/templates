@@ -12,7 +12,7 @@ export default defineConfig({
         // Bundle the Solana packages through Vite so they resolve their
         // browser builds — the wallet plugin's SSR stub disables wallet
         // discovery under Node.
-        inline: [/@solana\//],
+        inline: [/@solana\/(?!surfpool(?:\/|$))/],
       },
     },
     setupFiles: ["./vitest.setup.ts"],

@@ -1,0 +1,16 @@
+{
+  "name": "@template-tests/surfpool",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "dependencies": {
+    "@solana/kit-plugin-rpc": "0.18.0",
+    "@solana/surfpool": "1.6.1"
+  }
+}
