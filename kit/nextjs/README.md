@@ -67,16 +67,14 @@ npm run test
 
 The tests in [`tests/`](tests/) drive the real UI — click **Connect Wallet**, pick a wallet, fill in the transfer form, press **Send SOL** — and assert on-chain state before and after each click. Three pieces make that work without a browser or a wallet extension:
 
-- **Agave 4.2.2's `solana-test-validator`** runs the tests against a V1-enabled local validator. The test adapter starts an isolated validator and exposes only the small funding/account helpers the tests need.
+- **[`@solana/surfpool` 1.6.1](https://www.npmjs.com/package/@solana/surfpool/v/1.6.1)** starts an isolated, in-process local runtime with dynamic RPC and WebSocket ports. It supports V1 transactions and provides funding helpers without a separate validator process.
 - **A mock wallet-standard wallet** ([`tests/mock-wallet.ts`](tests/mock-wallet.ts)) registers itself like any browser extension would, so the app's real wallet discovery, connect flow, and transaction signing run unmodified — signatures come from an in-memory keypair.
 - **[Vitest](https://vitest.dev) + [Testing Library](https://testing-library.com/docs/react-testing-library/intro/)** render the actual app components in jsdom and interact with them by role and label, the same way a user would.
 
-The tests point `AppClientProvider` at the local validator via its optional URL override. The validator adapter requires Agave 4.2.2 and a supported macOS or Linux environment.
+The tests point `AppClientProvider` at Surfpool through its optional URL override and assert that sent transactions have version 1 as well as their expected on-chain effects. Each run starts its own offline runtime and stops it during teardown. No existing validator, ledger, or devnet funds are used.
 
-If `SOLANA_TEST_LEDGER_DIR` is set, it is passed to the validator with
-`--reset`. Use only a disposable, test-owned directory for this variable; do
-not point it at a shared validator ledger or a localnet ledger containing data
-you need to keep.
+Surfpool's native test runtime supports Linux x64 and macOS x64/arm64. On Windows, run the tests in a supported Linux x64 WSL environment with Node.js 24 or newer. No separate Solana CLI installation is required.
 
-Agave 4.2.2 includes the Memo programs by default, so the tests do not need a
-bundled program binary or a separate Memo deployment.
+Surfpool 1.6.1's offline runtime does not preload the Memo v4 program used by the current Memo client. Test setup verifies the checksum and deploys the unmodified official Memo v4 release locally through Surfpool's public API. The fixture's source, checksum, and license are documented in [`tests/fixtures/`](tests/fixtures/README.md). Tests do not download programs or require an external RPC connection.
+
+The small package in `tests/surfpool` only re-exports the official SDK. It isolates Surfpool 1.6.1's optional RPC-plugin 0.18 peer from the application's V1-capable RPC-plugin 0.19. It does not implement a validator or alter transactions or simulation results.

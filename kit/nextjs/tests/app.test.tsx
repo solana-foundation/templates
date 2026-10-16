@@ -1,6 +1,10 @@
-import { address, createSolanaRpc } from "@solana/kit";
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { MEMO_PROGRAM_ADDRESS } from "@solana-program/memo";
+import { address, createSolanaRpc, type Signature } from "@solana/kit";
 import { fetchMint, fetchToken } from "@solana-program/token";
-import { Surfnet } from "@template-tests/surfpool-runtime";
+import { Surfnet } from "@template-tests/surfpool";
 import {
   cleanup,
   fireEvent,
@@ -35,11 +39,16 @@ const LAMPORTS_PER_SOL = 1_000_000_000;
 
 let surfnet: Surfnet;
 let rpc: ReturnType<typeof createSolanaRpc>;
+let lastSignature: Signature | undefined;
 
 beforeAll(async () => {
   surfnet = await Surfnet.start();
+  const memoProgram = readFileSync(resolve("tests/fixtures/spl_memo.so"));
+  expect(createHash("sha256").update(memoProgram).digest("hex")).toBe(
+    "0c92063c6838d9ad8af50aaefea9a166b5bb41a2bfa2bc6327d7db320849bc78"
+  );
+  surfnet.deploy({ programId: MEMO_PROGRAM_ADDRESS, soBytes: memoProgram });
   rpc = createSolanaRpc(surfnet.rpcUrl);
-  await surfnet.fundSol(mockWalletAddress, 5 * LAMPORTS_PER_SOL);
   registerMockWallet();
 }, 60_000);
 
@@ -47,9 +56,14 @@ afterAll(() => {
   surfnet?.stop();
 });
 
-beforeEach(() => {
+beforeEach(async () => {
   localStorage.clear();
   resetMockWallet();
+  surfnet.fundSol(mockWalletAddress, 5 * LAMPORTS_PER_SOL);
+  const signatures = await rpc
+    .getSignaturesForAddress(address(mockWalletAddress), { limit: 1 })
+    .send();
+  lastSignature = signatures[0]?.signature;
 });
 
 afterEach(cleanup);
@@ -86,6 +100,33 @@ async function getBalance(owner: string): Promise<bigint> {
     .getBalance(address(owner), { commitment: "confirmed" })
     .send();
   return value;
+}
+
+async function expectNewV1Transactions() {
+  const signatures = await rpc
+    .getSignaturesForAddress(address(mockWalletAddress), {
+      commitment: "confirmed",
+      limit: 100,
+      ...(lastSignature ? { until: lastSignature } : {}),
+    })
+    .send();
+  expect(signatures.length).toBeGreaterThan(0);
+  const transactions = await Promise.all(
+    signatures.map(async ({ signature }) => {
+      const transaction = await rpc
+        .getTransaction(signature, {
+          commitment: "confirmed",
+          encoding: "json",
+          maxSupportedTransactionVersion: 1,
+        })
+        .send();
+      expect(transaction?.version).toBe(1);
+      expect(transaction?.meta?.err).toBeNull();
+      return transaction;
+    })
+  );
+  lastSignature = signatures[0].signature;
+  return transactions;
 }
 
 async function connectWallet() {
@@ -151,6 +192,7 @@ test("signs and sends a SOL transfer that moves lamports on-chain", async () => 
   expect(await getBalance(mockWalletAddress)).toBeLessThan(
     senderBefore - BigInt(LAMPORTS_PER_SOL)
   );
+  await expectNewV1Transactions();
 });
 
 test("posts a memo and records it in the transaction logs", async () => {
@@ -160,17 +202,10 @@ test("posts a memo and records it in the transaction logs", async () => {
   fireEvent.click(screen.getByRole("button", { name: "Post memo" }));
   await screen.findByText("Memo posted", {}, { timeout: 15_000 });
 
-  const signatures = await rpc
-    .getSignaturesForAddress(address(mockWalletAddress), { limit: 1 })
-    .send();
-  expect(signatures.length).toBeGreaterThan(0);
-  const transaction = await rpc
-    .getTransaction(signatures[0].signature, {
-      encoding: "json",
-      maxSupportedTransactionVersion: 1,
-    })
-    .send();
-  expect(transaction?.version).toBe(1);
+  const [transaction] = await expectNewV1Transactions();
+  expect(transaction?.meta?.logMessages).toContain(
+    `Program ${MEMO_PROGRAM_ADDRESS} success`
+  );
   expect(transaction?.meta?.logMessages?.join("\n")).toContain(
     "gm from @solana/kit"
   );
@@ -198,6 +233,7 @@ test("creates a mint, mints tokens, and transfers to new and existing token acco
     __option: "Some",
     value: mockWalletAddress,
   });
+  await expectNewV1Transactions();
 
   fireEvent.click(screen.getByRole("button", { name: "Mint to my wallet" }));
   await screen.findByText(
@@ -208,6 +244,7 @@ test("creates a mint, mints tokens, and transfers to new and existing token acco
   const senderAta = address(await surfnet.getAta(mockWalletAddress, mint));
   expect((await fetchToken(rpc, senderAta)).data.amount).toBe(100_000_000_000n);
   expect((await fetchMint(rpc, mint)).data.supply).toBe(100_000_000_000n);
+  await expectNewV1Transactions();
 
   const recipient = (await Surfnet.newKeypair()).publicKey;
   const recipientAta = address(await surfnet.getAta(recipient, mint));
@@ -232,6 +269,8 @@ test("creates a mint, mints tokens, and transfers to new and existing token acco
     { timeout: 15_000 }
   );
 
+  await expectNewV1Transactions();
+
   // Repeat with an existing ATA and a fractional amount to catch scaling errors.
   fireEvent.change(screen.getByLabelText("Amount to transfer"), {
     target: { value: "0.000000001" },
@@ -255,4 +294,5 @@ test("creates a mint, mints tokens, and transfers to new and existing token acco
     },
     { timeout: 15_000 }
   );
+  await expectNewV1Transactions();
 }, 60_000);
