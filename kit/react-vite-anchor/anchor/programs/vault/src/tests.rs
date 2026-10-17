@@ -55,7 +55,8 @@ mod tests {
 
         // Load the program
         let program_bytes = include_bytes!("../../../target/deploy/vault.so");
-        svm.add_program(PROGRAM_ID, program_bytes);
+        svm.add_program(PROGRAM_ID, program_bytes)
+            .expect("Failed to load vault program");
 
         // Create a user with some SOL
         let user = Keypair::new();
@@ -110,7 +111,8 @@ mod tests {
         let mut svm = LiteSVM::new();
 
         let program_bytes = include_bytes!("../../../target/deploy/vault.so");
-        svm.add_program(PROGRAM_ID, program_bytes);
+        svm.add_program(PROGRAM_ID, program_bytes)
+            .expect("Failed to load vault program");
 
         let user = Keypair::new();
         svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();
@@ -147,7 +149,8 @@ mod tests {
         let mut svm = LiteSVM::new();
 
         let program_bytes = include_bytes!("../../../target/deploy/vault.so");
-        svm.add_program(PROGRAM_ID, program_bytes);
+        svm.add_program(PROGRAM_ID, program_bytes)
+            .expect("Failed to load vault program");
 
         let user = Keypair::new();
         svm.airdrop(&user.pubkey(), 10 * LAMPORTS_PER_SOL).unwrap();

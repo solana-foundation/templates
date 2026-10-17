@@ -1,12 +1,7 @@
-import { SolanaProvider } from "@solana/react-hooks";
+import { ClientProvider } from "@solana/react";
 import { PropsWithChildren } from "react";
-import { autoDiscover, createClient } from "@solana/client";
-
-const client = createClient({
-  endpoint: "https://api.devnet.solana.com",
-  walletConnectors: autoDiscover(),
-});
+import { client } from "./solana-client";
 
 export function Providers({ children }: PropsWithChildren) {
-  return <SolanaProvider client={client}>{children}</SolanaProvider>;
+  return <ClientProvider client={client}>{children}</ClientProvider>;
 }
