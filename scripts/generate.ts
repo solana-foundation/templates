@@ -11,7 +11,7 @@
 
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
-import { readPackageJson, readDirs, writeJsonFile, writeFile, hasPackageJson, joinPath } from './shared/fs-utils.js'
+import { readPackageJson, readDirs, writeJsonFile, writeFile, hasPackageJson } from './shared/fs-utils.js'
 import {
   type TemplateMetadata,
   type TemplateJson,
@@ -20,7 +20,7 @@ import {
   type RootConfig,
   isTemplatePackageJson,
 } from './shared/types.js'
-import { ok, err, type Result, unwrap } from './shared/result.js'
+import { ok, err, type Result } from './shared/result.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT_DIR = join(__dirname, '..')

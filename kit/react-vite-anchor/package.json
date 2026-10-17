@@ -23,9 +23,6 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=24"
-  },
   "scripts": {
     "anchor-build": "cd anchor && anchor build --ignore-keys",
     "anchor-test": "cd anchor && anchor build --ignore-keys && cargo test",

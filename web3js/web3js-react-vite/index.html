@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web3.js v3 Starter</title>
+    <meta
+      name="description"
+      content="Wallet connection, SOL transfers, and SPL token actions with @solana/web3.js v3 and @solana/wallet-adapter v3"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <script>
+      try {
+        if (localStorage.getItem("theme") === '"light"') {
+          document.documentElement.classList.remove("dark");
+        }
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

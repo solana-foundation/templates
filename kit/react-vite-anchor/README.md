@@ -4,7 +4,7 @@ React + Vite starter with Tailwind CSS, Kit 8 RPC/wallet plugins, `@solana/react
 
 ## Getting Started
 
-Requires Node.js 24 or newer. Wallets must be configured for devnet.
+Use an up-to-date Node.js 22 or 24 release. Wallets must be configured for devnet.
 
 ```shell
 npx -y create-solana-dapp@latest -t solana-foundation/templates/kit/react-vite-anchor
