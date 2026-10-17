@@ -77,4 +77,4 @@ Surfpool's native test runtime supports Linux x64 and macOS x64/arm64. On Window
 
 `Surfnet.start()` defaults to offline mode, where Memo v4 is not available in SDK 1.6.1. The tests use `Surfnet.startWithConfig` with remote account fallback enabled so Surfpool can fetch the deployed program. An internet connection and an available mainnet RPC are required. The default is `https://api.mainnet-beta.solana.com`; set `SOLANA_TEST_REMOTE_RPC_URL` to use another mainnet RPC if needed. Test transactions are sent only to Surfpool's local RPC, never to the upstream network. No Memo binary or license fixture is bundled, and no Solana CLI dump or deployment step is needed.
 
-The small package in `tests/surfpool` only re-exports the official SDK. It isolates Surfpool 1.6.1's optional RPC-plugin 0.18 peer from the application's V1-capable RPC-plugin 0.19. It does not implement a validator or alter transactions or simulation results.
+Surfpool 1.6.1 declares an optional `@solana/kit-plugin-rpc@^0.18.0` peer, while the app uses the V1-capable 0.19. The `overrides` entry in `package.json` points Surfpool at the app's version so npm installs without an `ERESOLVE` error.

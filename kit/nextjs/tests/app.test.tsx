@@ -1,7 +1,7 @@
 import { MEMO_PROGRAM_ADDRESS } from "@solana-program/memo";
 import { address, createSolanaRpc, type Signature } from "@solana/kit";
 import { fetchMint, fetchToken } from "@solana-program/token";
-import { Surfnet } from "@template-tests/surfpool";
+import { Surfnet } from "@solana/surfpool";
 import {
   cleanup,
   fireEvent,
