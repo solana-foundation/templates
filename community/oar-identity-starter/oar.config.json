@@ -1,0 +1,11 @@
+{
+  "standard": "0.1",
+  "cluster": "solana:devnet",
+  "name": "OAR Starter App",
+  "summary": "",
+  "category": "other",
+  "domain": "",
+  "repositories": [],
+  "programs": [],
+  "nonce": 0
+}
