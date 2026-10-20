@@ -10,7 +10,6 @@ import { SolanaConnection } from '@tuwaio/solana-sdk/satellite';
 import React from 'react';
 
 import { usePulsarStore } from '@/hooks/pulsarStoreHook';
-import { useStore } from '@/hooks/storeHook';
 import { txActions, TxType } from '@/transactions';
 
 export const TxActionButtonDecrement = ({
@@ -25,7 +24,6 @@ export const TxActionButtonDecrement = ({
   const executeTxAction = usePulsarStore((state) => state.executeTxAction);
   const transactionsPool = usePulsarStore((state) => state.transactionsPool);
   const getLastTxKey = usePulsarStore((state) => state.getLastTxKey);
-  const getAccounts = useStore((state) => state.getAccounts);
 
   const handleDecrement = async () => {
     const { connectedAccount } = activeWallet as SolanaConnection;
@@ -38,9 +36,6 @@ export const TxActionButtonDecrement = ({
           signer: createSolanaTransactionSendingSigner(connectedAccount, 'devnet'),
           contractAddress: solanatest,
         }),
-      onSuccess: async () => {
-        await getAccounts();
-      },
       params: {
         type: TxType.decrement,
         adapter: OrbitAdapter.SOLANA,

@@ -5,9 +5,9 @@ import { useSatelliteConnectStore } from '@tuwaio/sdk/nova-connect/satellite';
 import { textCenterEllipsis } from '@tuwaio/sdk/nova-core/utils';
 import { HashLink } from '@tuwaio/sdk/nova-transactions';
 import { OrbitAdapter, selectAdapterByKey, SOLANA_CHAIN_IDS } from '@tuwaio/sdk/orbit';
-import { TransactionStatus } from '@tuwaio/sdk/pulsar';
+import { TransactionStatus, useTxFinished } from '@tuwaio/sdk/pulsar';
 import { SolanaConnection } from '@tuwaio/solana-sdk/satellite';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 import { TxActionButtonClose } from '@/components/solana/TxActionButtonClose';
 import { TxActionButtonDecrement } from '@/components/solana/TxActionButtonDecrement';
@@ -16,23 +16,17 @@ import { TxActionButtonInitialize } from '@/components/solana/TxActionButtonInit
 import { PROGRAM_ID } from '@/constants';
 import { usePulsarStore } from '@/hooks/pulsarStoreHook';
 import { useStore } from '@/hooks/storeHook';
+import { TxType } from '@/transactions';
 
 export const TransactionsBlockWrapper = () => {
   const activeWallet = useSatelliteConnectStore((store) => store.activeConnection);
   const accounts = useStore((state) => state.accounts);
   const getAccounts = useStore((state) => state.getAccounts);
+  const removeAccFromStore = useStore((state) => state.removeAccFromStore);
   const accountsLoading = useStore((state) => state.accountsLoading);
   const accountsError = useStore((state) => state.accountsError);
   const getAdapter = usePulsarStore((state) => state.getAdapter);
-  // Keys of the successful transactions, as one string so the component re-renders only when the list changes
-  const succeededTxKeys = usePulsarStore((state) =>
-    Object.values(state.transactionsPool)
-      .filter((tx) => tx.status === TransactionStatus.Success)
-      .map((tx) => tx.txKey)
-      .sort()
-      .join(','),
-  );
-  const seenSucceededTxKeys = useRef<Set<string> | null>(null);
+  const subscribeTxFinished = usePulsarStore((state) => state.subscribeTxFinished);
 
   const foundAdapter = selectAdapterByKey({
     adapterKey: OrbitAdapter.SOLANA,
@@ -46,16 +40,17 @@ export const TransactionsBlockWrapper = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // A transaction restored after a page reload has lost the onSuccess callback of its button, so the counters are
-  // also refreshed whenever a transaction reaches Success while the page is open
-  useEffect(() => {
-    const keys = new Set(succeededTxKeys ? succeededTxKeys.split(',') : []);
-    const seen = seenSucceededTxKeys.current;
-    seenSucceededTxKeys.current = keys;
-    if (seen && [...keys].some((key) => !seen.has(key))) {
-      getAccounts();
-    }
-  }, [succeededTxKeys, getAccounts]);
+  // Refreshes the counters after every successful Solana transaction, also one restored after a page reload, which has
+  // lost the callbacks of executeTxAction
+  useTxFinished({
+    subscribeTxFinished,
+    onFinished: async (tx) => {
+      if (tx.adapter !== OrbitAdapter.SOLANA || tx.status !== TransactionStatus.Success) return;
+      await getAccounts();
+      // The RPC node may still list a counter closed a moment ago
+      if (tx.type === TxType.close) removeAccFromStore(tx.payload.contractAddress);
+    },
+  });
 
   // The counter program is deployed on devnet: its explorer links name the cluster, whatever the wallet is on
   const openSolscan = () => {

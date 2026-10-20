@@ -9,7 +9,6 @@ import { SolanaConnection } from '@tuwaio/solana-sdk/satellite';
 import React from 'react';
 
 import { usePulsarStore } from '@/hooks/pulsarStoreHook';
-import { useStore } from '@/hooks/storeHook';
 import { txActions, TxType } from '@/transactions';
 
 export const TxActionButtonClose = ({
@@ -22,8 +21,6 @@ export const TxActionButtonClose = ({
   const executeTxAction = usePulsarStore((state) => state.executeTxAction);
   const transactionsPool = usePulsarStore((state) => state.transactionsPool);
   const getLastTxKey = usePulsarStore((state) => state.getLastTxKey);
-  const getAccounts = useStore((state) => state.getAccounts);
-  const removeAccFromStore = useStore((state) => state.removeAccFromStore);
 
   const handleClose = async () => {
     const { connectedAccount } = activeWallet as SolanaConnection;
@@ -36,10 +33,6 @@ export const TxActionButtonClose = ({
           signer: createSolanaTransactionSendingSigner(connectedAccount, 'devnet'),
           contractAddress: solanatest,
         }),
-      onSuccess: async () => {
-        await getAccounts();
-        removeAccFromStore(solanatest.toString());
-      },
       params: {
         type: TxType.close,
         adapter: OrbitAdapter.SOLANA,
