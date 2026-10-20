@@ -40,12 +40,12 @@
     "typecheck": "tsc -b"
   },
   "dependencies": {
-    "@solana-program/token": "^0.17.0",
-    "@solana/kit": "^8.4.0",
-    "@solana/wallet-adapter": "^3.0.1",
-    "@solana/web3.js": "^3.0.1",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
+    "@solana-program/token": "^0.18.0",
+    "@solana/kit": "^8.5.0",
+    "@solana/wallet-adapter": "^3.1.0",
+    "@solana/web3.js": "^3.1.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "sonner": "^2.0.8"
   },
   "devDependencies": {
