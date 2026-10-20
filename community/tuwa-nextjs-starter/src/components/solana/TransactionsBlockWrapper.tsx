@@ -5,8 +5,9 @@ import { useSatelliteConnectStore } from '@tuwaio/sdk/nova-connect/satellite';
 import { textCenterEllipsis } from '@tuwaio/sdk/nova-core/utils';
 import { HashLink } from '@tuwaio/sdk/nova-transactions';
 import { OrbitAdapter, selectAdapterByKey, SOLANA_CHAIN_IDS } from '@tuwaio/sdk/orbit';
+import { TransactionStatus } from '@tuwaio/sdk/pulsar';
 import { SolanaConnection } from '@tuwaio/solana-sdk/satellite';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { TxActionButtonClose } from '@/components/solana/TxActionButtonClose';
 import { TxActionButtonDecrement } from '@/components/solana/TxActionButtonDecrement';
@@ -23,6 +24,15 @@ export const TransactionsBlockWrapper = () => {
   const accountsLoading = useStore((state) => state.accountsLoading);
   const accountsError = useStore((state) => state.accountsError);
   const getAdapter = usePulsarStore((state) => state.getAdapter);
+  // Keys of the successful transactions, as one string so the component re-renders only when the list changes
+  const succeededTxKeys = usePulsarStore((state) =>
+    Object.values(state.transactionsPool)
+      .filter((tx) => tx.status === TransactionStatus.Success)
+      .map((tx) => tx.txKey)
+      .sort()
+      .join(','),
+  );
+  const seenSucceededTxKeys = useRef<Set<string> | null>(null);
 
   const foundAdapter = selectAdapterByKey({
     adapterKey: OrbitAdapter.SOLANA,
@@ -35,6 +45,17 @@ export const TransactionsBlockWrapper = () => {
     getAccounts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // A transaction restored after a page reload has lost the onSuccess callback of its button, so the counters are
+  // also refreshed whenever a transaction reaches Success while the page is open
+  useEffect(() => {
+    const keys = new Set(succeededTxKeys ? succeededTxKeys.split(',') : []);
+    const seen = seenSucceededTxKeys.current;
+    seenSucceededTxKeys.current = keys;
+    if (seen && [...keys].some((key) => !seen.has(key))) {
+      getAccounts();
+    }
+  }, [succeededTxKeys, getAccounts]);
 
   // The counter program is deployed on devnet: its explorer links name the cluster, whatever the wallet is on
   const openSolscan = () => {
