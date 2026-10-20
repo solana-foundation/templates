@@ -23,7 +23,11 @@ function parse(argv) {
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
     if (arg === '--creator' && !creator) creator = argv[++i]
-    else if (arg === '--nonce' && nonce === undefined) nonce = argv[++i]
+    else if (arg === '--nonce' && nonce === undefined) {
+      if (i + 1 >= argv.length || argv[i + 1].startsWith('--'))
+        fail('--nonce requires a non-negative decimal integer.')
+      nonce = argv[++i]
+    }
     else if (arg === '--force') force = true
     else fail('Unexpected or repeated option: ' + arg)
   }
@@ -78,6 +82,8 @@ async function main() {
   ]
   if (repos.length === 0 && existsSync('oar.json'))
     fail('Stale oar.json exists but no repository is claimed; remove it after reviewing.')
+  if (domains.length === 0 && existsSync('public/.well-known/oar.json'))
+    fail('Stale domain proof public/.well-known/oar.json exists but no domain is claimed; remove it after reviewing.')
   if (!opts.force) {
     for (const [path] of outputs) if (existsSync(path)) fail('Refusing to overwrite ' + path + '; use --force.')
   }
