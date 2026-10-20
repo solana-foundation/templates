@@ -170,7 +170,7 @@ API-key-bearing URL in a `NEXT_PUBLIC_` variable.
 ## Current limitations
 
 - Devnet only; mainnet is NO-GO.
-- The OAR SDK is installed from its GitHub release tarball (`@open-app-registry/sdk`), not from the npm registry.
+- The OAR SDK is installed from npm, pinned to `@open-app-registry/sdk@0.1.1-rc.3`.
 - Domain proofs must be served without redirects; repository proofs are read from the default branch of GitHub or
   GitLab only.
 - A deployed program is linked separately by its upgrade authority; this template does not deploy programs.
