@@ -8,6 +8,7 @@ on:
       - 'mobile/**/package.json'
       - 'web3js/**/package.json'
       - 'package.json'
+      - '.nvmrc'
       - 'scripts/**'
   push:
     branches: [main]
@@ -17,6 +18,7 @@ on:
       - 'mobile/**/package.json'
       - 'web3js/**/package.json'
       - 'package.json'
+      - '.nvmrc'
       - 'scripts/**'
   workflow_dispatch:
 
@@ -44,7 +46,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version-file: .nvmrc
           cache: 'pnpm'
 
       - name: Install dependencies
