@@ -1,0 +1,31 @@
+# The circuit and programs are standalone crates; see the justfile.
+[workspace]
+resolver = "2"
+members = ["interface", "client", "tests"]
+exclude = ["circuit", "programs/anchor", "programs/pinocchio"]
+
+[workspace.dependencies]
+interface = { path = "interface" }
+client = { path = "client" }
+
+anyhow = "1"
+ark-bn254 = { version = "0.6", default-features = false, features = ["curve"] }
+ark-ff = { version = "0.6", default-features = false }
+clap = { version = "4", features = ["derive"] }
+getrandom = "0.3"
+hex = "0.4"
+serde_json = "1"
+tempfile = "3"
+
+# LiteSVM 0.16 and solana-rpc-client 4.2 are the newest pair that resolve together.
+litesvm = "0.16"
+solana-address = { version = "~2.6", features = ["curve25519", "decode"] }
+solana-commitment-config = "3.1"
+solana-instruction = "~3.4"
+solana-instruction-error = "2"
+solana-keypair = "3.1"
+solana-message = "4.2"
+solana-rpc-client = "~4.2"
+solana-signer = "3.0"
+solana-transaction = "~4.1"
+solana-transaction-error = "3"

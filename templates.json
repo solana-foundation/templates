@@ -832,6 +832,27 @@
         "usecase": "Payments"
       },
       {
+        "description": "Zero-knowledge proofs in Rust: an xark circuit verified by Anchor and Pinocchio programs",
+        "id": "gh:solana-foundation/templates/community/xark-solana-starter",
+        "image": "community/xark-solana-starter/og-image.png",
+        "keywords": [
+          "solana",
+          "zk",
+          "zero-knowledge",
+          "groth16",
+          "privacy",
+          "xark",
+          "anchor",
+          "pinocchio",
+          "rust",
+          "litesvm"
+        ],
+        "name": "xark-solana-starter",
+        "path": "community/xark-solana-starter",
+        "displayName": "xark ZK Starter",
+        "usecase": "Starter"
+      },
+      {
         "description": "ZK-Compression based airdrop app built with Next.js, Tailwind, and @solana/react-hooks",
         "id": "gh:solana-foundation/templates/community/zk-compression-airdrop",
         "image": "community/zk-compression-airdrop/og-image.png",
