@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { LAMPORTS_PER_SOL } from "@solana/client";
 import {
   useWalletConnection,
   useSendTransaction,
@@ -15,8 +16,8 @@ import {
   getWithdrawInstructionDataEncoder,
   VAULT_PROGRAM_ADDRESS,
 } from "./generated/vault";
+import { lamportsFromSol } from "./lamports";
 
-const LAMPORTS_PER_SOL = 1_000_000_000n;
 const SYSTEM_PROGRAM_ADDRESS = "11111111111111111111111111111111" as Address;
 
 export function VaultCard() {
@@ -59,12 +60,16 @@ export function VaultCard() {
   const handleDeposit = useCallback(async () => {
     if (!walletAddress || !vaultAddress || !amount) return;
 
+    const depositAmount = lamportsFromSol(amount);
+    if (depositAmount === null) {
+      setTxStatus(
+        "Enter a valid SOL amount greater than zero with up to 9 decimal places."
+      );
+      return;
+    }
+
     try {
       setTxStatus("Building transaction...");
-
-      const depositAmount = BigInt(
-        Math.floor(parseFloat(amount) * Number(LAMPORTS_PER_SOL))
-      );
 
       // Manually construct the instruction
       const instruction = {
@@ -179,7 +184,8 @@ export function VaultCard() {
           <input
             type="number"
             min="0"
-            step="0.01"
+            step="0.000000001"
+            aria-label="Amount in SOL"
             placeholder="Amount in SOL"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
@@ -188,12 +194,7 @@ export function VaultCard() {
           />
           <button
             onClick={handleDeposit}
-            disabled={
-              isSending ||
-              !amount ||
-              parseFloat(amount) <= 0 ||
-              vaultLamports > 0n
-            }
+            disabled={isSending || !amount || vaultLamports > 0n}
             className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
           >
             {isSending ? "Confirming..." : "Deposit"}
@@ -217,7 +218,10 @@ export function VaultCard() {
 
       {/* Status */}
       {txStatus && (
-        <div className="rounded-lg border border-border-low bg-cream/50 px-4 py-3 text-sm">
+        <div
+          role="status"
+          className="rounded-lg border border-border-low bg-cream/50 px-4 py-3 text-sm"
+        >
           {txStatus}
         </div>
       )}
