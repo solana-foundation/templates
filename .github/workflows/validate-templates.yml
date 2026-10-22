@@ -9,6 +9,7 @@ on:
       - 'web3js/**/package.json'
       - 'scripts/**'
       - 'package.json'
+      - '.nvmrc'
       - '.github/workflows/validate-templates.yml'
       - '.github/workflows/templates.json'
   push:
