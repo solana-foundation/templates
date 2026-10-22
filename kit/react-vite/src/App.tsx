@@ -1,4 +1,5 @@
 import { useWalletConnection } from "@solana/react-hooks";
+import { WalletActions } from "./wallet-actions";
 
 export default function App() {
   const { connectors, connect, disconnect, wallet, status } =
@@ -149,6 +150,17 @@ export default function App() {
             </button>
           </div>
         </section>
+
+        {status === "connected" && wallet ? (
+          <WalletActions
+            key={`${wallet.connector.id}:${address}`}
+            wallet={wallet}
+          />
+        ) : (
+          <p className="text-sm text-muted">
+            Connect a wallet to view your balance and try the devnet actions.
+          </p>
+        )}
       </main>
     </div>
   );
