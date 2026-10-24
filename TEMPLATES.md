@@ -282,6 +282,14 @@ Templates maintained by the Solana community
 
 `solana` `moneygram` `onramp` `offramp` `usdc` `payments` `kit` `nextjs` `solana-kit` `tailwind` `typescript`
 
+### [oar-identity-starter](community/oar-identity-starter)
+
+`gh:solana-foundation/templates/community/oar-identity-starter`
+
+> Next.js starter with an OAR App ID and verifiable program, domain and repo links
+
+`solana` `oar` `app-identity` `verification` `program-metadata` `nextjs` `solana-kit` `typescript` `devnet`
+
 ### [pay-gate-inference](community/pay-gate-inference)
 
 `gh:solana-foundation/templates/community/pay-gate-inference`

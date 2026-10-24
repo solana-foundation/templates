@@ -1,0 +1,10 @@
+node_modules/
+.next/
+out/
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
+.DS_Store
+*-keypair.json
+id.json

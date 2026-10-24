@@ -622,6 +622,26 @@
         "usecase": "Payments"
       },
       {
+        "description": "Next.js starter with an OAR App ID and verifiable program, domain and repo links",
+        "id": "gh:solana-foundation/templates/community/oar-identity-starter",
+        "image": "community/oar-identity-starter/og-image.png",
+        "keywords": [
+          "solana",
+          "oar",
+          "app-identity",
+          "verification",
+          "program-metadata",
+          "nextjs",
+          "solana-kit",
+          "typescript",
+          "devnet"
+        ],
+        "name": "oar-identity-starter",
+        "path": "community/oar-identity-starter",
+        "displayName": "OAR App Identity Starter",
+        "usecase": "Starter"
+      },
+      {
         "description": "Monetize self-hosted LLM inference with Pay.sh",
         "id": "gh:solana-foundation/templates/community/pay-gate-inference",
         "image": "community/pay-gate-inference/og-image.png",

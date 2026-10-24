@@ -8,6 +8,7 @@
   "community/lazorkit-starter-vite",
   "community/merkle-airdrop",
   "community/moneygram-onramp",
+  "community/oar-identity-starter",
   "community/pay-gate-inference",
   "community/pay-high-throughput-proxy",
   "community/phantom-embedded-js",

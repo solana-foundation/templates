@@ -1,0 +1,55 @@
+{
+  "name": "oar-identity-starter",
+  "displayName": "OAR App Identity Starter",
+  "description": "Next.js starter with an OAR App ID and verifiable program, domain and repo links",
+  "usecase": "Starter",
+  "keywords": [
+    "solana",
+    "oar",
+    "app-identity",
+    "verification",
+    "program-metadata",
+    "nextjs",
+    "solana-kit",
+    "typescript",
+    "devnet"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "An OAR-ready starter is not a registered or verified application.",
+      "Start building:",
+      "+{pm} run dev",
+      "Edit oar.config.json with your real domain, repository and any deployed program IDs, then prepare identity files from your PUBLIC creator address:",
+      "+{pm} run oar:prepare -- --creator YOUR_PUBLIC_WALLET",
+      "Host the generated files, register on Devnet with your own wallet at https://oarprotocol.xyz/register, and inspect every link's state."
+    ]
+  },
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "oar:prepare": "node scripts/prepare-oar.mjs",
+    "oar:anchor": "node scripts/import-anchor-programs.mjs"
+  },
+  "dependencies": {
+    "@open-app-registry/sdk": "0.1.1-rc.3",
+    "@solana/kit": "8.4.0",
+    "next": "16.3.8",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "server-only": "0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.4",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.2.3",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
