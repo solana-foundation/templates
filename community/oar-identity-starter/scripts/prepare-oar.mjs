@@ -46,6 +46,8 @@ async function main() {
   const cfg = JSON.parse(readFileSync('oar.config.json', 'utf8'))
   if (cfg.standard !== '0.1' || cfg.cluster !== 'solana:devnet')
     fail('This starter only supports OAR standard 0.1 on solana:devnet.')
+  if (opts.nonce === undefined && typeof cfg.nonce === 'number' && !Number.isSafeInteger(cfg.nonce))
+    fail('Config nonce is not a safe integer; use a decimal string or --nonce for larger values.')
   const n = opts.nonce ?? String(cfg.nonce ?? 0)
   if (!/^(0|[1-9][0-9]*)$/.test(n)) fail('Invalid config nonce.')
   const nonce = BigInt(n)

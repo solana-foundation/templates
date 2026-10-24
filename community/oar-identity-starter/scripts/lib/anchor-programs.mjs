@@ -14,8 +14,9 @@ export function parseAnchorDevnetPrograms(toml) {
     const line = raw.trim()
     if (!line || line.startsWith('#')) continue
     if (line.startsWith('[')) {
-      if (!/^\[\[?[a-zA-Z0-9_.-]+\]\]?$/.test(line)) throw new Error('Invalid TOML section on line ' + (i + 1))
-      section = line
+      const header = line.match(/^(\[[a-zA-Z0-9_.-]+\]|\[\[[a-zA-Z0-9_.-]+\]\])\s*(?:#.*)?$/)
+      if (!header) throw new Error('Invalid TOML section on line ' + (i + 1))
+      section = header[1]
       continue
     }
     if (section !== '[programs.devnet]') continue
