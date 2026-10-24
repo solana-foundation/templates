@@ -797,6 +797,28 @@
         "usecase": "Infrastructure"
       },
       {
+        "description": "Wallet connect, wallet sign-in and transactions tracked to finalized, built on TUWA",
+        "id": "gh:solana-foundation/templates/community/tuwa-nextjs-starter",
+        "image": "community/tuwa-nextjs-starter/og-image.png",
+        "keywords": [
+          "solana",
+          "kit",
+          "nextjs",
+          "react",
+          "tailwind",
+          "wallet-standard",
+          "sign-in",
+          "caip-122",
+          "siwx",
+          "transaction-tracking",
+          "tuwa"
+        ],
+        "name": "tuwa-nextjs-starter",
+        "path": "community/tuwa-nextjs-starter",
+        "displayName": "TUWA Starter (Next.js)",
+        "usecase": "Starter"
+      },
+      {
         "description": "x402 payment server template for Solana with Rust",
         "id": "gh:solana-foundation/templates/community/x402-solana-rust",
         "image": "community/x402-solana-rust/og-image.png",

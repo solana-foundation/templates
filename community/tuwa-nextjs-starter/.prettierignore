@@ -1,0 +1,5 @@
+/node_modules
+/.next
+next-env.d.ts
+/src/programs/solanatest/generated
+/src/targets
