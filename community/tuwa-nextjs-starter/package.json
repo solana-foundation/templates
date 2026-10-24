@@ -44,7 +44,7 @@
     "@solana/kit": "^8.5.0",
     "@solana/webcrypto-ed25519-polyfill": "^8.5.0",
     "@tuwaio/sdk": "^0.6.3",
-    "@tuwaio/solana-sdk": "^0.6.1",
+    "@tuwaio/solana-sdk": "^0.6.3",
     "@wallet-standard/app": "^1.1.1",
     "@wallet-standard/base": "^1.1.1",
     "@wallet-standard/features": "^1.1.1",
