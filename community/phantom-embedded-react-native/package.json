@@ -24,7 +24,7 @@
   },
   "main": "expo-router/entry",
   "engines": {
-    "node": ">=20.19.4"
+    "node": ">=22"
   },
   "scripts": {
     "start": "expo start",
