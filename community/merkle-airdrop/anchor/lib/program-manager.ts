@@ -1,8 +1,9 @@
-import { execSync } from 'child_process'
 import * as fs from 'fs'
+import * as path from 'path'
 import type { GillWalletInfo, GillNetworkConfig, GillDeploymentResult } from './types'
 
-import { address } from 'gill'
+import { address, createKeyPairSignerFromBytes } from '@solana/kit'
+import { getKitRpcUrl } from './kit-client'
 import {
   createGillWalletClient,
   generateGillWallet,
@@ -57,19 +58,27 @@ export interface GillSetupOptions {
   airdropAmountLamports?: number // Amount per recipient in lamports (default: 75000000 = 0.075 SOL)
 }
 
-export async function generateGillProgramId(): Promise<{ programId: string; keypairPath: string }> {
+export async function generateGillProgramId(workingDir = '.'): Promise<{ programId: string; keypairPath: string }> {
   try {
     console.log('🆔 Generating new program ID...')
 
-    const keypairPath = 'program-keypair.json'
-
-    if (fs.existsSync(keypairPath)) {
-      fs.unlinkSync(keypairPath)
+    const keypairDir = path.join(workingDir, 'program-keypairs')
+    fs.mkdirSync(keypairDir, { recursive: true, mode: 0o700 })
+    const currentKeypair = path.join(workingDir, 'target/deploy/solana_distributor-keypair.json')
+    if (fs.existsSync(currentKeypair)) {
+      const currentBytes = new Uint8Array(JSON.parse(fs.readFileSync(currentKeypair, 'utf8')))
+      const currentSigner = await createKeyPairSignerFromBytes(currentBytes)
+      const backupPath = path.join(keypairDir, `${currentSigner.address}-keypair.json`)
+      if (!fs.existsSync(backupPath)) {
+        fs.copyFileSync(currentKeypair, backupPath, fs.constants.COPYFILE_EXCL)
+        fs.chmodSync(backupPath, 0o600)
+      }
     }
 
-    execSync(`solana-keygen new --outfile ${keypairPath} --no-bip39-passphrase --force`, { stdio: 'pipe' })
-
-    const programId = execSync(`solana address -k ${keypairPath}`, { encoding: 'utf8' }).trim()
+    const wallet = await generateGillWallet('program')
+    const programId = wallet.address
+    const keypairPath = path.join(keypairDir, `${programId}-keypair.json`)
+    fs.writeFileSync(keypairPath, JSON.stringify(wallet.secretKey.array), { flag: 'wx', mode: 0o600 })
 
     console.log(`✅ Generated new program ID: ${programId}`)
     return { programId, keypairPath }
@@ -92,19 +101,21 @@ export async function deployGillProgram(options: GillDeploymentOptions): Promise
     }
 
     const client = createGillWalletClient(networkConfig)
-    const fundedWallet = await ensureGillWalletFunded(client.rpc, deployWallet, minFunding, minFunding)
+    await ensureGillWalletFunded(client.rpc, deployWallet, minFunding, minFunding)
 
     let newKeypairPath: string | null = null
     let targetProgramId: string | null = null
 
     if (generateNewProgramId) {
-      const { programId, keypairPath } = await generateGillProgramId()
+      const { programId, keypairPath } = await generateGillProgramId(config.workingDir)
       targetProgramId = programId
       newKeypairPath = keypairPath
+      const deployDir = path.join(config.workingDir || '.', 'target/deploy')
+      fs.mkdirSync(deployDir, { recursive: true })
+      fs.copyFileSync(keypairPath, path.join(deployDir, 'solana_distributor-keypair.json'))
     }
 
-    const currentProgramId = getGillCurrentProgramId({ workingDir: config.workingDir })
-    const consistencyFixed = await ensureGillProgramIdConsistency(targetProgramId || currentProgramId, {
+    const consistencyFixed = await ensureGillProgramIdConsistency(targetProgramId || undefined, {
       workingDir: config.workingDir,
     })
 
@@ -112,7 +123,10 @@ export async function deployGillProgram(options: GillDeploymentOptions): Promise
       return { success: false, error: 'Failed to ensure program ID consistency' }
     }
 
-    const deployResult = await deployGillProgramBuild(newKeypairPath || undefined, { workingDir: config.workingDir })
+    const deployResult = await deployGillProgramBuild(newKeypairPath || undefined, {
+      workingDir: config.workingDir,
+      rpcUrl: getKitRpcUrl(config.network, config.rpcUrl),
+    })
 
     if (!deployResult.success) {
       return {
@@ -121,10 +135,6 @@ export async function deployGillProgram(options: GillDeploymentOptions): Promise
         programId: deployResult.programId ? address(deployResult.programId) : undefined,
         signature: deployResult.signature,
       }
-    }
-
-    if (newKeypairPath && fs.existsSync(newKeypairPath)) {
-      fs.unlinkSync(newKeypairPath)
     }
 
     console.log('✅ Program deployment completed successfully with Gill!')
@@ -151,7 +161,6 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
 }> {
   const {
     config,
-    useExistingWallets = false,
     numTestWallets = 3,
     deployProgram = false,
     generateNewProgramId = false,
@@ -193,8 +202,11 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
 
     console.log('\n📝 Updating configuration files...')
 
-    updateGillAnchorConfig(deployWallet, programId, { workingDir: config.workingDir })
-    generateGillRecipientsJson(testWallets, programId, airdropAmountLamports, { workingDir: config.workingDir })
+    updateGillAnchorConfig(deployWallet, programId, { workingDir: config.workingDir, network: config.network })
+    generateGillRecipientsJson(testWallets, programId, airdropAmountLamports, {
+      workingDir: config.workingDir,
+      network: config.network,
+    })
 
     console.log('\n💾 Writing wallet files...')
     writeGillWalletFile(deployWallet, { workingDir: config.workingDir })
@@ -202,7 +214,14 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
 
     console.log('\n💰 Setting up efficient wallet funding...')
     const client = createGillWalletClient(networkConfig)
-    const fundingResult = await setupEfficientWalletFunding(client.rpc, deployWallet, testWallets, 0.1)
+    const fundingResult = await setupEfficientWalletFunding(
+      client.rpc,
+      deployWallet,
+      testWallets,
+      0.1,
+      getKitRpcUrl(networkConfig.network, networkConfig.rpcUrl),
+      config.network,
+    )
 
     deployWallet = fundingResult.primaryWallet
     testWallets = fundingResult.testWallets
@@ -214,7 +233,7 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
 
     updateGillFrontendRecipientsFile({ workingDir: config.workingDir })
 
-    updateGillEnvironmentFile(programId, testWallets, { workingDir: config.workingDir })
+    updateGillEnvironmentFile(programId, testWallets, { workingDir: config.workingDir, network: config.network })
 
     if (deployProgram) {
       console.log('\n🚀 Deploying program with Gill...')
@@ -233,13 +252,20 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
 
       programId = deployResult.programId || programId
 
-      updateGillEnvironmentFile(programId, testWallets, { workingDir: config.workingDir })
+      generateGillRecipientsJson(testWallets, programId, airdropAmountLamports, {
+        workingDir: config.workingDir,
+        network: config.network,
+      })
+      updateGillRecipientsWithMerkleRoot(merkleRoot, { workingDir: config.workingDir })
+      updateGillFrontendRecipientsFile({ workingDir: config.workingDir })
+
+      updateGillEnvironmentFile(programId, testWallets, { workingDir: config.workingDir, network: config.network })
 
       // Ensure Codama client is updated with new program ID
       console.log('🔄 Syncing Codama client with deployed program ID... (Gill)')
       const codamaSynced = await ensureGillCodamaSync({ workingDir: config.workingDir })
       if (!codamaSynced) {
-        console.log('⚠️  Warning: Could not sync Codama client after deployment (Gill)')
+        return { success: false, error: 'Program deployed, but Codama client synchronization failed' }
       }
     }
 

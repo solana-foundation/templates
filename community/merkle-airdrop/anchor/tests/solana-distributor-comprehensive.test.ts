@@ -1,16 +1,16 @@
+import { createKitClient, createKitReadClient, sendKitTransaction } from '../lib/kit-client'
 /// <reference types="vitest/globals" />
 
 import {
-  createSolanaClient,
   createKeyPairSignerFromBytes,
   generateKeyPairSigner,
   address,
   lamports,
   getProgramDerivedAddress,
-  createTransaction,
+  getAddressEncoder,
   type Address,
   type TransactionSigner,
-} from 'gill'
+} from '@solana/kit'
 import * as fs from 'fs'
 import { getInitializeAirdropInstruction } from '../generated/clients/ts/instructions/initializeAirdrop'
 import { getClaimAirdropInstruction } from '../generated/clients/ts/instructions/claimAirdrop'
@@ -18,13 +18,11 @@ import { fetchAirdropState } from '../generated/clients/ts/accounts/airdropState
 import { fetchClaimStatus } from '../generated/clients/ts/accounts/claimStatus'
 import { SOLANA_DISTRIBUTOR_PROGRAM_ADDRESS } from '../generated/clients/ts/programs'
 import { generateGillMerkleTree, generateGillProof, type GillMerkleTree } from '../lib/merkle-tree-manager'
-import type { GillRecipient } from '../lib/types'
 
-describe('Solana Distributor (Comprehensive Gill + Codama)', () => {
+describe('Solana Distributor (Comprehensive Kit + Codama)', () => {
   const NETWORK = 'devnet'
-  let client: ReturnType<typeof createSolanaClient>
-  let rpc: any
-  let sendAndConfirmTransaction: any
+  let client: ReturnType<typeof createKitReadClient>
+  let rpc: ReturnType<typeof createKitReadClient>['rpc']
 
   let authority: TransactionSigner
   let recipient1: TransactionSigner
@@ -36,11 +34,10 @@ describe('Solana Distributor (Comprehensive Gill + Codama)', () => {
   const totalAmount = recipient1Amount + recipient2Amount // 0.3 SOL
 
   let merkleTreeResult: { merkleRoot: string; merkleTree: GillMerkleTree }
-  let recipients: GillRecipient[]
 
   beforeAll(async () => {
-    client = createSolanaClient({ urlOrMoniker: NETWORK })
-    ;({ rpc, sendAndConfirmTransaction } = client)
+    client = createKitReadClient(NETWORK)
+    ;({ rpc } = client)
 
     const walletData = fs.readFileSync('./deploy-wallet.json', 'utf8')
     const walletArray = JSON.parse(walletData)
@@ -89,7 +86,7 @@ describe('Solana Distributor (Comprehensive Gill + Codama)', () => {
       const existingState = await fetchAirdropState(rpc, airdropStatePda)
       if (existingState) {
         console.log('✅ Airdrop already initialized, skipping...')
-        expect(existingState.data.merkleRoot).toEqual(Array.from(merkleTreeResult.merkleTree.root))
+        expect(Array.from(existingState.data.merkleRoot)).toEqual(Array.from(merkleTreeResult.merkleTree.root))
         expect(existingState.data.authority.toString()).toBe(authority.address)
         expect(Number(existingState.data.airdropAmount)).toBe(totalAmount)
         return
@@ -105,21 +102,19 @@ describe('Solana Distributor (Comprehensive Gill + Codama)', () => {
       amount: BigInt(totalAmount),
     })
 
-    const { value: latestBlockhash } = await rpc.getLatestBlockhash().send()
+    const sendTransaction = () => sendKitTransaction(createKitClient(authority, NETWORK), [initializeInstruction])
 
-    const transaction = createTransaction({
-      version: 'legacy',
-      feePayer: authority,
-      instructions: [initializeInstruction],
-      latestBlockhash,
-    })
-
-    const signature = await sendAndConfirmTransaction(transaction)
+    const signature = await sendTransaction()
     console.log(`📋 Initialize signature: ${signature}`)
+    const confirmed = await rpc
+      .getTransaction(signature, { encoding: 'json', commitment: 'confirmed', maxSupportedTransactionVersion: 1 })
+      .send()
+    expect(confirmed?.version).toBe(1)
+    expect(confirmed?.meta?.err).toBeNull()
 
     const airdropState = await fetchAirdropState(rpc, airdropStatePda)
     expect(airdropState).toBeTruthy()
-    expect(airdropState!.data.merkleRoot).toEqual(Array.from(merkleTreeResult.merkleTree.root))
+    expect(Array.from(airdropState!.data.merkleRoot)).toEqual(Array.from(merkleTreeResult.merkleTree.root))
     expect(airdropState!.data.authority.toString()).toBe(authority.address)
     expect(Number(airdropState!.data.airdropAmount)).toBe(totalAmount)
     expect(Number(airdropState!.data.amountClaimed)).toBe(0)
@@ -137,7 +132,7 @@ describe('Solana Distributor (Comprehensive Gill + Codama)', () => {
 
     const [claimStatusPda] = await getProgramDerivedAddress({
       programAddress: SOLANA_DISTRIBUTOR_PROGRAM_ADDRESS,
-      seeds: ['claim', airdropStatePda, recipient1.address],
+      seeds: ['claim', getAddressEncoder().encode(airdropStatePda), getAddressEncoder().encode(recipient1.address)],
     })
 
     try {
@@ -162,22 +157,21 @@ describe('Solana Distributor (Comprehensive Gill + Codama)', () => {
       leafIndex: 0,
     })
 
-    const { value: latestBlockhash } = await rpc.getLatestBlockhash().send()
-    const transaction = createTransaction({
-      version: 'legacy',
-      feePayer: recipient1,
-      instructions: [claimInstruction],
-      latestBlockhash,
-    })
+    const sendTransaction = () => sendKitTransaction(createKitClient(recipient1, NETWORK), [claimInstruction])
 
-    const signature = await sendAndConfirmTransaction(transaction)
+    const signature = await sendTransaction()
     console.log(`📋 Claim signature: ${signature}`)
 
     const balanceAfter = await rpc.getBalance(recipient1.address).send()
     console.log(`💰 Recipient 1 balance after: ${Number(balanceAfter.value) / 1e9} SOL`)
 
-    const balanceIncrease = Number(balanceAfter.value) - Number(balanceBefore.value)
-    expect(balanceIncrease).toBeCloseTo(recipient1Amount, -5) // Allow for transaction fees
+    const confirmed = await rpc
+      .getTransaction(signature, { encoding: 'json', commitment: 'confirmed', maxSupportedTransactionVersion: 1 })
+      .send()
+    expect(confirmed?.version).toBe(1)
+    expect(confirmed?.meta?.err).toBeNull()
+    const rent = await rpc.getMinimumBalanceForRentExemption(8n).send()
+    expect(balanceAfter.value - balanceBefore.value).toBe(BigInt(recipient1Amount) - rent - confirmed!.meta!.fee)
 
     const claimStatus = await fetchClaimStatus(rpc, address(claimStatusPda))
     expect(claimStatus).toBeTruthy() // Account exists = claimed
@@ -191,7 +185,7 @@ describe('Solana Distributor (Comprehensive Gill + Codama)', () => {
 
     const [claimStatusPda] = await getProgramDerivedAddress({
       programAddress: SOLANA_DISTRIBUTOR_PROGRAM_ADDRESS,
-      seeds: ['claim', airdropStatePda, recipient2.address],
+      seeds: ['claim', getAddressEncoder().encode(airdropStatePda), getAddressEncoder().encode(recipient2.address)],
     })
 
     try {
@@ -216,22 +210,21 @@ describe('Solana Distributor (Comprehensive Gill + Codama)', () => {
       leafIndex: 1,
     })
 
-    const { value: latestBlockhash } = await rpc.getLatestBlockhash().send()
-    const transaction = createTransaction({
-      version: 'legacy',
-      feePayer: recipient2,
-      instructions: [claimInstruction],
-      latestBlockhash,
-    })
+    const sendTransaction = () => sendKitTransaction(createKitClient(recipient2, NETWORK), [claimInstruction])
 
-    const signature = await sendAndConfirmTransaction(transaction)
+    const signature = await sendTransaction()
     console.log(`📋 Claim signature: ${signature}`)
 
     const balanceAfter = await rpc.getBalance(recipient2.address).send()
     console.log(`💰 Recipient 2 balance after: ${Number(balanceAfter.value) / 1e9} SOL`)
 
-    const balanceIncrease = Number(balanceAfter.value) - Number(balanceBefore.value)
-    expect(balanceIncrease).toBeCloseTo(recipient2Amount, -5) // Allow for transaction fees
+    const confirmed = await rpc
+      .getTransaction(signature, { encoding: 'json', commitment: 'confirmed', maxSupportedTransactionVersion: 1 })
+      .send()
+    expect(confirmed?.version).toBe(1)
+    expect(confirmed?.meta?.err).toBeNull()
+    const rent = await rpc.getMinimumBalanceForRentExemption(8n).send()
+    expect(balanceAfter.value - balanceBefore.value).toBe(BigInt(recipient2Amount) - rent - confirmed!.meta!.fee)
 
     const claimStatus = await fetchClaimStatus(rpc, address(claimStatusPda))
     expect(claimStatus).toBeTruthy() // Account exists = claimed
@@ -244,7 +237,7 @@ describe('Solana Distributor (Comprehensive Gill + Codama)', () => {
 
     const [claimStatusPda] = await getProgramDerivedAddress({
       programAddress: SOLANA_DISTRIBUTOR_PROGRAM_ADDRESS,
-      seeds: ['claim', airdropStatePda, recipient1.address],
+      seeds: ['claim', getAddressEncoder().encode(airdropStatePda), getAddressEncoder().encode(recipient1.address)],
     })
 
     const claimInstruction = getClaimAirdropInstruction({
@@ -256,15 +249,9 @@ describe('Solana Distributor (Comprehensive Gill + Codama)', () => {
       leafIndex: 0,
     })
 
-    const { value: latestBlockhash } = await rpc.getLatestBlockhash().send()
-    const transaction = createTransaction({
-      version: 'legacy',
-      feePayer: recipient1,
-      instructions: [claimInstruction],
-      latestBlockhash,
-    })
+    const sendTransaction = () => sendKitTransaction(createKitClient(recipient1, NETWORK), [claimInstruction])
 
-    await expect(sendAndConfirmTransaction(transaction)).rejects.toThrow()
+    await expect(sendTransaction()).rejects.toThrow()
     console.log('✅ Double-claim correctly prevented!')
   })
 })

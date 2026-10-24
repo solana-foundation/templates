@@ -1,17 +1,12 @@
+import { createKitClient, sendKitTransaction } from './kit-client'
+
 // Codama-generated client imports
 import { getInitializeAirdropInstruction } from '../generated/clients/ts/instructions/initializeAirdrop'
 import * as fs from 'fs'
 import type { RecipientsFile, GillInitializationResult } from './types'
-import {
-  createSolanaClient,
-  createKeyPairSignerFromBytes,
-  address,
-  getProgramDerivedAddress,
-  createTransaction,
-} from 'gill'
+import { createKeyPairSignerFromBytes, address, getProgramDerivedAddress } from '@solana/kit'
 import {
   buildGillProgramIfNeeded,
-  deployGillProgram,
   getGillProgramStatus,
   ensureGillProgramIdConsistency,
   type GillBuildConfig,
@@ -98,7 +93,7 @@ export async function initializeGillAirdrop(
   recipientsFile: string = 'recipients.json',
   config: GillInitializerConfig = {},
 ): Promise<GillInitializationResult> {
-  const { network = 'devnet', walletPath = './deploy-wallet.json', workingDir = '.', verbose = false } = config
+  const { network = 'devnet', walletPath = './deploy-wallet.json', workingDir = '.' } = config
 
   try {
     console.log('🚀 Initializing airdrop with Gill...\n')
@@ -128,15 +123,13 @@ export async function initializeGillAirdrop(
     console.log(`🌳 Merkle root: ${recipientsData.merkleRoot} (Gill)`)
 
     console.log('📡 Setting up Gill client...')
-    const client = createSolanaClient({
-      urlOrMoniker: network === 'devnet' ? 'devnet' : `https://api.${network}.solana.com`,
-    })
-    const { rpc, sendAndConfirmTransaction } = client
-
     const walletData = fs.readFileSync(walletPath, 'utf8')
     const walletArray = JSON.parse(walletData)
     const walletBytes = new Uint8Array(walletArray)
     const authoritySigner = await createKeyPairSignerFromBytes(walletBytes)
+
+    const client = createKitClient(authoritySigner, network, config.rpcUrl)
+    const { rpc } = client
 
     console.log(`👤 Authority: ${authoritySigner.address} (Gill)`)
 
@@ -157,7 +150,7 @@ export async function initializeGillAirdrop(
     console.log('🔄 Checking Codama client sync... (Gill)')
     const codamaSynced = await ensureGillCodamaSync({ workingDir })
     if (!codamaSynced) {
-      console.log('⚠️  Warning: Could not sync Codama client. Proceeding anyway... (Gill)')
+      return { success: false, error: 'Codama client is not synchronized. Regenerate the client and retry explicitly.' }
     }
 
     console.log('🔍 Verifying program exists on-chain... (Gill)')
@@ -205,70 +198,24 @@ export async function initializeGillAirdrop(
     const merkleRootHex = recipientsData.merkleRoot.replace('0x', '')
     const merkleRootBytes = new Uint8Array(Buffer.from(merkleRootHex, 'hex'))
 
-    const signer = await createKeyPairSignerFromBytes(walletBytes)
-
-    const initializeInstruction = getInitializeAirdropInstruction({
-      airdropState: address(airdropStatePda),
-      authority: signer,
-      merkleRoot: merkleRootBytes,
-      amount: BigInt(recipientsData.totalAmount),
-    })
-
-    const { value: latestBlockhash } = await rpc.getLatestBlockhash().send()
-
-    // Create transaction using Gill
-    const transaction = createTransaction({
-      version: 'legacy',
-      feePayer: signer,
-      instructions: [initializeInstruction],
-      latestBlockhash,
-    })
+    const initializeInstruction = getInitializeAirdropInstruction(
+      {
+        airdropState: address(airdropStatePda),
+        authority: authoritySigner,
+        merkleRoot: merkleRootBytes,
+        amount: BigInt(recipientsData.totalAmount),
+      },
+      { programAddress },
+    )
 
     let signature: string
     try {
-      signature = await sendAndConfirmTransaction(transaction)
-
-      console.log('✅ Transaction sent successfully! (Codama + Gill)')
-      console.log(`📋 Transaction signature: ${signature}`)
-      console.log(`🔍 View on explorer: https://explorer.solana.com/tx/${signature}?cluster=${network}`)
+      signature = await sendKitTransaction(client, [initializeInstruction])
+      console.log(`Transaction signature: ${signature}`)
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error)
-      if (errorMessage.includes('DeclaredProgramIdMismatch')) {
-        console.log('⚠️  Program ID mismatch detected, attempting fresh deployment... (Gill)')
-
-        try {
-          const deployResult = await deployGillProgram(undefined, { workingDir, verbose })
-          if (!deployResult.success) {
-            return {
-              success: false,
-              error: `Fresh deployment failed: ${deployResult.error}`,
-            }
-          }
-
-          console.log('✅ Fresh deployment completed, retrying initialization... (Gill)')
-
-          const retryTransaction = createTransaction({
-            version: 'legacy',
-            feePayer: signer,
-            instructions: [initializeInstruction],
-            latestBlockhash: (await rpc.getLatestBlockhash().send()).value,
-          })
-
-          signature = await sendAndConfirmTransaction(retryTransaction)
-
-          console.log('✅ Transaction sent successfully after retry! (Codama + Gill)')
-          console.log(`📋 Transaction signature: ${signature}`)
-        } catch (retryError) {
-          return {
-            success: false,
-            error: `Failed to initialize after fresh deployment: ${retryError}`,
-          }
-        }
-      } else {
-        return {
-          success: false,
-          error: `Failed to send initialization transaction: ${error}`,
-        }
+      return {
+        success: false,
+        error: `Failed to send initialization transaction: ${error}. Check program ID consistency and deployment explicitly; no automatic redeployment was attempted.`,
       }
     }
 

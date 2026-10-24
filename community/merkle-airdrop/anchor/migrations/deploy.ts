@@ -7,7 +7,7 @@ import { runGillDeploymentSetup } from '../scripts/deploy-setup'
  * Gill-based migration that deploys the program using modern Solana tooling
  * This is called by `anchor deploy` and uses our Gill deployment pipeline
  */
-export default async function (_provider?: any) {
+export default async function deploy() {
   console.log('🚀 Running Gill-based deployment migration...\n')
 
   try {

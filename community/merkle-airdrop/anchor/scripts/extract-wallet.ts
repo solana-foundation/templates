@@ -1,9 +1,9 @@
 #!/usr/bin/env ts-node
 
 import { createGillWalletClient } from '../lib/wallet-manager'
-import { address } from 'gill'
+import { address } from '@solana/kit'
 import * as fs from 'fs'
-import type { TestWalletsData } from '../lib/types'
+import type { GillWalletInfo, TestWalletsData } from '../lib/types'
 
 /**
  * Extract a specific wallet file from test-wallets.json
@@ -33,17 +33,21 @@ export function extractWallet(walletName: string, outputPath?: string): boolean 
   }
 }
 
-function loadWallets(): { deployWallet: any | null; testWallets: any[] } {
+function loadWallets(): { deployWallet: GillWalletInfo | null; testWallets: GillWalletInfo[] } {
   try {
     if (!fs.existsSync('test-wallets.json')) {
       return { deployWallet: null, testWallets: [] }
     }
 
     const data = fs.readFileSync('test-wallets.json', 'utf8')
-    const walletsData: TestWalletsData = JSON.parse(data)
+    const walletsData: { wallets: (TestWalletsData['wallets'][number] & { address?: string })[] } = JSON.parse(data)
+    const wallets = walletsData.wallets.map((wallet) => ({
+      ...wallet,
+      address: address(wallet.address || wallet.publicKey),
+    }))
 
-    const deployWallet = walletsData.wallets.find((w) => w.isDeployWallet || w.name === 'deploy-wallet')
-    const testWallets = walletsData.wallets.filter((w) => !w.isDeployWallet && w.name !== 'deploy-wallet')
+    const deployWallet = wallets.find((w) => w.isDeployWallet || w.name === 'deploy-wallet')
+    const testWallets = wallets.filter((w) => !w.isDeployWallet && w.name !== 'deploy-wallet')
 
     return { deployWallet: deployWallet || null, testWallets }
   } catch (error) {
