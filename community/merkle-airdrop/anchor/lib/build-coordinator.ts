@@ -1,13 +1,14 @@
-import { execSync } from 'child_process'
+import { execFileSync, execSync } from 'child_process'
 import * as fs from 'fs'
 import type { GillDeploymentResult } from './types'
 
-import { address, type Address } from 'gill'
+import { address, type Address } from '@solana/kit'
 
 export interface GillBuildConfig {
   workingDir?: string
   network?: 'devnet' | 'mainnet' | 'testnet'
   verbose?: boolean
+  rpcUrl?: string
 }
 
 interface BuildState {
@@ -134,6 +135,10 @@ export async function deployGillProgram(
   const { workingDir = '.', verbose = false } = config
 
   try {
+    if (programKeypairPath) {
+      fs.mkdirSync(`${workingDir}/target/deploy`, { recursive: true })
+      fs.copyFileSync(programKeypairPath, `${workingDir}/target/deploy/solana_distributor-keypair.json`)
+    }
     const buildResult = await buildGillProgramIfNeeded(false, config)
     if (!buildResult.success) {
       return {
@@ -143,19 +148,16 @@ export async function deployGillProgram(
       }
     }
 
-    if (programKeypairPath) {
-      console.log('📋 Setting up program keypair... (Gill)')
-      execSync(`mkdir -p ${workingDir}/target/deploy`)
-      execSync(`cp ${programKeypairPath} ${workingDir}/target/deploy/solana_distributor-keypair.json`)
-      console.log('✅ Program keypair configured (Gill)')
-    }
-
     console.log('📡 Deploying program with Gill...')
-    const deployOutput = execSync('anchor deploy', {
-      stdio: verbose ? 'inherit' : 'pipe',
-      cwd: workingDir,
-      encoding: 'utf8',
-    })
+    const deployOutput = execFileSync(
+      'anchor',
+      ['deploy', ...(config.rpcUrl ? ['--provider.cluster', config.rpcUrl] : [])],
+      {
+        stdio: verbose ? 'inherit' : 'pipe',
+        cwd: workingDir,
+        encoding: 'utf8',
+      },
+    )
 
     const programIdMatch = deployOutput.match(/Program Id: (\w+)/)
     const programIdStr = programIdMatch ? programIdMatch[1] : getGillDeployedProgramId(config)

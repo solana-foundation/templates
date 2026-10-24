@@ -78,7 +78,7 @@ function question(rl: readline.Interface, prompt: string): Promise<string> {
 }
 
 export async function runGillDeploymentSetup(config: GillDeploymentSetupConfig = {}): Promise<void> {
-  const { network = 'devnet', workingDir = '.', verbose = false } = config
+  const { network = 'devnet', workingDir = '.' } = config
 
   const rl = readline.createInterface({
     input: process.stdin,
@@ -152,7 +152,10 @@ export async function runGillDeploymentSetup(config: GillDeploymentSetupConfig =
   }
 }
 
-function showGillFinalSummary(result: any, deploymentAttempted: boolean): void {
+function showGillFinalSummary(
+  result: Awaited<ReturnType<typeof completeGillSetup>>,
+  deploymentAttempted: boolean,
+): void {
   console.log('\n' + '='.repeat(50))
   console.log('✅ Setup completed successfully with Gill + Codama!\n')
 

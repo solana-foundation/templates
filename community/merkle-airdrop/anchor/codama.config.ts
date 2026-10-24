@@ -2,7 +2,7 @@ import { createFromRoot } from 'codama'
 import { rootNodeFromAnchor, AnchorIdl } from '@codama/nodes-from-anchor'
 import { renderVisitor as renderJavaScriptVisitor } from '@codama/renderers-js'
 import { visit } from '@codama/visitors-core'
-import anchorIdl from './target/idl/solana_distributor.json'
+import { isAddress } from '@solana/kit'
 import path from 'path'
 import { execSync } from 'child_process'
 import * as fs from 'fs'
@@ -20,15 +20,12 @@ async function generateProgramId(): Promise<string> {
 
   try {
     // Generate new keypair for program ID
-    const keypairPath = path.join(__dirname, 'program-keypair.json')
+    const keypairPath = path.join(__dirname, 'target/deploy/solana_distributor-keypair.json')
+    fs.mkdirSync(path.dirname(keypairPath), { recursive: true })
 
-    // Remove existing keypair if it exists
-    if (fs.existsSync(keypairPath)) {
-      fs.unlinkSync(keypairPath)
+    if (!fs.existsSync(keypairPath)) {
+      execSync(`solana-keygen new --no-bip39-passphrase --silent --outfile ${JSON.stringify(keypairPath)}`)
     }
-
-    // Generate new keypair
-    execSync(`solana-keygen new --no-bip39-passphrase --silent --outfile ${keypairPath}`)
 
     // Get the public key
     const programId = execSync(`solana-keygen pubkey ${keypairPath}`, { encoding: 'utf8' }).trim()
@@ -67,7 +64,7 @@ async function generateProgramId(): Promise<string> {
  */
 function isValidProgramId(programId: string): boolean {
   // Check if it's the placeholder or invalid length
-  return programId !== '111111111111111111111111111111111111' && programId.length === 44
+  return isAddress(programId) && programId !== '11111111111111111111111111111111'
 }
 
 async function generateClients() {
@@ -95,6 +92,7 @@ async function generateClients() {
 
     // Convert Anchor IDL to Codama tree
     console.log('📝 Converting Anchor IDL to Codama tree...')
+    const anchorIdl = JSON.parse(fs.readFileSync(path.join(__dirname, 'target/idl/solana_distributor.json'), 'utf8'))
     const codama = createFromRoot(rootNodeFromAnchor(anchorIdl as AnchorIdl))
 
     // Define client generation targets
@@ -115,6 +113,8 @@ async function generateClients() {
       console.log(`✅ Successfully generated ${client.type} client!`)
     }
 
+    fs.writeFileSync(path.join(__dirname, '../src/lib/idl.json'), JSON.stringify(anchorIdl, null, 2) + '\n')
+
     console.log('🎉 All clients generated successfully!')
     console.log('📁 Generated files location: anchor/generated/clients/')
   } catch (error) {
@@ -125,14 +125,19 @@ async function generateClients() {
 
 // Export the configuration for programmatic use
 export const codamaConfig = {
-  idl: anchorIdl,
+  get idl() {
+    return JSON.parse(fs.readFileSync(path.join(__dirname, 'target/idl/solana_distributor.json'), 'utf8'))
+  },
   outputDir: path.join(__dirname, 'generated', 'clients'),
   generateClients,
 }
 
 // Run generation if this file is executed directly
 if (require.main === module) {
-  generateClients().catch(console.error)
+  generateClients().catch((error) => {
+    console.error(error)
+    process.exitCode = 1
+  })
 }
 
 export default generateClients

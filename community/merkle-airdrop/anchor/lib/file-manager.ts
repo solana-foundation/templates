@@ -1,7 +1,8 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import { execSync } from 'child_process'
 import type { RecipientsFile, GillWalletInfo } from './types'
-import { type Address } from 'gill'
+import { type Address } from '@solana/kit'
 
 export interface GillFileConfig {
   workingDir?: string
@@ -17,29 +18,32 @@ export function updateGillAnchorConfig(
 
   const programIdStr = typeof programId === 'string' ? programId : programId
 
-  const anchorToml = `[toolchain]
-anchor_version = "0.31.1"
-package_manager = "pnpm"
-
-[features]
-resolution = true
-skip-lint = false
-
-[programs.devnet]
-solana_distributor = "${programIdStr}"
-
-[registry]
-url = "https://api.apr.dev"
-
-[provider]
-cluster = "devnet"
-wallet = "${deployWallet.keypairFile}"
-
-[scripts]
-test = "pnpm run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
-`
-
-  const anchorTomlPath = `${workingDir}/Anchor.toml`
+  const anchorTomlPath = path.join(workingDir, 'Anchor.toml')
+  let anchorToml = fs.readFileSync(anchorTomlPath, 'utf8')
+  const network = config.network || 'devnet'
+  const updateSection = (section: string, values: Record<string, string>) => {
+    const lines = anchorToml.split(/\r?\n/)
+    const header = `[${section}]`
+    let start = lines.findIndex((line) => line.trim() === header)
+    if (start < 0) {
+      lines.push('', header)
+      start = lines.length - 1
+    }
+    let end = start + 1
+    while (end < lines.length && !lines[end].trim().startsWith('[')) end++
+    for (const [key, value] of Object.entries(values)) {
+      const index = lines.findIndex((line, i) => i > start && i < end && line.trim().startsWith(`${key} =`))
+      const entry = `${key} = ${JSON.stringify(value)}`
+      if (index >= 0) lines[index] = entry
+      else {
+        lines.splice(end, 0, entry)
+        end++
+      }
+    }
+    anchorToml = lines.join('\n')
+  }
+  updateSection(`programs.${network}`, { solana_distributor: programIdStr })
+  updateSection('provider', { cluster: network, wallet: deployWallet.keypairFile })
   fs.writeFileSync(anchorTomlPath, anchorToml)
   console.log(`✅ Updated ${anchorTomlPath} to use ${deployWallet.keypairFile} (Gill)`)
 }
@@ -75,6 +79,9 @@ export function generateGillRecipientsJson(
       if (JSON.stringify(existingPublicKeys.sort()) === JSON.stringify(newPublicKeys.sort())) {
         console.log('📋 Recipients unchanged, updating descriptions only (Gill)')
         existingData.recipients = recipients
+        existingData.programId = programIdStr
+        existingData.network = config.network || 'devnet'
+        existingData.totalAmount = totalAmount
         existingData.description = 'Deployment setup airdrop for testing purposes'
         fs.writeFileSync(recipientsPath, JSON.stringify(existingData, null, 2))
         shouldUpdate = false
@@ -88,7 +95,7 @@ export function generateGillRecipientsJson(
       description: 'Deployment setup airdrop for testing purposes',
       merkleRoot: '0x0000000000000000000000000000000000000000000000000000000000000000', // Will be updated after tree generation
       totalAmount,
-      network: 'devnet',
+      network: config.network || 'devnet',
       programId: programIdStr,
       recipients,
       metadata: {
@@ -152,14 +159,7 @@ export function updateGillEnvironmentFile(
 
     let envContent = ''
     const programIdVar = `NEXT_PUBLIC_PROGRAM_ID=${programIdStr}`
-    const networkVar = `NEXT_PUBLIC_SOLANA_NETWORK=devnet`
-
-    // Get the first test wallet's private key for the environment
-    let privateKeyVar = ''
-    if (testWallets && testWallets.length > 0) {
-      const firstWallet = testWallets[0]
-      privateKeyVar = `USER_PRIVATE_KEY=${firstWallet.secretKey.base58}`
-    }
+    const networkVar = `NEXT_PUBLIC_SOLANA_NETWORK=${config.network || 'devnet'}`
 
     if (fs.existsSync(envFile)) {
       envContent = fs.readFileSync(envFile, 'utf8')
@@ -177,14 +177,6 @@ export function updateGillEnvironmentFile(
         envContent = envContent.trim() + `\n${networkVar}\n`
       }
 
-      if (privateKeyVar) {
-        if (envContent.includes('USER_PRIVATE_KEY=')) {
-          envContent = envContent.replace(/USER_PRIVATE_KEY=.*/, privateKeyVar)
-        } else {
-          envContent = envContent.trim() + `\n${privateKeyVar}\n`
-        }
-      }
-
       console.log(`   ✅ Updated existing ${path.basename(envFile)} (Gill)`)
     } else {
       const comments = [
@@ -194,14 +186,12 @@ export function updateGillEnvironmentFile(
       ]
 
       const vars = [networkVar, programIdVar]
-      if (privateKeyVar) {
-        vars.push(privateKeyVar)
-      }
-
       envContent = comments.concat(vars).join('\n') + '\n'
       console.log(`   ✅ Created new ${path.basename(envFile)} with configuration (Gill)`)
     }
 
+    // Remove secrets exported by older setup versions; wallet files stay local.
+    envContent = envContent.replace(/^\s*(?:export\s+)?(?:NEXT_PUBLIC_)?USER_PRIVATE_KEY\s*=.*(?:\r?\n|$)/gm, '')
     fs.writeFileSync(envFile, envContent)
     console.log(`   📍 Program ID: ${programIdStr}`)
     if (testWallets && testWallets.length > 0) {
@@ -390,7 +380,7 @@ export function getGillCodamaProgramId(config: GillFileConfig = {}): string | nu
     }
 
     const codamaContent = fs.readFileSync(codamaClientPath, 'utf8')
-    const match = codamaContent.match(/SOLANA_DISTRIBUTOR_PROGRAM_ADDRESS\s*=\s*'([^']+)'/)
+    const match = codamaContent.match(/SOLANA_DISTRIBUTOR_PROGRAM_ADDRESS\s*=\s*['"]([^'"]+)['"]/)
 
     if (match) {
       return match[1]
@@ -420,7 +410,6 @@ export async function ensureGillCodamaSync(config: GillFileConfig = {}): Promise
     console.log(`   Codama Program ID: ${codamaProgramId || 'not found'}`)
 
     // Import and run the codama generation
-    const { execSync } = require('child_process')
     const codamaConfigPath = path.join(workingDir, 'codama.config.ts')
 
     if (!fs.existsSync(codamaConfigPath)) {

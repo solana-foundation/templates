@@ -1,4 +1,4 @@
-import type { Address, TransactionSigner } from 'gill'
+import type { Address, TransactionSigner } from '@solana/kit'
 
 export interface GillWalletInfo {
   name: string
@@ -23,7 +23,7 @@ export interface GillWalletInfo {
 
 export interface GillRecipient {
   recipient: Address
-  amount: number
+  amount: bigint | string | number
 }
 
 export interface GillNetworkConfig {
