@@ -220,6 +220,7 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
       testWallets,
       0.1,
       getKitRpcUrl(networkConfig.network, networkConfig.rpcUrl),
+      config.network,
     )
 
     deployWallet = fundingResult.primaryWallet

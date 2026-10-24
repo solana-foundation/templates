@@ -4,7 +4,7 @@ import { promisify } from 'util'
 import type { GillWalletInfo, GillNetworkConfig } from './types'
 import { createKeyPairSignerFromBytes, lamports, type Address, type Rpc, type SolanaRpcApi } from '@solana/kit'
 
-import { createKitClient, createKitReadClient, getKitRpcUrl, sendKitTransaction } from './kit-client'
+import { createKitClient, createKitReadClient, sendKitTransaction, type KitNetwork } from './kit-client'
 import { getTransferSolInstruction } from '@solana-program/system'
 
 const generateKeyPairAsync = promisify(generateKeyPair)
@@ -202,7 +202,8 @@ export async function distributeSolToWallets(
   fromWallet: GillWalletInfo,
   toWallets: GillWalletInfo[],
   amountPerWallet: number = 0.1,
-  rpcUrl: string = getKitRpcUrl(),
+  rpcUrl?: string,
+  network: KitNetwork = 'devnet',
 ): Promise<GillWalletInfo[]> {
   if (!fromWallet.signer) {
     throw new Error('Primary wallet must have signer to distribute SOL')
@@ -217,7 +218,7 @@ export async function distributeSolToWallets(
     try {
       console.log(`💸 Sending ${amountPerWallet} SOL to ${wallet.address}...`)
 
-      const signature = await sendKitTransaction(createKitClient(fromWallet.signer, 'devnet', rpcUrl), [
+      const signature = await sendKitTransaction(createKitClient(fromWallet.signer, network, rpcUrl), [
         getTransferSolInstruction({
           source: fromWallet.signer,
           destination: wallet.address,
@@ -279,7 +280,8 @@ export async function setupEfficientWalletFunding(
   primaryWallet: GillWalletInfo,
   testWallets: GillWalletInfo[],
   distributionAmount: number = 0.1,
-  rpcUrl: string = getKitRpcUrl(),
+  rpcUrl?: string,
+  network: KitNetwork = 'devnet',
 ): Promise<{
   primaryWallet: GillWalletInfo
   testWallets: GillWalletInfo[]
@@ -294,7 +296,14 @@ export async function setupEfficientWalletFunding(
 
   const fundedPrimary = await fundPrimaryWallet(rpc, primaryWallet, primaryWalletAmount)
 
-  const fundedTestWallets = await distributeSolToWallets(rpc, fundedPrimary, testWallets, distributionAmount, rpcUrl)
+  const fundedTestWallets = await distributeSolToWallets(
+    rpc,
+    fundedPrimary,
+    testWallets,
+    distributionAmount,
+    rpcUrl,
+    network,
+  )
 
   return {
     primaryWallet: fundedPrimary,
