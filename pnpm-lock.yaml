@@ -286,6 +286,9 @@ importers:
         specifier: ^4.1.12
         version: 4.4.3
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.39.2
+        version: 9.39.2
       '@types/bs58':
         specifier: ^4.0.4
         version: 4.0.4

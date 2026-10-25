@@ -167,6 +167,31 @@ test('HTTP flow co-signs V1, confirms and rejects replay using only a local RPC 
     const replay = await fetch(`${merchant.url}/resource`, { headers });
     assert.equal(replay.status, 402);
     assert.equal(broadcasts, 1);
+    const timeoutPayload = AuthorizationPayload.create({
+      amount: expected.amount,
+      recipient,
+      resourceId: '/resource',
+      resourceUrl: '/resource',
+      nonce: 'timeout-after-reservation',
+    });
+    const timeoutPayment = new PaymentRequest({
+      payload: timeoutPayload,
+      clientPublicKey: client.address,
+      signedTransaction: getBase64EncodedWireTransaction(transaction),
+      signature: utils.signStructuredData(timeoutPayload.createStructuredData(), bs58.encode(clientSecret)),
+    });
+    const timeoutSignature = bs58.encode(nacl.sign.detached(new Uint8Array([1]), facilitatorSecret));
+    utils.submitSponsoredTransaction = async (_key, _wire, _expected, reserve) => {
+      await reserve(timeoutSignature);
+      throw new Error('Confirmation timed out');
+    };
+    const timeout = await fetch(`${merchant.url}/resource`, { headers: { 'X-Payment': timeoutPayment.serialize() } });
+    assert.equal(timeout.status, 402);
+    const timeoutResult = await timeout.json();
+    assert.match(timeoutResult.message, /Confirmation timed out/);
+    assert.equal(timeoutResult.transactionSignature, timeoutSignature);
+    assert.equal((await db.getNonceDetails(timeoutPayload.nonce)).transactionSignature, timeoutSignature);
+    assert.equal(broadcasts, 1);
   } finally {
     await Promise.all(servers.reverse().map((server) => server.close()));
     await db.close();

@@ -35,6 +35,7 @@ export function settlePaymentRoute(context: SettleRouteContext) {
     }
 
     let paymentReq: PaymentRequest | null = null;
+    let reservedSignature: string | undefined;
     try {
       // Deserialize payment request to get nonce and other details
       paymentReq = PaymentRequest.deserialize(paymentRequest);
@@ -138,7 +139,10 @@ export function settlePaymentRoute(context: SettleRouteContext) {
             context.config.facilitatorPrivateKey, // facilitator private key (fee payer)
             paymentReq.signedTransaction,
             nonceDetails,
-            (signature) => context.nonceDb.reserveSettlement(nonce, signature)
+            async (signature) => {
+              await context.nonceDb.reserveSettlement(nonce, signature);
+              reservedSignature = signature;
+            }
           );
           console.log('ATOMIC SETTLEMENT complete!');
           console.log(
@@ -177,7 +181,7 @@ export function settlePaymentRoute(context: SettleRouteContext) {
       if (paymentReq && paymentReq.payload) {
         await context.nonceDb.storeTransaction({
           nonce: paymentReq.payload.nonce,
-          transactionSignature: null,
+          transactionSignature: reservedSignature ?? null,
           status: 'failed',
           errorMessage: error instanceof Error ? error.message : 'Unknown error',
         });
@@ -186,6 +190,7 @@ export function settlePaymentRoute(context: SettleRouteContext) {
       return res.json({
         status: 'error',
         error: error instanceof Error ? error.message : 'Unknown error',
+        transactionSignature: reservedSignature,
       });
     }
   };

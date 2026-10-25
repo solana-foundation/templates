@@ -191,7 +191,7 @@ export class AuthorizationPayload {
       errors.push('Invalid nonce');
     }
 
-    if (!Number.isSafeInteger(this.timestamp) || this.timestamp <= 0 || this.timestamp > Date.now()) {
+    if (!Number.isSafeInteger(this.timestamp) || this.timestamp <= 0 || this.timestamp > Date.now() + 30_000) {
       errors.push('Invalid timestamp');
     }
 
