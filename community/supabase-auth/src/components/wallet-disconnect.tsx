@@ -2,63 +2,40 @@
 
 import * as React from 'react'
 import { Button } from '@/components/ui/button'
-import { useAuth } from '@/components/auth/auth-provider'
 import { useRouter } from 'next/navigation'
-import { useWalletConnection } from '@solana/react-hooks'
+import { useConnectedWallet } from '@solana/kit-plugin-wallet/react'
+import { useSolana } from './provider'
+import { useCombinedSignOut } from '@/hooks/use-combined-signout'
+import { toast } from 'sonner'
 
-function WalletDisconnect(props: React.ComponentProps<typeof Button>) {
-  const { connected, disconnect } = useWalletConnection()
-  const { signOut } = useAuth()
+export function WalletDisconnect(props: React.ComponentProps<typeof Button>) {
+  const { client } = useSolana()
+  const connected = useConnectedWallet(client)
+  const { handleSignOut } = useCombinedSignOut()
   const router = useRouter()
-
-  const handleDisconnect = async () => {
-    try {
-      // Sign out from Supabase auth first (this clears the session)
-      await signOut()
-
-      // Clear any remaining Supabase data from localStorage
-      if (typeof window !== 'undefined') {
-        // Clear Supabase auth data
-        const keys = Object.keys(localStorage)
-        keys.forEach((key) => {
-          if (key.startsWith('sb-') || key.includes('supabase')) {
-            localStorage.removeItem(key)
-          }
-        })
-      }
-
-      // Then disconnect the wallet
-      await disconnect()
-
-      // Force redirect to home page
-      router.replace('/')
-    } catch (error) {
-      console.error('Error disconnecting wallet:', error)
-
-      // Force cleanup even if signOut fails
-      if (typeof window !== 'undefined') {
-        // Clear all localStorage just to be safe
-        const keys = Object.keys(localStorage)
-        keys.forEach((key) => {
-          if (key.startsWith('sb-') || key.includes('supabase')) {
-            localStorage.removeItem(key)
-          }
-        })
-      }
-
-      // Still try to disconnect wallet
-      await disconnect()
-
-      // Force redirect
-      router.replace('/')
-    }
-  }
-
+  const [pending, setPending] = React.useState(false)
+  const busy = React.useRef(false)
   return (
-    <Button variant="outline" className="cursor-pointer" {...props} onClick={handleDisconnect} disabled={!connected}>
-      Disconnect
+    <Button
+      variant="outline"
+      {...props}
+      disabled={!connected || pending || props.disabled}
+      onClick={async () => {
+        if (busy.current) return
+        busy.current = true
+        setPending(true)
+        try {
+          await handleSignOut()
+          router.replace('/')
+        } catch (error) {
+          toast.error(`Sign out failed: ${error instanceof Error ? error.message : String(error)}`)
+        } finally {
+          busy.current = false
+          setPending(false)
+        }
+      }}
+    >
+      {pending ? 'Disconnecting...' : 'Disconnect'}
     </Button>
   )
 }
-
-export { WalletDisconnect }

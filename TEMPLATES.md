@@ -344,7 +344,7 @@ Templates maintained by the Solana community
 
 > Authenticate Solana wallets with Supabase
 
-`supabase` `authentication` `solana` `framework-kit`
+`supabase` `authentication` `solana` `solana-kit`
 
 ### [supabase-solana-indexing](community/supabase-solana-indexing)
 
@@ -366,7 +366,7 @@ Templates maintained by the Solana community
 
 `gh:solana-foundation/templates/community/x402-template`
 
-> Next.js Solana starter with X402 payment protocol integration
+> Next.js Solana starter with x402 payment protocol integration
 
 `solana` `nextjs` `x402` `template` `starter`
 
