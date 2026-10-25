@@ -4,10 +4,13 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { ClientProvider, useClient } from '@solana/react'
 import { CLUSTERS, type ClusterOption } from './clusters'
 import { createAppClient, type AppClient } from '@/lib/solana-client'
+import { createSubmissionStore } from '@/lib/airdrop-submissions'
 
-const ClusterContext = createContext<{ cluster: ClusterOption; setCluster: (cluster: ClusterOption) => void } | null>(
-  null,
-)
+const ClusterContext = createContext<{
+  cluster: ClusterOption
+  setCluster: (cluster: ClusterOption) => void
+  submissions: ReturnType<typeof createSubmissionStore>
+} | null>(null)
 
 export function useSolana() {
   const client = useClient<AppClient>()
@@ -18,6 +21,7 @@ export function useSolana() {
 
 export function SolanaProvider({ children }: { children: ReactNode }) {
   const [cluster, setCluster] = useState(CLUSTERS[0])
+  const [submissions] = useState(createSubmissionStore)
   const [active, setActive] = useState<{ cluster: ClusterOption; client: AppClient } | null>(null)
   useEffect(() => {
     const client = createAppClient(cluster)
@@ -32,7 +36,7 @@ export function SolanaProvider({ children }: { children: ReactNode }) {
   }, [cluster])
   if (!active || active.cluster !== cluster) return null
   return (
-    <ClusterContext.Provider value={{ cluster, setCluster }}>
+    <ClusterContext.Provider value={{ cluster, setCluster, submissions }}>
       <ClientProvider client={active.client}>{children}</ClientProvider>
     </ClusterContext.Provider>
   )

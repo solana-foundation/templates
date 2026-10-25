@@ -2,7 +2,7 @@ import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import { PublicKey } from '@solana/web3.js'
 import { createAppClient, type AppClient } from '../src/lib/solana-client'
 import { CLUSTERS } from '../src/components/solana/clusters'
-import { prepareAirdropBatch } from '../src/features/airdrop/data-access/airdrop-utils'
+import { prepareAirdropBatch, validateAirdrop } from '../src/features/airdrop/data-access/airdrop-utils'
 import { registerTestWallet, makeAccount } from './wallet-fixture'
 
 const mocks = vi.hoisted(() => ({ genesis: vi.fn(), mint: vi.fn(), trees: vi.fn() }))
@@ -61,7 +61,9 @@ test.each(['network', 'authority', 'account change', 'abort', 'V0 wallet'])(
           controller.abort()
           return 'devnet'
         })
-      await expect(prepareAirdropBatch(client, config, data, 0, 1, controller.signal)).rejects.toThrow()
+      await expect(
+        prepareAirdropBatch(client, config, validateAirdrop(config, data, 1), 0, 1, controller.signal),
+      ).rejects.toThrow()
       expect(mocks.trees).not.toHaveBeenCalled()
     } finally {
       base[Symbol.dispose]()

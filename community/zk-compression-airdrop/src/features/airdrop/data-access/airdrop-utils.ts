@@ -33,7 +33,7 @@ export function validateAirdrop(config: AirdropConfig, data: AirdropData, batchS
 export async function prepareAirdropBatch(
   client: AppClient,
   config: AirdropConfig,
-  data: AirdropData,
+  prepared: ReturnType<typeof validateAirdrop>,
   start: number,
   batchSize: number,
   signal: AbortSignal,
@@ -50,7 +50,9 @@ export async function prepareAirdropBatch(
   if (!connected.supportedTransactionVersions.has(1))
     throw new Error('This wallet does not advertise V1 transaction support')
   if (connected.account.address !== config.authority) throw new Error('Connected wallet is not the mint authority')
-  const { recipients, amounts } = validateAirdrop(config, data, batchSize)
+  const { recipients, amounts } = prepared
+  if (!Number.isInteger(batchSize) || batchSize < 1 || batchSize > MAX_BATCH_SIZE)
+    throw new Error('Batch size must be between 1 and 5')
   if (!Number.isInteger(start) || start < 0 || start >= recipients.length) throw new Error('Invalid batch offset')
   const rpc = createRpcConnection(config.network)
   const expectedGenesis = await client.rpc.getGenesisHash().send({ abortSignal: signal })

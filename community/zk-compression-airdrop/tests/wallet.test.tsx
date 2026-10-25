@@ -86,6 +86,13 @@ test('provider survives StrictMode and rebuilds the RPC and wallet chain togethe
       <>
         <p>{context.cluster.id}</p>
         <button onClick={() => context.setCluster(CLUSTERS[1])}>Testnet</button>
+        <button onClick={() => context.setCluster(CLUSTERS[0])}>Devnet</button>
+        <button
+          onClick={() => context.submissions.update('devnet:mint', (current) => ({ ...current, submitted: true }))}
+        >
+          Record submission
+        </button>
+        <p>{context.submissions.get('devnet:mint').submitted ? 'Locked' : 'Available'}</p>
       </>
     )
   }
@@ -98,8 +105,12 @@ test('provider survives StrictMode and rebuilds the RPC and wallet chain togethe
       </StrictMode>,
     )
     await screen.findByText('devnet')
+    fireEvent.click(screen.getByRole('button', { name: 'Record submission' }))
     fireEvent.click(screen.getByRole('button', { name: 'Testnet' }))
     await waitFor(() => expect(screen.getByText('testnet')).toBeTruthy())
+    fireEvent.click(screen.getByRole('button', { name: 'Devnet' }))
+    await screen.findByText('devnet')
+    expect(screen.getByText('Locked')).toBeTruthy()
   } finally {
     cleanup()
     fixture.unregister()

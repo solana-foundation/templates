@@ -40,7 +40,7 @@ Open http://localhost:3000, connect the configured authority wallet on devnet an
 - Before signing, the app checks V1 support, the connected authority, the RPC genesis hash, the on-chain mint authority/decimals and the recipient totals.
 - Token base units remain exact integer strings/bigints, including u64 values above JavaScript's safe integer limit.
 - Wallet changes, disconnection and errors stop subsequent batches. An already-open wallet prompt cannot be revoked by the app: cancel it yourself. Submitted batches are not retried automatically. Confirmed signatures appear in the progress panel.
-- After any submission, repeat execution in that view is disabled. This is not an idempotent claim program: reloading and starting again can mint duplicates. Reconcile prior transactions and create a recipient list containing only outstanding recipients before restarting. An RPC timeout does not prove a transaction failed.
+- After any submission, repeat execution is disabled for that network and mint, including after switching networks and back. Progress and signatures are preserved while the app stays open. This is not an idempotent claim program: reloading and starting again can mint duplicates. Reconcile prior transactions and create a recipient list containing only outstanding recipients before restarting. An RPC timeout does not prove a transaction failed.
 
 Generated files live under `scripts/`: `compressed-mint-config.json`, `airdrop-recipients.json` and the combined `airdrop-setup.json`. Customize public token metadata in the mint script and recipient amounts in `generate-recipients.ts`, then regenerate the setup. Keep secrets out of these public configuration files.
 
