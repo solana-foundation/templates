@@ -7,7 +7,7 @@ import { prepareAirdropBatch, validateAirdrop, calculateBatches } from './airdro
 import type { AirdropData, AirdropConfig } from './airdrop-types'
 
 export function useAirdrop(config: AirdropConfig) {
-  const { client, submissions } = useSolana()
+  const { client, submissions, cluster } = useSolana()
   const key = JSON.stringify([config.network, config.mintAddress])
   const getSubmission = useCallback(() => submissions.get(key), [submissions, key])
   const submission = useSyncExternalStore(submissions.subscribe, getSubmission, getSubmission)
@@ -34,6 +34,7 @@ export function useAirdrop(config: AirdropConfig) {
         const totalBatches = calculateBatches(data.recipients.length, batchSize)
         submissions.update(key, (current) => ({
           ...current,
+          cluster: cluster.id,
           progress: { currentBatch: 0, totalBatches, successfulMints: 0, failedMints: 0, signatures: [] },
         }))
         for (let start = 0; start < data.recipients.length; start += batchSize) {
@@ -64,12 +65,13 @@ export function useAirdrop(config: AirdropConfig) {
         setIsExecuting(false)
       }
     },
-    [client, config, key, submissions],
+    [client, config, key, submissions, cluster.id],
   )
 
   return {
     executeAirdrop,
     progress: submission.progress,
+    progressCluster: submission.cluster,
     isExecuting,
     requiresReview: submission.submitted,
     error: submission.error,

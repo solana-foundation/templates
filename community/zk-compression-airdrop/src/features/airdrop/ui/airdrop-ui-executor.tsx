@@ -18,7 +18,7 @@ interface AirdropExecutorProps {
 export function AirdropExecutor({ config, airdropData }: AirdropExecutorProps) {
   const { client, cluster } = useSolana()
   const wallet = useConnectedWallet(client)
-  const { executeAirdrop, progress, isExecuting, requiresReview, error } = useAirdrop(config)
+  const { executeAirdrop, progress, progressCluster, isExecuting, requiresReview, error } = useAirdrop(config)
 
   const hasWallet = !!wallet?.account
   const isAuthorized = wallet?.account?.address.toString() === config.authority
@@ -44,7 +44,11 @@ export function AirdropExecutor({ config, airdropData }: AirdropExecutorProps) {
       />
 
       {progress && (
-        <AirdropProgressDisplay progress={progress} mintAddress={config.mintAddress} clusterParam={cluster.id} />
+        <AirdropProgressDisplay
+          progress={progress}
+          mintAddress={config.mintAddress}
+          clusterParam={progressCluster ?? cluster.id}
+        />
       )}
 
       <AirdropControls

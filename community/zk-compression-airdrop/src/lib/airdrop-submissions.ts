@@ -4,9 +4,10 @@ interface Submission {
   submitted: boolean
   progress: AirdropProgress | null
   error: string | null
+  cluster: string | null
 }
 
-const empty: Submission = { submitted: false, progress: null, error: null }
+const empty: Submission = { submitted: false, progress: null, error: null, cluster: null }
 
 // Lives above the replaceable network client, including while a wallet request settles.
 export function createSubmissionStore() {

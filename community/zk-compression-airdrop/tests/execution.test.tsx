@@ -10,9 +10,12 @@ const mocks = vi.hoisted(() => ({
   send: vi.fn(),
   connected: { account: { address: 'authority' } },
   state: {} as { connected?: unknown },
+  cluster: { id: 'devnet' },
 }))
 let submissions = createSubmissionStore()
-vi.mock('@/components/solana/solana-provider', () => ({ useSolana: () => ({ client, submissions }) }))
+vi.mock('@/components/solana/solana-provider', () => ({
+  useSolana: () => ({ client, submissions, cluster: mocks.cluster }),
+}))
 vi.mock('@solana/kit-plugin-wallet/react', () => ({ useConnectedWallet: () => mocks.state.connected }))
 vi.mock('../src/features/airdrop/data-access/airdrop-utils', () => ({
   prepareAirdropBatch: mocks.prepare,
@@ -25,6 +28,7 @@ const useTestAirdrop = () => useAirdrop(config)
 const data = { recipients: [{}, {}, {}] } as AirdropData
 beforeEach(() => {
   submissions = createSubmissionStore()
+  mocks.cluster.id = 'devnet'
   mocks.validate.mockReset().mockReturnValue({ recipients: ['prepared'], amounts: [1n] })
   mocks.state.connected = mocks.connected
   mocks.prepare.mockReset().mockResolvedValue([])
@@ -113,11 +117,13 @@ test('remount preserves submission lock, progress and signatures for the same ne
     await first.result.current.executeAirdrop(data, 3)
   })
   first.unmount()
+  mocks.cluster.id = 'testnet'
   const other = renderHook(() => useAirdrop({ ...config, network: 'testnet' }))
   expect(other.result.current.requiresReview).toBe(false)
   other.unmount()
   const restored = renderHook(useTestAirdrop)
   expect(restored.result.current.requiresReview).toBe(true)
+  expect(restored.result.current.progressCluster).toBe('devnet')
   expect(restored.result.current.progress?.signatures).toEqual(['confirmed-signature'])
   await act(async () => {
     await restored.result.current.executeAirdrop(data, 3)
