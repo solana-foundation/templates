@@ -284,6 +284,22 @@ export class NonceDatabase {
   /**
    * Update transaction signature for a nonce
    */
+  async reserveSettlement(nonce: string, signature: string): Promise<void> {
+    const db = this.db;
+    if (!db) throw new DatabaseError('Nonce database is not initialized');
+    return new Promise((resolve, reject) => {
+      db.run(
+        'UPDATE nonces SET transaction_signature = ? WHERE nonce = ? AND used_at IS NOT NULL AND transaction_signature IS NULL AND expiry > ?',
+        [signature, nonce, Date.now()],
+        function (error) {
+          if (error) reject(new DatabaseError('Failed to reserve settlement'));
+          else if (this.changes !== 1) reject(new NonceError('Payment already submitted or nonce unavailable'));
+          else resolve();
+        }
+      );
+    });
+  }
+
   async updateTransactionSignature(nonce: string, transactionSignature: string): Promise<number> {
     return new Promise((resolve, reject) => {
       const sql = `

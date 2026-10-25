@@ -5,6 +5,7 @@
  */
 
 import type { Request, Response, NextFunction } from 'express';
+import { PaymentRequest } from './payment-request.js';
 
 export interface X402Options {
   facilitatorUrl?: string;
@@ -70,6 +71,7 @@ export interface PaymentRequestData {
   };
   signature: string;
   clientPublicKey: string;
+  signedTransaction?: string;
 }
 
 // Extend Express Request to include payment info
@@ -145,6 +147,22 @@ export class X402Middleware {
         }
 
         // Verify payment request with facilitator
+        const parsed = PaymentRequest.deserialize(paymentHeader);
+        const validation = parsed.validate();
+        if (
+          !validation.isValid ||
+          parsed.payload.resourceId !== req.path ||
+          parsed.payload.resourceUrl !== req.path ||
+          !this.routeConfig.payTo ||
+          parsed.payload.recipient !== this.routeConfig.payTo ||
+          !this.routeConfig.amount ||
+          BigInt(parsed.payload.amount) !== BigInt(this.routeConfig.amount)
+        ) {
+          res
+            .status(402)
+            .json({ error: 'Payment does not match this resource', code: 'PAYMENT_REQUIREMENTS_MISMATCH' });
+          return;
+        }
         const verificationResult = await this.verifyPayment(paymentRequest);
 
         if (!verificationResult.isValid) {
@@ -164,6 +182,7 @@ export class X402Middleware {
             error: 'Payment Settlement Failed',
             message: settlementResult.error,
             code: 'PAYMENT_SETTLEMENT_FAILED',
+            transactionSignature: settlementResult.transactionSignature,
           });
           return;
         }

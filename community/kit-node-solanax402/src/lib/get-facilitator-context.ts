@@ -4,8 +4,7 @@
  */
 
 import { createKeyPairSignerFromBytes } from '@solana/kit';
-import type { KeyPairSigner } from '@solana/signers';
-import type { Address } from '@solana/addresses';
+import type { KeyPairSigner, Address } from '@solana/kit';
 import bs58 from 'bs58';
 import { SolanaUtils } from './solana-utils.js';
 import { NonceDatabase } from './nonce-database.js';

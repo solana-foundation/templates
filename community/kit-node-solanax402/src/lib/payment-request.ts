@@ -167,7 +167,11 @@ export class AuthorizationPayload {
   validate(): ValidationResult {
     const errors: string[] = [];
 
-    if (!this.amount || typeof this.amount !== 'string' || BigInt(this.amount) <= 0) {
+    if (
+      typeof this.amount !== 'string' ||
+      !/^[1-9][0-9]*$/.test(this.amount) ||
+      BigInt(this.amount) > 0xffffffffffffffffn
+    ) {
       errors.push('Invalid amount');
     }
 
@@ -187,11 +191,11 @@ export class AuthorizationPayload {
       errors.push('Invalid nonce');
     }
 
-    if (!this.timestamp || typeof this.timestamp !== 'number') {
+    if (!Number.isSafeInteger(this.timestamp) || this.timestamp <= 0 || this.timestamp > Date.now()) {
       errors.push('Invalid timestamp');
     }
 
-    if (!this.expiry || typeof this.expiry !== 'number') {
+    if (!Number.isSafeInteger(this.expiry) || this.expiry <= 0) {
       errors.push('Invalid expiry');
     }
 

@@ -52,7 +52,7 @@ const keypairData = {
   secretKey: secretKeyBase58,
 };
 
-fs.writeFileSync(KEYPAIR_FILE, JSON.stringify(keypairData, null, 2));
+fs.writeFileSync(KEYPAIR_FILE, JSON.stringify(keypairData, null, 2), { mode: 0o600 });
 
 console.log(' Client keypair generated and saved!\n');
 console.log('╔══════════════════════════════════════════════════════════════════════╗');
@@ -81,5 +81,5 @@ console.log('Check balance:');
 console.log(`  solana balance ${publicKeyBase58}`);
 console.log();
 console.log('After funding, run tests with:');
-console.log('  node test-real-devnet.mjs');
+console.log('  npm run test:payment');
 console.log();

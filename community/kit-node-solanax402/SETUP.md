@@ -4,7 +4,7 @@ Complete setup instructions for the x402 Solana protocol implementation.
 
 ## Prerequisites
 
-- Node.js 18+ (for native fetch support)
+- Node.js 22+ (validated with Node 22 and 24)
 - npm or yarn
 - Solana CLI (optional, for devnet testing)
 
@@ -16,6 +16,8 @@ Complete setup instructions for the x402 Solana protocol implementation.
 cd x402_ts
 npm install
 ```
+
+On Ubuntu 22.04, use `npm_config_build_from_source=true npm install` with Python 3 and a C/C++ toolchain installed. The tested SQLite 6.0.1 prebuilt binary needs a newer glibc; see the README. This is a native dependency requirement, not a Node version fix.
 
 ### 2. Generate Facilitator Keypair
 
@@ -154,11 +156,13 @@ Get the public key from `test-client-keypair.json` or from the script output.
 
 ### Run Tests
 
-**Main test (TRUE x402 instant finality):**
+**Offline regression tests (no keys or funds required):**
 
 ```bash
 npm test
 ```
+
+For an actual devnet payment, build first, configure isolated funded test keys, set `SIMULATE_TRANSACTIONS=false` and run `npm run test:payment`. It sends 0.01 devnet SOL to the configured merchant; the facilitator pays fees. Never use valuable keys for this example.
 
 This test:
 

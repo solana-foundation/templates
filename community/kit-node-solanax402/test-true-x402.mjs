@@ -20,19 +20,10 @@ import crypto from 'crypto';
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
 import { config } from 'dotenv';
-import {
-  createSolanaRpc,
-  createKeyPairSignerFromBytes,
-  createTransactionMessage,
-  setTransactionMessageFeePayer,
-  setTransactionMessageLifetimeUsingBlockhash,
-  appendTransactionMessageInstruction,
-  signTransaction,
-  getBase64EncodedWireTransaction,
-  address,
-  lamports,
-} from '@solana/kit';
-import { getTransferSolInstruction } from '@solana-program/system';
+import { createSolanaRpc, createKeyPairSignerFromBytes, getBase64EncodedWireTransaction, address } from '@solana/kit';
+import { signature, getBase64Codec, getTransactionDecoder, getCompiledTransactionMessageDecoder } from '@solana/kit';
+import { createSponsoredPayment } from './dist/lib/sponsored-payment.js';
+import { waitForTransaction } from './dist/lib/wait-for-transaction.js';
 
 // Load environment variables
 config();
@@ -46,6 +37,10 @@ const RPC_URL = process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com';
 
 // Create RPC client
 const rpc = createSolanaRpc(RPC_URL);
+if (process.env.SIMULATE_TRANSACTIONS !== 'false')
+  throw new Error('Set SIMULATE_TRANSACTIONS=false for the explicit live devnet test');
+if ((await rpc.getGenesisHash().send()) !== 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG')
+  throw new Error('Live payment tests require devnet');
 
 // Load client keypair
 const keypairData = JSON.parse(fs.readFileSync('./test-client-keypair.json', 'utf-8'));
@@ -126,28 +121,13 @@ async function createPaymentWithSponsoredTransaction(amount, recipient, resource
   // Get recent blockhash
   const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();
 
-  // Create transfer instruction: Client → Merchant
-  const transferInstruction = getTransferSolInstruction({
-    source: clientSigner.address,
-    destination: address(recipient),
-    amount: lamports(BigInt(amount)),
+  const signedTransaction = await createSponsoredPayment({
+    client: clientSigner,
+    facilitator: address(FACILITATOR_PUBLIC_KEY),
+    recipient: address(recipient),
+    amount: BigInt(amount),
+    lifetime: latestBlockhash,
   });
-
-  // Create transaction message
-  let transactionMessage = createTransactionMessage({ version: 0 });
-
-  // Set fee payer (facilitator will pay gas)
-  transactionMessage = setTransactionMessageFeePayer(address(FACILITATOR_PUBLIC_KEY), transactionMessage);
-
-  // Set lifetime (blockhash)
-  transactionMessage = setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, transactionMessage);
-
-  // Add transfer instruction
-  transactionMessage = appendTransactionMessageInstruction(transferInstruction, transactionMessage);
-
-  // 5. Client signs the transaction (authorizes their SOL to move)
-  console.log('  Client signing transaction (authorizing SOL transfer)...');
-  const signedTransaction = await signTransaction([clientSigner], transactionMessage);
 
   // 6. Serialize the transaction (includes client's signature)
   const serializedTransaction = getBase64EncodedWireTransaction(signedTransaction);
@@ -232,8 +212,39 @@ async function runTest() {
     console.log();
 
     // Extract transaction signature from response
-    if (resourceData.data?.payment?.transactionSignature) {
-      const txSig = resourceData.data.payment.transactionSignature;
+    const txSig =
+      resourceData.data?.data?.payment?.transactionSignature ?? resourceData.data?.payment?.transactionSignature;
+    if (!txSig) throw new Error('Paid response did not include a transaction signature');
+    console.log('Payment signature:', txSig);
+    console.log('Checking indexing only; do not repeat this payment.');
+    const confirmed = await waitForTransaction(() =>
+      rpc
+        .getTransaction(signature(txSig), {
+          encoding: 'base64',
+          commitment: 'confirmed',
+          maxSupportedTransactionVersion: 1,
+        })
+        .send()
+    );
+    if (!confirmed) {
+      console.log(
+        `Payment returned successfully; on-chain verification is still pending for ${txSig}. Do not pay again.`
+      );
+      process.exitCode = 2;
+      return;
+    }
+    if (confirmed.version !== 1 || confirmed.meta?.err !== null)
+      throw new Error('Expected a successful confirmed V1 payment');
+    const wire = getTransactionDecoder().decode(getBase64Codec().encode(confirmed.transaction[0]));
+    const message = getCompiledTransactionMessageDecoder().decode(wire.messageBytes);
+    const merchantIndex = message.staticAccounts.indexOf(address(MERCHANT_ADDRESS));
+    if (
+      merchantIndex < 0 ||
+      BigInt(confirmed.meta.postBalances[merchantIndex]) - BigInt(confirmed.meta.preBalances[merchantIndex]) !==
+        10000000n
+    )
+      throw new Error('The merchant did not receive the expected 0.01 devnet SOL in this transaction');
+    {
       console.log('='.repeat(70));
       console.log(' TRUE x402 INSTANT FINALITY COMPLETE!');
       console.log();

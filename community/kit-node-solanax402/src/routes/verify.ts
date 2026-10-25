@@ -3,7 +3,7 @@
  */
 
 import type { Request, Response } from 'express';
-import type { Address } from '@solana/addresses';
+import type { Address } from '@solana/kit';
 import { PaymentRequest } from '../lib/payment-request.js';
 import { SolanaUtils } from '../lib/solana-utils.js';
 import type { NonceDatabase } from '../lib/nonce-database.js';
@@ -45,6 +45,13 @@ export function verifyPaymentRoute(context: VerifyRouteContext) {
       }
 
       const { payload, signature, clientPublicKey } = paymentReq;
+      if (
+        BigInt(payload.amount) > context.maxPaymentAmount ||
+        !context.solanaUtils.isValidPublicKey(payload.recipient) ||
+        !context.solanaUtils.isValidPublicKey(clientPublicKey)
+      ) {
+        return res.json({ isValid: false, error: 'Invalid payment amount or address' });
+      }
 
       // 2. Check if nonce has been used
       const nonceStatus = await context.nonceDb.isNonceUsed(payload.nonce);
