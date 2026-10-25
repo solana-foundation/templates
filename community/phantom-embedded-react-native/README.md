@@ -8,7 +8,7 @@ An Expo starter for integrating Phantom's embedded wallet SDK on mobile. This te
 
 ### 1. Prerequisites
 
-- **Node.js 20.19.4 or newer**, compatible with this template's React Native 0.81.5 and [Expo SDK 54](https://docs.expo.dev/versions/v54.0.0/).
+- **Node.js 22 or newer**, compatible with this template's React Native 0.81.5 and [Expo SDK 54](https://docs.expo.dev/versions/v54.0.0/).
 - **Phantom Portal access and an App ID**. Confirm that you can create or access an app at [Phantom Portal](https://phantom.com/portal/) before proceeding. A placeholder App ID cannot authenticate. If new registrations are paused or your account cannot create an app, follow the portal's access instructions or contact [Phantom support](https://help.phantom.com/). This is an external prerequisite, not a local configuration error.
 - **Android:** Android Studio and the Android SDK, with an emulator or connected device. See [Expo's Android environment setup](https://docs.expo.dev/get-started/set-up-your-environment/?platform=android&device=simulated).
 - **iOS:** macOS and Xcode for a local native build. Windows cannot run `expo run:ios` locally.
