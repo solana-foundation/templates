@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { expect, test } from 'vitest'
+import { expect, test, vi } from 'vitest'
 import { createClient, generateKeyPairSigner, lamports } from '@solana/kit'
 import { solanaRpc } from '@solana/kit-plugin-rpc'
 import type { AppClient } from '../src/lib/solana-client'
@@ -24,6 +24,17 @@ test.skipIf(!url)(
       )
     const airdrop = await client.rpc.requestAirdrop(signer.address, lamports(1_000_000_000n)).send()
     expect(airdrop).toBeTruthy()
+    await vi.waitFor(
+      async () => {
+        const {
+          value: [status],
+        } = await client.rpc.getSignatureStatuses([airdrop]).send()
+        expect(status?.err).toBeNull()
+        expect(['confirmed', 'finalized']).toContain(status?.confirmationStatus)
+        expect((await client.rpc.getBalance(signer.address).send()).value).toBe(1_000_000_000n)
+      },
+      { timeout: 15_000, interval: 100 },
+    )
     const instructions = await prepareTransfer(
       client as unknown as AppClient,
       recipient.address,

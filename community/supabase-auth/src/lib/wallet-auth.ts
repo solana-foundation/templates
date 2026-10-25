@@ -59,7 +59,26 @@ export async function signInWithWallet(auth: SupabaseClient['auth'], client: App
       nonce: crypto.randomUUID().replaceAll('-', ''),
       issuedAt: new Date().toISOString(),
     })
-    const signature = await client.wallet.signMessage(message)
+    // Wallet prompts cannot be closed by the app, but an abandoned prompt must not hold the auth queue.
+    const signature = await new Promise<Uint8Array>((resolve, reject) => {
+      const onAbort = () => reject(signal.reason)
+      signal.addEventListener('abort', onAbort, { once: true })
+      Promise.resolve()
+        .then(() => {
+          assertCurrent()
+          return client.wallet.signMessage(message)
+        })
+        .then(
+          (value) => {
+            signal.removeEventListener('abort', onAbort)
+            resolve(value)
+          },
+          (error) => {
+            signal.removeEventListener('abort', onAbort)
+            reject(error)
+          },
+        )
+    })
     assertCurrent()
     const result = await auth.signInWithWeb3({
       chain: 'solana',

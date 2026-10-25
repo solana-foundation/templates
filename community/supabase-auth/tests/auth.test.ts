@@ -8,6 +8,47 @@ import { parseSignInMessageText } from '@solana/wallet-standard-util'
 
 afterEach(() => localStorage.clear())
 
+test.each(['approve', 'reject'])('abandoning a prompt releases the queue and ignores its late %s', async (outcome) => {
+  const fixture = registerTestWallet()
+  const client = createAppClient(CLUSTERS[0])
+  let finish!: () => void
+  const response = new Promise<void>((resolve) => {
+    finish = resolve
+  })
+  const sign = vi
+    .spyOn(fixture.wallet.features['solana:signMessage'], 'signMessage')
+    .mockImplementationOnce(async (...inputs) => {
+      await response
+      if (outcome === 'reject') throw new Error('Old prompt rejected')
+      return inputs.map((input) => ({ signedMessage: input.message, signature: new Uint8Array(64) }))
+    })
+  const auth = {
+    signInWithWeb3: vi.fn(async () => ({ data: { user: { id: 'current-wallet' }, session: {} }, error: null })),
+    signOut: vi.fn(),
+  } as unknown as ReturnType<typeof createClient>['auth']
+  try {
+    await vi.waitFor(() => expect(client.wallet.getState().wallets.length).toBe(1))
+    await client.wallet.connect(client.wallet.getState().wallets[0])
+    const controller = new AbortController()
+    const old = signInWithWallet(auth, client, controller.signal).catch((error) => error)
+    await vi.waitFor(() => expect(sign).toHaveBeenCalledTimes(1))
+    controller.abort()
+    expect(await old).toMatchObject({ name: 'AbortError' })
+    await expect(signInWithWallet(auth, client, new AbortController().signal)).resolves.toMatchObject({
+      user: { id: 'current-wallet' },
+    })
+    finish()
+    await response
+    expect(sign).toHaveBeenCalledTimes(2)
+    expect(auth.signInWithWeb3).toHaveBeenCalledTimes(1)
+    expect(auth.signOut).not.toHaveBeenCalled()
+  } finally {
+    finish()
+    client[Symbol.dispose]()
+    fixture.unregister()
+  }
+})
+
 test('finishes stale login cleanup before a remounted component can log in', async () => {
   const fixture = registerTestWallet()
   const client = createAppClient(CLUSTERS[0])
