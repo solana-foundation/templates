@@ -5,7 +5,9 @@ import { AirdropProgressDisplay } from './airdrop-ui-progress'
 import { AirdropControls } from './airdrop-ui-controls'
 import { AirdropAlerts } from './airdrop-ui-alerts'
 import { useAirdrop } from '@/features/airdrop/data-access/use-airdrop'
-import { useWalletSession } from '@solana/react-hooks'
+import { useConnectedWallet } from '@solana/kit-plugin-wallet/react'
+import { useSolana } from '@/components/solana/solana-provider'
+import { MAX_BATCH_SIZE } from '../data-access/airdrop-utils'
 import type { AirdropConfig, AirdropData } from '@/features/airdrop/data-access/airdrop-types'
 
 interface AirdropExecutorProps {
@@ -14,8 +16,9 @@ interface AirdropExecutorProps {
 }
 
 export function AirdropExecutor({ config, airdropData }: AirdropExecutorProps) {
-  const wallet = useWalletSession()
-  const { executeAirdrop, progress, isExecuting, error } = useAirdrop()
+  const { client, cluster } = useSolana()
+  const wallet = useConnectedWallet(client)
+  const { executeAirdrop, progress, isExecuting, requiresReview, error } = useAirdrop()
 
   const hasWallet = !!wallet?.account
   const isAuthorized = wallet?.account?.address.toString() === config.authority
@@ -29,21 +32,26 @@ export function AirdropExecutor({ config, airdropData }: AirdropExecutorProps) {
       <AirdropStats config={config} airdropData={airdropData} />
 
       <AirdropAlerts
-        error={error}
+        error={
+          error ??
+          (wallet && !wallet.supportedTransactionVersions.has(1)
+            ? 'This wallet does not advertise V1 transaction support.'
+            : null)
+        }
         hasWallet={hasWallet}
         isAuthorized={isAuthorized}
         expectedAuthority={config.authority}
       />
 
       {progress && (
-        <AirdropProgressDisplay progress={progress} mintAddress={config.mintAddress} clusterParam="devnet" />
+        <AirdropProgressDisplay progress={progress} mintAddress={config.mintAddress} clusterParam={cluster.id} />
       )}
 
       <AirdropControls
         isExecuting={isExecuting}
-        isAuthorized={isAuthorized}
+        isAuthorized={isAuthorized && Boolean(wallet?.supportedTransactionVersions.has(1)) && !requiresReview}
         hasWallet={hasWallet}
-        maxBatchSize={Math.min(airdropData.recipients.length, 50)}
+        maxBatchSize={Math.min(airdropData.recipients.length, MAX_BATCH_SIZE)}
         onExecute={handleExecute}
       />
     </div>

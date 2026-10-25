@@ -1,255 +1,62 @@
 # ZK Compression Airdrop
 
-A Next.js application for distributing SPL tokens using [ZK Compression](https://www.zkcompression.com/) - making token airdrops **~5000x cheaper** than regular SPL tokens.
+Distribute compressed SPL tokens with Light Protocol, Next.js, Kit 8 and Wallet Standard wallets. Both mint setup and browser distribution build V1 transactions. Light's web3.js instruction builders are adapted to Kit; their keypair-signing transaction helpers are not used.
 
-## Features
+## Requirements
 
-- **ZK Compressed Tokens**: Rent-free token accounts stored in Merkle trees
-- **Cost Efficient**: ~5000x cheaper than standard SPL tokens
-- **Direct Minting**: Simple authority-based distribution (no merkle proofs needed)
-- **Batch Processing**: Configurable batch sizes for optimal transaction handling
-- **Wallet Integration**: Connect with Phantom, Solflare, and other Solana wallets
+- Node 22+ and npm, pnpm or yarn.
+- A devnet RPC with ZK Compression/Photon support, such as Helius.
+- A funded devnet setup keypair, used only by the command-line setup script.
+- A browser wallet that advertises V1 transaction support.
 
-## Tech Stack
+## Setup
 
-- **Framework**: Next.js 16 with App Router
-- **Styling**: Tailwind CSS + Shadcn UI
-- **Solana SDK**: [Gill](https://gill.site/) + Wallet UI components
-- **ZK Compression**: @lightprotocol/compressed-token + stateless.js
-
-## Prerequisites
-
-1. **Node.js** (v22 or higher)
-2. **npm** (recommended) or npm
-3. **Solana Wallet** with devnet SOL
-4. **Helius RPC API Key** (free tier works) - [Get one here](https://dev.helius.xyz/)
-
-> **Why Helius?** ZK Compression requires special [Photon indexer nodes](https://www.zkcompression.com/references/terminology) to query compressed accounts and generate validity proofs. Helius runs these indexers for free on devnet. Regular Solana RPC nodes can't parse compressed account data stored in Merkle trees.
-
-## Quick Start
-
-### 1. Install Dependencies
-
-```bash
+```sh
 npm install
 ```
 
-### 2. Set Up Environment Variables
+Create an ignored `.env.local` file:
 
-Create a `.env.local` file in the project root:
-
-```bash
-# Helius RPC endpoint (required for ZK compression)
-RPC_ENDPOINT=https://devnet.helius-rpc.com?api-key=YOUR_HELIUS_API_KEY
-
-# Your wallet's private key (Base58 encoded) - KEEP THIS SECRET!
-DEV_WALLET=your_base58_private_key_here
+```dotenv
+RPC_ENDPOINT=https://devnet.helius-rpc.com?api-key=YOUR_BROWSER_RESTRICTED_RPC_KEY
+DEV_WALLET=/absolute/path/to/devnet-only-keypair.json
+MINT_AUTHORITY=YOUR_BROWSER_WALLET_PUBLIC_ADDRESS
 ```
 
-> **Important**:
->
-> - Get your Helius API key from https://dev.helius.xyz/
-> - To get your Base58 private key from Phantom: Settings → Show Private Key → Copy
-> - `DEV_WALLET` works for both scripts and frontend (via next.config.ts)
-> - **Never commit your `.env.local` file!**
+`DEV_WALLET` is a server/CLI-only keypair file path or Base58 secret. Never paste a real secret into frontend code, share it, or commit it. `MINT_AUTHORITY` is public: this browser wallet will approve each distribution batch, while the separate setup wallet pays to create the mint. If omitted, the setup wallet also becomes the mint authority.
 
-### 3. Get Devnet SOL
+The generated setup's `network` RPC URL is sent to the browser for Light queries. Use a browser-restricted RPC key; never put a privileged server credential in that URL. `.env.local` and generated setup/wallet files are Git-ignored. The setup script verifies devnet before creating a mint.
 
-Make sure your wallet has some devnet SOL:
-
-```bash
-solana airdrop 2 YOUR_WALLET_ADDRESS --url devnet
-```
-
-Or use the [Solana Faucet](https://faucet.solana.com/).
-
-### 4. Run Complete Airdrop Setup
-
-This single command will:
-
-1. Generate test wallet recipients
-2. Create a compressed token mint
-3. Generate the airdrop recipients list
-
-```bash
+```sh
 npm run airdrop:setup
-```
-
-### 5. Start the Development Server
-
-```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) and execute the airdrop!
+Open http://localhost:3000, connect the configured authority wallet on devnet and approve the batch prompts yourself. Setup consumes devnet SOL and creates on-chain accounts; do not run it against a valuable wallet. The CLI and browser need RPC access to Light's deployed programs and indexer.
 
-## Manual Setup (Optional)
+## Distribution
 
-If you want to run the setup steps individually:
+- Batch sizes range from 1 to 5 recipients. Each batch requires wallet approval; no private signing key is embedded in the browser.
+- Before signing, the app checks V1 support, the connected authority, the RPC genesis hash, the on-chain mint authority/decimals and the recipient totals.
+- Token base units remain exact integer strings/bigints, including u64 values above JavaScript's safe integer limit.
+- Wallet changes, disconnection and errors stop subsequent batches. An already-open wallet prompt cannot be revoked by the app: cancel it yourself. Submitted batches are not retried automatically. Confirmed signatures appear in the progress panel.
+- After any submission, repeat execution in that view is disabled. This is not an idempotent claim program: reloading and starting again can mint duplicates. Reconcile prior transactions and create a recipient list containing only outstanding recipients before restarting. An RPC timeout does not prove a transaction failed.
 
-```bash
-# Generate test wallets for recipients
-npm run airdrop:wallets
+Generated files live under `scripts/`: `compressed-mint-config.json`, `airdrop-recipients.json` and the combined `airdrop-setup.json`. Customize public token metadata in the mint script and recipient amounts in `generate-recipients.ts`, then regenerate the setup. Keep secrets out of these public configuration files.
 
-# Create a new compressed token mint
-npm run airdrop:mint
+## Validation
 
-# Generate recipients list from test wallets
-npm airdrop:recipients
+```sh
+npm test
+npm run ci
 ```
 
-## How It Works
+Automated wallet tests exercise account switching, disconnection/restoration, duplicate wallet names and StrictMode. Instruction tests build a real Light mint instruction and sign/decode a V1 transaction offline. These are not proof of execution by Light's on-chain programs: complete a devnet distribution and verify both transaction version and compressed recipient balances before release.
 
-### 1. **Compressed Token Mint**
-
-Creates an SPL token registered with Light Protocol's compression program. The token pool enables rent-free compressed accounts.
-
-### 2. **Test Wallets**
-
-Generates Solana keypairs that will receive the airdrop tokens. In production, you'd load real recipient addresses.
-
-### 3. **Airdrop Execution**
-
-The mint authority calls `mintTo()` in batches, directly minting compressed tokens to recipients. No merkle proofs needed - the authority can mint directly.
-
-### 4. **Batching**
-
-Splits recipients across multiple transactions to stay within transaction size limits. Configurable via UI slider (max 50 per batch).
-
-## Project Structure
-
-```
-├── scripts/
-│   ├── create-compressed-mint.ts      # Create compressed token mint
-│   ├── generate-test-wallets.ts       # Generate recipient wallets
-│   └── generate-recipients.ts         # Prepare airdrop data
-├── src/
-│   ├── app/
-│   │   └── page.tsx                   # Main airdrop UI
-│   ├── components/
-│   │   ├── airdrop/                   # Airdrop UI components
-│   │   │   ├── airdrop-executor.tsx   # Main orchestrator
-│   │   │   ├── airdrop-stats.tsx      # Display token info
-│   │   │   ├── airdrop-progress.tsx   # Progress tracking
-│   │   │   ├── airdrop-controls.tsx   # Batch controls
-│   │   │   └── airdrop-alerts.tsx     # Status alerts
-│   │   └── ui/                        # Shadcn components
-│   ├── hooks/
-│   │   └── use-airdrop.ts             # Airdrop execution hook
-│   └── lib/
-│       └── airdrop.ts                 # Core airdrop logic
-```
-
-## Understanding ZK Compression
-
-### What's Different?
-
-**Standard SPL Tokens:**
-
-- Each token account costs ~0.002 SOL rent
-- 1000 recipients = ~2 SOL in rent fees
-- Visible on standard explorers
-
-**ZK Compressed Tokens:**
-
-- Token accounts stored in Merkle trees
-- About 5000x cheaper (no rent!)
-- 1000 recipients = ~0.0004 SOL
-- Requires ZK Compression indexer to query
-
-### Why Transactions Don't Appear on Solscan
-
-Compressed token accounts are stored in on-chain Merkle trees, not as individual accounts. Standard explorers can't decode this data structure. To query compressed accounts:
-
-1. **Mint address** on Solana Explorer (shows the mint, not individual accounts)
-2. **Photon RPC** with [special methods](https://www.zkcompression.com/resources/json-rpc-methods) like `getCompressedTokenAccountsByOwner`
-3. **RPC providers** that run Photon indexers (Helius or [run your own](https://www.zkcompression.com/learn/node-operators))
-
-## Customization
-
-### Change Token Details
-
-Edit `scripts/create-compressed-mint.ts`:
-
-```typescript
-const decimals = 9 // Token decimals
-const config = {
-  name: 'My Airdrop Token',
-  symbol: 'AIRDROP',
-  // ... rest of config
-}
-```
-
-### Change Recipient Amounts
-
-Edit `scripts/generate-recipients.ts`:
-
-```typescript
-return wallets.map((w, i) => ({
-  address: address(w.address),
-  amount: 100 * (i + 1), // Customize amounts here
-}))
-```
-
-### Adjust Max Batch Size
-
-Edit `src/components/airdrop/airdrop-executor.tsx`:
-
-```typescript
-maxBatchSize={Math.min(airdropData.recipients.length, 50)} // Change 50 to your max
-```
-
-## Scripts Reference
-
-| Script                   | Description                                 |
-| ------------------------ | ------------------------------------------- |
-| `npm airdrop:setup`      | Complete setup: wallets + mint + recipients |
-| `npm airdrop:wallets`    | Generate test wallet recipients             |
-| `npm airdrop:mint`       | Create compressed token mint                |
-| `npm airdrop:recipients` | Generate airdrop recipients list            |
-| `npm dev`                | Start development server                    |
-| `npm build`              | Build for production                        |
-
-## Troubleshooting
-
-### "RPC_ENDPOINT environment variable not set"
-
-Make sure you've created `.env.local` and added your Helius RPC endpoint.
-
-### "DEV_WALLET environment variable not set"
-
-Add your Base58 private key to `DEV_WALLET` in `.env.local`. It's exposed to both scripts and frontend via `next.config.ts`.
-
-### "401 Unauthorized: Invalid API key"
-
-Your Helius API key is incorrect. Get a new one from https://dev.helius.xyz/
-
-### "Wallet not authorized"
-
-The connected wallet must match the mint authority. Connect the wallet whose private key is in `DEV_WALLET`.
-
-### "Transaction not found on Solscan"
-
-This is expected! Compressed tokens use Merkle trees. Check the mint address on Solana Explorer instead.
-
-## Production Deployment
-
-1. **Update recipient list**: Replace test wallets with real addresses
-2. **Secure your keys**: Use environment variables, never commit keys
-3. **Use mainnet RPC**: Update `RPC_ENDPOINT` to Helius mainnet
-4. **Test thoroughly**: Always test on devnet first
-5. **Monitor transactions**: Keep track of successful/failed mints
+Compressed token balances require a Photon indexer. The transactions themselves are visible on standard Solana explorers; compression does not hide transaction signatures.
 
 ## Resources
 
-- [ZK Compression Documentation](https://www.zkcompression.com/)
-- [Photon Indexer (Terminology)](https://www.zkcompression.com/references/terminology)
-- [ZK Compression RPC Methods](https://www.zkcompression.com/resources/json-rpc-methods)
-- [Run Your Own Indexer](https://www.zkcompression.com/learn/node-operators)
-- [Light Protocol GitHub](https://github.com/Lightprotocol)
-- [Gill SDK](https://gill.site/)
-- [Solana Wallet UI](https://registry.wallet-ui.dev)
-
-## License
-
-This project is based on the gill-next-tailwind template from the Solana Foundation.
+- https://www.zkcompression.com/
+- https://github.com/Lightprotocol/light-protocol
+- https://lightprotocol.github.io/light-protocol/compressed-token/

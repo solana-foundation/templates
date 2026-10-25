@@ -11,7 +11,7 @@ export {
   parseRecipients,
   calculateBatches,
   formatTokenAmount,
-  executeAirdropBatch,
+  prepareAirdropBatch,
   createRpcConnection,
 } from './data-access/airdrop-utils'
 

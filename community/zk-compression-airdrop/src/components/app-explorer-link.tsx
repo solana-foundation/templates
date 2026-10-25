@@ -1,8 +1,7 @@
 'use client'
 
 import { ArrowUpRightFromSquare } from 'lucide-react'
-import { useClusterState } from '@solana/react-hooks'
-import { resolveCluster } from '@/components/solana/clusters'
+import { useSolana } from '@/components/solana/solana-provider'
 
 type ExplorerLinkProps = {
   address?: string
@@ -33,8 +32,7 @@ function buildExplorerUrl({
 }
 
 export function AppExplorerLink({ className, label = '', address, block, transaction }: ExplorerLinkProps) {
-  const clusterState = useClusterState()
-  const cluster = resolveCluster(clusterState.endpoint)
+  const { cluster } = useSolana()
   const href = buildExplorerUrl({
     label,
     address,
