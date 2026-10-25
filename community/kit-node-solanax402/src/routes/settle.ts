@@ -179,12 +179,17 @@ export function settlePaymentRoute(context: SettleRouteContext) {
 
       // Store failed transaction
       if (paymentReq && paymentReq.payload) {
-        await context.nonceDb.storeTransaction({
-          nonce: paymentReq.payload.nonce,
-          transactionSignature: reservedSignature ?? null,
-          status: 'failed',
-          errorMessage: error instanceof Error ? error.message : 'Unknown error',
-        });
+        try {
+          await context.nonceDb.storeTransaction({
+            nonce: paymentReq.payload.nonce,
+            // The nonce retains the reserved signature; do not duplicate a unique transaction record.
+            transactionSignature: null,
+            status: 'failed',
+            errorMessage: error instanceof Error ? error.message : 'Unknown error',
+          });
+        } catch (loggingError) {
+          console.error('Could not record settlement error:', loggingError);
+        }
       }
 
       return res.json({

@@ -180,7 +180,8 @@ test('HTTP flow co-signs V1, confirms and rejects replay using only a local RPC 
       signedTransaction: getBase64EncodedWireTransaction(transaction),
       signature: utils.signStructuredData(timeoutPayload.createStructuredData(), bs58.encode(clientSecret)),
     });
-    const timeoutSignature = bs58.encode(nacl.sign.detached(new Uint8Array([1]), facilitatorSecret));
+    // A second authorization may carry the same wire transaction and candidate signature.
+    const timeoutSignature = reservedSignature;
     utils.submitSponsoredTransaction = async (_key, _wire, _expected, reserve) => {
       await reserve(timeoutSignature);
       throw new Error('Confirmation timed out');
@@ -191,6 +192,32 @@ test('HTTP flow co-signs V1, confirms and rejects replay using only a local RPC 
     assert.match(timeoutResult.message, /Confirmation timed out/);
     assert.equal(timeoutResult.transactionSignature, timeoutSignature);
     assert.equal((await db.getNonceDetails(timeoutPayload.nonce)).transactionSignature, timeoutSignature);
+    assert.equal(broadcasts, 1);
+    const loggingPayload = AuthorizationPayload.create({
+      amount: expected.amount,
+      recipient,
+      resourceId: '/resource',
+      resourceUrl: '/resource',
+      nonce: 'logging-failure',
+    });
+    const loggingPayment = new PaymentRequest({
+      payload: loggingPayload,
+      clientPublicKey: client.address,
+      signedTransaction: getBase64EncodedWireTransaction(transaction),
+      signature: utils.signStructuredData(loggingPayload.createStructuredData(), bs58.encode(clientSecret)),
+    });
+    db.storeTransaction = async () => {
+      throw new Error('Database write unavailable');
+    };
+    const loggingResponse = await fetch(`${merchant.url}/resource`, {
+      headers: { 'X-Payment': loggingPayment.serialize() },
+      signal: AbortSignal.timeout(5000),
+    });
+    assert.equal(loggingResponse.status, 402);
+    const loggingResult = await loggingResponse.json();
+    assert.match(loggingResult.message, /Confirmation timed out/);
+    assert.equal(loggingResult.transactionSignature, timeoutSignature);
+    assert.equal((await db.getNonceDetails(loggingPayload.nonce)).transactionSignature, timeoutSignature);
     assert.equal(broadcasts, 1);
   } finally {
     await Promise.all(servers.reverse().map((server) => server.close()));
