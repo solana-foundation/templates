@@ -10,8 +10,8 @@ export default function RootLayout() {
   return (
     <LazorKitProvider
       rpcUrl="https://api.devnet.solana.com"
-      ipfsUrl="https://portal.lazor.sh"
-      paymasterUrl="https://kora.devnet.lazorkit.com"
+      portalUrl="https://portal.lazor.sh"
+      configPaymaster={{ paymasterUrl: 'https://kora.devnet.lazorkit.com' }}
       isDebug={false}
     >
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
