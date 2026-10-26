@@ -37,7 +37,7 @@
     "@solana/wallet-adapter-base": "0.9.27",
     "@solana/wallet-adapter-react": "0.15.39",
     "@solana/wallet-adapter-react-ui": "0.9.39",
-    "@solana/web3.js": "1.98.0",
+    "@solana/web3.js": "^1.99.0",
     "next": "16.4.3",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
@@ -63,6 +63,7 @@
     "toml": "5.0.1",
     "zod": "4.6.7",
     "@drift-labs/sdk": {
+      "@solana/web3.js": "1.99.0",
       "uuid": "11.1.1"
     }
   },
@@ -73,6 +74,7 @@
       "nanoid": "3.3.20",
       "toml": "5.0.1",
       "zod": "4.6.7",
+      "@drift-labs/sdk>@solana/web3.js": "1.99.0",
       "@drift-labs/sdk>uuid": "11.1.1"
     }
   }

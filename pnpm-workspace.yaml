@@ -26,6 +26,7 @@ onlyBuiltDependencies:
 overrides:
   'axios@>=1.0.0 <1.20.0': 1.20.0
   'basic-ftp@>=5.0.0 <5.3.1': 5.3.1
+  '@drift-labs/sdk>@solana/web3.js': 1.99.0
   '@drift-labs/sdk>uuid': 11.1.1
   '@grpc/grpc-js@>=1.14.0 <1.14.6': 1.14.6
   'handlebars@>=4.0.0 <4.7.9': 4.7.9
