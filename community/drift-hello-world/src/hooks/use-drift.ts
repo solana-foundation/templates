@@ -49,11 +49,7 @@ export function useDrift() {
   }, []);
 
   useEffect(() => {
-    if (!wallet || !sdk) {
-      setDriftClient(null);
-      setUserAccount(null);
-      return;
-    }
+    if (!wallet || !sdk) return;
 
     let cancelled = false;
     const accountLoader = new sdk.BulkAccountLoader(
@@ -97,6 +93,8 @@ export function useDrift() {
     return () => {
       cancelled = true;
       client.unsubscribe();
+      setDriftClient(null);
+      setUserAccount(null);
     };
   }, [connection, sdk, wallet]);
 
@@ -211,14 +209,7 @@ export function useDrift() {
         });
       }
     },
-    [
-      connection,
-      driftClient,
-      refreshUserAccount,
-      sdk,
-      userAccount,
-      wallet?.publicKey,
-    ]
+    [connection, driftClient, refreshUserAccount, sdk, userAccount, wallet]
   );
 
   const openPosition = useCallback(
