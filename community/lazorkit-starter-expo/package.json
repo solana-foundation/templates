@@ -33,11 +33,11 @@
     "lint": "expo lint"
   },
   "dependencies": {
-    "@coral-xyz/anchor": "^0.32.1",
     "@expo/metro-runtime": "~58.0.15",
     "@expo/vector-icons": "^15.0.3",
-    "@lazorkit/wallet-mobile-adapter": "^1.3.74",
+    "@lazorkit/wallet-mobile-adapter": "^2.4.0",
     "@react-native-async-storage/async-storage": "^2.2.0",
+    "@solana/web3.js": "^1.99.0",
     "buffer": "^6.0.3",
     "expo": "~58.0.19",
     "expo-constants": "~58.0.13",
