@@ -83,7 +83,7 @@ export interface TestWalletsData {
   createdAt: string
   wallets: {
     name: string
-    publicKey: string
+    address: string
     keypairFile: string
     privateKey: {
       hex: string

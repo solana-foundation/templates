@@ -23,8 +23,8 @@ import type { GillRecipient } from '../lib/types'
 describe('Solana Distributor (Comprehensive Gill + Codama)', () => {
   const NETWORK = 'devnet'
   let client: ReturnType<typeof createSolanaClient>
-  let rpc: any
-  let sendAndConfirmTransaction: any
+  let rpc: ReturnType<typeof createSolanaClient>['rpc']
+  let sendAndConfirmTransaction: ReturnType<typeof createSolanaClient>['sendAndConfirmTransaction']
 
   let authority: TransactionSigner
   let recipient1: TransactionSigner

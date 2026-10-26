@@ -1,3 +1,4 @@
+import { execSync } from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'
 import type { RecipientsFile, GillWalletInfo } from './types'
@@ -420,7 +421,6 @@ export async function ensureGillCodamaSync(config: GillFileConfig = {}): Promise
     console.log(`   Codama Program ID: ${codamaProgramId || 'not found'}`)
 
     // Import and run the codama generation
-    const { execSync } = require('child_process')
     const codamaConfigPath = path.join(workingDir, 'codama.config.ts')
 
     if (!fs.existsSync(codamaConfigPath)) {
