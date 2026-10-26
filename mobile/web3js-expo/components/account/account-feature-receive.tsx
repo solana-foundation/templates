@@ -2,7 +2,7 @@ import { AppView } from '@/components/app-view'
 import { AppText } from '@/components/app-text'
 import { PublicKey } from '@solana/web3.js'
 import { AppQrCode } from '@/components/app-qr-code'
-import { Button } from '@react-navigation/elements'
+import { Button } from 'expo-router/react-navigation'
 import Clipboard from '@react-native-clipboard/clipboard'
 
 export function AccountFeatureReceive({ address }: { address: PublicKey }) {
