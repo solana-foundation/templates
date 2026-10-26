@@ -27,8 +27,8 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint"
   },
@@ -41,6 +41,7 @@
     "buffer": "^6.0.3",
     "expo": "~58.0.19",
     "expo-constants": "~58.0.13",
+    "expo-crypto": "~58.0.7",
     "expo-font": "~58.0.10",
     "expo-haptics": "~58.0.7",
     "expo-image": "~58.0.17",
@@ -69,5 +70,17 @@
     "eslint": "^9.25.0",
     "eslint-config-expo": "~58.0.4",
     "typescript": "~6.0.3"
+  },
+  "overrides": {
+    "@lazorkit/wallet-mobile-adapter": {
+      "expo-crypto": "$expo-crypto",
+      "expo-web-browser": "$expo-web-browser"
+    }
+  },
+  "pnpm": {
+    "overrides": {
+      "@lazorkit/wallet-mobile-adapter>expo-crypto": "~58.0.7",
+      "@lazorkit/wallet-mobile-adapter>expo-web-browser": "~58.0.6"
+    }
   }
 }

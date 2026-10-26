@@ -1,4 +1,9 @@
-import { useWallet } from '@lazorkit/wallet-mobile-adapter'
+import {
+  PaymasterError,
+  PortalCancelledError,
+  TransactionOutcomeUnknownError,
+  useWallet,
+} from '@lazorkit/wallet-mobile-adapter'
 import { SystemProgram, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { Button, Text, View, StyleSheet, Alert } from 'react-native'
 import { router } from 'expo-router'
@@ -41,9 +46,19 @@ export default function WalletScreen() {
       )
       console.log('Transaction sent:', signature)
       Alert.alert('Success', 'Transaction sent successfully')
-    } catch (err: any) {
+    } catch (err) {
+      if (err instanceof PortalCancelledError) return
+      if (err instanceof TransactionOutcomeUnknownError || (err instanceof PaymasterError && err.maybeSent)) {
+        Alert.alert(
+          'Pending',
+          err.signature
+            ? `The transaction may still land. Check ${err.signature} before sending again.`
+            : 'The transaction may still land. Check your wallet before sending again.',
+        )
+        return
+      }
       console.error('Transaction failed:', err)
-      Alert.alert('Failed', err.message)
+      Alert.alert('Failed', err instanceof Error ? err.message : String(err))
     }
   }
 
