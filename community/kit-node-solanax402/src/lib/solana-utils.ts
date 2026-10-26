@@ -12,11 +12,10 @@ import {
   getSignatureFromTransaction,
   assertIsTransactionWithinSizeLimit,
   getBase64Codec,
+  getTransactionDecoder,
+  address,
 } from '@solana/kit';
-import type { Rpc, RpcSubscriptions, SolanaRpcApi, SolanaRpcSubscriptionsApi } from '@solana/kit';
-import { getTransactionDecoder } from '@solana/transactions';
-import { address } from '@solana/addresses';
-import type { Address } from '@solana/addresses';
+import type { Address, Rpc, RpcSubscriptions, SolanaRpcApi, SolanaRpcSubscriptionsApi } from '@solana/kit';
 import { SignatureVerificationError } from '../errors/index.js';
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
