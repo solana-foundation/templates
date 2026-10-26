@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router'
 import { View } from 'react-native'
-import { Button } from '@react-navigation/elements'
+import { Button } from 'expo-router/react-navigation'
 
 export function AccountUiButtons() {
   const router = useRouter()

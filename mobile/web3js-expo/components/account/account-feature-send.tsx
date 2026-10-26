@@ -3,7 +3,7 @@ import { AppText } from '@/components/app-text'
 import { PublicKey } from '@solana/web3.js'
 import { ActivityIndicator, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
-import { Button } from '@react-navigation/elements'
+import { Button } from 'expo-router/react-navigation'
 import { useTransferSol } from '@/components/account/use-transfer-sol'
 import { useThemeColor } from '@/hooks/use-theme-color'
 
