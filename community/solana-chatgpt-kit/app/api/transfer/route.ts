@@ -105,6 +105,7 @@ export async function POST(request: Request) {
       const transferTransaction = Buffer.from(serialized).toString('base64')
 
       // Settle x402 payment after preparing transaction
+      let paymentResponse: string | undefined
       if (x402 && paymentHeader && paymentRequirements) {
         const settlement = await x402.settlePayment(paymentHeader, paymentRequirements)
         if (!settlement.success) {
@@ -113,17 +114,21 @@ export async function POST(request: Request) {
             { status: 402 },
           )
         }
+        paymentResponse = Buffer.from(JSON.stringify(settlement)).toString('base64')
       }
 
-      return NextResponse.json({
-        success: true,
-        transferTransaction, // base64 encoded unsigned transaction
-        from: fromPublicKey.toString(),
-        to: destination.toString(),
-        amount: solAmount,
-        unit: 'SOL',
-        timestamp: new Date().toISOString(),
-      })
+      return NextResponse.json(
+        {
+          success: true,
+          transferTransaction, // base64 encoded unsigned transaction
+          from: fromPublicKey.toString(),
+          to: destination.toString(),
+          amount: solAmount,
+          unit: 'SOL',
+          timestamp: new Date().toISOString(),
+        },
+        paymentResponse ? { headers: { 'PAYMENT-RESPONSE': paymentResponse } } : undefined,
+      )
     }
 
     // Sign and send (server wallet mode)
