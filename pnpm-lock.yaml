@@ -14,6 +14,7 @@ overrides:
   postcss@>=8.0.0 <8.5.23: 8.5.31
   protobufjs@>=7.0.0 <7.6.5: 7.6.5
   tar@>=6.0.0 <=7.5.18: 7.5.22
+  toml@<5.0.1: 5.0.1
   vitest@>=3.0.0 <3.2.6: 3.2.7
   ws@>=8.0.0 <8.21.0: 8.22.0
   zod@>=4.0.0 <4.6.6: 4.6.7
@@ -15700,8 +15701,9 @@ packages:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
 
-  toml@3.0.0:
-    resolution: {integrity: sha512-y/mWCZinnvxjTKYhJ+pYxwD0mRLVvOtdS2Awbgxln6iEnt4rk0yBxeSBHkGJcPucRiG0e55mwWp+g/05rsrd6w==}
+  toml@5.0.1:
+    resolution: {integrity: sha512-EqYNA/YvUNndrA2B3O2ojzLQoTQrBxeZ9UIjQwk8t10oe6n7dwclBwd9IdZQTOKwe6vWX+AXtl6IntXRbepdxQ==}
+    engines: {node: '>=20'}
 
   touch@3.1.1:
     resolution: {integrity: sha512-r0eojU4bI8MnHr8c5bNo7lJDdI2qXlWWJk6a9EAFG7vbhTjElYhBVS3/miuE0uOuoLdb8Mc/rVfsmm6eo5o9GA==}
@@ -16932,7 +16934,7 @@ snapshots:
       eventemitter3: 4.0.7
       pako: 2.2.0
       superstruct: 0.15.5
-      toml: 3.0.0
+      toml: 5.0.1
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -18005,7 +18007,7 @@ snapshots:
       pako: 2.2.0
       snake-case: 3.0.4
       superstruct: 0.15.5
-      toml: 3.0.0
+      toml: 5.0.1
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -18028,7 +18030,7 @@ snapshots:
       pako: 2.2.0
       snake-case: 3.0.4
       superstruct: 0.15.5
-      toml: 3.0.0
+      toml: 5.0.1
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -18049,7 +18051,7 @@ snapshots:
       eventemitter3: 4.0.7
       pako: 2.2.0
       superstruct: 0.15.5
-      toml: 3.0.0
+      toml: 5.0.1
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -18070,7 +18072,7 @@ snapshots:
       eventemitter3: 4.0.7
       pako: 2.2.0
       superstruct: 0.15.5
-      toml: 3.0.0
+      toml: 5.0.1
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -19927,7 +19929,7 @@ snapshots:
       debug: 4.4.3(supports-color@5.5.0)
       semver: 7.8.5
       text-table: 0.2.0
-      toml: 3.0.0
+      toml: 5.0.1
     transitivePeerDependencies:
       - supports-color
 
@@ -20558,7 +20560,7 @@ snapshots:
       js-sha256: 0.9.0
       pako: 2.2.0
       snake-case: 3.0.4
-      toml: 3.0.0
+      toml: 5.0.1
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -38972,7 +38974,7 @@ snapshots:
 
   toidentifier@1.0.1: {}
 
-  toml@3.0.0: {}
+  toml@5.0.1: {}
 
   touch@3.1.1: {}
 
