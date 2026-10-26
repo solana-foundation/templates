@@ -13,14 +13,14 @@ pub enum AppError {
     NotFound(String),
 
     #[error("RPC error: {0}")]
-    Rpc(Box<solana_client::client_error::ClientError>),
+    Rpc(Box<solana_rpc_client::api::client_error::Error>),
 
     #[error("Serialization error: {0}")]
     Serialization(#[from] bincode::Error),
 }
 
-impl From<solana_client::client_error::ClientError> for AppError {
-    fn from(err: solana_client::client_error::ClientError) -> Self {
+impl From<solana_rpc_client::api::client_error::Error> for AppError {
+    fn from(err: solana_rpc_client::api::client_error::Error) -> Self {
         Self::Rpc(Box::new(err))
     }
 }
