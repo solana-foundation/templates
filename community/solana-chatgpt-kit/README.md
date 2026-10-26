@@ -74,7 +74,7 @@ cd solana-chatgpt-kit
 pnpm install
 ```
 
-> **Dependency compatibility:** `@modelcontextprotocol/sdk@1.26.0`, `mcp-handler@1.1.0`, and `zod@3.25.76` are intentionally pinned as a tested set. The MCP SDK 1.29 and Zod 3.24 combination caused TypeScript build incompatibilities. Upgrade these packages together and verify the production build before changing the pins.
+> **Dependency compatibility:** `mcp-handler@2` requires `@modelcontextprotocol/server@^2` and `zod@^4`. Upgrade these packages together and verify the production build before changing their ranges.
 
 ### Environment Setup
 
