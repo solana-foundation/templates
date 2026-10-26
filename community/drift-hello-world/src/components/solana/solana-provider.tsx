@@ -6,10 +6,6 @@ import {
   WalletProvider,
 } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import {
-  PhantomWalletAdapter,
-  SolflareWalletAdapter,
-} from "@solana/wallet-adapter-wallets";
 import { clusterApiUrl } from "@solana/web3.js";
 import dynamic from "next/dynamic";
 import React, { type ReactNode, useCallback, useMemo } from "react";
@@ -27,18 +23,13 @@ export function SolanaProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  const wallets = useMemo(
-    () => [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
-    []
-  );
-
   const onError = useCallback((error: WalletError) => {
     console.error(error);
   }, []);
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} onError={onError} autoConnect={true}>
+      <WalletProvider wallets={[]} onError={onError} autoConnect={true}>
         <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
