@@ -1,4 +1,4 @@
-import type { Address, TransactionSigner } from 'gill'
+import type { Address, TransactionSigner } from '@solana/kit'
 
 export interface GillWalletInfo {
   name: string

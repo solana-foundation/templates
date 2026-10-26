@@ -10,7 +10,7 @@ import {
   type Address,
   type Rpc,
   type SolanaRpcApi,
-} from 'gill'
+} from '@solana/kit'
 
 const generateKeyPairAsync = promisify(generateKeyPair)
 
@@ -59,7 +59,7 @@ export async function generateGillWallet(name: string): Promise<GillWalletInfo> 
     },
     balance: '0 SOL',
     funded: false,
-    signer, // Include the Gill signer
+    signer, // Include the Kit signer
   }
 }
 
@@ -94,7 +94,7 @@ export async function createGillWalletFromKey(name: string, privateKeyInput: str
       base58: privateKeyInput.length === 88 ? privateKeyInput : bs58.encode(new Uint8Array(secretKeyArray)),
       array: secretKeyArray,
     },
-    signer, // Include the Gill signer
+    signer, // Include the Kit signer
   }
 }
 
