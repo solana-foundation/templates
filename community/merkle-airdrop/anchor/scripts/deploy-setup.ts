@@ -152,7 +152,10 @@ export async function runGillDeploymentSetup(config: GillDeploymentSetupConfig =
   }
 }
 
-function showGillFinalSummary(result: any, deploymentAttempted: boolean): void {
+function showGillFinalSummary(
+  result: Awaited<ReturnType<typeof completeGillSetup>>,
+  deploymentAttempted: boolean,
+): void {
   console.log('\n' + '='.repeat(50))
   console.log('✅ Setup completed successfully with Gill + Codama!\n')
 

@@ -1,4 +1,5 @@
 import bs58 from 'bs58'
+import { execSync } from 'child_process'
 import { generateKeyPair } from 'crypto'
 import { promisify } from 'util'
 import type { GillWalletInfo, GillNetworkConfig } from './types'
@@ -228,8 +229,6 @@ export async function distributeSolToWallets(
   for (const wallet of toWallets) {
     try {
       console.log(`💸 Sending ${amountPerWallet} SOL to ${wallet.address}...`)
-
-      const { execSync } = require('child_process')
 
       let keypairFile = fromWallet.keypairFile || 'anchor/deploy-wallet.json'
 

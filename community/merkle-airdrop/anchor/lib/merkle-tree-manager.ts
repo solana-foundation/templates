@@ -68,6 +68,10 @@ export class GillMerkleTree {
     return '0x' + Buffer.from(this.root).toString('hex')
   }
 
+  public getLeaf(index: number): Uint8Array {
+    return this.leaves[index]
+  }
+
   public getLeafCount(): number {
     return this.leaves.length
   }
@@ -114,8 +118,7 @@ export function generateGillProof(
     const proof = merkleTree.getProof(recipientIndex)
     const proofHex = proof.map((p) => '0x' + Buffer.from(p).toString('hex'))
 
-    const leaves = (merkleTree as any).leaves as Uint8Array[]
-    const leaf = '0x' + Buffer.from(leaves[recipientIndex]).toString('hex')
+    const leaf = '0x' + Buffer.from(merkleTree.getLeaf(recipientIndex)).toString('hex')
 
     return {
       proof: proofHex,

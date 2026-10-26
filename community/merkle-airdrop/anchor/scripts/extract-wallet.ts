@@ -33,7 +33,10 @@ export function extractWallet(walletName: string, outputPath?: string): boolean 
   }
 }
 
-function loadWallets(): { deployWallet: any | null; testWallets: any[] } {
+function loadWallets(): {
+  deployWallet: TestWalletsData['wallets'][number] | null
+  testWallets: TestWalletsData['wallets']
+} {
   try {
     if (!fs.existsSync('test-wallets.json')) {
       return { deployWallet: null, testWallets: [] }
