@@ -6,7 +6,7 @@ import { AppConfig } from '@/constants/app-config'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { View } from 'react-native'
 import { Image } from 'expo-image'
-import { Button } from '@react-navigation/elements'
+import { Button } from 'expo-router/react-navigation'
 
 export default function SignIn() {
   const { signIn } = useAuth()
