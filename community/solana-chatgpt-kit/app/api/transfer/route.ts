@@ -4,6 +4,7 @@ import { getSolanaConnection, getWalletKeypair, externalWallet } from '@/lib/sol
 import { resolveAddressOrDomain } from '@/lib/address-resolver'
 import { getX402Handler, X402_FEE_CONFIG } from '@/lib/x402-config'
 import { baseURL } from '@/baseUrl'
+import type { PaymentRequirements, X402PaymentHandler } from 'x402-solana/server'
 
 export async function POST(request: Request) {
   try {
@@ -11,40 +12,43 @@ export async function POST(request: Request) {
 
     // x402 Payment Protocol (only for external wallet mode)
     let paymentHeader: string | null = null
-    let paymentRequirements: any = null
-    let x402: any = null
+    let paymentRequirements: PaymentRequirements | null = null
+    let x402: X402PaymentHandler | null = null
 
     if (externalWallet) {
       x402 = getX402Handler()
-      paymentHeader = x402.extractPayment(Object.fromEntries(request.headers.entries()))
+      paymentHeader = x402.extractPayment(request.headers)
 
-      // Create payment requirements for 0.001 SOL fee
+      // Create payment requirements for the USDC API fee
       const resourceUrl = baseURL.startsWith('http') ? `${baseURL}/api/transfer` : `https://${baseURL}/api/transfer`
 
-      paymentRequirements = await x402.createPaymentRequirements({
-        price: {
+      paymentRequirements = await x402.createPaymentRequirements(
+        {
           amount: X402_FEE_CONFIG.amount,
           asset: X402_FEE_CONFIG.solAsset,
-        },
-        network: X402_FEE_CONFIG.network,
-        config: {
           description: X402_FEE_CONFIG.description,
-          resource: resourceUrl as `${string}://${string}`,
           mimeType: 'application/json',
           maxTimeoutSeconds: 300,
         },
-      })
+        resourceUrl,
+      )
 
       // If no payment header, return 402 Payment Required
       if (!paymentHeader) {
-        const response = x402.create402Response(paymentRequirements)
-        return NextResponse.json(response.body, { status: response.status })
+        const response = x402.create402Response(paymentRequirements, resourceUrl)
+        return NextResponse.json(response.body, {
+          status: response.status,
+          headers: { 'PAYMENT-REQUIRED': Buffer.from(JSON.stringify(response.body)).toString('base64') },
+        })
       }
 
       // Verify payment with facilitator
-      const verified = await x402.verifyPayment(paymentHeader, paymentRequirements)
-      if (!verified) {
-        return NextResponse.json({ error: 'Invalid or expired payment' }, { status: 402 })
+      const verification = await x402.verifyPayment(paymentHeader, paymentRequirements)
+      if (!verification.isValid) {
+        return NextResponse.json(
+          { error: 'Invalid or expired payment', reason: verification.invalidReason },
+          { status: 402 },
+        )
       }
     }
 
@@ -101,8 +105,14 @@ export async function POST(request: Request) {
       const transferTransaction = Buffer.from(serialized).toString('base64')
 
       // Settle x402 payment after preparing transaction
-      if (x402 && paymentHeader) {
-        await x402.settlePayment(paymentHeader, paymentRequirements)
+      if (x402 && paymentHeader && paymentRequirements) {
+        const settlement = await x402.settlePayment(paymentHeader, paymentRequirements)
+        if (!settlement.success) {
+          return NextResponse.json(
+            { error: 'Payment settlement failed', reason: settlement.errorReason },
+            { status: 402 },
+          )
+        }
       }
 
       return NextResponse.json({
