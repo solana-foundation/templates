@@ -63,9 +63,9 @@
     "toml": "5.0.1",
     "zod": "4.6.7",
     "@drift-labs/sdk": {
-      "@solana/web3.js": "1.99.0",
-      "uuid": "11.1.1"
-    }
+      "@solana/web3.js": "1.99.0"
+    },
+    "uuid@<11.1.1": "11.1.1"
   },
   "pnpm": {
     "overrides": {
@@ -75,7 +75,7 @@
       "toml": "5.0.1",
       "zod": "4.6.7",
       "@drift-labs/sdk>@solana/web3.js": "1.99.0",
-      "@drift-labs/sdk>uuid": "11.1.1"
+      "uuid@<11.1.1": "11.1.1"
     }
   }
 }
