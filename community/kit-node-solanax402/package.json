@@ -78,6 +78,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
+    "@solana-program/system": "^0.10.0",
     "@types/bs58": "^4.0.4",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",

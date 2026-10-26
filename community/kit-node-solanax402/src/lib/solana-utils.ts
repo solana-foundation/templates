@@ -227,7 +227,7 @@ export class SolanaUtils {
       console.log('  Facilitator signing as fee payer...');
 
       // Add facilitator's signature (fee payer) to the already client-signed transaction
-      const signedTransaction = await signTransaction([facilitatorSigner], transaction);
+      const signedTransaction = await signTransaction([facilitatorSigner.keyPair], transaction);
 
       console.log('  Both signatures present (client + facilitator)');
       console.log('  Sending to Solana network...');
