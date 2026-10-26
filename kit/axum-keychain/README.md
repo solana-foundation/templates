@@ -28,7 +28,7 @@ Signers are constructed at startup in `src/signers.rs` — one per backend confi
 | POST   | `/api/sign/transaction` | Adds the given backend's signature to a wire transaction (`{ transaction, backend? }`); returns the signed wire transaction and signature                                        |
 | POST   | `/api/demo/transaction` | Builds a memo transaction with a placeholder blockhash (`{ memo, backend? }`), signs it, verifies the signature, and returns the decoded fields plus the signed wire transaction |
 
-The routes only sign — they never submit transactions to the network. Broadcasting stays with the caller, so backends that sign and broadcast server-side (`crossmint`) return an error from the transaction routes. Transactions use the wire format (`bincode`-serialized `solana_sdk::transaction::VersionedTransaction`, base64-encoded), which accepts both legacy and v0 transactions.
+The routes only sign — they never submit transactions to the network. Broadcasting stays with the caller, so backends that sign and broadcast server-side (`crossmint`) return an error from the transaction routes. Transactions use the wire format (`bincode`-serialized `solana_sdk::transaction::VersionedTransaction`, base64-encoded), which accepts both legacy and v0 transactions. The `cdp` backend rejects v0 transactions that use address lookup tables.
 
 ## Adding backends
 

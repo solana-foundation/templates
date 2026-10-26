@@ -38,7 +38,7 @@ impl TestContext {
         });
 
         let program_data = include_bytes!("../../../../target/deploy/pinocchio_counter.so");
-        let _ = svm.add_program(PINOCCHIO_COUNTER_ID, program_data);
+        svm.add_program(PINOCCHIO_COUNTER_ID, program_data).unwrap();
 
         let payer = Keypair::new();
         svm.airdrop(&payer.pubkey(), MIN_LAMPORTS).unwrap();
