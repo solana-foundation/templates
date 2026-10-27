@@ -95,5 +95,8 @@
     "prettier": "^3.7.4",
     "typescript": "~6.0.3"
   },
-  "private": true
+  "private": true,
+  "overrides": {
+    "jayson@<5.0.0": "5.0.0"
+  }
 }
