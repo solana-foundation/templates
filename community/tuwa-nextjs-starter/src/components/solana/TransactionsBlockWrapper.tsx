@@ -66,10 +66,10 @@ export const TransactionsBlockWrapper = () => {
   return (
     <div className="p-4 relative">
       <div className="m-auto w-full max-w-md h-auto min-h-[680px] bg-[var(--tuwa-bg-primary)] rounded-[var(--tuwa-rounded-corners)] shadow-2xl border border-[var(--tuwa-border-primary)] overflow-hidden flex flex-col relative">
-        <header className="bg-gradient-to-r from-[var(--tuwa-button-gradient-from)] to-[var(--tuwa-button-gradient-to)] p-6 pt-12 flex items-start justify-between">
+        <header className="bg-[var(--tuwa-bg-secondary)] border-b border-[var(--tuwa-border-primary)] p-6 pt-12 flex items-start justify-between">
           <div className="flex-1 pr-4">
-            <h1 className="text-2xl font-bold text-[var(--tuwa-text-on-accent)] mb-1 leading-tight">Solana Demo</h1>
-            <p className="text-blue-100 text-sm leading-tight">Transaction Tracking Example</p>
+            <h1 className="text-2xl font-bold text-[var(--tuwa-text-primary)] mb-1 leading-tight">Solana Demo</h1>
+            <p className="text-[var(--tuwa-text-secondary)] text-sm leading-tight">Transaction Tracking Example</p>
           </div>
         </header>
 
@@ -102,7 +102,7 @@ export const TransactionsBlockWrapper = () => {
                   <div className="text-sm text-[var(--tuwa-text-secondary)] leading-tight">Account</div>
                   <button
                     onClick={openSolscan}
-                    className="text-xs font-mono text-[var(--tuwa-text-accent)] hover:text-[var(--tuwa-button-gradient-from-hover)] leading-tight cursor-pointer transition-colors duration-200 underline hover:no-underline"
+                    className="text-xs font-mono text-[var(--tuwa-text-accent)] hover:opacity-80 leading-tight cursor-pointer transition-opacity duration-200 underline hover:no-underline"
                   >
                     {textCenterEllipsis(PROGRAM_ID.toString(), 6, 6)}
                   </button>

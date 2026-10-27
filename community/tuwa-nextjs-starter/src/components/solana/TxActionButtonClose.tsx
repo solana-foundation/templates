@@ -65,8 +65,8 @@ export const TxActionButtonClose = ({
         w-full p-2.5 rounded-[var(--tuwa-rounded-corners)] border border-transparent
         text-gray-800 font-semibold shadow-sm transition-all duration-200
         focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400
-        bg-gradient-to-r from-neutral-200 to-neutral-300
-        hover:from-neutral-300 hover:to-neutral-400 hover:shadow-lg
+        bg-none bg-neutral-200
+        hover:bg-neutral-300 hover:shadow-md
         disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] select-none
       `}
     >

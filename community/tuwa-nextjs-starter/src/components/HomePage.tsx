@@ -12,7 +12,7 @@ export default function HomePage() {
   const activeConnection = useSatelliteConnectStore((store) => store.activeConnection);
 
   return (
-    <div className="w-full flex justify-center items-center bg-gradient-to-br from-[var(--tuwa-bg-secondary)] to-[var(--tuwa-bg-muted)] gap-4 flex-wrap relative min-h-[calc(100dvh-65px)]">
+    <div className="w-full flex justify-center items-center bg-[var(--tuwa-bg-secondary)] gap-4 flex-wrap relative min-h-[calc(100dvh-65px)]">
       {activeConnection ? (
         <>
           {getAdapterFromConnectorType(activeConnection.connectorType) === OrbitAdapter.SOLANA && (
@@ -30,7 +30,7 @@ export default function HomePage() {
             'bg-[var(--tuwa-bg-primary)] ring-1 ring-[var(--tuwa-border-primary)]',
           )}
         >
-          <div className="w-12 h-12 p-2 rounded-full mb-4 bg-gradient-to-r from-[var(--tuwa-button-gradient-from)] to-[var(--tuwa-button-gradient-to)] text-[var(--tuwa-text-on-accent)]">
+          <div className="w-12 h-12 p-2 rounded-full mb-4 bg-[var(--tuwa-bg-muted)] text-[var(--tuwa-text-primary)] border border-[var(--tuwa-border-primary)]">
             <WalletIcon className="w-full h-full" />
           </div>
           <h2 className="text-xl font-bold text-[var(--tuwa-text-primary)] mb-2">Wallet Required</h2>

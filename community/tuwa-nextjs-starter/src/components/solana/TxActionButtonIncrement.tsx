@@ -66,9 +66,9 @@ export const TxActionButtonIncrement = ({
       className={`
         w-full p-2.5 rounded-[var(--tuwa-rounded-corners)] border border-transparent
         text-[var(--tuwa-text-on-accent)] font-semibold shadow-md transition-all duration-200
-        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--tuwa-button-gradient-to-hover)]
-        bg-gradient-to-r from-[var(--tuwa-button-gradient-from)] to-[var(--tuwa-button-gradient-to)]
-        hover:from-[var(--tuwa-button-gradient-from-hover)] hover:to-[var(--tuwa-button-gradient-to-hover)] hover:shadow-lg
+        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--tuwa-border-primary)]
+        bg-[var(--tuwa-button-gradient-from)]
+        hover:bg-[var(--tuwa-button-gradient-from-hover)] hover:shadow-md
         disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] select-none
       `}
       disabled={!activeWallet?.isConnected}
