@@ -472,25 +472,6 @@
         "usecase": "Starter"
       },
       {
-        "description": "Next.js + Tailwind template showing basic Drift Protocol integration",
-        "id": "gh:solana-foundation/templates/community/drift-hello-world",
-        "image": "community/drift-hello-world/og-image.png",
-        "keywords": [
-          "drift",
-          "defi",
-          "perps",
-          "nextjs",
-          "tailwind",
-          "typescript",
-          "solana",
-          "wallet-adapter"
-        ],
-        "name": "drift-hello-world",
-        "path": "community/drift-hello-world",
-        "displayName": "Drift Hello World",
-        "usecase": "DeFi"
-      },
-      {
         "description": "Approval-gated Eve agent that buys sandbox API access with Pay.sh",
         "id": "gh:solana-foundation/templates/community/eve-pay",
         "image": "community/eve-pay/og-image.png",
