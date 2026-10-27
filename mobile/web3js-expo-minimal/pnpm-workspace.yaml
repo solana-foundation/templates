@@ -1,7 +1,0 @@
-allowBuilds:
-  bufferutil: true
-  unrs-resolver: true
-  utf-8-validate: true
-minimumReleaseAge: 1440
-overrides:
-  'jayson@<5.0.0': 5.0.0

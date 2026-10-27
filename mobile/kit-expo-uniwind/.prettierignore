@@ -9,4 +9,3 @@ pnpm-lock.yaml
 .agents
 agent
 pnpm-workspace.yaml
-src/uniwind-types.d.ts

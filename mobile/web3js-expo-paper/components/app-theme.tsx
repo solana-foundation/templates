@@ -1,20 +1,14 @@
 import {
   DarkTheme as reactNavigationDark,
   DefaultTheme as reactNavigationLight,
-  type Theme,
   ThemeProvider,
-} from 'expo-router'
+} from '@react-navigation/native'
 import { PropsWithChildren } from 'react'
 import { adaptNavigationTheme, MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper'
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import merge from 'deepmerge'
 
-type NavigationTheme = Theme & { colors: Record<keyof Theme['colors'], string> }
-
-const { LightTheme, DarkTheme } = adaptNavigationTheme({
-  reactNavigationLight: reactNavigationLight as NavigationTheme,
-  reactNavigationDark: reactNavigationDark as NavigationTheme,
-})
+const { LightTheme, DarkTheme } = adaptNavigationTheme({ reactNavigationLight, reactNavigationDark })
 
 const AppThemeLight = merge(MD3LightTheme, LightTheme)
 const AppThemeDark = merge(MD3DarkTheme, DarkTheme)
