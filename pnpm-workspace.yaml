@@ -42,4 +42,3 @@ packages:
   - '!community/lazorkit-starter-expo'
   - kit/*
   - web3js/*
-  - web3js/legacy/*
