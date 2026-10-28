@@ -52,7 +52,7 @@
     "ws": "^8.18.3"
   },
   "devDependencies": {
-    "@solana/surfpool": "^1.6.1",
+    "@solana/surfpool": "^1.7.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/react": "^16.3.0",
@@ -67,10 +67,5 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^3.2.0"
-  },
-  "overrides": {
-    "@solana/surfpool": {
-      "@solana/kit-plugin-rpc": "$@solana/kit-plugin-rpc"
-    }
   }
 }

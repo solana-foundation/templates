@@ -67,7 +67,7 @@ npm run test
 
 The tests in [`tests/`](tests/) drive the real UI — click **Connect Wallet**, pick a wallet, fill in the transfer form, press **Send SOL** — and assert on-chain state before and after each click. Three pieces make that work without a browser or a wallet extension:
 
-- **[`@solana/surfpool` 1.6.1](https://www.npmjs.com/package/@solana/surfpool/v/1.6.1)** starts an isolated, in-process local runtime with dynamic RPC and WebSocket ports. It supports V1 transactions and provides funding helpers without a separate validator process.
+- **[`@solana/surfpool` 1.7.0](https://www.npmjs.com/package/@solana/surfpool/v/1.7.0)** starts an isolated, in-process local runtime with dynamic RPC and WebSocket ports. It supports V1 transactions and provides funding helpers without a separate validator process.
 - **A mock wallet-standard wallet** ([`tests/mock-wallet.ts`](tests/mock-wallet.ts)) registers itself like any browser extension would, so the app's real wallet discovery, connect flow, and transaction signing run unmodified — signatures come from an in-memory keypair.
 - **[Vitest](https://vitest.dev) + [Testing Library](https://testing-library.com/docs/react-testing-library/intro/)** render the actual app components in jsdom and interact with them by role and label, the same way a user would.
 
