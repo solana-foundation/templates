@@ -27,7 +27,6 @@
   "kit/nextjs-hardware-signin",
   "kit/nextjs-keychain",
   "kit/nextjs-subscriptions",
-  "kit/pinocchio-counter",
   "kit/react-vite",
   "kit/react-vite-anchor",
   "mobile/kit-expo-minimal",
