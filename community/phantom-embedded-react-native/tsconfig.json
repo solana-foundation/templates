@@ -4,7 +4,6 @@
     "strict": true,
     "jsx": "react-native",
     "esModuleInterop": true,
-    "lib": ["ES2020"],
     "paths": {
       "@/*": ["./*"]
     }

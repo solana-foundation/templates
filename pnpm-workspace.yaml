@@ -39,6 +39,7 @@ overrides:
   'zod@>=4.0.0 <4.6.6': 4.6.7
 packages:
   - community/*
+  - '!community/lazorkit-starter-expo'
   - kit/*
   - pinocchio/*
   - web3js/*
