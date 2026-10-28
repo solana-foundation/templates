@@ -141,21 +141,6 @@
         "path": "kit/nextjs-subscriptions"
       },
       {
-        "description": "Pinocchio Counter Program",
-        "id": "gh:solana-foundation/templates/kit/pinocchio-counter",
-        "image": "kit/pinocchio-counter/og-image.png",
-        "keywords": [
-          "pinocchio",
-          "counter",
-          "native",
-          "solana-program"
-        ],
-        "name": "pinocchio-counter",
-        "path": "kit/pinocchio-counter",
-        "displayName": "Pinocchio Counter",
-        "usecase": "Program Development"
-      },
-      {
         "description": "React + Vite, Tailwind, @solana/react-hooks",
         "id": "gh:solana-foundation/templates/kit/react-vite",
         "image": "kit/react-vite/og-image.png",

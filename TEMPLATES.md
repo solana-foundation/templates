@@ -58,14 +58,6 @@ Kit Templates (using @solana/kit)
 
 `kit` `nextjs` `react` `solana-kit` `subscriptions` `recurring-payments` `token-delegation` `tailwind` `typescript`
 
-### [pinocchio-counter](kit/pinocchio-counter)
-
-`gh:solana-foundation/templates/kit/pinocchio-counter`
-
-> Pinocchio Counter Program
-
-`pinocchio` `counter` `native` `solana-program`
-
 ### [react-vite](kit/react-vite)
 
 `gh:solana-foundation/templates/kit/react-vite`
