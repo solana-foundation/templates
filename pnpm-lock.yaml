@@ -1599,54 +1599,6 @@ importers:
         specifier: ^5
         version: 5.9.3
 
-  kit/pinocchio-counter:
-    devDependencies:
-      '@codama/nodes-from-anchor':
-        specifier: 1.5.3
-        version: 1.5.3(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
-      '@codama/renderers-js':
-        specifier: 1.7.1
-        version: 1.7.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
-      '@codama/renderers-rust':
-        specifier: 2.0.1
-        version: 2.0.1(chokidar@3.6.0)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
-      '@eslint/js':
-        specifier: ^9.39.2
-        version: 9.39.5
-      '@solana-program/system':
-        specifier: ^0.10.0
-        version: 0.10.0(@solana/kit@5.5.1(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@6.0.6))
-      '@solana/kit':
-        specifier: ^5.5.1
-        version: 5.5.1(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@6.0.6)
-      '@solana/prettier-config-solana':
-        specifier: ^0.0.6
-        version: 0.0.6(prettier@3.9.10)
-      '@types/node':
-        specifier: ^20
-        version: 20.19.43
-      codama:
-        specifier: 1.10.0
-        version: 1.10.0
-      eslint:
-        specifier: ^9
-        version: 9.39.5(jiti@2.7.0)(supports-color@8.1.1)
-      globals:
-        specifier: ^16.5.0
-        version: 16.5.0
-      prettier:
-        specifier: ^3.6.2
-        version: 3.9.10
-      tsx:
-        specifier: ^4.20.5
-        version: 4.23.15
-      typescript:
-        specifier: ^5
-        version: 5.9.3
-      typescript-eslint:
-        specifier: ^8.54.0
-        version: 8.72.0(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
-
   kit/react-vite:
     dependencies:
       '@solana/client':
@@ -3301,10 +3253,6 @@ packages:
     resolution: {integrity: sha512-B/PVFKr8ZZ+wy81PP402nU5XJqgPHq0UGNZ99bZ6kZ71Pxu3aLkc4YpqPBNi6aaHv+329vQRvLuu0d7iMoW+qQ==}
     engines: {node: '>=20.18.0'}
 
-  '@codama/renderers-rust@2.0.1':
-    resolution: {integrity: sha512-DPjnyczkdebMUliBDRsxTsMCrEsvDcpPtT6WH+yK2n2a9tvTOFQt0VMIBrA4+nxRAyuaKxk1C2cgMgw3Y4EZnQ==}
-    engines: {node: '>=20.18.0'}
-
   '@codama/validators@1.10.0':
     resolution: {integrity: sha512-5WH1IHmyVVG/9QThZsrVM2ROv5w3yLF/8+4HK/kr8uw0ZXnIBGidnmyrxr1P8V+X6DgZqKJaX46V30dSs/NOTQ==}
 
@@ -4097,9 +4045,6 @@ packages:
   '@humanwhocodes/retry@0.4.3':
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
-
-  '@iarna/toml@2.2.5':
-    resolution: {integrity: sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==}
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -7452,12 +7397,6 @@ packages:
       typescript:
         optional: true
 
-  '@solana/prettier-config-solana@0.0.6':
-    resolution: {integrity: sha512-/s55hDoAyh5QyltQh/jjNK3AgACEq885+DnC6lYhrmYZiV6I0iHITWYnKd8d23KRKs/RBjlaQH54MiafeoI9hw==}
-    deprecated: This package is deprecated. It has been replaced by @solana-config/prettier, part of the @solana-foundation/js-configs monorepo (https://github.com/solana-foundation/js-configs). Please migrate to the new package; this one will no longer receive updates.
-    peerDependencies:
-      prettier: ^3.7.4
-
   '@solana/program-client-core@6.10.0':
     resolution: {integrity: sha512-4PPbTLdC1ylHIuvhOFDP8RnSkXPCFjNFWGslzc+UFKnoR4ajzBcByX94jmaruDMk5ncxgj7tr9pzJTvfGHIaMA==}
     engines: {node: '>=20.18.0'}
@@ -9675,9 +9614,6 @@ packages:
     resolution: {integrity: sha512-5AXjrcMClTryPe9LgZrygpB1lj7s0S9E0+W+AHaVKAVyHanafK86iPSvG5xHVSp/jC+VH1UXu0TAEmY279xH7A==}
     engines: {node: '>=14.6'}
 
-  a-sync-waterfall@1.0.1:
-    resolution: {integrity: sha512-RYTOHHdWipFUliRFMCS4X2Yn2X8M87V/OpSqWzKKOGhzqyUxzyVmhHDH9sAvG+ZuQf/TAOFsLCpMw09I1ufUnA==}
-
   abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
 
@@ -10296,10 +10232,6 @@ packages:
   charenc@0.0.2:
     resolution: {integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==}
 
-  chokidar@3.6.0:
-    resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
-    engines: {node: '>= 8.10.0'}
-
   chokidar@5.0.0:
     resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==}
     engines: {node: '>= 20.19.0'}
@@ -10466,10 +10398,6 @@ packages:
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
-
-  commander@5.1.0:
-    resolution: {integrity: sha512-P0CysNDQ7rtVw4QIQtm+MRxV66vKFSvlsQvGYXZWR3qFU0jlMKHZZZgw8e+8DSah4UDKMqnknRDQz+xuQXQ/Zg==}
-    engines: {node: '>= 6'}
 
   commander@7.2.0:
     resolution: {integrity: sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==}
@@ -13502,16 +13430,6 @@ packages:
 
   nullthrows@1.1.1:
     resolution: {integrity: sha512-2vPPEi+Z7WqML2jZYddDIfy5Dqb0r2fze2zTxNNknZaFpVHU3mFB3R+DWeJWGVx0ecvttSGlJTI+WG+8Z4cDWw==}
-
-  nunjucks@3.2.4:
-    resolution: {integrity: sha512-26XRV6BhkgK0VOxfbU5cQI+ICFUtMLixv1noZn1tGU38kQH5A5nmmbk/O45xdyBhD1esk47nKrY0mvQpZIhRjQ==}
-    engines: {node: '>= 6.9.0'}
-    hasBin: true
-    peerDependencies:
-      chokidar: ^3.3.0
-    peerDependenciesMeta:
-      chokidar:
-        optional: true
 
   nwsapi@2.2.28:
     resolution: {integrity: sha512-IlVB7OS7qrOsVYlpnFIkETjMwT9jwvmocJmmM+GZU/PAB3uGi9Ezd7vcWhWBUnSc0ya4ppmQITOyP1ez9gg8cg==}
@@ -17034,21 +16952,6 @@ snapshots:
       - fastestsmallesttextencoderdecoder
       - typescript
 
-  '@codama/renderers-rust@2.0.1(chokidar@3.6.0)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)':
-    dependencies:
-      '@codama/errors': 1.11.0
-      '@codama/nodes': 1.11.0
-      '@codama/renderers-core': 1.4.1
-      '@codama/visitors-core': 1.11.0
-      '@iarna/toml': 2.2.5
-      '@solana/codecs-strings': 6.10.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
-      nunjucks: 3.2.4(chokidar@3.6.0)
-      semver: 7.8.5
-    transitivePeerDependencies:
-      - chokidar
-      - fastestsmallesttextencoderdecoder
-      - typescript
-
   '@codama/validators@1.10.0':
     dependencies:
       '@codama/errors': 1.10.0
@@ -18258,8 +18161,6 @@ snapshots:
   '@humanwhocodes/module-importer@1.0.1': {}
 
   '@humanwhocodes/retry@0.4.3': {}
-
-  '@iarna/toml@2.2.5': {}
 
   '@img/colour@1.1.0': {}
 
@@ -23415,10 +23316,6 @@ snapshots:
     transitivePeerDependencies:
       - fastestsmallesttextencoderdecoder
 
-  '@solana/prettier-config-solana@0.0.6(prettier@3.9.10)':
-    dependencies:
-      prettier: 3.9.10
-
   '@solana/program-client-core@6.10.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)':
     dependencies:
       '@solana/accounts': 6.10.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
@@ -27444,8 +27341,6 @@ snapshots:
 
   '@xmldom/xmldom@0.9.12': {}
 
-  a-sync-waterfall@1.0.1: {}
-
   abbrev@1.1.1:
     optional: true
 
@@ -28306,19 +28201,6 @@ snapshots:
 
   charenc@0.0.2: {}
 
-  chokidar@3.6.0:
-    dependencies:
-      anymatch: 3.1.3
-      braces: 3.0.3
-      glob-parent: 5.1.2
-      is-binary-path: 2.1.0
-      is-glob: 4.0.3
-      normalize-path: 3.0.0
-      readdirp: 3.6.0
-    optionalDependencies:
-      fsevents: 2.3.3
-    optional: true
-
   chokidar@5.0.0:
     dependencies:
       readdirp: 5.1.1
@@ -28475,8 +28357,6 @@ snapshots:
   commander@2.15.1: {}
 
   commander@2.20.3: {}
-
-  commander@5.1.0: {}
 
   commander@7.2.0: {}
 
@@ -32795,14 +32675,6 @@ snapshots:
       boolbase: 1.0.0
 
   nullthrows@1.1.1: {}
-
-  nunjucks@3.2.4(chokidar@3.6.0):
-    dependencies:
-      a-sync-waterfall: 1.0.1
-      asap: 2.0.6
-      commander: 5.1.0
-    optionalDependencies:
-      chokidar: 3.6.0
 
   nwsapi@2.2.28: {}
 
