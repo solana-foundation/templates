@@ -1,6 +1,5 @@
 [
   "community/commerce-kit-store",
-  "community/drift-hello-world",
   "community/eve-pay",
   "community/kit-node-solanax402",
   "community/lazorkit-starter-expo",
@@ -27,7 +26,6 @@
   "kit/nextjs-hardware-signin",
   "kit/nextjs-keychain",
   "kit/nextjs-subscriptions",
-  "kit/pinocchio-counter",
   "kit/react-vite",
   "kit/react-vite-anchor",
   "mobile/kit-expo-minimal",

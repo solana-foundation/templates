@@ -201,5 +201,5 @@ test('prefix-allowlisted registry and toolchain tokens never reach the child env
   const redacted = parentSecretValues(source)
   assert.ok(redacted.includes('npm_abcdef123456'))
   assert.ok(redacted.includes('yarn-token-123456'))
-  assert.ok(!redacted.includes('https://registry.npmjs.org/'))
+  assert.ok(!redacted.some((value) => value === 'https://registry.npmjs.org/'))
 })

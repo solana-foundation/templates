@@ -74,7 +74,7 @@ cd solana-chatgpt-kit
 pnpm install
 ```
 
-> **Dependency compatibility:** `@modelcontextprotocol/sdk@1.26.0`, `mcp-handler@1.1.0`, and `zod@3.25.76` are intentionally pinned as a tested set. The MCP SDK 1.29 and Zod 3.24 combination caused TypeScript build incompatibilities. Upgrade these packages together and verify the production build before changing the pins.
+> **Dependency compatibility:** `mcp-handler@2` requires `@modelcontextprotocol/server@^2` and `zod@^4`. Upgrade these packages together and verify the production build before changing their ranges.
 
 ### Environment Setup
 
@@ -247,17 +247,17 @@ Smart address resolution supporting:
 
 ### x402 Payment Protocol (External Wallet Mode Only)
 
-When using external wallet mode (`externalWallet = true` in `lib/solana-config.ts`), this application implements the [x402 payment protocol](https://github.com/payainetwork/x402-solana) for API monetization. Each transfer requires a $0.001 USDC payment fee from the user's wallet before execution.
+When using external wallet mode (`externalWallet = true` in `lib/solana-config.ts`), this application implements the [x402 payment protocol](https://github.com/payainetwork/x402-solana) (v2, via `x402-solana@3`) for API monetization. Each transfer requires a $0.001 USDC payment fee from the user's wallet before execution.
 
 **How it works:**
 
 1. User initiates transfer with browser wallet connected
-2. Client calls `/api/transfer` → Server returns 402 Payment Required
+2. Client calls `/api/transfer` → Server returns 402 Payment Required with the payment requirements in the `PAYMENT-REQUIRED` header and body (network `solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp`, Solana mainnet in CAIP-2 format)
 3. **Client automatically creates payment transaction** ($0.001 USDC to treasury)
 4. **User signs payment with their wallet** (first transaction - USDC payment)
-5. Client retries request with `X-PAYMENT` header containing proof
+5. Client retries request with `PAYMENT-SIGNATURE` header containing the signed payment
 6. Server verifies payment with PayAI facilitator
-7. Server returns unsigned transfer transaction
+7. Server settles payment and returns unsigned transfer transaction
 8. **User signs transfer with their wallet** (second transaction - SOL transfer)
 9. Transfer executes successfully
 

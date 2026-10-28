@@ -141,21 +141,6 @@
         "path": "kit/nextjs-subscriptions"
       },
       {
-        "description": "Pinocchio Counter Program",
-        "id": "gh:solana-foundation/templates/kit/pinocchio-counter",
-        "image": "kit/pinocchio-counter/og-image.png",
-        "keywords": [
-          "pinocchio",
-          "counter",
-          "native",
-          "solana-program"
-        ],
-        "name": "pinocchio-counter",
-        "path": "kit/pinocchio-counter",
-        "displayName": "Pinocchio Counter",
-        "usecase": "Program Development"
-      },
-      {
         "description": "React + Vite, Tailwind, @solana/kit wallet connection",
         "id": "gh:solana-foundation/templates/kit/react-vite",
         "image": "kit/react-vite/og-image.png",
@@ -470,25 +455,6 @@
         "path": "community/commerce-kit-store",
         "displayName": "Solana Commerce Kit Store",
         "usecase": "Starter"
-      },
-      {
-        "description": "Next.js + Tailwind template showing basic Drift Protocol integration",
-        "id": "gh:solana-foundation/templates/community/drift-hello-world",
-        "image": "community/drift-hello-world/og-image.png",
-        "keywords": [
-          "drift",
-          "defi",
-          "perps",
-          "nextjs",
-          "tailwind",
-          "typescript",
-          "solana",
-          "wallet-adapter"
-        ],
-        "name": "drift-hello-world",
-        "path": "community/drift-hello-world",
-        "displayName": "Drift Hello World",
-        "usecase": "DeFi"
       },
       {
         "description": "Approval-gated Eve agent that buys sandbox API access with Pay.sh",
@@ -816,7 +782,7 @@
         "usecase": "Payments"
       },
       {
-        "description": "Next.js Solana starter with X402 payment protocol integration",
+        "description": "Next.js Solana starter with x402 payment protocol integration",
         "id": "gh:solana-foundation/templates/community/x402-template",
         "image": "community/x402-template/og-image.png",
         "keywords": [
@@ -828,7 +794,7 @@
         ],
         "name": "x402-template",
         "path": "community/x402-template",
-        "displayName": "X402 Next.js",
+        "displayName": "x402 Next.js",
         "usecase": "Payments"
       },
       {
