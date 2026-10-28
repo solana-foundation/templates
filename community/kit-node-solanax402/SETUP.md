@@ -4,7 +4,7 @@ Complete setup instructions for the x402 Solana protocol implementation.
 
 ## Prerequisites
 
-- Node.js 18+ (for native fetch support)
+- Node.js 22.13+ (for native fetch and the built-in `node:sqlite` module)
 - npm or yarn
 - Solana CLI (optional, for devnet testing)
 
