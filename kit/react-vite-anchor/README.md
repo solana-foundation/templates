@@ -53,7 +53,7 @@ Open [http://localhost:5173](http://localhost:5173), connect your wallet, and in
 
 The included vault program is already deployed to devnet. To deploy your own:
 
-> **Note:** `npm run setup` and `npm run anchor-build` pass `--ignore-keys` to `anchor build` so the program keeps the devnet program ID shipped with this template (`F4jZpgbtTb6RWNWq6v35fUeiAsRJMrDczVPv9U23yXjB`). Anchor 1.x otherwise generates a fresh program keypair on build and rewrites `declare_id!`. The steps below build without that flag on purpose, so Anchor syncs your own program ID before deploying.
+> **Note:** `npm run setup` and `npm run anchor-build` preserve the program ID shipped with this template (`F4jZpgbtTb6RWNWq6v35fUeiAsRJMrDczVPv9U23yXjB`). The build script creates `anchor/target/deploy` before invoking `anchor build --ignore-keys`: Anchor 1.1.2 otherwise synchronizes a new ID during initial workspace discovery, before handling that flag. Any generated program keypair is local to your machine and does not control the existing devnet program. To deploy your own program, explicitly sync your own keypair as shown below.
 
 ### Prerequisites
 

@@ -7,6 +7,7 @@ node_modules
 community/**/bun.lock
 community/**/package-lock.json
 community/**/pnpm-lock.yaml
+!community/lazorkit-starter-expo/pnpm-lock.yaml
 community/**/yarn.lock
 kit/**/bun.lock
 kit/**/package-lock.json
