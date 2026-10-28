@@ -12,7 +12,7 @@ async function main() {
 
   switch (command) {
     case 'setup':
-      console.log('🚀 Running deployment setup with Gill...\n')
+      console.log('🚀 Running deployment setup with Kit...\n')
       await runGillDeploymentSetup({
         network: 'devnet',
         workingDir: '.',
@@ -22,7 +22,7 @@ async function main() {
 
     case 'initialize':
     case 'init':
-      console.log('🎯 Initializing airdrop with Gill...\n')
+      console.log('🎯 Initializing airdrop with Kit...\n')
       const recipientsFile = args[1] || 'recipients.json'
       const result = await initializeGillAirdropDefault(recipientsFile)
 
@@ -42,17 +42,17 @@ async function main() {
 
       console.log('\n📋 Next steps:')
       console.log('1. Test claiming with the frontend at http://localhost:3000')
-      console.log('2. Or use the claim script with Gill')
+      console.log('2. Or use the claim script with Kit')
       break
 
     case 'help':
     case '--help':
     case '-h':
     default:
-      console.log('🎯 Airdrop Scripts CLI (Gill + Codama)\n')
+      console.log('🎯 Airdrop Scripts CLI (Kit + Codama)\n')
       console.log('Available commands:')
-      console.log('  setup                   - Interactive deployment setup with Gill')
-      console.log('  initialize [file]       - Initialize airdrop with Gill (default: recipients.json)')
+      console.log('  setup                   - Interactive deployment setup with Kit')
+      console.log('  initialize [file]       - Initialize airdrop with Kit (default: recipients.json)')
       console.log('  help                    - Show this help message')
       console.log('\nExamples:')
       console.log('  npx ts-node scripts/index.ts setup')

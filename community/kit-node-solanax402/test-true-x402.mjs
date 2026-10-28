@@ -27,7 +27,8 @@ import {
   setTransactionMessageFeePayer,
   setTransactionMessageLifetimeUsingBlockhash,
   appendTransactionMessageInstruction,
-  signTransaction,
+  compileTransaction,
+  partiallySignTransaction,
   getBase64EncodedWireTransaction,
   address,
   lamports,
@@ -128,7 +129,7 @@ async function createPaymentWithSponsoredTransaction(amount, recipient, resource
 
   // Create transfer instruction: Client → Merchant
   const transferInstruction = getTransferSolInstruction({
-    source: clientSigner.address,
+    source: clientSigner,
     destination: address(recipient),
     amount: lamports(BigInt(amount)),
   });
@@ -147,7 +148,10 @@ async function createPaymentWithSponsoredTransaction(amount, recipient, resource
 
   // 5. Client signs the transaction (authorizes their SOL to move)
   console.log('  Client signing transaction (authorizing SOL transfer)...');
-  const signedTransaction = await signTransaction([clientSigner], transactionMessage);
+  const signedTransaction = await partiallySignTransaction(
+    [clientSigner.keyPair],
+    compileTransaction(transactionMessage)
+  );
 
   // 6. Serialize the transaction (includes client's signature)
   const serializedTransaction = getBase64EncodedWireTransaction(signedTransaction);

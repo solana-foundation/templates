@@ -218,14 +218,6 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `@solana/kit` `@solana-commerce/headless` `solana-pay` `tailwind` `typescript`
 
-### [drift-hello-world](community/drift-hello-world)
-
-`gh:solana-foundation/templates/community/drift-hello-world`
-
-> Next.js + Tailwind template showing basic Drift Protocol integration
-
-`drift` `defi` `perps` `nextjs` `tailwind` `typescript` `solana` `wallet-adapter`
-
 ### [eve-pay](community/eve-pay)
 
 `gh:solana-foundation/templates/community/eve-pay`
@@ -366,7 +358,7 @@ Templates maintained by the Solana community
 
 `gh:solana-foundation/templates/community/x402-template`
 
-> Next.js Solana starter with X402 payment protocol integration
+> Next.js Solana starter with x402 payment protocol integration
 
 `solana` `nextjs` `x402` `template` `starter`
 

@@ -8,7 +8,7 @@ An Expo starter for integrating Phantom's embedded wallet SDK on mobile. This te
 
 ### 1. Prerequisites
 
-- **Node.js 20.19.4 or newer**, compatible with this template's React Native 0.81.5 and [Expo SDK 54](https://docs.expo.dev/versions/v54.0.0/).
+- **Node.js `^22.13.0`, `^24.3.0`, or `>=26.0.0`** (Node 23 and 25 are not supported), compatible with this template's React Native 0.88.0 and [Expo SDK 58](https://docs.expo.dev/versions/v58.0.0/).
 - **Phantom Portal access and an App ID**. Confirm that you can create or access an app at [Phantom Portal](https://phantom.com/portal/) before proceeding. A placeholder App ID cannot authenticate. If new registrations are paused or your account cannot create an app, follow the portal's access instructions or contact [Phantom support](https://help.phantom.com/). This is an external prerequisite, not a local configuration error.
 - **Android:** Android Studio and the Android SDK, with an emulator or connected device. See [Expo's Android environment setup](https://docs.expo.dev/get-started/set-up-your-environment/?platform=android&device=simulated).
 - **iOS:** macOS and Xcode for a local native build. Windows cannot run `expo run:ios` locally.
@@ -97,7 +97,7 @@ The template is pre-configured with:
 
 **Portal signup or app creation is unavailable** — Local setup cannot remove this restriction. Obtain access through Phantom before testing authentication. The separate MCP integration below does not supply an App ID for this mobile template.
 
-**Dependency installation fails** — Check `node --version` against the prerequisite above and use the current template, which aligns React types with React Native 0.81.5. Run `npx expo install --check` to check Expo package compatibility before building.
+**Dependency installation fails** — Check `node --version` against the prerequisite above and use the current template, which aligns React types with React Native 0.88.0. Run `npx expo install --check` to check Expo package compatibility before building.
 
 **"Module not found: react-native-get-random-values"** — Install the template's dependencies and keep `import '../lib/crypto'` as the first import in `app/_layout.tsx`. Native builds resolve `lib/crypto.native.ts`, which initializes both random values and Web Crypto before Phantom loads. Rebuild the native app after changing native dependencies; importing the random-values polyfill alone does not provide `crypto.subtle`.
 
