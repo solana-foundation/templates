@@ -76,11 +76,5 @@
       "expo-crypto": "$expo-crypto",
       "expo-web-browser": "$expo-web-browser"
     }
-  },
-  "pnpm": {
-    "overrides": {
-      "@lazorkit/wallet-mobile-adapter>expo-crypto": "~58.0.7",
-      "@lazorkit/wallet-mobile-adapter>expo-web-browser": "~58.0.6"
-    }
   }
 }
