@@ -11,10 +11,10 @@ bincode = "1.3"
 dotenvy = "0.15"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-solana-keychain = { version = "1.4", default-features = false, features = [
+solana-keychain = { version = "2.0", default-features = false, features = [
     "all",
-    "sdk-v2",
+    "sdk-v3",
 ] }
-solana-sdk = "2.3"
-spl-memo = "6"
+solana-sdk = "3.0"
+spl-memo-interface = "2.1"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
