@@ -1,15 +1,14 @@
 'use client'
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
-import { useClusterState, useWalletSession } from '@solana/react-hooks'
-import { resolveCluster } from '@/components/solana/clusters'
+import { useConnectedWallet } from '@solana/kit-plugin-wallet/react'
+import { useSolana } from '@/components/provider'
 import { AccountUiModalAirdrop } from './account-ui-modal-airdrop'
 import { AccountUiModalReceive } from './account-ui-modal-receive'
 import { AccountUiModalSend } from './account-ui-modal-send'
 
 export function AccountUiButtons({ address }: { address: string }) {
-  const wallet = useWalletSession()
-  const clusterState = useClusterState()
-  const cluster = resolveCluster(clusterState.endpoint)
+  const { client, cluster } = useSolana()
+  const wallet = useConnectedWallet(client)
 
   return wallet ? (
     <div>

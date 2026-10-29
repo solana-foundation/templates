@@ -276,7 +276,7 @@ Templates maintained by the Solana community
 
 > Authenticate Solana wallets with Supabase
 
-`supabase` `authentication` `solana` `framework-kit`
+`supabase` `authentication` `solana` `solana-kit`
 
 ### [supabase-solana-indexing](community/supabase-solana-indexing)
 

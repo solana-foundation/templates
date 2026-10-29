@@ -624,7 +624,7 @@
           "supabase",
           "authentication",
           "solana",
-          "framework-kit"
+          "solana-kit"
         ],
         "name": "supabase-auth",
         "path": "community/supabase-auth",
