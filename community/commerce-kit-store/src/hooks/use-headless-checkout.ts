@@ -31,7 +31,14 @@ function getMerchantWallet(): string {
 const POLLING_INTERVAL_MS = 2000
 
 export type HeadlessPaymentStatus =
-  'idle' | 'generating' | 'pending' | 'verifying' | 'unavailable' | 'confirmed' | 'failed'
+  | 'idle'
+  | 'generating'
+  | 'pending'
+  | 'verifying'
+  // An unavailable RPC does not establish whether the payment succeeded or failed.
+  | 'unavailable'
+  | 'confirmed'
+  | 'failed'
 
 export interface HeadlessPaymentRequest {
   url: URL
