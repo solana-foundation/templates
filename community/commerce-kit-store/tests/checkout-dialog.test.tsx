@@ -10,9 +10,6 @@ const state = vi.hoisted(() => ({
   walletName: 'Test Wallet',
   onOpenChange: null as null | ((open: boolean) => void),
 }))
-vi.mock('../src/hooks/use-wallet-payment', () => ({
-  useWalletPayment: () => ({ ...state, error: null, pay: vi.fn() }),
-}))
 vi.mock('../src/components/wallet-ui', () => ({ WalletUI: () => null }))
 vi.mock('../src/components/app-explorer-link', () => ({ AppExplorerLink: () => null }))
 vi.mock('../src/components/ui/dialog', () => {
@@ -59,6 +56,7 @@ function setup(overrides: Partial<ComponentProps<typeof HeadlessCheckoutDialog>>
       signature={null}
       error={null}
       verificationResult={null}
+      walletPayment={{ ...state, error: null, pay: vi.fn() }}
       {...overrides}
     />,
   )

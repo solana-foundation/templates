@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { AppExplorerLink } from '@/components/app-explorer-link'
 import { Loader2, CheckCircle2, XCircle, Send } from 'lucide-react'
-import { useWalletPayment } from '@/hooks/use-wallet-payment'
+import type { useWalletPayment } from '@/hooks/use-wallet-payment'
 import { WalletUI } from '@/components/wallet-ui'
 import type { HeadlessPaymentStatus, HeadlessPaymentRequest } from '@/hooks/use-headless-checkout'
 import type { CartItem } from '@/store/types/cart'
@@ -20,6 +20,7 @@ interface HeadlessCheckoutDialogProps {
   signature: string | null
   error: Error | null
   verificationResult: { verified: boolean; signature?: string; error?: string } | null
+  walletPayment: ReturnType<typeof useWalletPayment>
 }
 
 function StatusBadge({ status }: { status: HeadlessPaymentStatus }) {
@@ -62,6 +63,7 @@ export function HeadlessCheckoutDialog({
   paymentRequest,
   signature,
   error,
+  walletPayment,
 }: HeadlessCheckoutDialogProps) {
   const isConfirmed = status === 'confirmed'
   const isPending = status === 'pending'
@@ -69,7 +71,6 @@ export function HeadlessCheckoutDialog({
   const isUnavailable = status === 'unavailable'
   const isGenerating = status === 'generating'
   const isFailed = status === 'failed'
-  const walletPayment = useWalletPayment(paymentRequest, isConfirmed)
   const cannotClose = walletPayment.busy || (walletPayment.submitted && !isConfirmed)
   const close = () => {
     if (!cannotClose) onClose()

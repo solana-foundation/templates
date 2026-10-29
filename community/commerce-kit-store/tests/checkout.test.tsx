@@ -10,9 +10,6 @@ const mocks = vi.hoisted(() => ({
 vi.mock('@solana/react', () => ({ useClient: () => client }))
 vi.mock('../src/components/wallet-ui', () => ({ WalletUI: () => null }))
 vi.mock('../src/components/app-explorer-link', () => ({ AppExplorerLink: () => null }))
-vi.mock('../src/hooks/use-wallet-payment', () => ({
-  useWalletPayment: () => ({ busy: false, submitted: false, error: null, supportsV1: true, pay: vi.fn() }),
-}))
 vi.mock('@solana/kit', () => ({
   address: (value: string) => value,
   generateKeyPair: async () => ({ publicKey: 'reference' }),
@@ -142,7 +139,18 @@ test('keeps the checkout visible through RPC trouble and confirms after retrying
     return (
       <>
         <button onClick={() => void checkout.openCheckout(1)}>Open checkout</button>
-        <HeadlessCheckoutDialog {...checkout} onClose={checkout.closeCheckout} />
+        <HeadlessCheckoutDialog
+          {...checkout}
+          onClose={checkout.closeCheckout}
+          walletPayment={{
+            busy: false,
+            submitted: false,
+            error: null,
+            supportsV1: true,
+            walletName: undefined,
+            pay: vi.fn(),
+          }}
+        />
       </>
     )
   }
