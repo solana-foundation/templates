@@ -103,12 +103,12 @@ export async function buildGillProgramIfNeeded(
     const currentHash = getGillSourceHash(config)
 
     if (!force && buildState.lastBuildHash === currentHash) {
-      console.log('✅ Build is up to date, skipping... (Gill)')
+      console.log('✅ Build is up to date, skipping... (Kit)')
       const programId = getGillDeclaredProgramId(config)
       return { success: true, programId: programId ? address(programId) : undefined }
     }
 
-    console.log('🔨 Building program with Gill...')
+    console.log('🔨 Building program with Kit...')
     execSync('anchor build', {
       stdio: verbose ? 'inherit' : 'pipe',
       cwd: workingDir,
@@ -117,7 +117,7 @@ export async function buildGillProgramIfNeeded(
     buildState.lastBuildHash = currentHash
     const programId = getGillDeclaredProgramId(config)
 
-    console.log('✅ Build completed successfully! (Gill)')
+    console.log('✅ Build completed successfully! (Kit)')
     return { success: true, programId: programId ? address(programId) : undefined }
   } catch (error) {
     console.error('❌ Build failed:', error)
@@ -148,7 +148,7 @@ export async function deployGillProgram(
       }
     }
 
-    console.log('📡 Deploying program with Gill...')
+    console.log('📡 Deploying program with Kit...')
     const deployOutput = execFileSync(
       'anchor',
       ['deploy', ...(config.rpcUrl ? ['--provider.cluster', config.rpcUrl] : [])],
@@ -162,7 +162,7 @@ export async function deployGillProgram(
     const programIdMatch = deployOutput.match(/Program Id: (\w+)/)
     const programIdStr = programIdMatch ? programIdMatch[1] : getGillDeployedProgramId(config)
 
-    console.log('✅ Program deployed successfully! (Gill)')
+    console.log('✅ Program deployed successfully! (Kit)')
 
     buildState.lastDeployHash = getGillSourceHash(config)
 
@@ -194,7 +194,7 @@ export async function ensureGillProgramIdConsistency(
     : undefined
 
   if (consistency.consistent && !targetProgramIdStr) {
-    console.log('✅ Program ID consistency verified! (Gill)')
+    console.log('✅ Program ID consistency verified! (Kit)')
     return true
   }
 
@@ -205,11 +205,11 @@ export async function ensureGillProgramIdConsistency(
   }
 
   if (consistency.consistent && targetProgramIdStr && consistency.declaredId === targetProgramIdStr) {
-    console.log('✅ Program ID already matches target! (Gill)')
+    console.log('✅ Program ID already matches target! (Kit)')
     return true
   }
 
-  console.log('🔧 Updating program ID references... (Gill)')
+  console.log('🔧 Updating program ID references... (Kit)')
 
   try {
     const libPath = `${workingDir}/programs/solana-distributor/src/lib.rs`
@@ -233,7 +233,7 @@ export async function ensureGillProgramIdConsistency(
     return false
   }
 
-  console.log('🔄 Rebuilding with updated program ID... (Gill)')
+  console.log('🔄 Rebuilding with updated program ID... (Kit)')
   const buildResult = await buildGillProgramIfNeeded(true, config)
 
   if (!buildResult.success) {
@@ -241,7 +241,7 @@ export async function ensureGillProgramIdConsistency(
     return false
   }
 
-  console.log('✅ Program ID consistency ensured! (Gill)')
+  console.log('✅ Program ID consistency ensured! (Kit)')
   return true
 }
 
@@ -249,14 +249,14 @@ export async function cleanGillBuildArtifacts(config: GillBuildConfig = {}): Pro
   const { workingDir = '.', verbose = false } = config
 
   try {
-    console.log('🧹 Cleaning build artifacts... (Gill)')
+    console.log('🧹 Cleaning build artifacts... (Kit)')
     execSync('anchor clean', {
       stdio: verbose ? 'inherit' : 'pipe',
       cwd: workingDir,
     })
     buildState.lastBuildHash = null
     buildState.lastDeployHash = null
-    console.log('✅ Clean completed! (Gill)')
+    console.log('✅ Clean completed! (Kit)')
   } catch (error) {
     console.error('❌ Clean failed:', error)
     throw error

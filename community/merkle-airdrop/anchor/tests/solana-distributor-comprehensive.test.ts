@@ -79,7 +79,7 @@ describe('Solana Distributor (Comprehensive Kit + Codama)', () => {
     console.log(`🏛️  Airdrop State PDA: ${airdropStatePda}`)
   })
 
-  test('Initialize airdrop with Merkle tree (Gill + Codama)', async () => {
+  test('Initialize airdrop with Merkle tree (Kit + Codama)', async () => {
     console.log('\n🚀 Testing airdrop initialization...')
 
     try {
@@ -124,7 +124,7 @@ describe('Solana Distributor (Comprehensive Kit + Codama)', () => {
     expect(Number(vaultBalance.value)).toBeGreaterThan(0)
   })
 
-  test('Claim SOL - Recipient 1 (Gill + Codama)', async () => {
+  test('Claim SOL - Recipient 1 (Kit + Codama)', async () => {
     console.log('\n🎯 Testing claim for Recipient 1...')
 
     const proofResult = generateGillProof(merkleTreeResult.merkleTree, 0)
@@ -177,7 +177,7 @@ describe('Solana Distributor (Comprehensive Kit + Codama)', () => {
     expect(claimStatus).toBeTruthy() // Account exists = claimed
   })
 
-  test('Claim SOL - Recipient 2 (Gill + Codama)', async () => {
+  test('Claim SOL - Recipient 2 (Kit + Codama)', async () => {
     console.log('\n🎯 Testing claim for Recipient 2...')
 
     const proofResult = generateGillProof(merkleTreeResult.merkleTree, 1)
@@ -230,7 +230,7 @@ describe('Solana Distributor (Comprehensive Kit + Codama)', () => {
     expect(claimStatus).toBeTruthy() // Account exists = claimed
   })
 
-  test('Should fail to claim twice (Gill + Codama)', async () => {
+  test('Should fail to claim twice (Kit + Codama)', async () => {
     console.log('\n🚫 Testing double-claim prevention...')
 
     const proofResult = generateGillProof(merkleTreeResult.merkleTree, 0)

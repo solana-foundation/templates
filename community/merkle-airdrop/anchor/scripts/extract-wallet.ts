@@ -40,11 +40,14 @@ function loadWallets(): { deployWallet: GillWalletInfo | null; testWallets: Gill
     }
 
     const data = fs.readFileSync('test-wallets.json', 'utf8')
-    const walletsData: { wallets: (TestWalletsData['wallets'][number] & { address?: string })[] } = JSON.parse(data)
-    const wallets = walletsData.wallets.map((wallet) => ({
-      ...wallet,
-      address: address(wallet.address || wallet.publicKey),
-    }))
+    const walletsData: {
+      wallets: (Omit<TestWalletsData['wallets'][number], 'address'> & { address?: string; publicKey?: string })[]
+    } = JSON.parse(data)
+    const wallets = walletsData.wallets.map((wallet) => {
+      const publicAddress = wallet.address || wallet.publicKey
+      if (!publicAddress) throw new Error('Stored wallet is missing its public address')
+      return { ...wallet, address: address(publicAddress) }
+    })
 
     const deployWallet = wallets.find((w) => w.isDeployWallet || w.name === 'deploy-wallet')
     const testWallets = wallets.filter((w) => !w.isDeployWallet && w.name !== 'deploy-wallet')
@@ -159,7 +162,7 @@ export async function listGillWallets(): Promise<void> {
       return
     }
 
-    console.log(`📋 Available wallets (${allWallets.length}) - Gill version:`)
+    console.log(`📋 Available wallets (${allWallets.length}) - Kit version:`)
 
     const client = createGillWalletClient({ network: 'devnet' })
 
@@ -171,24 +174,24 @@ export async function listGillWallets(): Promise<void> {
       console.log(`     Keypair File: ${wallet.keypairFile}`)
 
       try {
-        // Check balance using Gill
+        // Check balance using Kit
         const balance = await client.rpc.getBalance(address(wallet.address)).send()
         const balanceSol = Number(balance.value) / 1e9
-        console.log(`     Balance: ${balanceSol.toFixed(4)} SOL (via Gill)`)
+        console.log(`     Balance: ${balanceSol.toFixed(4)} SOL (via Kit)`)
       } catch {
-        console.log(`     Balance: Unable to fetch (via Gill)`)
+        console.log(`     Balance: Unable to fetch (via Kit)`)
       }
 
       console.log('')
     }
   } catch (error) {
-    console.error('❌ Error listing wallets with Gill:', error)
+    console.error('❌ Error listing wallets with Kit:', error)
   }
 }
 
 if (require.main === module) {
   if (process.argv.includes('--list')) {
-    // Use Gill version for listing
+    // Use Kit version for listing
     listGillWallets()
   } else {
     main()

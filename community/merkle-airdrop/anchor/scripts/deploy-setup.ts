@@ -23,7 +23,7 @@ export async function setupGillDeployWallet(
 ): Promise<GillWalletInfo> {
   const { network = 'devnet' } = config
 
-  console.log('\n🚀 Setting up deployment wallet with Gill...\n')
+  console.log('\n🚀 Setting up deployment wallet with Kit...\n')
 
   const choice = await question(
     rl,
@@ -40,14 +40,14 @@ export async function setupGillDeployWallet(
 
     try {
       deployWallet = await createGillWalletFromKey('deploy-wallet', privateKeyInput)
-      console.log(`✅ Using existing wallet: ${deployWallet.address} (Gill)`)
+      console.log(`✅ Using existing wallet: ${deployWallet.address} (Kit)`)
     } catch {
       console.error('❌ Invalid private key format. Please try again.')
       process.exit(1)
     }
   } else {
     deployWallet = await generateGillWallet('deploy-wallet')
-    console.log(`✅ Generated new deployment wallet: ${deployWallet.address} (Gill)`)
+    console.log(`✅ Generated new deployment wallet: ${deployWallet.address} (Kit)`)
   }
 
   const client = createGillWalletClient({ network })
@@ -62,7 +62,7 @@ export async function setupGillTestWallets(
 ): Promise<GillWalletInfo[]> {
   const { network = 'devnet' } = config
 
-  console.log('\n🧪 Setting up test wallets with Gill...\n')
+  console.log('\n🧪 Setting up test wallets with Kit...\n')
 
   const numWallets = await question(rl, 'How many test wallets do you want to create? (default: 3): ')
   const walletCount = parseInt(numWallets) || 3
@@ -86,7 +86,7 @@ export async function runGillDeploymentSetup(config: GillDeploymentSetupConfig =
   })
 
   try {
-    console.log('🎉 Welcome to Solana Distributor Deployment Setup (Gill + Codama Edition)!\n')
+    console.log('🎉 Welcome to Solana Distributor Deployment Setup (Kit + Codama Edition)!\n')
     console.log('This script will help you:')
     console.log('1. Set up your deployment wallet')
     console.log('2. Create test wallets for examples')
@@ -104,7 +104,7 @@ export async function runGillDeploymentSetup(config: GillDeploymentSetupConfig =
       ? (await question(rl, 'Do you want to generate a new program ID? (y/n): ')).toLowerCase() === 'y'
       : false
 
-    console.log('\n🚀 Running complete setup workflow with Gill...')
+    console.log('\n🚀 Running complete setup workflow with Kit...')
     const result = await completeGillSetup({
       config: {
         network,
@@ -157,7 +157,7 @@ function showGillFinalSummary(
   deploymentAttempted: boolean,
 ): void {
   console.log('\n' + '='.repeat(50))
-  console.log('✅ Setup completed successfully with Gill + Codama!\n')
+  console.log('✅ Setup completed successfully with Kit + Codama!\n')
 
   console.log('📁 Files created/updated:')
   console.log('   - anchor/deploy-wallet.json')
@@ -170,12 +170,12 @@ function showGillFinalSummary(
   }
 
   console.log('\n🚀 Status summary:')
-  console.log('1. ✅ Wallets created and configured (Gill)')
-  console.log('2. ✅ Merkle tree generated (Gill)')
-  console.log('3. ✅ Configuration files updated (Gill)')
+  console.log('1. ✅ Wallets created and configured (Kit)')
+  console.log('2. ✅ Merkle tree generated (Kit)')
+  console.log('3. ✅ Configuration files updated (Kit)')
 
   if (deploymentAttempted && result.programId) {
-    console.log('4. ✅ Program deployed successfully (Gill)')
+    console.log('4. ✅ Program deployed successfully (Kit)')
     console.log('\n🎯 Next step - Initialize the airdrop:')
     console.log('   npm run airdrop:init')
   } else {
@@ -187,6 +187,6 @@ function showGillFinalSummary(
 
   console.log('\n💡 Wallet information saved in anchor/test-wallets.json')
   console.log('   View with: cat anchor/test-wallets.json')
-  console.log('\n🔬 Test with Gill features:')
+  console.log('\n🔬 Test with Kit features:')
   console.log('   npm run airdrop:extract')
 }

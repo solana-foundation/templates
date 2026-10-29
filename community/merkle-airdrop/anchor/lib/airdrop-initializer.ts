@@ -54,34 +54,34 @@ export async function fixGillInitializationIssues(config: GillInitializerConfig 
   const { workingDir = '.', verbose = false } = config
 
   try {
-    console.log('🔧 Checking and fixing common issues... (Gill)')
+    console.log('🔧 Checking and fixing common issues... (Kit)')
 
     const { needsBuild, issues } = await checkGillPreRequisites(config)
 
     if (issues.length === 0) {
-      console.log('✅ No issues detected (Gill)')
+      console.log('✅ No issues detected (Kit)')
       return true
     }
 
-    console.log(`⚠️  Found issues: ${issues.join(', ')} (Gill)`)
+    console.log(`⚠️  Found issues: ${issues.join(', ')} (Kit)`)
 
     if (needsBuild) {
       const buildConfig: GillBuildConfig = { workingDir, verbose }
 
       const consistencyFixed = await ensureGillProgramIdConsistency(undefined, buildConfig)
       if (!consistencyFixed) {
-        console.error('❌ Failed to fix program ID consistency (Gill)')
+        console.error('❌ Failed to fix program ID consistency (Kit)')
         return false
       }
 
       const buildResult = await buildGillProgramIfNeeded(true, buildConfig)
       if (!buildResult.success) {
-        console.error('❌ Build failed during issue fixing (Gill)')
+        console.error('❌ Build failed during issue fixing (Kit)')
         return false
       }
     }
 
-    console.log('✅ Issues fixed successfully! (Gill)')
+    console.log('✅ Issues fixed successfully! (Kit)')
     return true
   } catch (error) {
     console.error('❌ Error fixing issues:', error)
@@ -96,7 +96,7 @@ export async function initializeGillAirdrop(
   const { network = 'devnet', walletPath = './deploy-wallet.json', workingDir = '.' } = config
 
   try {
-    console.log('🚀 Initializing airdrop with Gill...\n')
+    console.log('🚀 Initializing airdrop with Kit...\n')
 
     const issuesFixed = await fixGillInitializationIssues(config)
     if (!issuesFixed) {
@@ -118,11 +118,11 @@ export async function initializeGillAirdrop(
       }
     }
 
-    console.log(`📋 Loaded ${recipientsData.recipients.length} recipients (Gill)`)
-    console.log(`💰 Total amount: ${parseInt(recipientsData.totalAmount) / 1e9} SOL (Gill)`)
-    console.log(`🌳 Merkle root: ${recipientsData.merkleRoot} (Gill)`)
+    console.log(`📋 Loaded ${recipientsData.recipients.length} recipients (Kit)`)
+    console.log(`💰 Total amount: ${parseInt(recipientsData.totalAmount) / 1e9} SOL (Kit)`)
+    console.log(`🌳 Merkle root: ${recipientsData.merkleRoot} (Kit)`)
 
-    console.log('📡 Setting up Gill client...')
+    console.log('📡 Setting up Kit client...')
     const walletData = fs.readFileSync(walletPath, 'utf8')
     const walletArray = JSON.parse(walletData)
     const walletBytes = new Uint8Array(walletArray)
@@ -131,7 +131,7 @@ export async function initializeGillAirdrop(
     const client = createKitClient(authoritySigner, network, config.rpcUrl)
     const { rpc } = client
 
-    console.log(`👤 Authority: ${authoritySigner.address} (Gill)`)
+    console.log(`👤 Authority: ${authoritySigner.address} (Kit)`)
 
     const buildConfig: GillBuildConfig = { workingDir }
     const status = getGillProgramStatus(buildConfig)
@@ -144,16 +144,16 @@ export async function initializeGillAirdrop(
     }
 
     const programAddress = address(status.programId)
-    console.log(`📍 Program ID: ${programAddress} (Gill)`)
+    console.log(`📍 Program ID: ${programAddress} (Kit)`)
 
     // Ensure Codama client is in sync with current program ID
-    console.log('🔄 Checking Codama client sync... (Gill)')
+    console.log('🔄 Checking Codama client sync... (Kit)')
     const codamaSynced = await ensureGillCodamaSync({ workingDir })
     if (!codamaSynced) {
       return { success: false, error: 'Codama client is not synchronized. Regenerate the client and retry explicitly.' }
     }
 
-    console.log('🔍 Verifying program exists on-chain... (Gill)')
+    console.log('🔍 Verifying program exists on-chain... (Kit)')
     try {
       const programInfo = await rpc.getAccountInfo(programAddress).send()
       if (!programInfo.value) {
@@ -162,7 +162,7 @@ export async function initializeGillAirdrop(
           error: 'Program account not found on-chain. Please deploy the program first using: npm run airdrop:setup',
         }
       }
-      console.log('✅ Program verified on-chain (Gill)')
+      console.log('✅ Program verified on-chain (Kit)')
     } catch (error) {
       return {
         success: false,
@@ -174,13 +174,13 @@ export async function initializeGillAirdrop(
       programAddress,
       seeds: ['merkle_tree'],
     })
-    console.log(`🏛️  Airdrop state PDA: ${airdropStatePda} (Gill)`)
+    console.log(`🏛️  Airdrop state PDA: ${airdropStatePda} (Kit)`)
 
     // Step 7: Check if already initialized
     try {
       const existingStateInfo = await rpc.getAccountInfo(address(airdropStatePda)).send()
       if (existingStateInfo.value) {
-        console.log('⚠️  Airdrop already initialized (detected via Gill)')
+        console.log('⚠️  Airdrop already initialized (detected via Kit)')
         console.log(`   PDA: ${airdropStatePda}`)
 
         return {
@@ -190,10 +190,10 @@ export async function initializeGillAirdrop(
         }
       }
     } catch {
-      console.log('✅ Airdrop not yet initialized, proceeding... (Gill)')
+      console.log('✅ Airdrop not yet initialized, proceeding... (Kit)')
     }
 
-    console.log('📤 Preparing initialize transaction... (Codama + Gill)')
+    console.log('📤 Preparing initialize transaction... (Codama + Kit)')
 
     const merkleRootHex = recipientsData.merkleRoot.replace('0x', '')
     const merkleRootBytes = new Uint8Array(Buffer.from(merkleRootHex, 'hex'))
@@ -219,7 +219,7 @@ export async function initializeGillAirdrop(
       }
     }
 
-    console.log('🔍 Verifying airdrop state... (Gill)')
+    console.log('🔍 Verifying airdrop state... (Kit)')
     await new Promise((resolve) => setTimeout(resolve, 3000))
 
     let verificationAttempts = 0
@@ -229,7 +229,7 @@ export async function initializeGillAirdrop(
       try {
         const airdropStateInfo = await rpc.getAccountInfo(address(airdropStatePda)).send()
         if (airdropStateInfo.value) {
-          console.log('✅ Airdrop initialized and verified successfully! (Gill)')
+          console.log('✅ Airdrop initialized and verified successfully! (Kit)')
           console.log(`   PDA: ${airdropStatePda}`)
 
           return {
@@ -243,7 +243,7 @@ export async function initializeGillAirdrop(
       } catch {
         verificationAttempts++
         if (verificationAttempts >= maxAttempts) {
-          console.log('⚠️  Verification failed, but initialization likely succeeded (Gill)')
+          console.log('⚠️  Verification failed, but initialization likely succeeded (Kit)')
           console.log('   Check the transaction on the explorer to confirm')
 
           return {
@@ -255,7 +255,7 @@ export async function initializeGillAirdrop(
           }
         }
 
-        console.log(`🔄 Verification attempt ${verificationAttempts} failed, retrying... (Gill)`)
+        console.log(`🔄 Verification attempt ${verificationAttempts} failed, retrying... (Kit)`)
         await new Promise((resolve) => setTimeout(resolve, 2000))
       }
     }

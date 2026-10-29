@@ -30,6 +30,10 @@ export class GillMerkleTree {
     return getRootHex(this.root)
   }
 
+  public getLeaf(index: number): Uint8Array {
+    return this.leaves[index]
+  }
+
   public getLeafCount(): number {
     return this.leaves.length
   }

@@ -135,7 +135,7 @@ export class X402Middleware {
         let paymentRequest: PaymentRequestData;
         try {
           paymentRequest = JSON.parse(paymentHeader) as PaymentRequestData;
-        } catch (error) {
+        } catch {
           res.status(400).json({
             error: 'Invalid Payment Request',
             message: 'X-PAYMENT header must contain valid JSON',
