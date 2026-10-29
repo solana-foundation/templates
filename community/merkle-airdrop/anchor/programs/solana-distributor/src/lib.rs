@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use solana_keccak_hasher as keccak;
 
-declare_id!("111111111111111111111111111111111111");
+declare_id!("6Gs656WdKHM2XuZU3CZQ7SJNo63FecawsLECE6wFnozT");
 
 #[program]
 pub mod solana_distributor {

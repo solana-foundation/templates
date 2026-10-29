@@ -1,30 +1,38 @@
 'use client'
 
 import { useAirdropClaim } from '@/hooks/useAirdropClaim'
+import { cluster } from '@/lib/solana-client'
 
-export const ClaimButton = () => {
-  const { isLoading, status, handleClaimAirdrop } = useAirdropClaim()
-
+export function ClaimButton() {
+  const { isLoading, status, signature, canClaim, handleClaimAirdrop } = useAirdropClaim()
   return (
-    <div className="flex flex-col items-center gap-4 p-6">
-      <h2 className="text-2xl font-bold">Airdrop Claim</h2>
-
-      {status && <div className="text-sm text-gray-600 bg-gray-100 px-3 py-2 rounded">{status}</div>}
-
+    <section className="mx-auto flex max-w-xl flex-col items-center gap-4 p-6">
+      <h1 className="text-2xl font-bold">Airdrop Claim</h1>
+      <span className="text-sm">{cluster}</span>
+      {status && (
+        <p role="status" className="break-words text-sm">
+          {status}
+        </p>
+      )}
       <button
-        onClick={handleClaimAirdrop}
-        disabled={isLoading}
-        className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-          isLoading ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'
-        }`}
+        type="button"
+        onClick={() => void handleClaimAirdrop()}
+        disabled={isLoading || !canClaim}
+        className="rounded-lg bg-blue-600 px-6 py-3 text-white disabled:opacity-50"
       >
         {isLoading ? 'Claiming...' : 'Claim Airdrop'}
       </button>
-
-      <p className="text-xs text-gray-500 max-w-md text-center">
-        This will automatically claim your airdrop using the configured private key. Make sure USER_PRIVATE_KEY is set
-        in your environment.
-      </p>
-    </div>
+      {!canClaim && <p>Connect a wallet with V1 transaction support to claim.</p>}
+      {signature && (
+        <a
+          className="underline"
+          href={`https://explorer.solana.com/tx/${signature}?cluster=${cluster}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          View transaction
+        </a>
+      )}
+    </section>
   )
 }

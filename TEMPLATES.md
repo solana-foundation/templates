@@ -204,7 +204,7 @@ Templates maintained by the Solana community
 
 > A modern, script-driven Solana airdrop template that distributes SOL to many recipients efficiently using a Merkle tree
 
-`nextjs` `react` `tailwind` `typescript` `framework-kit`
+`nextjs` `react` `tailwind` `typescript` `solana-kit`
 
 ### [moneygram-onramp](community/moneygram-onramp)
 

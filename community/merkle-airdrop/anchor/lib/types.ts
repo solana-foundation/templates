@@ -23,7 +23,7 @@ export interface GillWalletInfo {
 
 export interface GillRecipient {
   recipient: Address
-  amount: number
+  amount: bigint | string | number
 }
 
 export interface GillNetworkConfig {
