@@ -43,6 +43,4 @@ packages:
   - community/*
   - '!community/lazorkit-starter-expo'
   - kit/*
-  - pinocchio/*
   - web3js/*
-  - web3js/legacy/*
