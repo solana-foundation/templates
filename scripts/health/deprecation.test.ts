@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { extractDeprecations } from './checks.js'
+import { extractDeprecations } from './build.js'
 
 const installOutput = `
 npm warn deprecated @solana-program/token-2022@0.7.0: This package has been deprecated

@@ -3,14 +3,8 @@ import assert from 'node:assert/strict'
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import {
-  announcedUrls,
-  CARGO_OUTPUT_PATTERN,
-  copyFilterFor,
-  copyTemplate,
-  EXCLUDED_DIRS,
-  isPrivateEnvFile,
-} from './checks.js'
+import { announcedUrls } from './boot.js'
+import { CARGO_OUTPUT_PATTERN, copyFilterFor, copyTemplate, EXCLUDED_DIRS, isPrivateEnvFile } from './isolation.js'
 import { ENV_ALLOWLIST, parentSecretValues, sanitizedEnv } from './env.js'
 
 const fixture = (): string => {

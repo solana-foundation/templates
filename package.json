@@ -15,6 +15,8 @@
     "security:test": "tsx --test scripts/security/*.test.ts",
     "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "triage": "tsx scripts/triage.ts",
+    "triage:test": "tsx --test scripts/triage/*.test.ts",
     "update-deps": "pnpm -r update --latest",
     "validate": "tsx scripts/validate.ts"
   },

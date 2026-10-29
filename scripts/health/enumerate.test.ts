@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { classify, enumerateTemplates } from './enumerate.js'
+import { classify, enumerateRepo, enumerateTemplates } from './enumerate.js'
 
 /** A fake repo root with one group holding the given template dirs. */
 const fakeRoot = (): string => {
@@ -65,7 +65,88 @@ test('classify: web signals win over cargo; cargo wins over plain node', () => {
     assert.equal(classify(dir, { scripts: { build: 'tsc' } }), 'rust')
     assert.equal(classify(dir, null), 'rust')
     assert.equal(classify(join(root, 'kit'), { scripts: { build: 'tsc' } }), 'node')
+    assert.equal(classify(join(root, 'kit'), { scripts: { ci: 'tsc' } }), 'node')
+    // start alone is not a build the check can run: not a node template
+    assert.equal(classify(join(root, 'kit'), { scripts: { start: 'node server.js' } }), 'unknown')
+    assert.equal(classify(join(root, 'kit'), { scripts: { build: '   ' } }), 'unknown')
     assert.equal(classify(join(root, 'kit'), null), 'unknown')
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('enumerateRepo flags what it cannot classify instead of dropping it or crashing', () => {
+  const root = mkdtempSync(join(tmpdir(), 'health-enumerate-'))
+  try {
+    writeFileSync(
+      join(root, 'package.json'),
+      JSON.stringify({ repokit: { groups: [{ path: 'kit' }, { path: 'kit/legacy' }, { path: 'missing' }] } }),
+    )
+    mkdirSync(join(root, 'kit'))
+
+    const good = join(root, 'kit', 'good')
+    mkdirSync(good)
+    writeFileSync(join(good, 'package.json'), JSON.stringify({ scripts: { build: 'tsc' } }))
+
+    mkdirSync(join(root, 'kit', 'empty'))
+
+    const broken = join(root, 'kit', 'broken')
+    mkdirSync(broken)
+    writeFileSync(join(broken, 'package.json'), '{ "name": "broken",')
+
+    const bare = join(root, 'kit', 'bare')
+    mkdirSync(bare)
+    writeFileSync(join(bare, 'package.json'), JSON.stringify({ name: 'bare', scripts: { postinstall: 'node x.js' } }))
+
+    // unknown framework but a ci script: still a template, the build check can run it
+    const scripted = join(root, 'kit', 'scripted')
+    mkdirSync(scripted)
+    writeFileSync(join(scripted, 'package.json'), JSON.stringify({ name: 'scripted', scripts: { ci: 'tsc' } }))
+
+    // unknown framework with only a dev script: nothing the check can run or boot
+    const devOnly = join(root, 'kit', 'devonly')
+    mkdirSync(devOnly)
+    writeFileSync(join(devOnly, 'package.json'), JSON.stringify({ name: 'devonly', scripts: { dev: 'node x.js' } }))
+
+    // start-only, framework-less: used to slip through as kind 'node' and end as an unverified warn
+    const startOnly = join(root, 'kit', 'startonly')
+    mkdirSync(startOnly)
+    writeFileSync(
+      join(startOnly, 'package.json'),
+      JSON.stringify({ name: 'startonly', scripts: { start: 'node server.js' } }),
+    )
+
+    // never templates: hidden dirs, node_modules, a nested group's own directory, loose files
+    mkdirSync(join(root, 'kit', '.cache'))
+    mkdirSync(join(root, 'kit', 'node_modules'))
+    mkdirSync(join(root, 'kit', 'legacy'))
+    writeFileSync(join(root, 'kit', 'README.md'), '# kit\n')
+
+    const { templates, unrecognized } = enumerateRepo(root)
+    assert.deepEqual(
+      templates.map((template) => template.id),
+      ['kit/good', 'kit/scripted'],
+    )
+    assert.deepEqual(
+      unrecognized.map(({ id, reason }) => ({ id, reason })),
+      [
+        { id: 'kit/bare', reason: 'no recognised framework and no ci/build script' },
+        { id: 'kit/broken', reason: unrecognized[1].reason },
+        { id: 'kit/devonly', reason: 'no recognised framework and no ci/build script' },
+        { id: 'kit/empty', reason: 'no package.json or Cargo.toml' },
+        { id: 'kit/startonly', reason: 'no recognised framework and no ci/build script' },
+        { id: 'missing', reason: 'group directory missing' },
+      ],
+    )
+    assert.match(unrecognized[1].reason, /^package\.json is not valid JSON: /)
+    assert.equal(unrecognized[1].path, broken)
+    assert.equal(unrecognized[5].path, join(root, 'missing'))
+
+    // the templates-only view is unchanged for existing callers
+    assert.deepEqual(
+      enumerateTemplates(root).map((template) => template.id),
+      ['kit/good', 'kit/scripted'],
+    )
   } finally {
     rmSync(root, { recursive: true, force: true })
   }

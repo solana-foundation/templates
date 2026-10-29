@@ -6,7 +6,7 @@
 
 import { existsSync, readFileSync, readdirSync, statSync } from 'fs'
 import { dirname, join } from 'path'
-import type { TemplateKind, TemplateRef } from './types.js'
+import type { TemplateKind, TemplateRef, UnrecognizedEntry } from './types.js'
 
 type AnyPkg = {
   scripts?: Record<string, string>
@@ -26,13 +26,18 @@ const resolvePackageManager = (pkg: AnyPkg | null): string => {
   return 'npm'
 }
 
-const readPkg = (dir: string): AnyPkg | null => {
+/**
+ * Read a template's package.json. A manifest that exists but does not parse is reported as
+ * such (`parseError`), never silently treated as "no package.json": the two mean different
+ * things for the report (unrecognised template vs Rust-only template).
+ */
+const readPkg = (dir: string): { pkg: AnyPkg | null; parseError?: string } => {
   const pkgPath = join(dir, 'package.json')
-  if (!existsSync(pkgPath)) return null
+  if (!existsSync(pkgPath)) return { pkg: null }
   try {
-    return JSON.parse(readFileSync(pkgPath, 'utf-8')) as AnyPkg
-  } catch {
-    return null
+    return { pkg: JSON.parse(readFileSync(pkgPath, 'utf-8')) as AnyPkg }
+  } catch (error) {
+    return { pkg: null, parseError: error instanceof Error ? error.message : String(error) }
   }
 }
 
@@ -40,6 +45,13 @@ const allDeps = (pkg: AnyPkg): Record<string, string> => ({
   ...(pkg.dependencies ?? {}),
   ...(pkg.devDependencies ?? {}),
 })
+
+/**
+ * The only scripts the build check runs. A framework-less package with just `dev` or `start`
+ * can't be verified (no build to run, nothing to boot), so it doesn't make a template.
+ */
+const hasBuildScript = (scripts: Record<string, string>): boolean =>
+  ['ci', 'build'].some((name) => typeof scripts[name] === 'string' && scripts[name].trim() !== '')
 
 /**
  * Web/mobile capability is decided from package.json deps and scripts first, independently
@@ -56,7 +68,8 @@ export const classify = (dir: string, pkg: AnyPkg | null): TemplateKind => {
   if ('next' in deps || scripts.includes('next ')) return 'next'
   if ('vite' in deps || /\bvite\b/.test(scripts)) return 'vite'
   if (hasCargo) return 'rust'
-  if (pkg.scripts?.build || pkg.scripts?.start) return 'node'
+  // Plain node: only when the build check has something to run (start alone can't be verified).
+  if (hasBuildScript(pkg.scripts ?? {})) return 'node'
   return 'unknown'
 }
 
@@ -196,51 +209,118 @@ const readGroups = (root: string): { path: string }[] => {
   return pkg.repokit?.groups ?? []
 }
 
-/** List immediate subdirectories that contain a package.json or a Cargo.toml. */
-const templateDirsIn = (groupDir: string): string[] => {
-  if (!existsSync(groupDir)) return []
-  return readdirSync(groupDir)
+/** Directory names under a group that are never templates. */
+const isIgnoredDirName = (name: string): boolean => name.startsWith('.') || name === 'node_modules'
+
+/** Every immediate, non-hidden subdirectory of a group dir (template candidates, recognised or not). */
+const candidateDirsIn = (groupDir: string): string[] =>
+  readdirSync(groupDir)
+    .filter((name) => !isIgnoredDirName(name))
+    .sort()
     .map((name) => join(groupDir, name))
     .filter((candidate) => {
       try {
-        return (
-          statSync(candidate).isDirectory() &&
-          (existsSync(join(candidate, 'package.json')) || existsSync(join(candidate, 'Cargo.toml')))
-        )
+        return statSync(candidate).isDirectory()
       } catch {
         return false
       }
     })
+
+const errorMessage = (error: unknown): string => (error instanceof Error ? error.message : String(error))
+
+export type Enumeration = {
+  /** templates the health check understands, sorted by id */
+  readonly templates: TemplateRef[]
+  /** directories (or configured groups) it could not classify, sorted by id; never counted as pass or fail */
+  readonly unrecognized: UnrecognizedEntry[]
 }
 
-export const enumerateTemplates = (root: string): TemplateRef[] => {
+/**
+ * Classify one candidate directory: a template ref when the health check understands it, or
+ * the reason it does not. Never throws: an unreadable or malformed directory becomes an
+ * unrecognised entry so one bad template cannot take the whole run down.
+ */
+const inspectCandidate = (dir: string, groupPath: string, groupDir: string): TemplateRef | UnrecognizedEntry => {
+  const name = dir.slice(groupDir.length + 1)
+  const id = `${groupPath}/${name}`
+  try {
+    const hasPkg = existsSync(join(dir, 'package.json'))
+    const hasCargo = existsSync(join(dir, 'Cargo.toml'))
+    if (!hasPkg && !hasCargo) return { id, path: dir, reason: 'no package.json or Cargo.toml' }
+    const { pkg, parseError } = readPkg(dir)
+    if (parseError !== undefined) return { id, path: dir, reason: `package.json is not valid JSON: ${parseError}` }
+    const { needs, reason, keys } = detectSecrets(dir, pkg)
+    const cargo = detectCargo(dir)
+    const kind = classify(dir, pkg)
+    const scripts = pkg?.scripts ?? {}
+    // Nothing we know how to run: no framework, no cargo manifest, no ci/build script. A
+    // template like that would otherwise read as "warn: no ci/build script", which sounds
+    // like "works but needs attention" when the truth is "we cannot verify this at all".
+    if (kind === 'unknown' && !cargo.cargoManifestDir && !hasBuildScript(scripts))
+      return { id, path: dir, reason: 'no recognised framework and no ci/build script' }
+    return {
+      id,
+      group: groupPath,
+      dir,
+      kind,
+      scripts,
+      directDeps: pkg ? Object.keys(allDeps(pkg)) : [],
+      cargoManifestDir: cargo.cargoManifestDir,
+      isProgram: cargo.isProgram,
+      packageManager: resolvePackageManager(pkg),
+      needsSecrets: needs,
+      secretsReason: reason,
+      credentialKeys: keys,
+      declaredEnvKeys: declaredEnvKeys(dir),
+    }
+  } catch (error) {
+    return { id, path: dir, reason: `could not inspect directory: ${errorMessage(error)}` }
+  }
+}
+
+const isTemplateRef = (entry: TemplateRef | UnrecognizedEntry): entry is TemplateRef => 'group' in entry
+
+/**
+ * Discover every template under repokit.groups, plus everything under those groups that the
+ * health check does NOT understand. Unrecognised entries get their own report section instead
+ * of vanishing (the old behaviour: a directory without package.json/Cargo.toml was simply not
+ * listed) or masquerading as a warn.
+ */
+export const enumerateRepo = (root: string): Enumeration => {
   const groups = readGroups(root)
-  const refs: TemplateRef[] = []
+  const groupPaths = new Set(groups.map((group) => group.path))
+  const templates: TemplateRef[] = []
+  const unrecognized: UnrecognizedEntry[] = []
 
   for (const group of groups) {
     const groupDir = join(root, group.path)
-    for (const dir of templateDirsIn(groupDir)) {
-      const pkg = readPkg(dir)
-      const name = dir.slice(groupDir.length + 1)
-      const { needs, reason, keys } = detectSecrets(dir, pkg)
-      const cargo = detectCargo(dir)
-      refs.push({
-        id: `${group.path}/${name}`,
-        group: group.path,
-        dir,
-        kind: classify(dir, pkg),
-        scripts: pkg?.scripts ?? {},
-        directDeps: pkg ? Object.keys(allDeps(pkg)) : [],
-        cargoManifestDir: cargo.cargoManifestDir,
-        isProgram: cargo.isProgram,
-        packageManager: resolvePackageManager(pkg),
-        needsSecrets: needs,
-        secretsReason: reason,
-        credentialKeys: keys,
-        declaredEnvKeys: declaredEnvKeys(dir),
+    if (!existsSync(groupDir)) {
+      unrecognized.push({ id: group.path, path: groupDir, reason: 'group directory missing' })
+      continue
+    }
+    let candidates: string[]
+    try {
+      candidates = candidateDirsIn(groupDir)
+    } catch (error) {
+      unrecognized.push({
+        id: group.path,
+        path: groupDir,
+        reason: `group directory not readable: ${errorMessage(error)}`,
       })
+      continue
+    }
+    for (const dir of candidates) {
+      // A nested group (web3js/legacy inside web3js) is enumerated as its own group, not as a template.
+      if (groupPaths.has(`${group.path}/${dir.slice(groupDir.length + 1)}`)) continue
+      const entry = inspectCandidate(dir, group.path, groupDir)
+      if (isTemplateRef(entry)) templates.push(entry)
+      else unrecognized.push(entry)
     }
   }
 
-  return refs.sort((left, right) => left.id.localeCompare(right.id))
+  const byId = <T extends { id: string }>(left: T, right: T) => left.id.localeCompare(right.id)
+  return { templates: templates.sort(byId), unrecognized: unrecognized.sort(byId) }
 }
+
+/** The recognised templates only; see enumerateRepo for the full picture. */
+export const enumerateTemplates = (root: string): TemplateRef[] => enumerateRepo(root).templates
