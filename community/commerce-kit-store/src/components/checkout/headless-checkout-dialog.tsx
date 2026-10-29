@@ -31,6 +31,7 @@ function StatusBadge({ status }: { status: HeadlessPaymentStatus }) {
     generating: { label: 'Generating...', variant: 'outline' },
     pending: { label: 'Awaiting Payment', variant: 'default' },
     verifying: { label: 'Verifying...', variant: 'outline' },
+    unavailable: { label: 'Connection issue', variant: 'outline' },
     confirmed: { label: 'Confirmed', variant: 'default' },
     failed: { label: 'Failed', variant: 'destructive' },
   }
@@ -65,6 +66,7 @@ export function HeadlessCheckoutDialog({
   const isConfirmed = status === 'confirmed'
   const isPending = status === 'pending'
   const isVerifying = status === 'verifying'
+  const isUnavailable = status === 'unavailable'
   const isGenerating = status === 'generating'
   const isFailed = status === 'failed'
   const walletPayment = useWalletPayment(paymentRequest, isConfirmed)
@@ -83,6 +85,7 @@ export function HeadlessCheckoutDialog({
     if (isConfirmed) return 'Your payment has been confirmed successfully'
     if (isPending) return 'Pay with your connected wallet or scan the QR code'
     if (isVerifying) return 'Verifying your payment on-chain...'
+    if (isUnavailable) return 'Reconnecting to the payment network...'
     if (isGenerating) return 'Generating payment request...'
     if (isFailed) return error?.message ?? 'Unable to complete checkout'
     return ''
@@ -100,8 +103,8 @@ export function HeadlessCheckoutDialog({
         className="w-[95vw] max-w-md sm:max-w-lg mx-auto max-h-[90vh] overflow-y-auto overflow-x-hidden"
       >
         <DialogHeader>
-          <div className="flex items-center justify-between gap-2">
-            <DialogTitle className="text-base sm:text-lg truncate">{getTitle()}</DialogTitle>
+          <div className="flex flex-wrap items-center justify-between gap-2 pr-7">
+            <DialogTitle className="min-w-0 break-words text-base sm:text-lg">{getTitle()}</DialogTitle>
             <StatusBadge status={status} />
           </div>
           <DialogDescription className="text-sm">{getDescription()}</DialogDescription>
@@ -155,6 +158,17 @@ export function HeadlessCheckoutDialog({
               {paymentRequest && (
                 <div className="flex flex-col items-center gap-4">
                   <WalletUI />
+                  {walletPayment.walletName && (
+                    <p className="text-center text-xs text-muted-foreground">
+                      {walletPayment.walletName} · {walletPayment.supportsV1 ? 'V1 ready' : 'V1 unavailable'}
+                    </p>
+                  )}
+                  {walletPayment.walletName && !walletPayment.supportsV1 && (
+                    <p role="alert" className="text-sm text-destructive">
+                      This wallet connection is not reporting V1 support. Reconnect your wallet or choose a V1-capable
+                      wallet to pay here.
+                    </p>
+                  )}
                   {error && (
                     <p role="alert" className="text-sm text-muted-foreground">
                       Payment verification is temporarily unavailable. Retrying automatically. If you already paid, do
@@ -163,7 +177,7 @@ export function HeadlessCheckoutDialog({
                   )}
                   <Button
                     className="w-full"
-                    disabled={!isPending || walletPayment.busy || walletPayment.submitted}
+                    disabled={!isPending || !walletPayment.supportsV1 || walletPayment.busy || walletPayment.submitted}
                     onClick={() => void walletPayment.pay()}
                   >
                     {walletPayment.busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
@@ -187,6 +201,7 @@ export function HeadlessCheckoutDialog({
                   <div className="text-center">
                     <p className="text-2xl font-bold">${amount.toFixed(2)} USDC</p>
                     {isPending && <p className="text-sm text-muted-foreground mt-1">Waiting for payment...</p>}
+                    {isUnavailable && <p className="text-sm text-muted-foreground mt-1">Waiting for connection...</p>}
                     {isVerifying && (
                       <p className="text-sm text-muted-foreground mt-1 flex items-center justify-center gap-1">
                         <Loader2 className="h-3 w-3 animate-spin" />

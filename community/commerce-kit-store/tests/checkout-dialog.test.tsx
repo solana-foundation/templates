@@ -6,6 +6,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 const state = vi.hoisted(() => ({
   busy: false,
   submitted: false,
+  supportsV1: true,
+  walletName: 'Test Wallet',
   onOpenChange: null as null | ((open: boolean) => void),
 }))
 vi.mock('../src/hooks/use-wallet-payment', () => ({
@@ -39,6 +41,8 @@ const paymentRequest = {
 beforeEach(() => {
   state.busy = false
   state.submitted = false
+  state.supportsV1 = true
+  state.walletName = 'Test Wallet'
   state.onOpenChange = null
 })
 afterEach(cleanup)
@@ -76,20 +80,28 @@ describe('payment-safe checkout dismissal', () => {
   })
   it('does not bypass the guard through the verification error screen', () => {
     state.submitted = true
-    const close = setup({ error: new Error('RPC temporarily unavailable'), status: 'verifying', paymentRequest })
+    const close = setup({ error: new Error('RPC temporarily unavailable'), status: 'unavailable', paymentRequest })
     expect((screen.getByRole('button', { name: 'Cancel' }) as HTMLButtonElement).disabled).toBe(true)
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
     act(() => state.onOpenChange?.(false))
     expect(close).not.toHaveBeenCalled()
   })
   it('keeps the QR and reference visible during temporary verification errors', () => {
-    setup({ error: new Error('RPC temporarily unavailable'), status: 'verifying', paymentRequest })
+    setup({ error: new Error('RPC temporarily unavailable'), status: 'unavailable', paymentRequest })
     expect(screen.queryByText('Payment Failed')).toBeNull()
     expect(screen.getByText('Pay with Solana')).toBeTruthy()
     expect(screen.getByLabelText('Payment QR code')).toBeTruthy()
     expect(screen.getByText(paymentRequest.reference)).toBeTruthy()
     expect(screen.getByRole('alert').textContent).toContain('Retrying automatically')
     expect(screen.getByRole('alert').textContent).toContain('do not pay again')
+    expect((screen.getByRole('button', { name: 'Pay with connected wallet' }) as HTMLButtonElement).disabled).toBe(true)
+  })
+  it('identifies unsupported wallet connections before requesting a payment', () => {
+    state.walletName = 'Unsupported Test Wallet'
+    state.supportsV1 = false
+    setup({ paymentRequest })
+    expect(screen.getByText('Unsupported Test Wallet · V1 unavailable')).toBeTruthy()
+    expect(screen.getByRole('alert').textContent).toContain('not reporting V1 support')
     expect((screen.getByRole('button', { name: 'Pay with connected wallet' }) as HTMLButtonElement).disabled).toBe(true)
   })
   it('reserves the failure screen for a failed checkout', () => {

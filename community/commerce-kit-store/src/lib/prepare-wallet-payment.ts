@@ -14,7 +14,7 @@ export async function prepareWalletPayment(client: AppClient, request: HeadlessP
   const connected = client.wallet.getState().connected
   if (!connected?.signer) throw new Error('Connect a signing wallet first.')
   if (!connected.supportedTransactionVersions.has(1))
-    throw new Error('This wallet does not support V1 transactions. Use another wallet or scan the QR code.')
+    throw new Error('This wallet connection does not report V1 support. Reconnect or use a V1-capable wallet.')
   const signer = connected.signer
   if (signer.address === request.recipient) throw new Error('The payer must be different from the merchant.')
   if (!request.splToken || request.splToken !== USDC_MINT)

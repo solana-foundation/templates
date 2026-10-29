@@ -11,8 +11,20 @@ import {
   setTransactionMessageFeePayer,
 } from '@solana/kit'
 
-const mocks = vi.hoisted(() => ({ prepare: vi.fn(), send: vi.fn(), height: vi.fn(), statuses: vi.fn() }))
+const mocks = vi.hoisted(() => ({
+  prepare: vi.fn(),
+  send: vi.fn(),
+  height: vi.fn(),
+  statuses: vi.fn(),
+  supportsV1: true,
+}))
 vi.mock('@solana/react', () => ({ useClient: () => client }))
+vi.mock('@solana/kit-plugin-wallet/react', () => ({
+  useConnectedWallet: () => ({
+    wallet: { name: 'Test Wallet' },
+    supportedTransactionVersions: new Set(mocks.supportsV1 ? [1] : [0]),
+  }),
+}))
 const client = {
   sendTransaction: mocks.send,
   rpc: {
@@ -37,6 +49,7 @@ function sendFailure(sent: boolean) {
 describe('connected wallet payment', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mocks.supportsV1 = true
     mocks.prepare.mockResolvedValue([])
     mocks.send.mockResolvedValue({})
     mocks.height.mockResolvedValue(99n)
@@ -52,6 +65,16 @@ describe('connected wallet payment', () => {
     })
     expect(mocks.send).toHaveBeenCalledTimes(1)
     expect(result.current.submitted).toBe(true)
+  })
+  it('does not prepare or send when the wallet does not advertise V1', async () => {
+    mocks.supportsV1 = false
+    const { result } = renderHook(() => useWalletPayment(request, false))
+    await act(async () => {
+      await result.current.pay()
+    })
+    expect(result.current.supportsV1).toBe(false)
+    expect(mocks.prepare).not.toHaveBeenCalled()
+    expect(mocks.send).not.toHaveBeenCalled()
   })
   it('blocks simultaneous clicks while preparing', async () => {
     let finish!: (v: never[]) => void

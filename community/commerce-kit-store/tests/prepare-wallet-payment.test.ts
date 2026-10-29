@@ -51,7 +51,7 @@ describe('payment instruction preparation', () => {
   })
   it('rejects wallets without V1 support', async () => {
     connected = { signer, supportedTransactionVersions: new Set([0]) }
-    await expect(prepareWalletPayment(client, request)).rejects.toThrow('does not support V1')
+    await expect(prepareWalletPayment(client, request)).rejects.toThrow('does not report V1')
     expect(token).not.toHaveBeenCalled()
   })
   it('rejects insufficient USDC', async () => {

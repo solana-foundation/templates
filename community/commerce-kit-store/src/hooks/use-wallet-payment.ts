@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useClient } from '@solana/react'
+import { useConnectedWallet } from '@solana/kit-plugin-wallet/react'
 import type { AppClient } from '@/lib/solana-client'
 import type { HeadlessPaymentRequest } from './use-headless-checkout'
 import { prepareWalletPayment } from '@/lib/prepare-wallet-payment'
@@ -10,6 +11,8 @@ import { signature } from '@solana/kit'
 
 export function useWalletPayment(request: HeadlessPaymentRequest | null, confirmed: boolean) {
   const client = useClient<AppClient>()
+  const connectedWallet = useConnectedWallet(client)
+  const supportsV1 = connectedWallet?.supportedTransactionVersions.has(1) ?? false
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
@@ -69,7 +72,7 @@ export function useWalletPayment(request: HeadlessPaymentRequest | null, confirm
   }, [client, uncertain, submitted, confirmed])
 
   async function pay() {
-    if (!request || confirmed || locked.current || submitted) return
+    if (!request || confirmed || locked.current || submitted || !supportsV1) return
     locked.current = true
     setBusy(true)
     setError(null)
@@ -101,5 +104,5 @@ export function useWalletPayment(request: HeadlessPaymentRequest | null, confirm
       setBusy(false)
     }
   }
-  return { pay, busy, error, submitted }
+  return { pay, busy, error, submitted, supportsV1, walletName: connectedWallet?.wallet.name }
 }

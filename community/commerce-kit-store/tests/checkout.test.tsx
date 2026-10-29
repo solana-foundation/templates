@@ -11,7 +11,7 @@ vi.mock('@solana/react', () => ({ useClient: () => client }))
 vi.mock('../src/components/wallet-ui', () => ({ WalletUI: () => null }))
 vi.mock('../src/components/app-explorer-link', () => ({ AppExplorerLink: () => null }))
 vi.mock('../src/hooks/use-wallet-payment', () => ({
-  useWalletPayment: () => ({ busy: false, submitted: false, error: null, pay: vi.fn() }),
+  useWalletPayment: () => ({ busy: false, submitted: false, error: null, supportsV1: true, pay: vi.fn() }),
 }))
 vi.mock('@solana/kit', () => ({
   address: (value: string) => value,
@@ -105,7 +105,7 @@ test('RPC errors are shown instead of leaving checkout silently pending', async 
   await act(async () => {
     await result.current.openCheckout(1)
   })
-  await waitFor(() => expect(result.current.status).toBe('verifying'))
+  await waitFor(() => expect(result.current.status).toBe('unavailable'))
   expect(result.current.error?.message).toBe('RPC unavailable')
   expect(result.current.paymentRequest).not.toBeNull()
   act(() => result.current.closeCheckout())
@@ -152,6 +152,8 @@ test('keeps the checkout visible through RPC trouble and confirms after retrying
   expect(screen.queryByText('Payment Failed')).toBeNull()
   expect(screen.getByLabelText('Payment QR code')).toBeTruthy()
   expect(screen.getByText('11111111111111111111111111111114')).toBeTruthy()
+  expect(screen.getByText('Connection issue')).toBeTruthy()
+  expect(screen.queryByText('Verifying transaction...')).toBeNull()
   await waitFor(() => expect(screen.getByText('Payment Confirmed!')).toBeTruthy(), { timeout: 6000 })
   expect(screen.queryByRole('alert')).toBeNull()
   expect(mocks.generate).toHaveBeenCalledTimes(1)

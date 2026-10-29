@@ -19,7 +19,8 @@ import {
   setTransactionMessageFeePayer,
   setTransactionMessageLifetimeUsingBlockhash,
   appendTransactionMessageInstruction,
-  signTransaction,
+  compileTransaction,
+  partiallySignTransaction,
   getBase64EncodedWireTransaction,
   address,
   lamports,
@@ -105,7 +106,7 @@ async function createPaymentRequest(nonce) {
 
   // Create transfer instruction
   const transferInstruction = getTransferSolInstruction({
-    source: clientSigner.address,
+    source: clientSigner,
     destination: address(MERCHANT_ADDRESS),
     amount: lamports(BigInt(10000000)),
   });
@@ -117,7 +118,10 @@ async function createPaymentRequest(nonce) {
   transactionMessage = appendTransactionMessageInstruction(transferInstruction, transactionMessage);
 
   // Sign the transaction
-  const signedTransaction = await signTransaction([clientSigner], transactionMessage);
+  const signedTransaction = await partiallySignTransaction(
+    [clientSigner.keyPair],
+    compileTransaction(transactionMessage)
+  );
 
   // Serialize the transaction
   const serializedTransaction = getBase64EncodedWireTransaction(signedTransaction);

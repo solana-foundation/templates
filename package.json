@@ -26,8 +26,8 @@
     "@types/react": "^19.2.17",
     "@vercel/og": "^0.7.2",
     "automd": "^0.4.2",
-    "prettier": "^3.6.2",
-    "puppeteer": "^23.11.1",
+    "prettier": "3.6.2",
+    "puppeteer": "^25.16.0",
     "react": "^19.2.7",
     "sharp": "^0.35.5",
     "tsx": "^4.19.2",
@@ -50,11 +50,6 @@
         "description": "Templates using @solana/web3.js v3 and @solana/wallet-adapter",
         "name": "Web3.js Templates",
         "path": "web3js"
-      },
-      {
-        "description": "Templates using @solana/web3.js v1 and the legacy wallet adapter packages",
-        "name": "Web3.js Templates (legacy)",
-        "path": "web3js/legacy"
       },
       {
         "description": "Templates maintained by the Solana community",

@@ -89,7 +89,7 @@ x402_ts/
 
 ### Prerequisites
 
-Make sure you are using Node 22+ so that node_sqlite3, needed for the facilitator, is configured correctly.
+Make sure you are using Node 22.13+ so that the built-in `node:sqlite` module, needed for the facilitator, is available.
 
 ### 1. Install Dependencies
 
@@ -340,7 +340,7 @@ npm run fmt:check
 - **Runtime**: Node.js with TypeScript
 - **Framework**: Express.js
 - **Blockchain**: Solana (via @solana/kit)
-- **Database**: SQLite3 (for nonce management)
+- **Database**: SQLite via built-in `node:sqlite` (for nonce management)
 - **Process Management**: PM2
 - **Validation**: Zod
 - **Logging**: Structured logging with timestamps

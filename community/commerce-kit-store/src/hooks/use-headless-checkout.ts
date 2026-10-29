@@ -30,7 +30,8 @@ function getMerchantWallet(): string {
  */
 const POLLING_INTERVAL_MS = 2000
 
-export type HeadlessPaymentStatus = 'idle' | 'generating' | 'pending' | 'verifying' | 'confirmed' | 'failed'
+export type HeadlessPaymentStatus =
+  'idle' | 'generating' | 'pending' | 'verifying' | 'unavailable' | 'confirmed' | 'failed'
 
 export interface HeadlessPaymentRequest {
   url: URL
@@ -267,7 +268,7 @@ export function useHeadlessCheckout(options: UseHeadlessCheckoutOptions = {}) {
         } catch (err) {
           if (cancelled) return
           setError(err instanceof Error ? err : new Error('Unable to verify payment'))
-          setStatus('verifying')
+          setStatus('unavailable')
           failures++
           await new Promise((resolve) =>
             setTimeout(resolve, Math.min(30_000, POLLING_INTERVAL_MS * 2 ** Math.min(failures, 4))),
