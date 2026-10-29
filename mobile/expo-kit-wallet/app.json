@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "package": "com.anonymous.expo_kit_wallet",
+      "predictiveBackGestureEnabled": false
+    },
+    "experiments": {
+      "reactCompiler": true,
+      "typedRoutes": true
+    },
+    "icon": "./assets/images/icon.png",
+    "ios": {
+      "icon": "./assets/expo.icon"
+    },
+    "name": "Expo Kit Wallet",
+    "orientation": "portrait",
+    "plugins": [
+      [
+        "expo-dev-client",
+        {
+          "showMenuAtLaunch": false,
+          "skipOnboarding": true
+        }
+      ],
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "android": {
+            "image": "./assets/images/splash-icon.png",
+            "imageWidth": 76
+          },
+          "backgroundColor": "#208AEF"
+        }
+      ],
+      "expo-status-bar",
+      "expo-font"
+    ],
+    "scheme": "expo-kit-wallet",
+    "slug": "expo-kit-wallet",
+    "userInterfaceStyle": "automatic",
+    "web": {
+      "favicon": "./assets/images/favicon.png",
+      "output": "static"
+    }
+  }
+}

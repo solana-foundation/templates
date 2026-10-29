@@ -1,0 +1,71 @@
+{
+  "name": "typescript-kit-minimal",
+  "displayName": "TypeScript Kit Minimal example",
+  "description": "A minimal template for building a Solana web app with plain TypeScript, Vite, Solana Kit, and Mobile Wallet Adapter — no framework.",
+  "usecase": "Mobile",
+  "keywords": [
+    "mobile-wallet-adapter",
+    "solana-kit",
+    "typescript",
+    "vite",
+    "wallet",
+    "wallet-standard"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Accept the terms for the Solana Mobile relay this app uses:",
+      "+https://docs.solanamobile.com/solana-mobile-stack/seeker-connect-quickstart",
+      "",
+      "Start the development server:",
+      "+{pm} run dev"
+    ],
+    "rename": {
+      "TypeScript Kit Minimal": {
+        "paths": [
+          "."
+        ],
+        "to": "{{name}}"
+      }
+    },
+    "skills": [
+      "https://github.com/solana-foundation/solana-dev-skill",
+      "https://github.com/solana-mobile/solana-mobile-dev-skill"
+    ]
+  },
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc -b && vite build",
+    "ci": "npm run lint:check && npm run format:check && npm run build",
+    "dev": "vite",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@solana-mobile/seeker-connect-ui": "^0.1.2",
+    "@solana-mobile/seeker-connect-wallet-standard": "^0.1.2",
+    "@solana-mobile/wallet-standard-mobile": "^0.7.0",
+    "@solana-program/memo": "^0.13.1",
+    "@solana/kit": "^8.2.0",
+    "@solana/kit-plugin-rpc": "^0.19.0",
+    "@solana/wallet-standard-chains": "^1.1.2",
+    "@solana/wallet-standard-features": "^1.5.0",
+    "@wallet-standard/app": "^1.1.1",
+    "@wallet-standard/base": "^1.1.1",
+    "@wallet-standard/features": "^1.1.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.3.0",
+    "eslint": "^10.9.1",
+    "globals": "^17.11.0",
+    "prettier": "^3.9.6",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.68.0",
+    "vite": "^8.2.2"
+  },
+  "private": true
+}
