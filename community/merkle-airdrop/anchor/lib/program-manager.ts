@@ -117,6 +117,7 @@ export async function deployGillProgram(options: GillDeploymentOptions): Promise
 
     const consistencyFixed = await ensureGillProgramIdConsistency(targetProgramId || undefined, {
       workingDir: config.workingDir,
+      network: config.network,
     })
 
     if (!consistencyFixed) {
@@ -125,6 +126,7 @@ export async function deployGillProgram(options: GillDeploymentOptions): Promise
 
     const deployResult = await deployGillProgramBuild(newKeypairPath || undefined, {
       workingDir: config.workingDir,
+      network: config.network,
       rpcUrl: getKitRpcUrl(config.network, config.rpcUrl),
     })
 
@@ -198,7 +200,7 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
       testWallets = await generateGillTestWallets(client.rpc, numTestWallets)
     }
 
-    let programId = getGillCurrentProgramId({ workingDir: config.workingDir })
+    let programId = getGillCurrentProgramId({ workingDir: config.workingDir, network: config.network })
 
     console.log('\n📝 Updating configuration files...')
 
@@ -252,6 +254,8 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
 
       programId = deployResult.programId || programId
 
+      updateGillAnchorConfig(deployWallet, programId, { workingDir: config.workingDir, network: config.network })
+
       generateGillRecipientsJson(testWallets, programId, airdropAmountLamports, {
         workingDir: config.workingDir,
         network: config.network,
@@ -263,7 +267,7 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
 
       // Ensure Codama client is updated with new program ID
       console.log('🔄 Syncing Codama client with deployed program ID... (Kit)')
-      const codamaSynced = await ensureGillCodamaSync({ workingDir: config.workingDir })
+      const codamaSynced = await ensureGillCodamaSync({ workingDir: config.workingDir, network: config.network })
       if (!codamaSynced) {
         return { success: false, error: 'Program deployed, but Codama client synchronization failed' }
       }
@@ -293,7 +297,7 @@ export async function getGillProgramStatus(config: GillProgramConfig): Promise<{
   onChainProgramId?: string
 }> {
   try {
-    const localStatus = getGillProgramStatusBuild({ workingDir: config.workingDir })
+    const localStatus = getGillProgramStatusBuild({ workingDir: config.workingDir, network: config.network })
 
     if (localStatus.programId) {
       try {

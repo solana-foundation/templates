@@ -24,9 +24,10 @@ test('reuse mode lets consistency select the active deployment key instead of fo
     config: { network: 'devnet', workingDir: '/isolated', rpcUrl: 'http://127.0.0.1:8899' },
   })
   expect(result.success).toBe(true)
-  expect(mocked.consistent).toHaveBeenCalledWith(undefined, { workingDir: '/isolated' })
+  expect(mocked.consistent).toHaveBeenCalledWith(undefined, { workingDir: '/isolated', network: 'devnet' })
   expect(mocked.deploy).toHaveBeenCalledWith(undefined, {
     workingDir: '/isolated',
+    network: 'devnet',
     rpcUrl: 'http://127.0.0.1:8899',
   })
 })

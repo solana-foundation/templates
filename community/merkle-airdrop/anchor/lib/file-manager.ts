@@ -9,6 +9,53 @@ export interface GillFileConfig {
   network?: 'devnet' | 'mainnet' | 'testnet'
 }
 
+function anchorSectionRange(lines: string[], section: string): [number, number] {
+  const start = lines.findIndex((line) => line.trim().replace(/\s*#.*$/, '') === `[${section}]`)
+  let end = start + 1
+  while (end < lines.length && !lines[end].trim().startsWith('[')) end++
+  return [start, end]
+}
+
+function updateAnchorSection(content: string, section: string, values: Record<string, string>): string {
+  const lines = content.split(/\r?\n/)
+  let [start, end] = anchorSectionRange(lines, section)
+  if (start < 0) {
+    lines.push('', `[${section}]`)
+    start = lines.length - 1
+    end = lines.length
+  }
+  for (const [key, value] of Object.entries(values)) {
+    const index = lines.findIndex((line, i) => i > start && i < end && new RegExp(`^\\s*${key}\\s*=`).test(line))
+    const entry = `${key} = ${JSON.stringify(value)}`
+    if (index >= 0) lines[index] = entry
+    else {
+      lines.splice(end, 0, entry)
+      end++
+    }
+  }
+  return lines.join('\n')
+}
+
+export function getGillConfiguredProgramId(config: GillFileConfig = {}): string | null {
+  const { workingDir = 'anchor', network = 'devnet' } = config
+  try {
+    const lines = fs.readFileSync(path.join(workingDir, 'Anchor.toml'), 'utf8').split(/\r?\n/)
+    const [start, end] = anchorSectionRange(lines, `programs.${network}`)
+    if (start < 0) return null
+    const entry = lines.slice(start + 1, end).find((line) => /^\s*solana_distributor\s*=/.test(line))
+    return entry?.match(/^\s*solana_distributor\s*=\s*["']([^"']+)["']/)?.[1] ?? null
+  } catch {
+    return null
+  }
+}
+
+export function updateGillAnchorProgramId(programId: string | Address, config: GillFileConfig = {}): void {
+  const { workingDir = 'anchor', network = 'devnet' } = config
+  const file = path.join(workingDir, 'Anchor.toml')
+  const content = fs.readFileSync(file, 'utf8')
+  fs.writeFileSync(file, updateAnchorSection(content, `programs.${network}`, { solana_distributor: programId }))
+}
+
 export function updateGillAnchorConfig(
   deployWallet: GillWalletInfo,
   programId: string | Address,
@@ -21,29 +68,8 @@ export function updateGillAnchorConfig(
   const anchorTomlPath = path.join(workingDir, 'Anchor.toml')
   let anchorToml = fs.readFileSync(anchorTomlPath, 'utf8')
   const network = config.network || 'devnet'
-  const updateSection = (section: string, values: Record<string, string>) => {
-    const lines = anchorToml.split(/\r?\n/)
-    const header = `[${section}]`
-    let start = lines.findIndex((line) => line.trim() === header)
-    if (start < 0) {
-      lines.push('', header)
-      start = lines.length - 1
-    }
-    let end = start + 1
-    while (end < lines.length && !lines[end].trim().startsWith('[')) end++
-    for (const [key, value] of Object.entries(values)) {
-      const index = lines.findIndex((line, i) => i > start && i < end && line.trim().startsWith(`${key} =`))
-      const entry = `${key} = ${JSON.stringify(value)}`
-      if (index >= 0) lines[index] = entry
-      else {
-        lines.splice(end, 0, entry)
-        end++
-      }
-    }
-    anchorToml = lines.join('\n')
-  }
-  updateSection(`programs.${network}`, { solana_distributor: programIdStr })
-  updateSection('provider', { cluster: network, wallet: deployWallet.keypairFile })
+  anchorToml = updateAnchorSection(anchorToml, `programs.${network}`, { solana_distributor: programIdStr })
+  anchorToml = updateAnchorSection(anchorToml, 'provider', { cluster: network, wallet: deployWallet.keypairFile })
   fs.writeFileSync(anchorTomlPath, anchorToml)
   console.log(`✅ Updated ${anchorTomlPath} to use ${deployWallet.keypairFile} (Kit)`)
 }
@@ -350,11 +376,8 @@ export function getGillCurrentProgramId(config: GillFileConfig = {}): string {
   const { workingDir = 'anchor' } = config
 
   try {
-    const anchorContent = fs.readFileSync(`${workingDir}/Anchor.toml`, 'utf8')
-    const match = anchorContent.match(/solana_distributor = "([^"]+)"/)
-    if (match) {
-      return match[1]
-    }
+    const configuredId = getGillConfiguredProgramId(config)
+    if (configuredId) return configuredId
 
     const libContent = fs.readFileSync(`${workingDir}/programs/solana-distributor/src/lib.rs`, 'utf8')
     const libMatch = libContent.match(/declare_id!\("([^"]+)"\);/)

@@ -1,6 +1,7 @@
 import { execFileSync, execSync } from 'child_process'
 import * as fs from 'fs'
 import type { GillDeploymentResult } from './types'
+import { getGillConfiguredProgramId, updateGillAnchorProgramId } from './file-manager'
 
 import { address, type Address } from '@solana/kit'
 
@@ -83,14 +84,7 @@ export function getGillDeployedProgramId(config: GillBuildConfig = {}): string |
 
 export function getGillAnchorProgramId(config: GillBuildConfig = {}): string | null {
   const { workingDir = '.' } = config
-
-  try {
-    const anchorContent = fs.readFileSync(`${workingDir}/Anchor.toml`, 'utf8')
-    const match = anchorContent.match(/solana_distributor = "([^"]+)"/)
-    return match ? match[1] : null
-  } catch {
-    return null
-  }
+  return getGillConfiguredProgramId({ ...config, workingDir })
 }
 
 export async function buildGillProgramIfNeeded(
@@ -223,10 +217,7 @@ export async function ensureGillProgramIdConsistency(
   }
 
   try {
-    const anchorPath = `${workingDir}/Anchor.toml`
-    let anchorContent = fs.readFileSync(anchorPath, 'utf8')
-    anchorContent = anchorContent.replace(/solana_distributor = ".*"/, `solana_distributor = "${newProgramId}"`)
-    fs.writeFileSync(anchorPath, anchorContent)
+    updateGillAnchorProgramId(newProgramId, { ...config, workingDir })
     console.log('   ✅ Updated Anchor.toml')
   } catch (error) {
     console.error('   ❌ Failed to update Anchor.toml:', error)

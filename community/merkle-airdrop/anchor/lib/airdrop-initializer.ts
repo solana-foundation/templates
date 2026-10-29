@@ -28,7 +28,7 @@ export async function checkGillPreRequisites(
   const issues: string[] = []
   let needsBuild = false
 
-  const buildConfig: GillBuildConfig = { workingDir }
+  const buildConfig: GillBuildConfig = { workingDir, network: config.network }
 
   const status = getGillProgramStatus(buildConfig)
   if (!status.built) {
@@ -66,7 +66,7 @@ export async function fixGillInitializationIssues(config: GillInitializerConfig 
     console.log(`⚠️  Found issues: ${issues.join(', ')} (Kit)`)
 
     if (needsBuild) {
-      const buildConfig: GillBuildConfig = { workingDir, verbose }
+      const buildConfig: GillBuildConfig = { workingDir, verbose, network: config.network }
 
       const consistencyFixed = await ensureGillProgramIdConsistency(undefined, buildConfig)
       if (!consistencyFixed) {
@@ -133,7 +133,7 @@ export async function initializeGillAirdrop(
 
     console.log(`👤 Authority: ${authoritySigner.address} (Kit)`)
 
-    const buildConfig: GillBuildConfig = { workingDir }
+    const buildConfig: GillBuildConfig = { workingDir, network }
     const status = getGillProgramStatus(buildConfig)
 
     if (!status.programId) {
@@ -148,7 +148,7 @@ export async function initializeGillAirdrop(
 
     // Ensure Codama client is in sync with current program ID
     console.log('🔄 Checking Codama client sync... (Kit)')
-    const codamaSynced = await ensureGillCodamaSync({ workingDir })
+    const codamaSynced = await ensureGillCodamaSync({ workingDir, network })
     if (!codamaSynced) {
       return { success: false, error: 'Codama client is not synchronized. Regenerate the client and retry explicitly.' }
     }
