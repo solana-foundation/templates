@@ -1,0 +1,229 @@
+/*
+ * Hand-written CSS, no framework and no build step beyond Vite's.
+ *
+ * The theme follows the operating system through `color-scheme` and one `prefers-color-scheme`
+ * block. `public/favicon.svg` serves as both the browser tab icon and the header mark: the tab uses
+ * the `prefers-color-scheme` switch inside that file, and the header masks the same file and paints
+ * it in `currentColor`, so one asset covers both.
+ */
+
+:root {
+  --background: oklch(1 0 0);
+  --border: oklch(0.922 0 0);
+  --card: oklch(1 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --foreground: oklch(0.145 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --radius: 0.625rem;
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.145 0 0);
+    --border: oklch(1 0 0 / 12%);
+    --card: oklch(0.205 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/*
+ * `render` shows and hides sections with the `hidden` property, and the browser's own
+ * `[hidden] { display: none }` is a low-priority rule that any `display` declared below would beat.
+ * Restating it here is what keeps a `display: flex` card from ignoring `hidden` entirely.
+ */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  line-height: 1.5;
+  margin: 0 auto;
+  max-width: 42rem;
+  padding: 1.5rem 1rem 4rem;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.header h1 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+  margin-right: auto;
+}
+
+.logo {
+  background-color: var(--foreground);
+  block-size: 1.5rem;
+  display: block;
+  inline-size: 1.5rem;
+  mask: url('/favicon.svg') center / contain no-repeat;
+}
+
+.badge {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  padding: 0.125rem 0.625rem;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+}
+
+.card h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.fields {
+  display: grid;
+  gap: 0.25rem 1rem;
+  grid-template-columns: auto 1fr;
+  margin: 0;
+}
+
+.fields dt {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  padding-top: 0.2rem;
+}
+
+.fields dd {
+  margin: 0;
+  min-width: 0;
+}
+
+.balance {
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--muted-foreground);
+  text-underline-offset: 0.25em;
+  word-break: break-all;
+}
+
+/* A visible label for a text input. A placeholder is not one: it disappears as soon as you type. */
+.field-label {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  margin-bottom: -0.375rem;
+}
+
+.muted {
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  margin: 0;
+}
+
+.result,
+.error {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  margin: 0;
+  word-break: break-all;
+}
+
+.error {
+  color: var(--destructive);
+  font-family: inherit;
+}
+
+.button {
+  background: var(--primary);
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius) - 2px);
+  color: var(--primary-foreground);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.4rem 0.9rem;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.button-secondary {
+  align-items: center;
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--foreground);
+  display: inline-flex;
+  gap: 0.5rem;
+}
+
+.button-secondary img {
+  block-size: 1.125rem;
+  border-radius: 0.25rem;
+  inline-size: 1.125rem;
+}
+
+input {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  color: inherit;
+  flex: 1 1 12rem;
+  font: inherit;
+  font-size: 0.875rem;
+  min-width: 0;
+  padding: 0.4rem 0.7rem;
+}

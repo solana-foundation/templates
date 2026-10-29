@@ -1,0 +1,84 @@
+{
+  "name": "expo-kit-uniwind",
+  "displayName": "Expo Kit Uniwind example",
+  "description": "A template for building a Solana mobile app with Expo, React Native, Solana Kit, and Uniwind.",
+  "usecase": "Mobile",
+  "keywords": [
+    "expo",
+    "mobile-wallet-adapter",
+    "react-native",
+    "solana-kit",
+    "tailwind",
+    "uniwind"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Verify your Android development environment:",
+      "+npx -y solana-mobile@latest doctor",
+      "Build the Android app locally:",
+      "+{pm} run android"
+    ],
+    "rename": {
+      "Expo Kit Uniwind": {
+        "paths": [
+          "src/app"
+        ],
+        "to": "{{name}}"
+      }
+    },
+    "skills": [
+      "https://github.com/solana-foundation/solana-dev-skill",
+      "https://github.com/solana-mobile/solana-mobile-dev-skill"
+    ],
+    "versions": {
+      "adb": "33.0.0"
+    }
+  },
+  "main": "./index.js",
+  "version": "1.0.0",
+  "scripts": {
+    "android": "expo run:android",
+    "android:build": "expo prebuild -p android",
+    "build": "tsc --noEmit && npm run android:build",
+    "ci": "tsc --noEmit && npm run lint:check && npm run format:check && npm run android:build",
+    "dev": "expo start --clear --dev-client --reset-cache",
+    "doctor": "npx -y expo-doctor@latest",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "ios": "expo run:ios",
+    "lint": "expo lint --fix",
+    "lint:check": "expo lint",
+    "start": "expo start",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "~58.0.15",
+    "@solana/kit": "^8.4.0",
+    "@wallet-ui/react-native-kit": "^4.4.1",
+    "expo": "~58.0.20",
+    "expo-constants": "~58.0.13",
+    "expo-dev-client": "~58.0.16",
+    "expo-linking": "~58.0.14",
+    "expo-router": "~58.0.27",
+    "expo-status-bar": "~58.0.4",
+    "expo-system-ui": "~58.0.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-native": "0.88.0",
+    "react-native-nitro-modules": "^0.36.5",
+    "react-native-quick-base64": "^3.0.1",
+    "react-native-quick-crypto": "^1.1.6",
+    "react-native-safe-area-context": "~5.10.1",
+    "react-native-screens": "~4.30.0",
+    "tailwindcss": "~4.1.16",
+    "uniwind": "~1.13.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.3.0",
+    "eslint": "^9.25.0",
+    "eslint-config-expo": "~58.0.4",
+    "prettier": "^3.9.6",
+    "typescript": "~6.0.3"
+  },
+  "private": true
+}

@@ -1,0 +1,92 @@
+{
+  "name": "react-kit-shadcn",
+  "displayName": "React Kit shadcn/ui example",
+  "description": "A template for building a Solana web app with React, Vite, shadcn/ui, Solana Kit, and Mobile Wallet Adapter.",
+  "usecase": "Mobile",
+  "keywords": [
+    "mobile-wallet-adapter",
+    "react",
+    "shadcn",
+    "solana-kit",
+    "tailwind",
+    "vite",
+    "wallet"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Accept the terms for the Solana Mobile relay this app uses:",
+      "+https://docs.solanamobile.com/solana-mobile-stack/seeker-connect-quickstart",
+      "",
+      "Start the development server:",
+      "+{pm} run dev"
+    ],
+    "rename": {
+      "React Kit Shadcn": {
+        "paths": [
+          "."
+        ],
+        "to": "{{name}}"
+      }
+    },
+    "skills": [
+      "https://github.com/solana-foundation/solana-dev-skill",
+      "https://github.com/solana-mobile/solana-mobile-dev-skill"
+    ]
+  },
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc -b && vite build",
+    "ci": "npm run lint:check && npm run format:check && npm run build",
+    "dev": "vite",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@radix-ui/react-dropdown-menu": "^2.1.24",
+    "@radix-ui/react-select": "^2.3.7",
+    "@radix-ui/react-separator": "^1.1.15",
+    "@radix-ui/react-slot": "^1.3.3",
+    "@solana-mobile/seeker-connect-ui": "^0.1.2",
+    "@solana-mobile/seeker-connect-wallet-standard": "^0.1.2",
+    "@solana-mobile/wallet-standard-mobile": "^0.7.0",
+    "@solana-program/memo": "^0.13.0",
+    "@solana/kit": "^8.4.0",
+    "@solana/kit-plugin-rpc": "^0.19.0",
+    "@solana/kit-plugin-wallet": "^0.21.0",
+    "@solana/react": "^8.4.0",
+    "@solana/wallet-standard-chains": "^1.1.2",
+    "@solana/wallet-standard-util": "^1.1.3",
+    "@tanstack/react-query": "^5.102.6",
+    "@wallet-standard/react": "^1.0.3",
+    "@wallet-standard/ui": "^1.0.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.34.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.3.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "@vitejs/plugin-react": "^6.1.0",
+    "eslint": "^10.9.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.5",
+    "globals": "^17.11.0",
+    "prettier": "^3.9.6",
+    "tailwindcss": "^4.3.3",
+    "tw-animate-css": "^1.4.0",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.68.0",
+    "vite": "^8.2.2"
+  },
+  "private": true
+}

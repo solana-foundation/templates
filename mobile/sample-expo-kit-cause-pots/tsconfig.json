@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@project/anchor": ["./anchor/src"]
+    }
+  },
+  "exclude": ["anchor", "node_modules"]
+}

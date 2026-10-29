@@ -78,53 +78,117 @@ Kit Templates (using @solana/kit)
 
 Solana Mobile Templates
 
-### [kit-expo-minimal](mobile/kit-expo-minimal)
+### [expo-kit-anchor](mobile/expo-kit-anchor)
 
-`gh:solana-foundation/templates/mobile/kit-expo-minimal`
+`gh:solana-foundation/templates/mobile/expo-kit-anchor`
+
+> A template for building a Solana mobile app with Expo, React Native, Solana Kit, Anchor, and Uniwind.
+
+`anchor` `expo` `mobile-wallet-adapter` `react-native` `solana-kit` `tailwind` `uniwind`
+
+### [expo-kit-minimal](mobile/expo-kit-minimal)
+
+`gh:solana-foundation/templates/mobile/expo-kit-minimal`
 
 > A minimal template for building a Solana mobile app with Expo, React Native, and Solana Kit.
 
 `expo` `mobile-wallet-adapter` `react-native` `solana-kit`
 
-### [kit-expo-privy](mobile/kit-expo-privy)
+### [expo-kit-pinocchio](mobile/expo-kit-pinocchio)
 
-`gh:solana-foundation/templates/mobile/kit-expo-privy`
+`gh:solana-foundation/templates/mobile/expo-kit-pinocchio`
 
-> A Solana mobile app with Expo, Privy auth, Solana Kit, and Uniwind.
+> A template for building a Solana mobile app with Expo, React Native, Solana Kit, Pinocchio, and Uniwind.
 
-`expo` `privy` `react-native` `solana-kit` `tailwind` `uniwind`
+`expo` `mobile-wallet-adapter` `pinocchio` `react-native` `solana-kit` `tailwind` `uniwind`
 
-### [kit-expo-uniwind](mobile/kit-expo-uniwind)
+### [expo-kit-uniwind](mobile/expo-kit-uniwind)
 
-`gh:solana-foundation/templates/mobile/kit-expo-uniwind`
+`gh:solana-foundation/templates/mobile/expo-kit-uniwind`
 
 > A template for building a Solana mobile app with Expo, React Native, Solana Kit, and Uniwind.
 
-`expo` `mobile-wallet-adapter` `react-native` `solana-kit` `uniwind` `tailwind`
+`expo` `mobile-wallet-adapter` `react-native` `solana-kit` `tailwind` `uniwind`
 
-### [web3js-expo](mobile/web3js-expo)
+### [expo-kit-wallet](mobile/expo-kit-wallet)
 
-`gh:solana-foundation/templates/mobile/web3js-expo`
+`gh:solana-foundation/templates/mobile/expo-kit-wallet`
 
-> A template for building a Solana mobile app with Expo and React Native.
+> A Solana mobile app template with Expo, React Native, Solana Kit, Mobile Wallet Adapter actions, and Uniwind.
 
-`expo` `mobile-wallet-adapter` `react-native` `solana-web3js`
+`expo` `mobile-wallet-adapter` `react-native` `solana-kit` `tailwind` `uniwind` `wallet` `wallet-ui`
 
-### [web3js-expo-minimal](mobile/web3js-expo-minimal)
+### [expo-web3js-minimal](mobile/expo-web3js-minimal)
 
-`gh:solana-foundation/templates/mobile/web3js-expo-minimal`
+`gh:solana-foundation/templates/mobile/expo-web3js-minimal`
 
 > A minimal template for building a Solana mobile app with Expo and React Native.
 
 `expo` `mobile-wallet-adapter` `react-native` `solana-web3js`
 
-### [web3js-expo-paper](mobile/web3js-expo-paper)
+### [expo-web3js-paper](mobile/expo-web3js-paper)
 
-`gh:solana-foundation/templates/mobile/web3js-expo-paper`
+`gh:solana-foundation/templates/mobile/expo-web3js-paper`
 
 > A template for building a Solana mobile app with Expo and React Native Paper.
 
 `expo` `mobile-wallet-adapter` `react-native` `react-native-paper` `solana-web3js`
+
+### [expo-web3js-wallet](mobile/expo-web3js-wallet)
+
+`gh:solana-foundation/templates/mobile/expo-web3js-wallet`
+
+> A wallet template for building a Solana mobile app with Expo, React Native, and Web3.js.
+
+`expo` `mobile-wallet-adapter` `react-native` `solana-web3js` `wallet` `wallet-ui`
+
+### [kotlin-compose-minimal](mobile/kotlin-compose-minimal)
+
+`gh:solana-foundation/templates/mobile/kotlin-compose-minimal`
+
+> A minimal native Android template for building a Solana mobile app with Kotlin, Jetpack Compose, and Seeker Connect.
+
+`android` `jetpack-compose` `kotlin` `mobile-wallet-adapter` `seeker-connect` `solana`
+
+### [react-kit-shadcn](mobile/react-kit-shadcn)
+
+`gh:solana-foundation/templates/mobile/react-kit-shadcn`
+
+> A template for building a Solana web app with React, Vite, shadcn/ui, Solana Kit, and Mobile Wallet Adapter.
+
+`mobile-wallet-adapter` `react` `shadcn` `solana-kit` `tailwind` `vite` `wallet`
+
+### [sample-expo-kit-cause-pots](mobile/sample-expo-kit-cause-pots)
+
+`gh:solana-foundation/templates/mobile/sample-expo-kit-cause-pots`
+
+> A sample collaborative savings app with time-locked, multi-signature pots, built with Expo, React Native, Solana Kit, Anchor, and Uniwind.
+
+`anchor` `expo` `mobile-wallet-adapter` `react-native` `sample` `solana-kit` `tailwind` `uniwind`
+
+### [sample-expo-kit-privy](mobile/sample-expo-kit-privy)
+
+`gh:solana-foundation/templates/mobile/sample-expo-kit-privy`
+
+> A sample Solana mobile app with Expo, Privy auth, Solana Kit, and Uniwind.
+
+`expo` `privy` `react-native` `sample` `solana-kit` `tailwind` `uniwind`
+
+### [sample-react-kit-privy](mobile/sample-react-kit-privy)
+
+`gh:solana-foundation/templates/mobile/sample-react-kit-privy`
+
+> A sample Solana web app with React, Privy auth, Solana Kit, and Mobile Wallet Adapter.
+
+`mobile-wallet-adapter` `privy` `react` `sample` `shadcn` `solana-kit` `tailwind` `vite` `wallet`
+
+### [typescript-kit-minimal](mobile/typescript-kit-minimal)
+
+`gh:solana-foundation/templates/mobile/typescript-kit-minimal`
+
+> A minimal template for building a Solana web app with plain TypeScript, Vite, Solana Kit, and Mobile Wallet Adapter — no framework.
+
+`mobile-wallet-adapter` `solana-kit` `typescript` `vite` `wallet` `wallet-standard`
 
 # Web3.js Templates
 

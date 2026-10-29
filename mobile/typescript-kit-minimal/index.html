@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TypeScript Kit Minimal</title>
+  </head>
+  <body>
+    <!--
+      The whole interface is here, static, with an `id` on everything the app writes to. There is no
+      root element for a framework to take over and no markup built in JavaScript: `src/view.ts`
+      looks these elements up once and then only sets text, `hidden` and `disabled` on them.
+
+      The one exception is `#wallet-list`, which is filled at runtime because the list of wallets is
+      not known until they register themselves.
+    -->
+    <header class="header">
+      <span aria-hidden="true" class="logo"></span>
+      <h1>TypeScript Kit Minimal</h1>
+      <span class="badge" id="cluster-label">Devnet</span>
+      <button class="button" hidden id="disconnect" type="button">Disconnect</button>
+    </header>
+
+    <main>
+      <section class="card" id="connect-card">
+        <h2>Connect a wallet</h2>
+        <p class="muted" id="connect-description">
+          Every wallet below comes from the wallet-standard registry. In Chrome on Android that includes any wallet
+          installed on this device, over Mobile Wallet Adapter.
+        </p>
+        <div class="row" id="wallet-list"></div>
+        <p class="error" hidden id="connect-error"></p>
+        <!--
+          Seeker Connect has two entry points: the wallet-standard registration that puts it in the
+          list above, and this branded button. Both drive the same connection. The element is a Lit
+          custom element with its own Shadow DOM, so in a page with no framework it is just a tag —
+          which is the whole reason it can appear here at all.
+        -->
+        <seeker-connect-button id="seeker-connect" variant="connect"></seeker-connect-button>
+      </section>
+
+      <section class="card" hidden id="account-card">
+        <h2>Account</h2>
+        <dl class="fields">
+          <dt>Address</dt>
+          <dd><a id="account-address" rel="noreferrer" target="_blank"></a></dd>
+          <dt>Balance</dt>
+          <dd><span class="balance" id="account-balance">—</span></dd>
+        </dl>
+        <p class="error" hidden id="balance-error"></p>
+        <div class="row" hidden id="fund-account">
+          <button class="button" id="airdrop" type="button">Airdrop 1 SOL</button>
+          <a class="muted" id="faucet-link" rel="noreferrer" target="_blank">or use the web faucet</a>
+        </div>
+        <p class="result" hidden id="airdrop-result">
+          <a id="airdrop-signature" rel="noreferrer" target="_blank"></a>
+        </p>
+        <p class="error" hidden id="airdrop-error"></p>
+      </section>
+
+      <section class="card" hidden id="sign-message-card">
+        <h2>Sign a message</h2>
+        <p class="muted">Signs arbitrary bytes. Nothing is sent to the network, and no fee is paid.</p>
+        <label class="field-label" for="sign-message-input">Message to sign</label>
+        <div class="row">
+          <input id="sign-message-input" placeholder="Message to sign" value="Hello from Solana Kit" />
+          <button class="button" id="sign-message" type="button">Sign message</button>
+        </div>
+        <p class="result" hidden id="sign-message-result"></p>
+        <p class="error" hidden id="sign-message-error"></p>
+      </section>
+
+      <section class="card" hidden id="send-memo-card">
+        <h2>Send a transaction</h2>
+        <p class="muted">
+          Builds a Memo Program instruction with Solana Kit, then hands the compiled bytes to the wallet to sign and
+          submit.
+        </p>
+        <label class="field-label" for="send-memo-input">Memo text</label>
+        <div class="row">
+          <input id="send-memo-input" placeholder="Memo text" value="gm from Solana Kit" />
+          <button class="button" id="send-memo" type="button">Send memo</button>
+        </div>
+        <p class="result" hidden id="send-memo-result">
+          <a id="send-memo-signature" rel="noreferrer" target="_blank"></a>
+        </p>
+        <p class="error" hidden id="send-memo-error"></p>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
