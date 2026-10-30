@@ -37,6 +37,7 @@ beforeEach(() => {
 })
 afterEach(() => {
   cleanup()
+  vi.useRealTimers()
   vi.unstubAllEnvs()
 })
 
@@ -109,6 +110,7 @@ test('RPC errors are shown instead of leaving checkout silently pending', async 
 })
 
 test('recovers the same reference after a temporary RPC failure', async () => {
+  vi.useFakeTimers()
   mocks.signatures
     .mockRejectedValueOnce(new Error('RPC unavailable'))
     .mockResolvedValue([{ signature: 'payment', err: null }])
@@ -117,15 +119,25 @@ test('recovers the same reference after a temporary RPC failure', async () => {
   await act(async () => {
     await result.current.openCheckout(1)
   })
-  await waitFor(() => expect(result.current.error?.message).toBe('RPC unavailable'))
+  expect(result.current.error?.message).toBe('RPC unavailable')
   const reference = result.current.paymentRequest?.reference
-  await waitFor(() => expect(result.current.status).toBe('confirmed'), { timeout: 6000 })
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(3999)
+  })
+  expect(mocks.signatures).toHaveBeenCalledTimes(1)
+  expect(result.current.status).toBe('unavailable')
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(1)
+  })
+  expect(result.current.status).toBe('confirmed')
+  expect(mocks.signatures).toHaveBeenCalledTimes(2)
   expect(result.current.paymentRequest?.reference).toBe(reference)
   expect(result.current.error).toBeNull()
   expect(onPaymentVerified).toHaveBeenCalledTimes(1)
 })
 
 test('keeps the checkout visible through RPC trouble and confirms after retrying', async () => {
+  vi.useFakeTimers()
   mocks.signatures
     .mockRejectedValueOnce(new Error('RPC unavailable'))
     .mockResolvedValue([{ signature: 'payment', err: null }])
@@ -155,14 +167,19 @@ test('keeps the checkout visible through RPC trouble and confirms after retrying
     )
   }
   render(<Checkout />)
-  fireEvent.click(screen.getByRole('button', { name: 'Open checkout' }))
-  await waitFor(() => expect(screen.getByRole('alert').textContent).toContain('Retrying automatically'))
+  await act(async () => {
+    fireEvent.click(screen.getByRole('button', { name: 'Open checkout' }))
+  })
+  expect(screen.getByRole('alert').textContent).toContain('Retrying automatically')
   expect(screen.queryByText('Payment Failed')).toBeNull()
   expect(screen.getByLabelText('Payment QR code')).toBeTruthy()
   expect(screen.getByText('11111111111111111111111111111114')).toBeTruthy()
   expect(screen.getByText('Connection issue')).toBeTruthy()
   expect(screen.queryByText('Verifying transaction...')).toBeNull()
-  await waitFor(() => expect(screen.getByText('Payment Confirmed!')).toBeTruthy(), { timeout: 6000 })
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(4000)
+  })
+  expect(screen.getByText('Payment Confirmed!')).toBeTruthy()
   expect(screen.queryByRole('alert')).toBeNull()
   expect(mocks.generate).toHaveBeenCalledTimes(1)
   expect(onPaymentVerified).toHaveBeenCalledTimes(1)
