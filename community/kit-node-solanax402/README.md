@@ -404,6 +404,7 @@ The `ecosystem.config.cjs` file configures PM2 process management:
 - Stop testing and inspect the persistent nonce database and logs. Restarting does not reset SQLite state.
 - A nonce is reserved atomically before broadcasting a real transaction. Concurrent settlements cannot both send it.
 - Submission errors and timeouts leave the reservation in place: reconcile the saved signature on-chain instead of automatically retrying or clearing the database.
+- If the settlement HTTP request fails, the merchant makes one bounded, read-only nonce status lookup to recover the reserved signature. This does not confirm payment or resubmit it. If status is unavailable or no signature is saved yet, the result remains uncertain; do not send another payment.
 
 **Transaction fails on-chain**
 

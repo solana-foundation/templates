@@ -34,7 +34,7 @@ async function listen(app) {
   };
 }
 
-test('HTTP flow co-signs V1, confirms and rejects replay using only a local RPC stub', async () => {
+test('HTTP flow co-signs V1, confirms and rejects replay using only a local RPC stub', async (t) => {
   const clientSecret = nacl.sign.keyPair().secretKey;
   const facilitatorSecret = nacl.sign.keyPair().secretKey;
   const client = await createKeyPairSignerFromBytes(clientSecret);
@@ -52,10 +52,14 @@ test('HTTP flow co-signs V1, confirms and rejects replay using only a local RPC 
   await db.initialize();
   const servers = [];
   let broadcasts = 0;
+  let rpcFailure = null;
   const rpcApp = express();
   rpcApp.use(express.json());
   rpcApp.post('/', (req, res) => {
     const { method, params, id } = req.body;
+    if (method === rpcFailure) {
+      return res.json({ jsonrpc: '2.0', id, error: { code: -32603, message: 'Injected RPC failure' } });
+    }
     let result;
     if (method === 'getBalance') result = { context: { slot: 1 }, value: 100000000 };
     else if (method === 'getSignatureStatuses')
@@ -206,6 +210,7 @@ test('HTTP flow co-signs V1, confirms and rejects replay using only a local RPC 
       signedTransaction: getBase64EncodedWireTransaction(transaction),
       signature: utils.signStructuredData(loggingPayload.createStructuredData(), bs58.encode(clientSecret)),
     });
+    const storeTransaction = db.storeTransaction.bind(db);
     db.storeTransaction = async () => {
       throw new Error('Database write unavailable');
     };
@@ -219,6 +224,38 @@ test('HTTP flow co-signs V1, confirms and rejects replay using only a local RPC 
     assert.equal(loggingResult.transactionSignature, timeoutSignature);
     assert.equal((await db.getNonceDetails(loggingPayload.nonce)).transactionSignature, timeoutSignature);
     assert.equal(broadcasts, 1);
+    db.storeTransaction = storeTransaction;
+    for (const method of ['sendTransaction', 'getSignatureStatuses']) {
+      await t.test(`real submission path retains its reserved signature when ${method} fails`, async () => {
+        rpcFailure = method;
+        const failurePayload = AuthorizationPayload.create({
+          amount: expected.amount,
+          recipient,
+          resourceId: '/resource',
+          resourceUrl: '/resource',
+          nonce: `rpc-${method}`,
+        });
+        const failurePayment = new PaymentRequest({
+          payload: failurePayload,
+          clientPublicKey: client.address,
+          signedTransaction: getBase64EncodedWireTransaction(transaction),
+          signature: utils.signStructuredData(failurePayload.createStructuredData(), bs58.encode(clientSecret)),
+        });
+        // Use the real signing/reservation/submission method, not the timeout stub above.
+        utils.submitSponsoredTransaction = SolanaUtils.prototype.submitSponsoredTransaction;
+        const before = broadcasts;
+        const response = await fetch(`${merchant.url}/resource`, {
+          headers: { 'X-Payment': failurePayment.serialize() },
+        });
+        assert.equal(response.status, 402);
+        const body = await response.json();
+        assert.match(body.message, /Injected RPC failure/);
+        assert.equal(body.transactionSignature, reservedSignature);
+        assert.equal((await db.getNonceDetails(failurePayload.nonce)).transactionSignature, reservedSignature);
+        assert.equal(broadcasts, before + (method === 'getSignatureStatuses' ? 1 : 0));
+        rpcFailure = null;
+      });
+    }
   } finally {
     await Promise.all(servers.reverse().map((server) => server.close()));
     await db.close();
