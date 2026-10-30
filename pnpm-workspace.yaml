@@ -8,6 +8,8 @@ minimumReleaseAgeExclude:
   - '@solana/react-hooks'
   - '@solana/kit'
   - '@solana/kit-plugin-wallet'
+  - '@solana/surfpool'
+  - '@solana/surfpool-*'
   - '@solana-program/system'
   - '@solana-program/token'
   - '@solana-program/memo'
@@ -42,4 +44,3 @@ packages:
   - '!community/lazorkit-starter-expo'
   - kit/*
   - web3js/*
-  - web3js/legacy/*

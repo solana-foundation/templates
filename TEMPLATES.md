@@ -146,58 +146,6 @@ Templates using @solana/web3.js v3 and @solana/wallet-adapter
 
 `react` `solana-web3js` `spl-token` `tailwind` `typescript` `vite` `wallet-adapter`
 
-# Web3.js Templates (legacy)
-
-Templates using @solana/web3.js v1 and the legacy wallet adapter packages
-
-### [web3js-next-tailwind](web3js/legacy/web3js-next-tailwind)
-
-`gh:solana-foundation/templates/web3js/legacy/web3js-next-tailwind`
-
-> Next.js, Tailwind, @solana/web3.js, Wallet Adapter
-
-`nextjs` `react` `solana-web3js` `tailwind` `typescript` `wallet-adapter`
-
-### [web3js-next-tailwind-basic](web3js/legacy/web3js-next-tailwind-basic)
-
-`gh:solana-foundation/templates/web3js/legacy/web3js-next-tailwind-basic`
-
-> Next.js, Tailwind, @solana/web3.js, Wallet Adapter, basic Anchor program
-
-`anchor-basic` `nextjs` `react` `solana-web3js` `tailwind` `typescript` `wallet-adapter`
-
-### [web3js-next-tailwind-counter](web3js/legacy/web3js-next-tailwind-counter)
-
-`gh:solana-foundation/templates/web3js/legacy/web3js-next-tailwind-counter`
-
-> Next.js, Tailwind, @solana/web3.js, Wallet Adapter, Anchor Counter program
-
-`anchor-counter` `nextjs` `react` `solana-web3js` `tailwind` `typescript` `wallet-adapter`
-
-### [web3js-react-vite-tailwind](web3js/legacy/web3js-react-vite-tailwind)
-
-`gh:solana-foundation/templates/web3js/legacy/web3js-react-vite-tailwind`
-
-> React + Vite, Tailwind, @solana/web3.js, Wallet Adapter
-
-`react` `solana-web3js` `tailwind` `typescript` `vite` `wallet-adapter`
-
-### [web3js-react-vite-tailwind-basic](web3js/legacy/web3js-react-vite-tailwind-basic)
-
-`gh:solana-foundation/templates/web3js/legacy/web3js-react-vite-tailwind-basic`
-
-> React + Vite, Tailwind, @solana/web3.js, Wallet Adapter, basic Anchor program
-
-`anchor-basic` `react` `solana-web3js` `tailwind` `typescript` `vite` `wallet-adapter`
-
-### [web3js-react-vite-tailwind-counter](web3js/legacy/web3js-react-vite-tailwind-counter)
-
-`gh:solana-foundation/templates/web3js/legacy/web3js-react-vite-tailwind-counter`
-
-> React + Vite, Tailwind, @solana/web3.js, Wallet Adapter, Anchor Counter program
-
-`anchor-counter` `web3js` `react` `solana-web3js` `tailwind` `typescript` `vite` `wallet-adapter`
-
 # Community Templates
 
 Templates maintained by the Solana community
