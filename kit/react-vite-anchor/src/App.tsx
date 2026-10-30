@@ -1,11 +1,48 @@
-import { useWalletConnection } from "@solana/react-hooks";
+import {
+  useConnect,
+  useConnectedWallet,
+  useDisconnect,
+  useIsWalletReady,
+  useWallets,
+} from "@solana/kit-plugin-wallet/react";
+import { useClient } from "@solana/react";
+import type { AppClient } from "./solana-client";
 import { VaultCard } from "./VaultCard";
+import { getWalletForHandle } from "@wallet-standard/ui-registry";
+
+const walletIds = new WeakMap<object, number>();
+let nextWalletId = 0;
+function walletId(wallet: object) {
+  let id = walletIds.get(wallet);
+  if (id === undefined) {
+    id = nextWalletId++;
+    walletIds.set(wallet, id);
+  }
+  return id;
+}
 
 export default function App() {
-  const { connectors, connect, disconnect, wallet, status } =
-    useWalletConnection();
+  const client = useClient<AppClient>();
+  const wallets = useWallets(client);
+  const connectedWallet = useConnectedWallet(client);
+  const isWalletReady = useIsWalletReady(client);
+  const {
+    dispatchAsync: connect,
+    error: connectError,
+    isRunning: isConnecting,
+    reset: resetConnect,
+  } = useConnect(client);
+  const {
+    dispatchAsync: disconnect,
+    error: disconnectError,
+    isRunning: isDisconnecting,
+    reset: resetDisconnect,
+  } = useDisconnect(client);
 
-  const address = wallet?.account.address.toString();
+  const address = connectedWallet?.account.address;
+  const status = connectedWallet ? "connected" : "disconnected";
+  const walletError = connectError ?? disconnectError;
+  const isBusy = isConnecting || isDisconnecting;
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-bg1 text-foreground">
@@ -18,10 +55,9 @@ export default function App() {
             Ship a Solana dapp fast
           </h1>
           <p className="max-w-3xl text-base leading-relaxed text-muted">
-            Drop in <code className="font-mono">@solana/react-hooks</code>, wrap
-            your tree once, and you get wallet connect/disconnect plus
-            ready-to-use hooks for balances and transactions—no manual RPC
-            wiring.
+            Drop in <code className="font-mono">@solana/kit</code>, add the Kit
+            wallet and RPC plugins, and you get wallet connection plus Version 1
+            transaction support without manual RPC wiring.
           </p>
           <ul className="mt-4 space-y-2 text-sm text-foreground">
             <li className="flex gap-2">
@@ -84,11 +120,11 @@ export default function App() {
               <div>
                 <a
                   className="font-medium underline underline-offset-2"
-                  href="https://github.com/solana-foundation/solana-kit/tree/main/packages/react-hooks"
+                  href="https://www.npmjs.com/package/@solana/kit-plugin-wallet"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  @solana/react-hooks README
+                  Kit wallet plugin README
                 </a>{" "}
                 — how this starter wires the client, connectors, and hooks.
               </div>
@@ -111,47 +147,70 @@ export default function App() {
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            {connectors.map((connector) => (
-              <button
-                key={connector.id}
-                onClick={() => connect(connector.id)}
-                disabled={status === "connecting"}
-                className="group flex items-center justify-between rounded-xl border border-border-low bg-card px-4 py-3 text-left text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                <span className="flex flex-col">
-                  <span className="text-base">{connector.name}</span>
-                  <span className="text-xs text-muted">
-                    {status === "connecting"
-                      ? "Connecting…"
-                      : status === "connected" &&
-                          wallet?.connector.id === connector.id
-                        ? "Active"
-                        : "Tap to connect"}
+            {!isWalletReady ? (
+              <p className="text-sm text-muted">Restoring wallet...</p>
+            ) : wallets.length === 0 ? (
+              <p className="text-sm text-muted">No wallets detected.</p>
+            ) : (
+              wallets.map((candidate) => (
+                <button
+                  key={walletId(getWalletForHandle(candidate))}
+                  onClick={() => {
+                    resetDisconnect();
+                    void connect(candidate).catch(() => {});
+                  }}
+                  disabled={isBusy}
+                  className="group flex cursor-pointer items-center justify-between rounded-xl border border-border-low bg-card px-4 py-3 text-left text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <span className="flex flex-col">
+                    <span className="text-base">{candidate.name}</span>
+                    <span className="text-xs text-muted">
+                      {isConnecting
+                        ? "Connecting…"
+                        : status === "connected" &&
+                            connectedWallet != null &&
+                            getWalletForHandle(connectedWallet.wallet) ===
+                              getWalletForHandle(candidate)
+                          ? "Active"
+                          : "Tap to connect"}
+                    </span>
                   </span>
-                </span>
-                <span
-                  aria-hidden
-                  className="h-2.5 w-2.5 rounded-full bg-border-low transition group-hover:bg-primary/80"
-                />
-              </button>
-            ))}
+                  <span
+                    aria-hidden
+                    className="h-2.5 w-2.5 rounded-full bg-border-low transition group-hover:bg-primary/80"
+                  />
+                </button>
+              ))
+            )}
           </div>
 
           <div className="flex flex-wrap items-center gap-3 border-t border-border-low pt-4 text-sm">
-            <span className="rounded-lg border border-border-low bg-cream px-3 py-2 font-mono text-xs">
+            <span
+              className="min-w-0 break-all rounded-lg border border-border-low bg-cream px-3 py-2 font-mono text-xs"
+              aria-live="polite"
+            >
               {address ?? "No wallet connected"}
             </span>
             <button
-              onClick={() => disconnect()}
-              disabled={status !== "connected"}
+              onClick={() => {
+                resetConnect();
+                void disconnect().catch(() => {});
+              }}
+              disabled={status !== "connected" || isBusy}
               className="inline-flex items-center gap-2 rounded-lg border border-border-low bg-card px-3 py-2 font-medium transition hover:-translate-y-0.5 hover:shadow-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
             >
               Disconnect
             </button>
           </div>
+          {walletError != null && (
+            <p role="alert" className="break-words text-sm text-red-600">
+              {walletError instanceof Error
+                ? walletError.message
+                : String(walletError)}
+            </p>
+          )}
         </section>
-
-        <VaultCard />
+        <VaultCard key={address ?? "disconnected"} />
       </main>
     </div>
   );
