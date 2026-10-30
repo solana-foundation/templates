@@ -141,21 +141,6 @@
         "path": "kit/nextjs-subscriptions"
       },
       {
-        "description": "Pinocchio Counter Program",
-        "id": "gh:solana-foundation/templates/kit/pinocchio-counter",
-        "image": "kit/pinocchio-counter/og-image.png",
-        "keywords": [
-          "pinocchio",
-          "counter",
-          "native",
-          "solana-program"
-        ],
-        "name": "pinocchio-counter",
-        "path": "kit/pinocchio-counter",
-        "displayName": "Pinocchio Counter",
-        "usecase": "Program Development"
-      },
-      {
         "description": "React + Vite, Tailwind, @solana/react-hooks",
         "id": "gh:solana-foundation/templates/kit/react-vite",
         "image": "kit/react-vite/og-image.png",
@@ -335,120 +320,6 @@
     ]
   },
   {
-    "description": "Templates using @solana/web3.js v1 and the legacy wallet adapter packages",
-    "name": "Web3.js Templates (legacy)",
-    "path": "web3js/legacy",
-    "templates": [
-      {
-        "description": "Next.js, Tailwind, @solana/web3.js, Wallet Adapter",
-        "id": "gh:solana-foundation/templates/web3js/legacy/web3js-next-tailwind",
-        "image": "web3js/legacy/web3js-next-tailwind/og-image.png",
-        "keywords": [
-          "nextjs",
-          "react",
-          "solana-web3js",
-          "tailwind",
-          "typescript",
-          "wallet-adapter"
-        ],
-        "name": "web3js-next-tailwind",
-        "path": "web3js/legacy/web3js-next-tailwind",
-        "displayName": "Web3js Boilerplate",
-        "usecase": "Legacy"
-      },
-      {
-        "description": "Next.js, Tailwind, @solana/web3.js, Wallet Adapter, basic Anchor program",
-        "id": "gh:solana-foundation/templates/web3js/legacy/web3js-next-tailwind-basic",
-        "image": "web3js/legacy/web3js-next-tailwind-basic/og-image.png",
-        "keywords": [
-          "anchor-basic",
-          "nextjs",
-          "react",
-          "solana-web3js",
-          "tailwind",
-          "typescript",
-          "wallet-adapter"
-        ],
-        "name": "web3js-next-tailwind-basic",
-        "path": "web3js/legacy/web3js-next-tailwind-basic",
-        "displayName": "Web3js Basic",
-        "usecase": "Legacy"
-      },
-      {
-        "description": "Next.js, Tailwind, @solana/web3.js, Wallet Adapter, Anchor Counter program",
-        "id": "gh:solana-foundation/templates/web3js/legacy/web3js-next-tailwind-counter",
-        "image": "web3js/legacy/web3js-next-tailwind-counter/og-image.png",
-        "keywords": [
-          "anchor-counter",
-          "nextjs",
-          "react",
-          "solana-web3js",
-          "tailwind",
-          "typescript",
-          "wallet-adapter"
-        ],
-        "name": "web3js-next-tailwind-counter",
-        "path": "web3js/legacy/web3js-next-tailwind-counter",
-        "displayName": "Web3js Counter",
-        "usecase": "Legacy"
-      },
-      {
-        "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter",
-        "id": "gh:solana-foundation/templates/web3js/legacy/web3js-react-vite-tailwind",
-        "image": "web3js/legacy/web3js-react-vite-tailwind/og-image.png",
-        "keywords": [
-          "react",
-          "solana-web3js",
-          "tailwind",
-          "typescript",
-          "vite",
-          "wallet-adapter"
-        ],
-        "name": "web3js-react-vite-tailwind",
-        "path": "web3js/legacy/web3js-react-vite-tailwind",
-        "displayName": "Web3js Boilerplate (Vite)",
-        "usecase": "Legacy"
-      },
-      {
-        "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter, basic Anchor program",
-        "id": "gh:solana-foundation/templates/web3js/legacy/web3js-react-vite-tailwind-basic",
-        "image": "web3js/legacy/web3js-react-vite-tailwind-basic/og-image.png",
-        "keywords": [
-          "anchor-basic",
-          "react",
-          "solana-web3js",
-          "tailwind",
-          "typescript",
-          "vite",
-          "wallet-adapter"
-        ],
-        "name": "web3js-react-vite-tailwind-basic",
-        "path": "web3js/legacy/web3js-react-vite-tailwind-basic",
-        "displayName": "Web3js Basic",
-        "usecase": "Legacy"
-      },
-      {
-        "description": "React + Vite, Tailwind, @solana/web3.js, Wallet Adapter, Anchor Counter program",
-        "id": "gh:solana-foundation/templates/web3js/legacy/web3js-react-vite-tailwind-counter",
-        "image": "web3js/legacy/web3js-react-vite-tailwind-counter/og-image.png",
-        "keywords": [
-          "anchor-counter",
-          "web3js",
-          "react",
-          "solana-web3js",
-          "tailwind",
-          "typescript",
-          "vite",
-          "wallet-adapter"
-        ],
-        "name": "web3js-react-vite-tailwind-counter",
-        "path": "web3js/legacy/web3js-react-vite-tailwind-counter",
-        "displayName": "Web3js Counter",
-        "usecase": "Legacy"
-      }
-    ]
-  },
-  {
     "description": "Templates maintained by the Solana community",
     "name": "Community Templates",
     "path": "community",
@@ -470,25 +341,6 @@
         "path": "community/commerce-kit-store",
         "displayName": "Solana Commerce Kit Store",
         "usecase": "Starter"
-      },
-      {
-        "description": "Next.js + Tailwind template showing basic Drift Protocol integration",
-        "id": "gh:solana-foundation/templates/community/drift-hello-world",
-        "image": "community/drift-hello-world/og-image.png",
-        "keywords": [
-          "drift",
-          "defi",
-          "perps",
-          "nextjs",
-          "tailwind",
-          "typescript",
-          "solana",
-          "wallet-adapter"
-        ],
-        "name": "drift-hello-world",
-        "path": "community/drift-hello-world",
-        "displayName": "Drift Hello World",
-        "usecase": "DeFi"
       },
       {
         "description": "Approval-gated Eve agent that buys sandbox API access with Pay.sh",

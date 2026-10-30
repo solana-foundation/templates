@@ -199,9 +199,9 @@ const handler = createMcpHandler(async (server) => {
     {
       title: contentWidget.title,
       description: 'Fetch and display the homepage content with the name of the user',
-      inputSchema: {
+      inputSchema: z.object({
         name: z.string().describe('The name of the user to display on the homepage'),
-      },
+      }),
       _meta: widgetMeta(contentWidget),
     },
     async ({ name }) => {
@@ -227,12 +227,12 @@ const handler = createMcpHandler(async (server) => {
       title: swapWidget.title,
       description:
         "Swap tokens on Solana with Jupiter. Accepts tickers or mints (e.g., '0.001 SOL to $SEND') or free-form text.",
-      inputSchema: {
+      inputSchema: z.object({
         amount: z.string().describe("The amount to swap (e.g., '0.001')").optional(),
         inputToken: z.string().describe('Input token ticker (e.g., SOL) or mint address').optional(),
         outputToken: z.string().describe('Output token ticker (e.g., $SEND) or mint address').optional(),
         text: z.string().describe("Free-form request, e.g., 'swap 0.001 SOL to $SEND'").optional(),
-      },
+      }),
       _meta: widgetMeta(swapWidget),
     },
     async ({ amount, inputToken, outputToken, text }) => {
@@ -274,9 +274,9 @@ const handler = createMcpHandler(async (server) => {
     {
       title: 'Swap (free-form)',
       description: "Parse a message like 'swap 0.0001 SOL to $SEND' and prefill the swap widget.",
-      inputSchema: {
+      inputSchema: z.object({
         text: z.string().describe("Free-form user request, e.g., 'swap 0.001 SOL to $SEND'"),
-      },
+      }),
       _meta: widgetMeta(swapWidget),
     },
     async ({ text }) => {
@@ -308,10 +308,10 @@ const handler = createMcpHandler(async (server) => {
     {
       title: transferWidget.title,
       description: 'Send SOL to a wallet address or SNS domain (.sol, .solana, .superteam) with explicit confirmation.',
-      inputSchema: {
+      inputSchema: z.object({
         toAddress: z.string().describe('Destination (address or SNS domain like arpit.sol)'),
         amount: z.string().describe("Amount of SOL to send (e.g., '0.001')"),
-      },
+      }),
       _meta: widgetMeta(transferWidget),
     },
     async ({ toAddress, amount }) => {
@@ -338,9 +338,9 @@ const handler = createMcpHandler(async (server) => {
     {
       title: 'Check Balance',
       description: 'Fetch SOL balance for a wallet address or domain (.sol, AllDomains TLDs).',
-      inputSchema: {
+      inputSchema: z.object({
         account: z.string().describe('Address or domain (e.g., arpit.superteam or 26k...QjC)'),
-      },
+      }),
       _meta: {
         'openai/resultCanProduceWidget': false,
       },
@@ -372,9 +372,9 @@ const handler = createMcpHandler(async (server) => {
     {
       title: 'Token Price',
       description: 'Fetch token price via Jupiter by mint address only (contract).',
-      inputSchema: {
+      inputSchema: z.object({
         id: z.string().describe('Mint address (contract) of the token'),
-      },
+      }),
       _meta: {
         'openai/resultCanProduceWidget': false,
       },
@@ -404,10 +404,10 @@ const handler = createMcpHandler(async (server) => {
     {
       title: stakeWidget.title,
       description: 'Stake SOL into a liquid staking token (default JupSOL). Confirm in widget.',
-      inputSchema: {
+      inputSchema: z.object({
         amount: z.string().describe("Amount of SOL to stake (e.g., '0.5')"),
         lst: z.string().optional().describe('LST symbol or mint (default: JupSOL)'),
-      },
+      }),
       _meta: {
         ...widgetMeta(stakeWidget),
         'openai/widgetAccessible': false,
