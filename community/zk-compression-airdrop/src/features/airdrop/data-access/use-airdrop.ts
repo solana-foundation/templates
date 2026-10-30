@@ -1,102 +1,79 @@
 'use client'
 
-import { useState, useCallback } from 'react'
-import { PublicKey, Keypair } from '@solana/web3.js'
-import BN from 'bn.js'
-import bs58 from 'bs58'
-import { useWalletSession } from '@solana/react-hooks'
-import { mintTo } from '@lightprotocol/compressed-token'
-import { parseRecipients, calculateBatches, createRpcConnection } from './airdrop-utils'
-import type { AirdropData, AirdropConfig, AirdropProgress } from './airdrop-types'
+import { useState, useCallback, useEffect, useRef, useSyncExternalStore } from 'react'
+import { useConnectedWallet } from '@solana/kit-plugin-wallet/react'
+import { useSolana } from '@/components/solana/solana-provider'
+import { prepareAirdropBatch, validateAirdrop, calculateBatches } from './airdrop-utils'
+import type { AirdropData, AirdropConfig } from './airdrop-types'
 
-interface UseAirdropReturn {
-  executeAirdrop: (config: AirdropConfig, airdropData: AirdropData, batchSize?: number) => Promise<void>
-  progress: AirdropProgress | null
-  isExecuting: boolean
-  error: string | null
-}
-
-export function useAirdrop(): UseAirdropReturn {
-  const wallet = useWalletSession()
-  const account = wallet?.account
-  const [progress, setProgress] = useState<AirdropProgress | null>(null)
+export function useAirdrop(config: AirdropConfig) {
+  const { client, submissions, cluster } = useSolana()
+  const key = JSON.stringify([config.network, config.mintAddress])
+  const getSubmission = useCallback(() => submissions.get(key), [submissions, key])
+  const submission = useSyncExternalStore(submissions.subscribe, getSubmission, getSubmission)
+  const wallet = useConnectedWallet(client)
   const [isExecuting, setIsExecuting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const busy = useRef(false)
+  const lifecycle = useRef<AbortController | null>(null)
+  useEffect(() => {
+    const controller = new AbortController()
+    lifecycle.current = controller
+    return () => controller.abort(new Error('Wallet or network changed, or view closed. Airdrop stopped.'))
+  }, [client, wallet?.account.address, key])
 
   const executeAirdrop = useCallback(
-    async (config: AirdropConfig, airdropData: AirdropData, batchSize: number = 10) => {
-      if (!account) {
-        setError('Wallet not connected')
-        return
-      }
-
+    async (data: AirdropData, batchSize = 3) => {
+      const controller = lifecycle.current
+      if (busy.current || submissions.get(key).submitted || !controller || controller.signal.aborted) return
+      busy.current = true
       setIsExecuting(true)
-      setError(null)
-
+      submissions.update(key, (current) => ({ ...current, error: null }))
+      const selected = client.wallet.getState().connected
       try {
-        const rpc = createRpcConnection(config.network)
-        const mint = new PublicKey(config.mintAddress)
-        const { recipients, amounts } = parseRecipients(airdropData)
-        const totalBatches = calculateBatches(recipients.length, batchSize)
-
-        const privateKeyString = process.env.DEV_WALLET
-        if (!privateKeyString) {
-          throw new Error('DEV_WALLET environment variable not set')
-        }
-
-        const secretKey = bs58.decode(privateKeyString)
-        const authority = Keypair.fromSecretKey(secretKey)
-
-        const initialProgress: AirdropProgress = {
-          currentBatch: 0,
-          totalBatches,
-          successfulMints: 0,
-          failedMints: 0,
-          signatures: [],
-        }
-
-        setProgress(initialProgress)
-
-        for (let i = 0; i < recipients.length; i += batchSize) {
-          const batchRecipients = recipients.slice(i, i + batchSize)
-          const batchAmounts = amounts.slice(i, i + batchSize).map((a) => new BN(a.toString()))
-          const currentBatch = Math.floor(i / batchSize) + 1
-
-          try {
-            const signature = await mintTo(rpc, authority, mint, batchRecipients, authority, batchAmounts)
-
-            setProgress((prev) => ({
-              ...prev!,
-              currentBatch,
-              successfulMints: prev!.successfulMints + batchRecipients.length,
-              signatures: [...prev!.signatures, signature],
-            }))
-          } catch (err) {
-            console.error('Batch mint error:', err)
-            setProgress((prev) => ({
-              ...prev!,
-              currentBatch,
-              failedMints: prev!.failedMints + batchRecipients.length,
-            }))
-          }
-
-          if (i + batchSize < recipients.length) {
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-          }
+        const prepared = validateAirdrop(config, data, batchSize)
+        const totalBatches = calculateBatches(data.recipients.length, batchSize)
+        submissions.update(key, (current) => ({
+          ...current,
+          cluster: cluster.id,
+          progress: { currentBatch: 0, totalBatches, successfulMints: 0, failedMints: 0, signatures: [] },
+        }))
+        for (let start = 0; start < data.recipients.length; start += batchSize) {
+          const instructions = await prepareAirdropBatch(client, config, prepared, start, batchSize, controller.signal)
+          controller.signal.throwIfAborted()
+          if (client.wallet.getState().connected !== selected) throw new Error('Wallet changed. Airdrop stopped.')
+          submissions.update(key, (current) => ({ ...current, submitted: true }))
+          const result = await client.sendTransaction(instructions, { abortSignal: controller.signal })
+          const signature = result.context.signature
+          submissions.update(key, (current) => ({
+            ...current,
+            progress: current.progress && {
+              ...current.progress,
+              currentBatch: current.progress.currentBatch + 1,
+              successfulMints: current.progress.successfulMints + Math.min(batchSize, data.recipients.length - start),
+              signatures: [...current.progress.signatures, signature],
+            },
+          }))
+          controller.signal.throwIfAborted()
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error')
+        submissions.update(key, (current) => ({
+          ...current,
+          error: `${err instanceof Error ? err.message : String(err)}${current.submitted ? ' Airdrop stopped. Check the wallet and on-chain results before restarting; submitted batches are not retried automatically.' : ''}`,
+        }))
       } finally {
+        busy.current = false
         setIsExecuting(false)
       }
     },
-    [account],
+    [client, config, key, submissions, cluster.id],
   )
 
   return {
     executeAirdrop,
-    progress,
+    progress: submission.progress,
+    progressCluster: submission.cluster,
     isExecuting,
-    error,
+    requiresReview: submission.submitted,
+    error: submission.error,
   }
 }

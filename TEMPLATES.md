@@ -306,6 +306,6 @@ Templates maintained by the Solana community
 
 `gh:solana-foundation/templates/community/zk-compression-airdrop`
 
-> ZK-Compression based airdrop app built with Next.js, Tailwind, and @solana/react-hooks
+> Wallet-approved ZK compressed token airdrops with Kit 8 and V1 transactions
 
-`minimal` `nextjs` `react` `solana-kit` `tailwind` `typescript` `zk-compression` `airdrop` `zero-knowledge` `zk` `framework-kit`
+`minimal` `nextjs` `react` `solana-kit` `tailwind` `typescript` `zk-compression` `airdrop` `zero-knowledge` `zk`

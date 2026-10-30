@@ -684,7 +684,7 @@
         "usecase": "Payments"
       },
       {
-        "description": "ZK-Compression based airdrop app built with Next.js, Tailwind, and @solana/react-hooks",
+        "description": "Wallet-approved ZK compressed token airdrops with Kit 8 and V1 transactions",
         "id": "gh:solana-foundation/templates/community/zk-compression-airdrop",
         "image": "community/zk-compression-airdrop/og-image.png",
         "keywords": [
@@ -697,8 +697,7 @@
           "zk-compression",
           "airdrop",
           "zero-knowledge",
-          "zk",
-          "framework-kit"
+          "zk"
         ],
         "name": "zk-compression-airdrop",
         "path": "community/zk-compression-airdrop",
