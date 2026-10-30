@@ -51,19 +51,35 @@ app/
 
 ## LazorKit Mobile Integration
 
-This template uses `@lazorkit/wallet-mobile-adapter` for React Native integration:
+This template uses `@lazorkit/wallet-mobile-adapter` for React Native integration. Wrap the app in the provider (see `app/_layout.tsx`):
 
 ```tsx
-import { useLazorkitWallet } from '@lazorkit/wallet-mobile-adapter'
+<LazorKitProvider
+  rpcUrl="https://api.devnet.solana.com"
+  portalUrl="https://portal.lazor.sh"
+  configPaymaster={{ paymasterUrl: 'https://kora.devnet.lazorkit.com' }}
+>
+  {children}
+</LazorKitProvider>
+```
+
+Then use the hook in screens:
+
+```tsx
+import { useWallet } from '@lazorkit/wallet-mobile-adapter'
 
 const {
-  smartWalletPubkey, // User's smart wallet address
+  smartWalletPubkey, // User's smart wallet (vault) address
   isConnected, // Connection status
   connect, // Connect/create wallet
   disconnect, // Disconnect wallet
   signAndSendTransaction, // Sign and send transactions
-} = useLazorkitWallet()
+} = useWallet()
+
+await signAndSendTransaction({ instructions: [instruction] }, { redirectUrl: 'lazorkitstarterexpo://wallet-callback' })
 ```
+
+Instructions are built with `@solana/web3.js` v1, which the adapter uses as a peer dependency.
 
 ## Resources
 

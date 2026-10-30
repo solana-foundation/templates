@@ -103,7 +103,6 @@ async function createPaymentRequest(nonce) {
     amount: 10000000n,
     lifetime: latestBlockhash,
   });
-
   // Serialize the transaction
   const serializedTransaction = getBase64EncodedWireTransaction(signedTransaction);
 

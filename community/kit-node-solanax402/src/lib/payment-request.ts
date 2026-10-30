@@ -156,7 +156,7 @@ export class AuthorizationPayload {
     try {
       const data = JSON.parse(payloadString) as AuthorizationPayloadData;
       return new AuthorizationPayload(data);
-    } catch (error) {
+    } catch {
       throw new InvalidPaymentRequestError('Invalid payload format');
     }
   }
@@ -365,7 +365,7 @@ export class PaymentRequest {
         clientPublicKey: data.clientPublicKey as string,
         signedTransaction: data.signedTransaction as string | undefined,
       });
-    } catch (error) {
+    } catch {
       throw new InvalidPaymentRequestError('Invalid payment request format');
     }
   }

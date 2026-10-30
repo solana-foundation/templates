@@ -128,7 +128,6 @@ async function createPaymentWithSponsoredTransaction(amount, recipient, resource
     amount: BigInt(amount),
     lifetime: latestBlockhash,
   });
-
   // 6. Serialize the transaction (includes client's signature)
   const serializedTransaction = getBase64EncodedWireTransaction(signedTransaction);
 

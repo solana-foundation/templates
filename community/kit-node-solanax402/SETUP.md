@@ -4,7 +4,7 @@ Complete setup instructions for the x402 Solana protocol implementation.
 
 ## Prerequisites
 
-- Node.js 22+ (validated with Node 22 and 24)
+- Node.js 22.13+ (for native fetch and the built-in `node:sqlite` module)
 - npm or yarn
 - Solana CLI (optional, for devnet testing)
 
@@ -16,8 +16,6 @@ Complete setup instructions for the x402 Solana protocol implementation.
 cd x402_ts
 npm install
 ```
-
-On Ubuntu 22.04, use `npm_config_build_from_source=true npm install` with Python 3 and a C/C++ toolchain installed. The tested SQLite 6.0.1 prebuilt binary needs a newer glibc; see the README. This is a native dependency requirement, not a Node version fix.
 
 ### 2. Generate Facilitator Keypair
 

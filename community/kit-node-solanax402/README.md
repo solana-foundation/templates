@@ -91,21 +91,13 @@ x402_ts/
 
 ### Prerequisites
 
-Make sure you are using Node 22+ so that node_sqlite3, needed for the facilitator, is configured correctly.
+Make sure you are using Node 22.13+ so that the built-in `node:sqlite` module, needed for the facilitator, is available.
 
 ### 1. Install Dependencies
 
 ```bash
 npm install
 ```
-
-On Ubuntu 22.04, the tested `sqlite3` 6.0.1 prebuilt binary requires `GLIBC_2.38` and cannot load. With Python 3 and a C/C++ build toolchain available, compile it locally instead:
-
-```sh
-npm rebuild sqlite3 --build-from-source
-```
-
-For a fresh installation on that platform, use `npm_config_build_from_source=true npm install`. Do not replace system glibc to work around this dependency limitation.
 
 ### 2. Configure Environment
 
@@ -354,7 +346,7 @@ npm run fmt:check
 - **Runtime**: Node.js with TypeScript
 - **Framework**: Express.js
 - **Blockchain**: Solana (via @solana/kit)
-- **Database**: SQLite3 (for nonce management)
+- **Database**: SQLite via built-in `node:sqlite` (for nonce management)
 - **Process Management**: PM2
 - **Validation**: Zod
 - **Logging**: Structured logging with timestamps
