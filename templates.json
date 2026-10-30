@@ -363,7 +363,7 @@
         "usecase": "Payments"
       },
       {
-        "description": "x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit",
+        "description": "Sponsored V1 SOL payments with Kit 8, Express and a separate facilitator",
         "id": "gh:solana-foundation/templates/community/kit-node-solanax402",
         "image": "community/kit-node-solanax402/og-image.png",
         "keywords": [

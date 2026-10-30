@@ -5,6 +5,8 @@
  */
 
 import type { Request, Response, NextFunction } from 'express';
+import { PaymentRequest } from './payment-request.js';
+import type { NonceDetails } from './nonce-database.js';
 
 export interface X402Options {
   facilitatorUrl?: string;
@@ -70,6 +72,7 @@ export interface PaymentRequestData {
   };
   signature: string;
   clientPublicKey: string;
+  signedTransaction?: string;
 }
 
 // Extend Express Request to include payment info
@@ -133,18 +136,35 @@ export class X402Middleware {
 
         // Parse payment request
         let paymentRequest: PaymentRequestData;
+        let parsed: PaymentRequest;
         try {
           paymentRequest = JSON.parse(paymentHeader) as PaymentRequestData;
+          parsed = PaymentRequest.deserialize(paymentHeader);
         } catch {
           res.status(400).json({
             error: 'Invalid Payment Request',
-            message: 'X-PAYMENT header must contain valid JSON',
+            message: 'X-PAYMENT header must contain a valid payment request',
             code: 'INVALID_PAYMENT_FORMAT',
           });
           return;
         }
 
         // Verify payment request with facilitator
+        const validation = parsed.validate();
+        if (
+          !validation.isValid ||
+          parsed.payload.resourceId !== req.path ||
+          parsed.payload.resourceUrl !== req.path ||
+          !this.routeConfig.payTo ||
+          parsed.payload.recipient !== this.routeConfig.payTo ||
+          !this.routeConfig.amount ||
+          BigInt(parsed.payload.amount) !== BigInt(this.routeConfig.amount)
+        ) {
+          res
+            .status(402)
+            .json({ error: 'Payment does not match this resource', code: 'PAYMENT_REQUIREMENTS_MISMATCH' });
+          return;
+        }
         const verificationResult = await this.verifyPayment(paymentRequest);
 
         if (!verificationResult.isValid) {
@@ -164,6 +184,7 @@ export class X402Middleware {
             error: 'Payment Settlement Failed',
             message: settlementResult.error,
             code: 'PAYMENT_SETTLEMENT_FAILED',
+            transactionSignature: settlementResult.transactionSignature,
           });
           return;
         }
@@ -239,10 +260,9 @@ export class X402Middleware {
    * Settle payment with facilitator
    */
   async settlePayment(paymentRequest: PaymentRequestData): Promise<SettlementResult> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-
       const response = await fetch(`${this.facilitatorUrl}/settle`, {
         method: 'POST',
         headers: {
@@ -254,27 +274,50 @@ export class X402Middleware {
         signal: controller.signal,
       });
 
-      clearTimeout(timeoutId);
-
       const data = await response.json();
       return data as SettlementResult;
     } catch (error) {
-      if (error instanceof Error) {
-        if (error.name === 'AbortError') {
-          return {
-            status: 'error',
-            error: 'Request timeout',
-          };
+      let transactionSignature: string | undefined;
+      // Recover only the saved status; never repeat verification or settlement.
+      try {
+        const response = await fetch(
+          `${this.facilitatorUrl}/nonce/${encodeURIComponent(paymentRequest.payload.nonce)}`,
+          {
+            signal: AbortSignal.timeout(this.timeout),
+          }
+        );
+        if (response.ok) {
+          const result = (await response.json()) as { success?: boolean; data?: NonceDetails };
+          const details = result.data;
+          if (
+            result.success === true &&
+            details &&
+            details.clientPublicKey === paymentRequest.clientPublicKey &&
+            (['nonce', 'amount', 'recipient', 'resourceId', 'resourceUrl', 'timestamp', 'expiry'] as const).every(
+              (key) => details[key] === paymentRequest.payload[key]
+            ) &&
+            typeof details.transactionSignature === 'string' &&
+            details.transactionSignature.length > 0
+          ) {
+            transactionSignature = details.transactionSignature;
+          }
         }
-        return {
-          status: 'error',
-          error: error.message || 'Settlement failed',
-        };
+      } catch {
+        // The payment remains uncertain when the read-only status lookup also fails.
       }
+      const message =
+        error instanceof Error
+          ? error.name === 'AbortError'
+            ? 'Request timeout'
+            : error.message || 'Settlement failed'
+          : 'Settlement request failed';
       return {
         status: 'error',
-        error: 'Settlement request failed',
+        error: `${message}. Settlement may still be in progress. Do not submit another payment; check the nonce status and on-chain results.`,
+        transactionSignature,
       };
+    } finally {
+      clearTimeout(timeoutId);
     }
   }
 

@@ -170,7 +170,7 @@ Templates maintained by the Solana community
 
 `gh:solana-foundation/templates/community/kit-node-solanax402`
 
-> x402 protocol implementation for Solana with Facilitator and Server apps using TypeScript and @solana/kit
+> Sponsored V1 SOL payments with Kit 8, Express and a separate facilitator
 
 `solana` `x402` `payment` `protocol` `blockchain` `typescript`
 

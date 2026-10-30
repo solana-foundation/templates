@@ -9,8 +9,11 @@ export default defineConfig(js.configs.recommended, tseslint.configs.recommended
     sourceType: 'module',
   },
   rules: {
+    'no-unreachable': 'error',
+    'no-constant-condition': 'error',
+    'valid-typeof': 'error',
     '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrors: 'none' }],
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-non-null-assertion': 'warn',
   },
