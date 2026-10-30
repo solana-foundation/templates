@@ -128,6 +128,7 @@ test("restores the persisted account with a fresh client after remount", async (
     expect(screen.queryByRole("alert")).toBeNull();
   } finally {
     cleanup();
+    restoredClient[Symbol.dispose]();
   }
 });
 
