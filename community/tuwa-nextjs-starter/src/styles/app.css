@@ -1,0 +1,26 @@
+@import '@tuwaio/sdk/styles/all.css';
+@import 'tailwindcss';
+
+:root {
+  --tuwa-text-accent: #27272a;
+  --tuwa-text-on-accent: #ffffff;
+  --tuwa-button-gradient-from: #27272a;
+  --tuwa-button-gradient-to: #27272a;
+  --tuwa-button-gradient-from-hover: #3f3f46;
+  --tuwa-button-gradient-to-hover: #3f3f46;
+  --tuwa-info-bg: #f4f4f5;
+  --tuwa-info-text: #27272a;
+  --tuwa-info-icon: #52525b;
+}
+
+.dark {
+  --tuwa-text-accent: #e4e4e7;
+  --tuwa-text-on-accent: #18181b;
+  --tuwa-button-gradient-from: #e4e4e7;
+  --tuwa-button-gradient-to: #e4e4e7;
+  --tuwa-button-gradient-from-hover: #d4d4d8;
+  --tuwa-button-gradient-to-hover: #d4d4d8;
+  --tuwa-info-bg: #27272a;
+  --tuwa-info-text: #e4e4e7;
+  --tuwa-info-icon: #a1a1aa;
+}

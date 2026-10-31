@@ -1,0 +1,16 @@
+{
+  "short_name": "Pulsar & Cosmos SDK",
+  "name": "Pulsar & Cosmos SDK: Next.js Solana",
+  "description": "Pulsar & Cosmos SDK: Next.js Solana Example",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
