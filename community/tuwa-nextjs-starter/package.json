@@ -43,15 +43,15 @@
     "@heroicons/react": "^2.2.0",
     "@solana/kit": "^8.5.0",
     "@solana/webcrypto-ed25519-polyfill": "^8.5.0",
-    "@tuwaio/sdk": "^0.6.6",
-    "@tuwaio/solana-sdk": "^0.6.3",
+    "@tuwaio/sdk": "^0.6.8",
+    "@tuwaio/solana-sdk": "^0.6.5",
     "@wallet-standard/app": "^1.1.1",
     "@wallet-standard/base": "^1.1.1",
     "@wallet-standard/features": "^1.1.1",
     "@wallet-standard/react": "^1.0.3",
     "@wallet-standard/ui": "^1.0.3",
     "@wallet-standard/ui-registry": "^1.1.1",
-    "framer-motion": "14.6.0",
+    "framer-motion": "14.7.1",
     "immer": "^11.2.9",
     "next": "16.4.3",
     "react": "^19.3.1",
@@ -73,10 +73,10 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-simple-import-sort": "^14.0.0",
     "globals": "^17.13.0",
-    "postcss": "^8.5.31",
+    "postcss": "^8.5.32",
     "prettier": "^3.9.10",
     "tailwindcss": "^4.3.3",
     "typescript": "6.0.3",
-    "typescript-eslint": "^8.72.0"
+    "typescript-eslint": "^8.72.1"
   }
 }
