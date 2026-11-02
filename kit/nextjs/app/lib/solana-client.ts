@@ -1,4 +1,4 @@
-import { createClient, MicroLamports } from "@solana/kit";
+import { createClient, lamports } from "@solana/kit";
 import { walletSigner } from "@solana/kit-plugin-wallet";
 import { solanaRpc, rpcAirdrop } from "@solana/kit-plugin-rpc";
 import { tokenProgram } from "@solana-program/token";
@@ -32,29 +32,14 @@ const WALLET_CHAINS: Record<ClusterMoniker, `solana:${string}`> = {
   devnet: "solana:devnet",
   testnet: "solana:testnet",
   mainnet: "solana:mainnet",
-  // Wallets do not advertise a localnet chain. Sign against devnet so wallets
-  // stay discoverable while the RPC below targets the local validator.
   localnet: "solana:devnet",
 };
-
-export function getClusterUrl(cluster: ClusterMoniker) {
-  return CLUSTER_URLS[cluster];
-}
-
-export function getWalletChain(cluster: ClusterMoniker) {
-  return WALLET_CHAINS[cluster];
-}
 
 export type RpcUrlOverrides = {
   rpcUrl: string;
   rpcSubscriptionsUrl: string;
 };
 
-/**
- * Builds the app-wide kit client. `urls` overrides the cluster's default RPC
- * endpoints — used by tests to point the client at an ephemeral Surfpool
- * instance on dynamic ports.
- */
 export function createAppClient(
   cluster: ClusterMoniker,
   urls?: RpcUrlOverrides
@@ -66,7 +51,8 @@ export function createAppClient(
         rpcUrl: urls?.rpcUrl ?? CLUSTER_URLS[cluster],
         rpcSubscriptionsUrl: urls?.rpcSubscriptionsUrl ?? WS_URLS[cluster],
         transactionConfig: {
-          microLamportsPerComputeUnit: 1000n as MicroLamports,
+          version: 1,
+          priorityFeeLamports: lamports(5_000n),
         },
       })
     )

@@ -1,4 +1,5 @@
 import bs58 from 'bs58'
+import { execSync } from 'child_process'
 import { generateKeyPair } from 'crypto'
 import { promisify } from 'util'
 import type { GillWalletInfo, GillNetworkConfig } from './types'
@@ -9,7 +10,7 @@ import {
   type Address,
   type Rpc,
   type SolanaRpcApi,
-} from 'gill'
+} from '@solana/kit'
 
 const generateKeyPairAsync = promisify(generateKeyPair)
 
@@ -58,7 +59,7 @@ export async function generateGillWallet(name: string): Promise<GillWalletInfo> 
     },
     balance: '0 SOL',
     funded: false,
-    signer, // Include the Gill signer
+    signer, // Include the Kit signer
   }
 }
 
@@ -93,7 +94,7 @@ export async function createGillWalletFromKey(name: string, privateKeyInput: str
       base58: privateKeyInput.length === 88 ? privateKeyInput : bs58.encode(new Uint8Array(secretKeyArray)),
       array: secretKeyArray,
     },
-    signer, // Include the Gill signer
+    signer, // Include the Kit signer
   }
 }
 
@@ -228,8 +229,6 @@ export async function distributeSolToWallets(
   for (const wallet of toWallets) {
     try {
       console.log(`💸 Sending ${amountPerWallet} SOL to ${wallet.address}...`)
-
-      const { execSync } = require('child_process')
 
       let keypairFile = fromWallet.keypairFile || 'anchor/deploy-wallet.json'
 

@@ -1,5 +1,6 @@
 use std::env;
 
+use solana_keychain::cdp::CdpSignerConfig;
 use solana_keychain::crossmint::CrossmintSignerConfig;
 use solana_keychain::dfns::DfnsSignerConfig;
 use solana_keychain::fireblocks::FireblocksSignerConfig;
@@ -158,13 +159,15 @@ async fn construct(backend: &str) -> Result<Signer, SignerError> {
             .await
         }
         "para" => Signer::from_para(req("PARA_API_KEY"), req("PARA_WALLET_ID"), None).await,
-        "cdp" => Signer::from_cdp(
-            req("CDP_API_KEY_ID"),
-            req("CDP_API_KEY_SECRET"),
-            req("CDP_WALLET_SECRET"),
-            req("CDP_ADDRESS"),
-            None,
-        ),
+        "cdp" => Signer::from_cdp(CdpSignerConfig {
+            api_key_id: req("CDP_API_KEY_ID"),
+            api_key_secret: req("CDP_API_KEY_SECRET"),
+            wallet_secret: req("CDP_WALLET_SECRET"),
+            address: req("CDP_ADDRESS"),
+            network: None,
+            api_base_url: None,
+            http_client_config: None,
+        }),
         "crossmint" => {
             Signer::from_crossmint(CrossmintSignerConfig {
                 api_key: req("CROSSMINT_API_KEY"),
@@ -220,11 +223,8 @@ fn memory_signer() -> Result<Signer, SignerError> {
 
 fn vault_signer() -> Result<Signer, SignerError> {
     if env::var("VAULT_ALLOW_HTTP").as_deref() == Ok("true") {
-        let client = reqwest::Client::builder()
-            .build()
-            .map_err(|e| SignerError::ConfigError(format!("Failed to build HTTP client: {e}")))?;
-        return Ok(Signer::Vault(VaultSigner::with_client(
-            client,
+        return Ok(Signer::Vault(VaultSigner::with_client_builder(
+            reqwest::Client::builder(),
             req("VAULT_ADDR"),
             req("VAULT_TOKEN"),
             req("VAULT_KEY_NAME"),

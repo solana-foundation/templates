@@ -15,11 +15,17 @@ export function log(type: LogType, message: string): void {
   logEntry.className = `log-entry ${type}`
 
   const timestamp = new Date().toLocaleTimeString()
-  logEntry.innerHTML = `
-        <span class="timestamp">[${timestamp}]</span>
-        <span class="level">${type.toUpperCase()}</span>
-        <span class="message">${message}</span>
-    `
+  const parts: [string, string][] = [
+    ['timestamp', `[${timestamp}]`],
+    ['level', type.toUpperCase()],
+    ['message', message],
+  ]
+  for (const [className, text] of parts) {
+    const span = document.createElement('span')
+    span.className = className
+    span.textContent = text
+    logEntry.appendChild(span)
+  }
 
   logContainer.appendChild(logEntry)
   logContainer.scrollTop = logContainer.scrollHeight

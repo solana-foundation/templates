@@ -7,8 +7,8 @@ use base64::engine::general_purpose::STANDARD as BASE64;
 use base64::Engine;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use solana_keychain::{Signer, SolanaSigner};
-use solana_sdk::transaction::Transaction;
+use solana_keychain::{Signer, SolanaSigner, TransactionSigner};
+use solana_sdk::transaction::{Transaction, VersionedTransaction};
 
 use crate::signers::Registry;
 
@@ -97,12 +97,12 @@ pub async fn sign_transaction(
             )),
         };
     let signer = find_signer(&registry, request.backend.as_deref())?;
-    let mut transaction: Transaction = BASE64
+    let mut transaction: VersionedTransaction = BASE64
         .decode(&wire_transaction)
         .ok()
         .and_then(|bytes| bincode::deserialize(&bytes).ok())
         .ok_or_else(|| bad_request("Invalid base64 wire transaction"))?;
-    let (signed_transaction, signature) = signer
+    let (signed_transaction, signature) = transaction_signer(signer)?
         .sign_transaction(&mut transaction)
         .await
         .map_err(internal_error)?
@@ -135,23 +135,28 @@ pub async fn demo_transaction(
     };
     let signer = find_signer(&registry, request.backend.as_deref())?;
     let payer = signer.pubkey();
-    let instruction = spl_memo::build_memo(memo.as_bytes(), &[]);
-    let mut transaction = Transaction::new_with_payer(&[instruction], Some(&payer));
-    let (signed_transaction, signature) = signer
+    let instruction = spl_memo_interface::instruction::build_memo(
+        &spl_memo_interface::v3::id(),
+        memo.as_bytes(),
+        &[],
+    );
+    let mut transaction: VersionedTransaction =
+        Transaction::new_with_payer(&[instruction], Some(&payer)).into();
+    let (signed_transaction, signature) = transaction_signer(signer)?
         .sign_transaction(&mut transaction)
         .await
         .map_err(internal_error)?
         .into_signed_transaction();
-    let signature_valid = signature.verify(payer.as_ref(), &transaction.message_data());
+    let signature_valid = signature.verify(payer.as_ref(), &transaction.message.serialize());
     let decoded_memo = transaction
         .message
-        .instructions
+        .instructions()
         .first()
         .map(|instruction| String::from_utf8_lossy(&instruction.data).to_string())
         .unwrap_or_default();
     Ok(Json(json!({
         "feePayer": payer.to_string(),
-        "blockhash": transaction.message.recent_blockhash.to_string(),
+        "blockhash": transaction.message.recent_blockhash().to_string(),
         "memo": decoded_memo,
         "signature": signature.to_string(),
         "signatureValid": signature_valid,
@@ -173,6 +178,12 @@ fn find_signer<'a>(registry: &'a Registry, backend: Option<&str>) -> Result<&'a 
             "Backend \"{name}\" is not configured. Configured backends: {configured}"
         ))),
     }
+}
+
+fn transaction_signer(signer: &Signer) -> Result<&dyn TransactionSigner, ApiError> {
+    signer.as_transaction_signer().ok_or_else(|| {
+        bad_request("This backend broadcasts transactions itself and cannot return them signed")
+    })
 }
 
 fn bad_request(message: &str) -> ApiError {

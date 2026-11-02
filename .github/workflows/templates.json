@@ -1,6 +1,5 @@
 [
   "community/commerce-kit-store",
-  "community/drift-hello-world",
   "community/eve-pay",
   "community/kit-node-solanax402",
   "community/lazorkit-starter-expo",
@@ -27,7 +26,6 @@
   "kit/nextjs-hardware-signin",
   "kit/nextjs-keychain",
   "kit/nextjs-subscriptions",
-  "kit/pinocchio-counter",
   "kit/react-vite",
   "kit/react-vite-anchor",
   "mobile/kit-expo-minimal",
@@ -36,12 +34,6 @@
   "mobile/web3js-expo",
   "mobile/web3js-expo-minimal",
   "mobile/web3js-expo-paper",
-  "web3js/legacy/web3js-next-tailwind",
-  "web3js/legacy/web3js-next-tailwind-basic",
-  "web3js/legacy/web3js-next-tailwind-counter",
-  "web3js/legacy/web3js-react-vite-tailwind",
-  "web3js/legacy/web3js-react-vite-tailwind-basic",
-  "web3js/legacy/web3js-react-vite-tailwind-counter",
   "web3js/web3js-nextjs",
   "web3js/web3js-react-vite"
 ]

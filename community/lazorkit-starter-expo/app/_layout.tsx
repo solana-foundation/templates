@@ -1,5 +1,4 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { Stack } from 'expo-router'
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { LazorKitProvider } from '@lazorkit/wallet-mobile-adapter'
 import { useColorScheme } from '@/hooks/use-color-scheme'
@@ -11,8 +10,8 @@ export default function RootLayout() {
   return (
     <LazorKitProvider
       rpcUrl="https://api.devnet.solana.com"
-      ipfsUrl="https://portal.lazor.sh"
-      paymasterUrl="https://kora.devnet.lazorkit.com"
+      portalUrl="https://portal.lazor.sh"
+      configPaymaster={{ paymasterUrl: 'https://kora.devnet.lazorkit.com' }}
       isDebug={false}
     >
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>

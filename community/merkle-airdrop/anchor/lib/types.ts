@@ -1,4 +1,4 @@
-import type { Address, TransactionSigner } from 'gill'
+import type { Address, TransactionSigner } from '@solana/kit'
 
 export interface GillWalletInfo {
   name: string
@@ -83,7 +83,7 @@ export interface TestWalletsData {
   createdAt: string
   wallets: {
     name: string
-    publicKey: string
+    address: string
     keypairFile: string
     privateKey: {
       hex: string

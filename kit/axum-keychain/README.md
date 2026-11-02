@@ -28,7 +28,7 @@ Signers are constructed at startup in `src/signers.rs` — one per backend confi
 | POST   | `/api/sign/transaction` | Adds the given backend's signature to a wire transaction (`{ transaction, backend? }`); returns the signed wire transaction and signature                                        |
 | POST   | `/api/demo/transaction` | Builds a memo transaction with a placeholder blockhash (`{ memo, backend? }`), signs it, verifies the signature, and returns the decoded fields plus the signed wire transaction |
 
-The routes only sign — they never submit transactions to the network. Broadcasting stays with the caller. Transactions use the legacy wire format (`bincode`-serialized `solana_sdk::Transaction`, base64-encoded).
+The routes only sign — they never submit transactions to the network. Broadcasting stays with the caller, so backends that sign and broadcast server-side (`crossmint`) return an error from the transaction routes. Transactions use the wire format (`bincode`-serialized `solana_sdk::transaction::VersionedTransaction`, base64-encoded), which accepts both legacy and v0 transactions. The `cdp` backend rejects v0 transactions that use address lookup tables.
 
 ## Adding backends
 
@@ -37,7 +37,7 @@ Copy `.env.example` to `.env.local` (or export the variables) and fill in the va
 All `solana-keychain` backends are compiled in (the `all` feature). To slim the dependency tree and build time, replace `all` in `Cargo.toml` with just the features you use, e.g.:
 
 ```toml
-solana-keychain = { version = "1.4", default-features = false, features = ["memory", "vault", "sdk-v2"] }
+solana-keychain = { version = "2.0", default-features = false, features = ["memory", "vault", "sdk-v3"] }
 ```
 
 ## Local demo with Vault

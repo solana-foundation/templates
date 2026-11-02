@@ -6,7 +6,7 @@ mod router;
 mod spec;
 mod state;
 
-use solana_client::nonblocking::rpc_client::RpcClient;
+use solana_rpc_client::nonblocking::rpc_client::RpcClient;
 use std::sync::Arc;
 use tokio::net::TcpListener;
 use tokio::signal;

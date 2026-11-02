@@ -1,11 +1,16 @@
-import { useLazorWallet, SmartWalletAction } from '@lazorkit/wallet-mobile-adapter'
-import { SystemProgram, PublicKey, LAMPORTS_PER_SOL, Transaction } from '@solana/web3.js'
+import {
+  PaymasterError,
+  PortalCancelledError,
+  TransactionOutcomeUnknownError,
+  useWallet,
+} from '@lazorkit/wallet-mobile-adapter'
+import { SystemProgram, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { Button, Text, View, StyleSheet, Alert } from 'react-native'
 import { router } from 'expo-router'
 import { useEffect } from 'react'
 
 export default function WalletScreen() {
-  const { smartWalletPubkey, isConnected, isSigning, disconnect, signMessage } = useLazorWallet()
+  const { smartWalletPubkey, isConnected, isSigning, disconnect, signAndSendTransaction } = useWallet()
 
   useEffect(() => {
     if (!isConnected) {
@@ -34,30 +39,26 @@ export default function WalletScreen() {
         lamports: LAMPORTS_PER_SOL * 0.01,
       })
 
-      // Sign using the instruction
-      await signMessage(
-        {
-          type: SmartWalletAction.Execute,
-          args: {
-            policyInstruction: null,
-            cpiInstruction: instruction,
-          },
-        },
-        {
-          redirectUrl: 'lazorkitstarterexpo://wallet-callback',
-          onSuccess: (result) => {
-            console.log('Transaction sent:', result)
-            Alert.alert('Success', 'Transaction sent successfully')
-          },
-          onFail: (err) => {
-            console.error('Transaction failed:', err)
-            Alert.alert('Failed', err.message)
-          },
-        },
+      // Sign and send the instruction with the passkey
+      const signature = await signAndSendTransaction(
+        { instructions: [instruction] },
+        { redirectUrl: 'lazorkitstarterexpo://wallet-callback' },
       )
-    } catch (err: any) {
-      console.error('Error:', err)
-      Alert.alert('Error', err.message)
+      console.log('Transaction sent:', signature)
+      Alert.alert('Success', 'Transaction sent successfully')
+    } catch (err) {
+      if (err instanceof PortalCancelledError) return
+      if (err instanceof TransactionOutcomeUnknownError || (err instanceof PaymasterError && err.maybeSent)) {
+        Alert.alert(
+          'Pending',
+          err.signature
+            ? `The transaction may still land. Check ${err.signature} before sending again.`
+            : 'The transaction may still land. Check your wallet before sending again.',
+        )
+        return
+      }
+      console.error('Transaction failed:', err)
+      Alert.alert('Failed', err instanceof Error ? err.message : String(err))
     }
   }
 

@@ -12,7 +12,7 @@ import * as fs from 'fs'
  *
  * This configuration generates TypeScript clients from the Anchor IDL
  * using Codama's code generation capabilities. The generated clients
- * will be compatible with Gill (Solana Kit) instead of @solana/web3.js v1.
+ * will be compatible with @solana/kit instead of @solana/web3.js v1.
  */
 
 async function generateProgramId(): Promise<string> {

@@ -28,7 +28,7 @@ npm create solana-dapp@latest -t gh:solana-foundation/templates/kit/nextjs
 ## Template Categories
 
 - **Kit** - Modern templates using @solana/kit
-- **Web3.js** - Templates using @solana/web3.js (legacy)
+- **Web3.js** - Templates using @solana/web3.js v3 and @solana/wallet-adapter
 - **Mobile** - React Native templates for Solana Mobile
 - **Community** - Templates maintained by the community
 

@@ -2,7 +2,7 @@ import { initializeGillAirdropDefault } from '../lib/airdrop-initializer'
 
 async function main() {
   try {
-    console.log('🚀 Using modern Gill-based initialization...')
+    console.log('🚀 Using modern Kit-based initialization...')
     const result = await initializeGillAirdropDefault()
 
     if (!result.success) {
@@ -21,7 +21,7 @@ async function main() {
 
     console.log('\n📋 Next steps:')
     console.log('1. Test claiming with the frontend at http://localhost:3000')
-    console.log('2. Or use the claim script with Gill support')
+    console.log('2. Or use the claim script with Kit support')
 
     process.exit(0)
   } catch (error) {

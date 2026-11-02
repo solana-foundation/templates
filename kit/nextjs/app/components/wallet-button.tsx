@@ -24,11 +24,6 @@ export function WalletButton() {
   const wallets = useWallets(client);
   const connected = useConnectedWallet(client);
   const isWalletReady = useIsWalletReady(client);
-  const isHydrated = useSyncExternalStore(
-    subscribeToHydration,
-    () => true,
-    () => false
-  );
   const {
     dispatchAsync: connect,
     error: connectError,
@@ -39,6 +34,11 @@ export function WalletButton() {
     error: disconnectError,
     isRunning: isDisconnecting,
   } = useDisconnect(client);
+  const isHydrated = useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false
+  );
 
   const { getExplorerUrl } = useCluster();
   const [isOpen, setIsOpen] = useState(false);

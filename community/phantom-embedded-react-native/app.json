@@ -7,11 +7,6 @@
     "icon": "./assets/default.png",
     "userInterfaceStyle": "dark",
     "scheme": "phantomwallet",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#AB9FF2"
-    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.example.phantomwallet",
@@ -31,6 +26,14 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash.png",
+          "resizeMode": "cover",
+          "backgroundColor": "#AB9FF2"
+        }
+      ],
       [
         "expo-secure-store",
         {

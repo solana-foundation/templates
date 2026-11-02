@@ -1,4 +1,4 @@
-import { useLazorWallet } from '@lazorkit/wallet-mobile-adapter'
+import { useWallet } from '@lazorkit/wallet-mobile-adapter'
 import { router } from 'expo-router'
 import { useEffect } from 'react'
 import { Button, View, StyleSheet } from 'react-native'
@@ -8,7 +8,7 @@ import { ThemedText } from '@/components/themed-text'
 import { ThemedView } from '@/components/themed-view'
 
 export default function LoginScreen() {
-  const { connect, isConnecting, isConnected } = useLazorWallet()
+  const { connect, isConnecting, isConnected } = useWallet()
 
   useEffect(() => {
     if (isConnected) {

@@ -1,6 +1,6 @@
 import { keccak_256 } from 'js-sha3'
 import type { GillRecipient } from './types'
-import { address, type Address } from 'gill'
+import { address, type Address } from '@solana/kit'
 import bs58 from 'bs58'
 
 export class GillMerkleTree {
@@ -68,6 +68,10 @@ export class GillMerkleTree {
     return '0x' + Buffer.from(this.root).toString('hex')
   }
 
+  public getLeaf(index: number): Uint8Array {
+    return this.leaves[index]
+  }
+
   public getLeafCount(): number {
     return this.leaves.length
   }
@@ -78,9 +82,9 @@ export function generateGillMerkleTree(recipientsData: { recipients: { publicKey
   merkleTree: GillMerkleTree
 } {
   try {
-    console.log('🌳 Generating Merkle tree with Gill...')
+    console.log('🌳 Generating Merkle tree with Kit...')
 
-    // Convert to Gill format
+    // Convert to Kit format
     const recipients: GillRecipient[] = recipientsData.recipients.map((r) => ({
       recipient: address(r.publicKey),
       amount: parseInt(r.amount),
@@ -89,7 +93,7 @@ export function generateGillMerkleTree(recipientsData: { recipients: { publicKey
     const merkleTree = new GillMerkleTree(recipients)
     const merkleRootHex = merkleTree.getRootHex()
 
-    console.log(`✅ Gill Merkle tree generated!`)
+    console.log(`✅ Kit Merkle tree generated!`)
     console.log(`   Leaves: ${merkleTree.getLeafCount()}`)
     console.log(`   Root: ${merkleRootHex}`)
 
@@ -98,7 +102,7 @@ export function generateGillMerkleTree(recipientsData: { recipients: { publicKey
       merkleTree,
     }
   } catch (error) {
-    console.error('❌ Error generating Gill merkle tree:', error)
+    console.error('❌ Error generating Kit merkle tree:', error)
     throw error
   }
 }
@@ -114,15 +118,14 @@ export function generateGillProof(
     const proof = merkleTree.getProof(recipientIndex)
     const proofHex = proof.map((p) => '0x' + Buffer.from(p).toString('hex'))
 
-    const leaves = (merkleTree as any).leaves as Uint8Array[]
-    const leaf = '0x' + Buffer.from(leaves[recipientIndex]).toString('hex')
+    const leaf = '0x' + Buffer.from(merkleTree.getLeaf(recipientIndex)).toString('hex')
 
     return {
       proof: proofHex,
       leaf,
     }
   } catch (error) {
-    console.error('❌ Error generating Gill proof:', error)
+    console.error('❌ Error generating Kit proof:', error)
     throw error
   }
 }
@@ -145,7 +148,7 @@ export function verifyGillProof(proof: string[], leaf: string, root: string): bo
     const computedRoot = '0x' + computedHash.toString('hex')
     return computedRoot === root
   } catch (error) {
-    console.error('❌ Error verifying Gill proof:', error)
+    console.error('❌ Error verifying Kit proof:', error)
     return false
   }
 }

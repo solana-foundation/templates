@@ -2,7 +2,7 @@ import { execSync } from 'child_process'
 import * as fs from 'fs'
 import type { GillWalletInfo, GillNetworkConfig, GillDeploymentResult } from './types'
 
-import { address } from 'gill'
+import { address } from '@solana/kit'
 import {
   createGillWalletClient,
   generateGillWallet,
@@ -83,7 +83,7 @@ export async function deployGillProgram(options: GillDeploymentOptions): Promise
   const { deployWallet, generateNewProgramId = false, minFunding = 2, config } = options
 
   try {
-    console.log('\n🚀 Starting program deployment with Gill...\n')
+    console.log('\n🚀 Starting program deployment with Kit...\n')
 
     console.log('💰 Ensuring deploy wallet has sufficient funds...')
     const networkConfig: GillNetworkConfig = {
@@ -127,7 +127,7 @@ export async function deployGillProgram(options: GillDeploymentOptions): Promise
       fs.unlinkSync(newKeypairPath)
     }
 
-    console.log('✅ Program deployment completed successfully with Gill!')
+    console.log('✅ Program deployment completed successfully with Kit!')
     return {
       success: true,
       programId: deployResult.programId ? address(deployResult.programId) : undefined,
@@ -161,7 +161,7 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
   } = options
 
   try {
-    console.log('🎉 Starting complete setup workflow with Gill...\n')
+    console.log('🎉 Starting complete setup workflow with Kit...\n')
 
     const networkConfig: GillNetworkConfig = {
       network: config.network,
@@ -174,7 +174,7 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
       console.log('✅ Using provided deploy wallet')
       deployWallet = providedDeployWallet
     } else {
-      console.log('🔑 Creating new deploy wallet with Gill')
+      console.log('🔑 Creating new deploy wallet with Kit')
       deployWallet = await generateGillWallet('deploy-wallet')
     }
 
@@ -184,7 +184,7 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
       console.log(`✅ Using ${providedTestWallets.length} provided test wallets`)
       testWallets = providedTestWallets
     } else {
-      console.log(`🧪 Creating ${numTestWallets} test wallets with Gill`)
+      console.log(`🧪 Creating ${numTestWallets} test wallets with Kit`)
       const client = createGillWalletClient(networkConfig)
       testWallets = await generateGillTestWallets(client.rpc, numTestWallets)
     }
@@ -217,7 +217,7 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
     updateGillEnvironmentFile(programId, testWallets, { workingDir: config.workingDir })
 
     if (deployProgram) {
-      console.log('\n🚀 Deploying program with Gill...')
+      console.log('\n🚀 Deploying program with Kit...')
       const deployResult = await deployGillProgram({
         deployWallet,
         generateNewProgramId,
@@ -236,14 +236,14 @@ export async function completeGillSetup(options: GillSetupOptions): Promise<{
       updateGillEnvironmentFile(programId, testWallets, { workingDir: config.workingDir })
 
       // Ensure Codama client is updated with new program ID
-      console.log('🔄 Syncing Codama client with deployed program ID... (Gill)')
+      console.log('🔄 Syncing Codama client with deployed program ID... (Kit)')
       const codamaSynced = await ensureGillCodamaSync({ workingDir: config.workingDir })
       if (!codamaSynced) {
-        console.log('⚠️  Warning: Could not sync Codama client after deployment (Gill)')
+        console.log('⚠️  Warning: Could not sync Codama client after deployment (Kit)')
       }
     }
 
-    console.log('\n✅ Complete setup finished successfully with Gill!')
+    console.log('\n✅ Complete setup finished successfully with Kit!')
     return {
       success: true,
       deployWallet,

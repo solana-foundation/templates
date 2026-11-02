@@ -50,7 +50,14 @@ export function getDasUrl(cluster: ClusterMoniker) {
 
 /** Helius rejects the spec param names on `getNftEditions` and `getTokenAccounts`. */
 function isHeliusUrl(url: string) {
-  return url.includes("helius-rpc.com");
+  try {
+    const { hostname } = new URL(url);
+    return (
+      hostname === "helius-rpc.com" || hostname.endsWith(".helius-rpc.com")
+    );
+  } catch {
+    return false;
+  }
 }
 
 export function getWalletChain(cluster: ClusterMoniker) {

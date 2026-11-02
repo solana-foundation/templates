@@ -1,7 +1,8 @@
+import { execSync } from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'
 import type { RecipientsFile, GillWalletInfo } from './types'
-import { type Address } from 'gill'
+import { type Address } from '@solana/kit'
 
 export interface GillFileConfig {
   workingDir?: string
@@ -41,7 +42,7 @@ test = "pnpm run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
 
   const anchorTomlPath = `${workingDir}/Anchor.toml`
   fs.writeFileSync(anchorTomlPath, anchorToml)
-  console.log(`✅ Updated ${anchorTomlPath} to use ${deployWallet.keypairFile} (Gill)`)
+  console.log(`✅ Updated ${anchorTomlPath} to use ${deployWallet.keypairFile} (Kit)`)
 }
 
 export function generateGillRecipientsJson(
@@ -56,7 +57,7 @@ export function generateGillRecipientsJson(
   const programIdStr = typeof programId === 'string' ? programId : programId
 
   const recipients = testWallets.map((wallet, index) => ({
-    publicKey: wallet.address, // Gill addresses are already strings
+    publicKey: wallet.address, // Kit addresses are already strings
     amount: airdropAmountLamports.toString(),
     index,
     description: `${wallet.name} - ${wallet.funded ? 'Funded' : 'Unfunded'} - ${airdropAmountLamports / 1e9} SOL`,
@@ -73,7 +74,7 @@ export function generateGillRecipientsJson(
       const newPublicKeys = recipients.map((r) => r.publicKey)
 
       if (JSON.stringify(existingPublicKeys.sort()) === JSON.stringify(newPublicKeys.sort())) {
-        console.log('📋 Recipients unchanged, updating descriptions only (Gill)')
+        console.log('📋 Recipients unchanged, updating descriptions only (Kit)')
         existingData.recipients = recipients
         existingData.description = 'Deployment setup airdrop for testing purposes'
         fs.writeFileSync(recipientsPath, JSON.stringify(existingData, null, 2))
@@ -100,7 +101,7 @@ export function generateGillRecipientsJson(
     }
 
     fs.writeFileSync(recipientsPath, JSON.stringify(recipientsData, null, 2))
-    console.log(`📋 Generated ${recipientsPath} (Gill)`)
+    console.log(`📋 Generated ${recipientsPath} (Kit)`)
   }
 }
 
@@ -116,7 +117,7 @@ export function updateGillRecipientsWithMerkleRoot(merkleRoot: string, config: G
     recipientsData.metadata.leafFormat = 'recipient_pubkey(32) + amount(8) + is_claimed(1)'
 
     fs.writeFileSync(recipientsPath, JSON.stringify(recipientsData, null, 2))
-    console.log(`✅ Updated ${recipientsPath} with merkle root (Gill)`)
+    console.log(`✅ Updated ${recipientsPath} with merkle root (Kit)`)
   } catch (error) {
     console.error('❌ Error updating recipients with merkle root:', error)
     throw error
@@ -129,7 +130,7 @@ export function updateGillEnvironmentFile(
   config: GillFileConfig = {},
 ): void {
   try {
-    console.log('📝 Updating environment file with program ID and test wallet... (Gill)')
+    console.log('📝 Updating environment file with program ID and test wallet... (Kit)')
 
     const { workingDir = 'anchor' } = config
     const programIdStr = typeof programId === 'string' ? programId : programId
@@ -185,11 +186,11 @@ export function updateGillEnvironmentFile(
         }
       }
 
-      console.log(`   ✅ Updated existing ${path.basename(envFile)} (Gill)`)
+      console.log(`   ✅ Updated existing ${path.basename(envFile)} (Kit)`)
     } else {
       const comments = [
         '# Solana Airdrop Configuration',
-        '# Generated automatically by deploy-setup script using Gill',
+        '# Generated automatically by deploy-setup script using Kit',
         '',
       ]
 
@@ -199,7 +200,7 @@ export function updateGillEnvironmentFile(
       }
 
       envContent = comments.concat(vars).join('\n') + '\n'
-      console.log(`   ✅ Created new ${path.basename(envFile)} with configuration (Gill)`)
+      console.log(`   ✅ Created new ${path.basename(envFile)} with configuration (Kit)`)
     }
 
     fs.writeFileSync(envFile, envContent)
@@ -215,7 +216,7 @@ export function updateGillEnvironmentFile(
 
 export function updateGillFrontendRecipientsFile(config: GillFileConfig = {}): void {
   try {
-    console.log('🎨 Updating frontend recipients file... (Gill)')
+    console.log('🎨 Updating frontend recipients file... (Kit)')
 
     const { workingDir = 'anchor' } = config
     const anchorRecipientsPath = `${workingDir}/recipients.json`
@@ -280,7 +281,7 @@ export type { RecipientFromJson, RecipientsFile }
 
     // Write the updated frontend file
     fs.writeFileSync(frontendRecipientsPath, frontendContent)
-    console.log(`   ✅ Updated ${frontendRecipientsPath} (Gill)`)
+    console.log(`   ✅ Updated ${frontendRecipientsPath} (Kit)`)
     console.log(`   📊 Recipients: ${recipientsData.recipients.length}`)
     console.log(`   🌳 Merkle Root: ${recipientsData.merkleRoot}`)
     console.log(`   📍 Program ID: ${recipientsData.programId}`)
@@ -314,7 +315,7 @@ export function writeGillWalletFile(wallet: GillWalletInfo, config: GillFileConf
     const walletData = JSON.stringify(wallet.secretKey.array, null, 2)
 
     fs.writeFileSync(walletPath, walletData)
-    console.log(`✅ Created wallet file: ${walletPath} (Gill)`)
+    console.log(`✅ Created wallet file: ${walletPath} (Kit)`)
   } catch (error) {
     console.error(`❌ Error writing wallet file for ${wallet.name}:`, error)
     throw error
@@ -344,7 +345,7 @@ export function writeGillTestWalletsFile(testWallets: GillWalletInfo[], config: 
     }
 
     fs.writeFileSync(testWalletsPath, JSON.stringify(testWalletsData, null, 2))
-    console.log(`✅ Created test wallets file: ${testWalletsPath} (Gill)`)
+    console.log(`✅ Created test wallets file: ${testWalletsPath} (Kit)`)
 
     // Also write individual wallet files
     testWallets.forEach((wallet) => {
@@ -411,16 +412,15 @@ export async function ensureGillCodamaSync(config: GillFileConfig = {}): Promise
     const codamaProgramId = getGillCodamaProgramId(config)
 
     if (codamaProgramId === currentProgramId) {
-      console.log('✅ Codama client is already in sync with current program ID (Gill)')
+      console.log('✅ Codama client is already in sync with current program ID (Kit)')
       return true
     }
 
-    console.log('🔄 Program ID mismatch detected, regenerating Codama client... (Gill)')
+    console.log('🔄 Program ID mismatch detected, regenerating Codama client... (Kit)')
     console.log(`   Current Program ID: ${currentProgramId}`)
     console.log(`   Codama Program ID: ${codamaProgramId || 'not found'}`)
 
     // Import and run the codama generation
-    const { execSync } = require('child_process')
     const codamaConfigPath = path.join(workingDir, 'codama.config.ts')
 
     if (!fs.existsSync(codamaConfigPath)) {
@@ -437,7 +437,7 @@ export async function ensureGillCodamaSync(config: GillFileConfig = {}): Promise
     // Verify the update was successful
     const updatedCodamaProgramId = getGillCodamaProgramId(config)
     if (updatedCodamaProgramId === currentProgramId) {
-      console.log('✅ Codama client successfully updated with current program ID! (Gill)')
+      console.log('✅ Codama client successfully updated with current program ID! (Kit)')
       return true
     } else {
       console.error('❌ Failed to update Codama client program ID')

@@ -1,14 +1,14 @@
-# X402 Next.js Solana Template
+# x402 Next.js Solana Template
 
-**A simple Next.js starter template with X402 payment protocol integration for Solana.**
+**A simple Next.js starter template with x402 payment protocol integration for Solana.**
 
-This template demonstrates a streamlined implementation of the X402 payment protocol using the `x402-next` package, making it easy to add cryptocurrency payment gates to your Next.js applications.
+This template demonstrates a streamlined implementation of the x402 payment protocol using the `x402-next` package, making it easy to add cryptocurrency payment gates to your Next.js applications.
 
-> ⚠️ **Using on Mainnet?** This template is configured for testnet (devnet) by default. To accept real payments on mainnet, you'll need to set up CDP API keys and configure a fee payer. See the [CDP X402 Mainnet Documentation](https://docs.cdp.coinbase.com/x402/quickstart-for-sellers#running-on-mainnet) for complete setup instructions.
+> ⚠️ **Using on Mainnet?** This template is configured for testnet (devnet) by default, and the default facilitator (`https://x402.org/facilitator`) is testnet-only. To accept real payments on mainnet, set `NEXT_PUBLIC_NETWORK=solana` and use a facilitator that supports Solana mainnet, such as the [Coinbase CDP facilitator](https://docs.cdp.coinbase.com/x402/seller/quickstart) (requires CDP API keys) or [PayAI](https://facilitator.payai.network) (no API key needed to start: set `NEXT_PUBLIC_FACILITATOR_URL=https://facilitator.payai.network`). More options are listed in the [x402 facilitator directory](https://docs.x402.org/dev-tools/facilitators). You don't need to configure a fee payer: `x402-next` reads it from the facilitator. See [Going to Production](#going-to-production).
 
 ## Table of Contents
 
-- [What is X402?](#what-is-x402)
+- [What is x402?](#what-is-x402)
 - [Features](#features)
 - [Getting Started](#getting-started)
 - [How It Works](#how-it-works)
@@ -18,9 +18,9 @@ This template demonstrates a streamlined implementation of the X402 payment prot
 
 ---
 
-## What is X402?
+## What is x402?
 
-**X402** is an open payment protocol that uses HTTP status code **402 "Payment Required"** to enable seamless cryptocurrency payments for web content and APIs.
+**x402** is an open payment protocol that uses HTTP status code **402 "Payment Required"** to enable seamless cryptocurrency payments for web content and APIs.
 
 ### Key Benefits
 
@@ -44,7 +44,7 @@ This template demonstrates a streamlined implementation of the X402 payment prot
 
 ## Features
 
-- **X402 Payment Middleware** - Powered by `x402-next` package
+- **x402 Payment Middleware** - Powered by `x402-next` package
 - **Solana Integration** - Uses Solana blockchain for payment verification
 - **Multiple Price Tiers** - Configure different prices for different routes
 - **Session Management** - Automatic session handling after payment
@@ -102,11 +102,10 @@ import { Address } from 'viem'
 import { paymentMiddleware, Resource, Network } from 'x402-next'
 import { NextRequest } from 'next/server'
 
-// Your Solana wallet address that receives payments
-const address = 'CmGgLQL36Y9ubtTsy2zmE46TAxwCBm66onZmPPhUWNqv' as Address
-const network = 'solana-devnet' as Network
-const facilitatorUrl = 'https://x402.org/facilitator' as Resource
-const cdpClientKey = '3uyu43EHCwgVIQx6a8cIfSkxp6cXgU30'
+const address = process.env.NEXT_PUBLIC_RECEIVER_ADDRESS as Address
+const network = process.env.NEXT_PUBLIC_NETWORK as Network
+const facilitatorUrl = process.env.NEXT_PUBLIC_FACILITATOR_URL as Resource
+const cdpClientKey = process.env.NEXT_PUBLIC_CDP_CLIENT_KEY as string
 
 const x402PaymentMiddleware = paymentMiddleware(
   address,
@@ -165,7 +164,7 @@ export const config = {
 
 ```
 x402-template/
-├── middleware.ts              # 🛡️  X402 payment middleware configuration
+├── middleware.ts              # 🛡️  x402 payment middleware configuration
 ├── app/
 │   ├── page.tsx              # 🏠 Homepage with links to protected content
 │   ├── layout.tsx            # 📐 Root layout
@@ -190,15 +189,18 @@ The template uses sensible defaults, but you can customize by creating a `.env.l
 
 ```bash
 # Your Solana wallet address (where payments go)
-NEXT_PUBLIC_WALLET_ADDRESS=your_solana_address_here
+NEXT_PUBLIC_RECEIVER_ADDRESS=your_solana_address_here
 
-# Network (solana-devnet or solana-mainnet-beta)
+# Network (solana-devnet or solana for mainnet)
 NEXT_PUBLIC_NETWORK=solana-devnet
 
-# Coinbase Pay Client Key (get from Coinbase Developer Portal)
+# Coinbase Pay Client Key (optional, get from Coinbase Developer Portal)
+# Only used by the paywall's Coinbase Pay / Onramp widget, not to verify or settle payments
 NEXT_PUBLIC_CDP_CLIENT_KEY=your_client_key_here
 
-# Facilitator URL (service that verifies payments)
+# Facilitator URL (service that verifies and settles payments)
+# x402.org is testnet-only. For mainnet, use a facilitator that supports `solana`,
+# e.g. https://facilitator.payai.network (see https://docs.x402.org/dev-tools/facilitators)
 NEXT_PUBLIC_FACILITATOR_URL=https://x402.org/facilitator
 ```
 
@@ -215,14 +217,14 @@ const x402PaymentMiddleware = paymentMiddleware(
       config: {
         description: 'Premium content access',
       },
-      network: 'solana-mainnet-beta',
+      network: 'solana',
     },
     '/api/data': {
       price: '$0.05',
       config: {
         description: 'API data access',
       },
-      network: 'solana-mainnet-beta',
+      network: 'solana',
     },
   },
   // ... rest of config
@@ -234,8 +236,9 @@ const x402PaymentMiddleware = paymentMiddleware(
 You can use different networks:
 
 - `solana-devnet` - For testing (use test tokens)
-- `solana-mainnet-beta` - For production (real money!)
-- `solana-testnet` - Alternative test network
+- `solana` - Mainnet, for production (real money!)
+
+`x402-next` only accepts these two Solana network names. Other names, such as `solana-mainnet-beta`, fail with `Unsupported network`.
 
 ---
 
@@ -276,10 +279,13 @@ When using `solana-devnet`:
 
 To accept real payments:
 
-1. Change network to `solana-mainnet-beta` in `middleware.ts`
-2. Update your wallet address to your production wallet
-3. Test thoroughly before deploying!
-4. Consider implementing additional security measures
+1. Set `NEXT_PUBLIC_NETWORK=solana` (x402 uses `solana` for mainnet, not `solana-mainnet-beta`)
+2. Set `NEXT_PUBLIC_FACILITATOR_URL` to a facilitator that supports Solana mainnet (see the note at the top of this README). With the testnet-only default, requests fail with `The facilitator did not provide a fee payer for network: solana.`
+3. Update your wallet address to your production wallet
+4. Test thoroughly before deploying!
+5. Consider implementing additional security measures
+
+> **Note:** the built-in browser paywall in `x402-next` v1 reads the payer's USDC balance through the public mainnet RPC (`https://api.mainnet-beta.solana.com`), which rejects requests from browsers with `403 Access forbidden`. On mainnet the paywall can fail at the balance step (see [#196](https://github.com/solana-foundation/templates/issues/196)). Non-browser clients that send the `X-PAYMENT` header themselves are not affected.
 
 ---
 
@@ -302,16 +308,16 @@ This template uses minimal dependencies:
 - **next** - Next.js framework
 - **react** / **react-dom** - React library
 - **viem** - Type-safe Ethereum/Solana types
-- **x402-next** - X402 payment middleware (handles all payment logic)
+- **x402-next** - x402 payment middleware (handles all payment logic)
 
 ---
 
 ## Learn More
 
-### X402 Protocol
+### x402 Protocol
 
-- [X402 Specification](https://github.com/coinbase/x402) - Official protocol documentation
-- [X402 Next Package](https://www.npmjs.com/package/x402-next) - Middleware used in this template
+- [x402 Specification](https://github.com/x402-foundation/x402) - Official protocol documentation
+- [x402 Next Package](https://www.npmjs.com/package/x402-next) - Middleware used in this template
 
 ### Solana
 
@@ -363,7 +369,7 @@ pnpm install
 
 For issues specific to this template, please open an issue on the repository.
 
-For X402 protocol questions, refer to the [official documentation](https://github.com/coinbase/x402).
+For x402 protocol questions, refer to the [official documentation](https://github.com/x402-foundation/x402).
 
 ---
 

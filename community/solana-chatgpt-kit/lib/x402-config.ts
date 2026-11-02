@@ -30,6 +30,5 @@ export const X402_FEE_CONFIG = {
     address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC mainnet
     decimals: 6, // USDC has 6 decimals
   },
-  network: 'solana' as const, // mainnet
   description: 'API Transfer Fee - $0.001 USDC',
 } as const
