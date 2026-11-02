@@ -576,9 +576,9 @@ export const checkRender = async (url: string, ref: TemplateRef, opts: RenderOpt
             ),
         ).then((parts) => pushSample(consoleErrors, parts.join(' ')))
       })
-      page.on('pageerror', (error) => {
+      page.on('pageerror', (error: unknown) => {
         pageErrorsTotal++
-        pushSample(pageErrors, error.message || String(error))
+        pushSample(pageErrors, error instanceof Error ? error.message || String(error) : String(error))
       })
       page.on('response', (response) => {
         const requestUrl = response.url()
