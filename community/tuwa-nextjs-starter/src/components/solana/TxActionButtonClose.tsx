@@ -36,8 +36,6 @@ export const TxActionButtonClose = ({
       params: {
         type: TxType.close,
         adapter: OrbitAdapter.SOLANA,
-        // The RPC URL must be provided for the tracker to work after a page reload
-        rpcUrl: activeWallet?.rpcURL,
         desiredChainID: 'devnet', // The cluster name for the pre-flight check
         title: ['Closing', 'Closed', 'Error', 'Replaced'],
         description: [

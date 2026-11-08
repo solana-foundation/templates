@@ -1,6 +1,15 @@
 @import '@tuwaio/sdk/styles/all.css';
 @import 'tailwindcss';
 
+/* Nova UI Kit leaves the page of the app alone: the font of the page and its scrollbar gutter are set here */
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  font-family: var(--tuwa-font-sans);
+}
+
 :root {
   --tuwa-text-accent: #27272a;
   --tuwa-text-on-accent: #ffffff;

@@ -39,8 +39,6 @@ export const TxActionButtonIncrement = ({
       params: {
         type: TxType.increment,
         adapter: OrbitAdapter.SOLANA,
-        // The RPC URL must be provided for the tracker to work after a page reload
-        rpcUrl: activeWallet?.rpcURL,
         desiredChainID: 'devnet', // The cluster name for the pre-flight check
         title: ['Incrementing', 'Incremented', 'Error', 'Replaced'],
         description: [

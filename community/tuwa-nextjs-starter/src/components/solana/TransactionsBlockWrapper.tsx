@@ -2,8 +2,8 @@
 
 import { address } from '@solana/kit';
 import { useSatelliteConnectStore } from '@tuwaio/sdk/nova-connect/satellite';
-import { textCenterEllipsis } from '@tuwaio/sdk/nova-core/utils';
 import { HashLink } from '@tuwaio/sdk/nova-transactions';
+import { shortAddress } from '@tuwaio/sdk/orbit';
 import { OrbitAdapter, selectAdapterByKey, SOLANA_CHAIN_IDS } from '@tuwaio/sdk/orbit';
 import { TransactionStatus, useTxFinished } from '@tuwaio/sdk/pulsar';
 import { SolanaConnection } from '@tuwaio/solana-sdk/satellite';
@@ -104,7 +104,7 @@ export const TransactionsBlockWrapper = () => {
                     onClick={openSolscan}
                     className="text-xs font-mono text-[var(--tuwa-text-accent)] hover:opacity-80 leading-tight cursor-pointer transition-opacity duration-200 underline hover:no-underline"
                   >
-                    {textCenterEllipsis(PROGRAM_ID.toString(), 6, 6)}
+                    {shortAddress(PROGRAM_ID.toString(), 6, 6)}
                   </button>
                 </div>
               </div>
