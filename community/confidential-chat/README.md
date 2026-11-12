@@ -37,7 +37,7 @@ npm run dev
 
 **5. Chat**
 
-Open [http://localhost:3000](http://localhost:3000) and send a message. The status line shows each step as it happens. Under each reply, the page shows the enclave it verified: its host, the repository and release tag of its code, and the release digest.
+Open [http://localhost:3000](http://localhost:3000) and send a message. The status line shows each step as it happens. Under each reply, the page shows what it verified: the repository and release tag of the enclave's code, and the release digest. It also shows the host the request was routed to, which is not part of the proof.
 
 ## How it works
 

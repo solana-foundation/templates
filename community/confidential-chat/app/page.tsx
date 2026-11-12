@@ -63,8 +63,9 @@ export default function Chat() {
             <p className="whitespace-pre-wrap">{turn.content}</p>
             {turn.enclave && (
               <p className="mt-2 break-all font-mono text-xs text-muted" title={turn.enclave.digest}>
-                Verified {turn.enclave.host} · {turn.enclave.configRepo}
+                Verified {turn.enclave.configRepo}
                 {turn.enclave.releaseTag && `@${turn.enclave.releaseTag}`} · digest {turn.enclave.digest.slice(0, 16)}…
+                · routed to {turn.enclave.host}
               </p>
             )}
           </li>

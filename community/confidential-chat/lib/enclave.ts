@@ -17,6 +17,7 @@ export type Message = { role: 'user' | 'assistant'; content: string }
 /** What the browser proved about the enclave: the key to encrypt to, and the facts the page shows under each reply. */
 export type Enclave = {
   publicKey: string
+  // Not proved: the host comes from the bundle and only says where to route the ciphertext.
   host: string
   configRepo: string
   releaseTag: string
