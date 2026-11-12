@@ -86,6 +86,9 @@ export default function Chat() {
         <input
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
+          // Read-only while a message is in flight, so the catch above can put a failed message back without erasing
+          // anything newer. Unlike disabled, it keeps the focus.
+          readOnly={!!step}
           placeholder="Write a message"
           aria-label="Message"
           className="flex-1 rounded-lg border border-border bg-background px-3 py-2"
