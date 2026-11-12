@@ -1,26 +1,12 @@
+import { createKitClient, sendKitTransaction } from './kit-client'
+
 // Codama-generated client imports
 import { getInitializeAirdropInstruction } from '../generated/clients/ts/instructions/initializeAirdrop'
 import * as fs from 'fs'
 import type { RecipientsFile, GillInitializationResult } from './types'
-import {
-  appendTransactionMessageInstructions,
-  assertIsTransactionWithBlockhashLifetime,
-  createKeyPairSignerFromBytes,
-  createSolanaRpc,
-  createSolanaRpcSubscriptions,
-  createTransactionMessage,
-  address,
-  getProgramDerivedAddress,
-  getSignatureFromTransaction,
-  pipe,
-  sendAndConfirmTransactionFactory,
-  setTransactionMessageFeePayerSigner,
-  setTransactionMessageLifetimeUsingBlockhash,
-  signTransactionMessageWithSigners,
-} from '@solana/kit'
+import { createKeyPairSignerFromBytes, address, getProgramDerivedAddress } from '@solana/kit'
 import {
   buildGillProgramIfNeeded,
-  deployGillProgram,
   getGillProgramStatus,
   ensureGillProgramIdConsistency,
   type GillBuildConfig,
@@ -42,7 +28,7 @@ export async function checkGillPreRequisites(
   const issues: string[] = []
   let needsBuild = false
 
-  const buildConfig: GillBuildConfig = { workingDir }
+  const buildConfig: GillBuildConfig = { workingDir, network: config.network }
 
   const status = getGillProgramStatus(buildConfig)
   if (!status.built) {
@@ -80,7 +66,7 @@ export async function fixGillInitializationIssues(config: GillInitializerConfig 
     console.log(`⚠️  Found issues: ${issues.join(', ')} (Kit)`)
 
     if (needsBuild) {
-      const buildConfig: GillBuildConfig = { workingDir, verbose }
+      const buildConfig: GillBuildConfig = { workingDir, verbose, network: config.network }
 
       const consistencyFixed = await ensureGillProgramIdConsistency(undefined, buildConfig)
       if (!consistencyFixed) {
@@ -107,7 +93,7 @@ export async function initializeGillAirdrop(
   recipientsFile: string = 'recipients.json',
   config: GillInitializerConfig = {},
 ): Promise<GillInitializationResult> {
-  const { network = 'devnet', walletPath = './deploy-wallet.json', workingDir = '.', verbose = false } = config
+  const { network = 'devnet', walletPath = './deploy-wallet.json', workingDir = '.' } = config
 
   try {
     console.log('🚀 Initializing airdrop with Kit...\n')
@@ -137,27 +123,17 @@ export async function initializeGillAirdrop(
     console.log(`🌳 Merkle root: ${recipientsData.merkleRoot} (Kit)`)
 
     console.log('📡 Setting up Kit client...')
-    const rpcUrl = network === 'devnet' ? 'https://api.devnet.solana.com' : `https://api.${network}.solana.com`
-    const rpc = createSolanaRpc(rpcUrl)
-    const rpcSubscriptions = createSolanaRpcSubscriptions(rpcUrl.replace('http', 'ws'))
-    const sendAndConfirm = sendAndConfirmTransactionFactory({ rpc, rpcSubscriptions })
-    const sendAndConfirmTransaction = async (
-      transactionMessage: Parameters<typeof signTransactionMessageWithSigners>[0],
-    ): Promise<string> => {
-      const signedTransaction = await signTransactionMessageWithSigners(transactionMessage)
-      assertIsTransactionWithBlockhashLifetime(signedTransaction)
-      await sendAndConfirm(signedTransaction, { commitment: 'confirmed' })
-      return getSignatureFromTransaction(signedTransaction)
-    }
-
     const walletData = fs.readFileSync(walletPath, 'utf8')
     const walletArray = JSON.parse(walletData)
     const walletBytes = new Uint8Array(walletArray)
     const authoritySigner = await createKeyPairSignerFromBytes(walletBytes)
 
+    const client = createKitClient(authoritySigner, network, config.rpcUrl)
+    const { rpc } = client
+
     console.log(`👤 Authority: ${authoritySigner.address} (Kit)`)
 
-    const buildConfig: GillBuildConfig = { workingDir }
+    const buildConfig: GillBuildConfig = { workingDir, network }
     const status = getGillProgramStatus(buildConfig)
 
     if (!status.programId) {
@@ -172,9 +148,9 @@ export async function initializeGillAirdrop(
 
     // Ensure Codama client is in sync with current program ID
     console.log('🔄 Checking Codama client sync... (Kit)')
-    const codamaSynced = await ensureGillCodamaSync({ workingDir })
+    const codamaSynced = await ensureGillCodamaSync({ workingDir, network })
     if (!codamaSynced) {
-      console.log('⚠️  Warning: Could not sync Codama client. Proceeding anyway... (Kit)')
+      return { success: false, error: 'Codama client is not synchronized. Regenerate the client and retry explicitly.' }
     }
 
     console.log('🔍 Verifying program exists on-chain... (Kit)')
@@ -222,71 +198,24 @@ export async function initializeGillAirdrop(
     const merkleRootHex = recipientsData.merkleRoot.replace('0x', '')
     const merkleRootBytes = new Uint8Array(Buffer.from(merkleRootHex, 'hex'))
 
-    const signer = await createKeyPairSignerFromBytes(walletBytes)
-
-    const initializeInstruction = getInitializeAirdropInstruction({
-      airdropState: address(airdropStatePda),
-      authority: signer,
-      merkleRoot: merkleRootBytes,
-      amount: BigInt(recipientsData.totalAmount),
-    })
-
-    const { value: latestBlockhash } = await rpc.getLatestBlockhash().send()
-
-    // Create transaction using Kit
-    const transaction = pipe(
-      createTransactionMessage({ version: 'legacy' }),
-      (tx) => setTransactionMessageFeePayerSigner(signer, tx),
-      (tx) => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, tx),
-      (tx) => appendTransactionMessageInstructions([initializeInstruction], tx),
+    const initializeInstruction = getInitializeAirdropInstruction(
+      {
+        airdropState: address(airdropStatePda),
+        authority: authoritySigner,
+        merkleRoot: merkleRootBytes,
+        amount: BigInt(recipientsData.totalAmount),
+      },
+      { programAddress },
     )
 
     let signature: string
     try {
-      signature = await sendAndConfirmTransaction(transaction)
-
-      console.log('✅ Transaction sent successfully! (Codama + Kit)')
-      console.log(`📋 Transaction signature: ${signature}`)
-      console.log(`🔍 View on explorer: https://explorer.solana.com/tx/${signature}?cluster=${network}`)
+      signature = await sendKitTransaction(client, [initializeInstruction])
+      console.log(`Transaction signature: ${signature}`)
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error)
-      if (errorMessage.includes('DeclaredProgramIdMismatch')) {
-        console.log('⚠️  Program ID mismatch detected, attempting fresh deployment... (Kit)')
-
-        try {
-          const deployResult = await deployGillProgram(undefined, { workingDir, verbose })
-          if (!deployResult.success) {
-            return {
-              success: false,
-              error: `Fresh deployment failed: ${deployResult.error}`,
-            }
-          }
-
-          console.log('✅ Fresh deployment completed, retrying initialization... (Kit)')
-
-          const { value: retryBlockhash } = await rpc.getLatestBlockhash().send()
-          const retryTransaction = pipe(
-            createTransactionMessage({ version: 'legacy' }),
-            (tx) => setTransactionMessageFeePayerSigner(signer, tx),
-            (tx) => setTransactionMessageLifetimeUsingBlockhash(retryBlockhash, tx),
-            (tx) => appendTransactionMessageInstructions([initializeInstruction], tx),
-          )
-
-          signature = await sendAndConfirmTransaction(retryTransaction)
-
-          console.log('✅ Transaction sent successfully after retry! (Codama + Kit)')
-          console.log(`📋 Transaction signature: ${signature}`)
-        } catch (retryError) {
-          return {
-            success: false,
-            error: `Failed to initialize after fresh deployment: ${retryError}`,
-          }
-        }
-      } else {
-        return {
-          success: false,
-          error: `Failed to send initialization transaction: ${error}`,
-        }
+      return {
+        success: false,
+        error: `Failed to send initialization transaction: ${error}. Check program ID consistency and deployment explicitly; no automatic redeployment was attempted.`,
       }
     }
 

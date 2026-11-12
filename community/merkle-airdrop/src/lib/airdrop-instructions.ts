@@ -3,10 +3,14 @@
  * Handles serialization of instruction data for the airdrop program
  */
 
+import { Endian, getU32Encoder, getU64Encoder } from '@solana/kit'
+import type { ExactAmount } from '../../types'
+import { toU64 } from './merkle-tree'
+
 export interface ClaimAirdropArgs {
-  amount: string
+  amount: ExactAmount
   proof: number[][]
-  leafIndex: number
+  leafIndex: ExactAmount
 }
 
 /**
@@ -15,6 +19,20 @@ export interface ClaimAirdropArgs {
  */
 export function serializeClaimInstructionData(args: ClaimAirdropArgs): Uint8Array {
   const { amount, proof, leafIndex } = args
+  if (
+    !Array.isArray(proof) ||
+    proof.length > 64 ||
+    Array.from(proof).some(
+      (node) =>
+        !Array.isArray(node) ||
+        node.length !== 32 ||
+        Array.from(node).some((byte) => !Number.isInteger(byte) || byte < 0 || byte > 255),
+    )
+  ) {
+    throw new RangeError('Proof must contain at most 64 hashes of 32 bytes')
+  }
+  const index = toU64(leafIndex)
+  if (index >> BigInt(proof.length)) throw new RangeError('Leaf index exceeds proof depth')
 
   return new Uint8Array([
     // Discriminator (8 bytes) - identifies the claim_airdrop instruction
@@ -28,16 +46,16 @@ export function serializeClaimInstructionData(args: ClaimAirdropArgs): Uint8Arra
     20,
 
     // Amount (8 bytes as u64)
-    ...new Uint8Array(new BigUint64Array([BigInt(amount)]).buffer),
+    ...getU64Encoder({ endian: Endian.Little }).encode(toU64(amount)),
 
     // Proof length (4 bytes as u32)
-    ...new Uint8Array(new Uint32Array([proof.length]).buffer),
+    ...getU32Encoder({ endian: Endian.Little }).encode(proof.length),
 
     // Proof data (variable length) - flattened array of 32-byte hashes
     ...proof.flat(),
 
     // Leaf index (8 bytes as u64)
-    ...new Uint8Array(new BigUint64Array([BigInt(leafIndex)]).buffer),
+    ...getU64Encoder({ endian: Endian.Little }).encode(index),
   ])
 }
 
@@ -55,6 +73,6 @@ export const ACCOUNT_ROLES = {
  * Program addresses used by the airdrop system
  */
 export const PROGRAM_ADDRESSES = {
-  AIRDROP_PROGRAM: 'ErbDoJTnJyG6EBXHeFochTsHJhB3Jfjc3MF1L9aNip3y',
+  AIRDROP_PROGRAM: '6Gs656WdKHM2XuZU3CZQ7SJNo63FecawsLECE6wFnozT',
   SYSTEM_PROGRAM: '11111111111111111111111111111111',
 } as const

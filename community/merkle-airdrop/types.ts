@@ -18,7 +18,9 @@ export interface MerkleTree {
   tree_nodes: MerkleTreeNode[]
 }
 
+export type ExactAmount = bigint | string | number
+
 export interface Recipient {
   recipient: Address
-  amount: number
+  amount: ExactAmount
 }

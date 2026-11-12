@@ -1,30 +1,16 @@
 import bs58 from 'bs58'
-import { execSync } from 'child_process'
 import { generateKeyPair } from 'crypto'
 import { promisify } from 'util'
 import type { GillWalletInfo, GillNetworkConfig } from './types'
-import {
-  createSolanaRpc,
-  createKeyPairSignerFromBytes,
-  lamports,
-  type Address,
-  type Rpc,
-  type SolanaRpcApi,
-} from '@solana/kit'
+import { createKeyPairSignerFromBytes, lamports, type Address, type Rpc, type SolanaRpcApi } from '@solana/kit'
+
+import { createKitClient, createKitReadClient, sendKitTransaction, type KitNetwork } from './kit-client'
+import { getTransferSolInstruction } from '@solana-program/system'
 
 const generateKeyPairAsync = promisify(generateKeyPair)
 
 export function createGillWalletClient(config: GillNetworkConfig) {
-  const networkUrls = {
-    devnet: process.env.DEVNET_RPC_URL || 'https://api.devnet.solana.com',
-    mainnet: process.env.MAINNET_RPC_URL || 'https://api.mainnet-beta.solana.com',
-    testnet: process.env.TESTNET_RPC_URL || 'https://api.testnet.solana.com',
-  }
-
-  const rpcUrl = config.rpcUrl || networkUrls[config.network as keyof typeof networkUrls]
-  const rpc = createSolanaRpc(rpcUrl)
-
-  return { rpc }
+  return createKitReadClient(config.network, config.rpcUrl)
 }
 
 export async function generateGillWallet(name: string): Promise<GillWalletInfo> {
@@ -216,6 +202,8 @@ export async function distributeSolToWallets(
   fromWallet: GillWalletInfo,
   toWallets: GillWalletInfo[],
   amountPerWallet: number = 0.1,
+  rpcUrl?: string,
+  network: KitNetwork = 'devnet',
 ): Promise<GillWalletInfo[]> {
   if (!fromWallet.signer) {
     throw new Error('Primary wallet must have signer to distribute SOL')
@@ -230,19 +218,13 @@ export async function distributeSolToWallets(
     try {
       console.log(`💸 Sending ${amountPerWallet} SOL to ${wallet.address}...`)
 
-      let keypairFile = fromWallet.keypairFile || 'anchor/deploy-wallet.json'
-
-      if (keypairFile === 'deploy-wallet.json' && !process.cwd().endsWith('/anchor')) {
-        keypairFile = 'anchor/deploy-wallet.json'
-      }
-      const result = execSync(
-        `solana transfer ${wallet.address} ${amountPerWallet} --allow-unfunded-recipient --keypair ${keypairFile} --url devnet`,
-        { encoding: 'utf8', cwd: process.cwd() },
-      )
-
-      // Extract signature from output
-      const signatureMatch = result.match(/Signature: ([A-Za-z0-9]+)/)
-      const signature = signatureMatch ? signatureMatch[1] : 'unknown'
+      const signature = await sendKitTransaction(createKitClient(fromWallet.signer, network, rpcUrl), [
+        getTransferSolInstruction({
+          source: fromWallet.signer,
+          destination: wallet.address,
+          amount: lamports(BigInt(Math.round(amountPerWallet * 1e9))),
+        }),
+      ])
 
       const updatedWallet = {
         ...wallet,
@@ -298,6 +280,8 @@ export async function setupEfficientWalletFunding(
   primaryWallet: GillWalletInfo,
   testWallets: GillWalletInfo[],
   distributionAmount: number = 0.1,
+  rpcUrl?: string,
+  network: KitNetwork = 'devnet',
 ): Promise<{
   primaryWallet: GillWalletInfo
   testWallets: GillWalletInfo[]
@@ -312,7 +296,14 @@ export async function setupEfficientWalletFunding(
 
   const fundedPrimary = await fundPrimaryWallet(rpc, primaryWallet, primaryWalletAmount)
 
-  const fundedTestWallets = await distributeSolToWallets(rpc, fundedPrimary, testWallets, distributionAmount)
+  const fundedTestWallets = await distributeSolToWallets(
+    rpc,
+    fundedPrimary,
+    testWallets,
+    distributionAmount,
+    rpcUrl,
+    network,
+  )
 
   return {
     primaryWallet: fundedPrimary,

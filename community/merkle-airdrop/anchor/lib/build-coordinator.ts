@@ -1,6 +1,7 @@
-import { execSync } from 'child_process'
+import { execFileSync, execSync } from 'child_process'
 import * as fs from 'fs'
 import type { GillDeploymentResult } from './types'
+import { getGillConfiguredProgramId, updateGillAnchorProgramId } from './file-manager'
 
 import { address, type Address } from '@solana/kit'
 
@@ -8,6 +9,7 @@ export interface GillBuildConfig {
   workingDir?: string
   network?: 'devnet' | 'mainnet' | 'testnet'
   verbose?: boolean
+  rpcUrl?: string
 }
 
 interface BuildState {
@@ -82,14 +84,7 @@ export function getGillDeployedProgramId(config: GillBuildConfig = {}): string |
 
 export function getGillAnchorProgramId(config: GillBuildConfig = {}): string | null {
   const { workingDir = '.' } = config
-
-  try {
-    const anchorContent = fs.readFileSync(`${workingDir}/Anchor.toml`, 'utf8')
-    const match = anchorContent.match(/solana_distributor = "([^"]+)"/)
-    return match ? match[1] : null
-  } catch {
-    return null
-  }
+  return getGillConfiguredProgramId({ ...config, workingDir })
 }
 
 export async function buildGillProgramIfNeeded(
@@ -134,6 +129,10 @@ export async function deployGillProgram(
   const { workingDir = '.', verbose = false } = config
 
   try {
+    if (programKeypairPath) {
+      fs.mkdirSync(`${workingDir}/target/deploy`, { recursive: true })
+      fs.copyFileSync(programKeypairPath, `${workingDir}/target/deploy/solana_distributor-keypair.json`)
+    }
     const buildResult = await buildGillProgramIfNeeded(false, config)
     if (!buildResult.success) {
       return {
@@ -143,19 +142,16 @@ export async function deployGillProgram(
       }
     }
 
-    if (programKeypairPath) {
-      console.log('📋 Setting up program keypair... (Kit)')
-      execSync(`mkdir -p ${workingDir}/target/deploy`)
-      execSync(`cp ${programKeypairPath} ${workingDir}/target/deploy/solana_distributor-keypair.json`)
-      console.log('✅ Program keypair configured (Kit)')
-    }
-
     console.log('📡 Deploying program with Kit...')
-    const deployOutput = execSync('anchor deploy', {
-      stdio: verbose ? 'inherit' : 'pipe',
-      cwd: workingDir,
-      encoding: 'utf8',
-    })
+    const deployOutput = execFileSync(
+      'anchor',
+      ['deploy', ...(config.rpcUrl ? ['--provider.cluster', config.rpcUrl] : [])],
+      {
+        stdio: verbose ? 'inherit' : 'pipe',
+        cwd: workingDir,
+        encoding: 'utf8',
+      },
+    )
 
     const programIdMatch = deployOutput.match(/Program Id: (\w+)/)
     const programIdStr = programIdMatch ? programIdMatch[1] : getGillDeployedProgramId(config)
@@ -221,10 +217,7 @@ export async function ensureGillProgramIdConsistency(
   }
 
   try {
-    const anchorPath = `${workingDir}/Anchor.toml`
-    let anchorContent = fs.readFileSync(anchorPath, 'utf8')
-    anchorContent = anchorContent.replace(/solana_distributor = ".*"/, `solana_distributor = "${newProgramId}"`)
-    fs.writeFileSync(anchorPath, anchorContent)
+    updateGillAnchorProgramId(newProgramId, { ...config, workingDir })
     console.log('   ✅ Updated Anchor.toml')
   } catch (error) {
     console.error('   ❌ Failed to update Anchor.toml:', error)

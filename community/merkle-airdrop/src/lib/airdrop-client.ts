@@ -1,201 +1,111 @@
-/**
- * Airdrop Client
- * Core logic for claiming airdrops on Solana
- */
-
 import {
-  createSolanaRpc,
-  createSolanaRpcSubscriptions,
-  getProgramDerivedAddress,
+  AccountRole,
   address,
-  createTransactionMessage,
-  setTransactionMessageFeePayer,
+  compileTransactionMessage,
+  estimateAndSetResourceLimitsFactory,
+  estimateResourceLimitsFactory,
+  getAddressEncoder,
+  getBase64Decoder,
+  getBase64Encoder,
+  getCompiledTransactionMessageEncoder,
+  getProgramDerivedAddress,
+  getUtf8Encoder,
   setTransactionMessageLifetimeUsingBlockhash,
-  appendTransactionMessageInstruction,
-  compileTransaction,
-  signTransaction,
-  getSignatureFromTransaction,
-  createKeyPairSignerFromBytes,
-  sendAndConfirmTransactionFactory,
-  pipe,
+  type Address,
+  type TransactionMessageBytesBase64,
 } from '@solana/kit'
-import bs58 from 'bs58'
+import type { AppClient } from './solana-client'
 import { generateProofForRecipient } from './merkle-tree'
-import { serializeClaimInstructionData, ACCOUNT_ROLES, PROGRAM_ADDRESSES } from './airdrop-instructions'
-import { AIRDROP_CONFIG } from './config'
+import { serializeClaimInstructionData } from './airdrop-instructions'
+import { AIRDROP_CONFIG, validateConfig } from './config'
+import idl from './idl.json'
 
-export interface AirdropClaimConfig {
-  privateKey: string
-  network: 'devnet' | 'mainnet' | 'testnet'
+function hasDiscriminator(bytes: ArrayLike<number>, name: string) {
+  const discriminator = idl.accounts.find((account) => account.name === name)!.discriminator
+  return discriminator.every((byte, index) => bytes[index] === byte)
 }
 
-export interface ClaimResult {
-  signature: string
-  amount: string
-  recipient: string
-}
-
-const NETWORK_CONFIG: Record<string, { http: string; ws: string }> = {
-  devnet: {
-    http: 'https://api.devnet.solana.com',
-    ws: 'wss://api.devnet.solana.com',
-  },
-  testnet: {
-    http: 'https://api.testnet.solana.com',
-    ws: 'wss://api.testnet.solana.com',
-  },
-  mainnet: {
-    http: 'https://api.mainnet-beta.solana.com',
-    ws: 'wss://api.mainnet-beta.solana.com',
-  },
-}
-
-function createClientInstance(network: string) {
-  const config = NETWORK_CONFIG[network] || NETWORK_CONFIG.devnet
-  const rpc = createSolanaRpc(config.http)
-  const rpcSubscriptions = createSolanaRpcSubscriptions(config.ws)
-  const sendAndConfirmTransaction = sendAndConfirmTransactionFactory({ rpc, rpcSubscriptions })
-
-  return {
-    rpc,
-    sendAndConfirmTransaction,
-  }
-}
-
-export async function checkClaimStatus(config: AirdropClaimConfig, privateKey: string): Promise<boolean> {
-  const clientInstance = createClientInstance(config.network)
-
-  const privateKeyBytes = bs58.decode(privateKey)
-  const signer = await createKeyPairSignerFromBytes(privateKeyBytes)
-
-  const programAddress = address(AIRDROP_CONFIG.AIRDROP_PROGRAM_ID!)
-  const [airdropStatePda] = await getProgramDerivedAddress({
+export async function claimAddresses(programAddress: Address, recipient: Address) {
+  const [state] = await getProgramDerivedAddress({ programAddress, seeds: [getUtf8Encoder().encode('merkle_tree')] })
+  const [claim] = await getProgramDerivedAddress({
     programAddress,
-    seeds: ['merkle_tree'],
+    seeds: [getUtf8Encoder().encode('claim'), getAddressEncoder().encode(state), getAddressEncoder().encode(recipient)],
   })
-
-  const [userClaimPda] = await getProgramDerivedAddress({
-    programAddress,
-    seeds: ['claim', bs58.decode(airdropStatePda), bs58.decode(signer.address)],
-  })
-
-  try {
-    const accountInfo = await clientInstance.rpc.getAccountInfo(address(userClaimPda)).send()
-    return accountInfo.value !== null // If account exists, airdrop has been claimed
-  } catch {
-    return false
-  }
+  return { state, claim }
 }
 
-export async function claimAirdrop(config: AirdropClaimConfig, privateKey: string): Promise<ClaimResult> {
-  const clientInstance = createClientInstance(config.network)
-
-  const privateKeyBytes = bs58.decode(privateKey)
-  const signer = await createKeyPairSignerFromBytes(privateKeyBytes)
-
-  const alreadyClaimed = await checkClaimStatus(config, privateKey)
-  if (alreadyClaimed) {
-    throw new Error('Airdrop has already been claimed for this address')
+export async function checkClaimStatus(client: AppClient, program: Address, recipient: Address, signal?: AbortSignal) {
+  const { claim } = await claimAddresses(program, recipient)
+  const info = await client.rpc
+    .getAccountInfo(claim, { encoding: 'base64', commitment: 'confirmed' })
+    .send({ abortSignal: signal })
+  if (info.value && info.value.owner !== program) throw new Error('Claim account has an unexpected owner.')
+  if (info.value && !hasDiscriminator(getBase64Encoder().encode(info.value.data[0]), 'ClaimStatus')) {
+    throw new Error('Invalid claim account discriminator.')
   }
+  return info.value !== null
+}
 
-  await validateClaim(clientInstance, signer.address)
-
+export async function prepareClaim(client: AppClient, signal: AbortSignal) {
+  validateConfig()
+  const wallet = client.wallet.getState().connected
+  if (!wallet?.signer || !wallet.supportedTransactionVersions.has(1)) {
+    throw new Error('Connect a wallet that supports Version 1 transactions.')
+  }
+  const signer = wallet.signer
+  const program = address(AIRDROP_CONFIG.AIRDROP_PROGRAM_ID!)
   const proof = generateProofForRecipient(signer.address)
-  if (!proof) {
-    throw new Error(`Address ${signer.address} is not eligible for this airdrop`)
-  }
-
-  const programAddress = address(AIRDROP_CONFIG.AIRDROP_PROGRAM_ID!)
-  const [airdropStatePda] = await getProgramDerivedAddress({
-    programAddress,
-    seeds: ['merkle_tree'],
-  })
-
-  const [userClaimPda] = await getProgramDerivedAddress({
-    programAddress,
-    seeds: ['claim', bs58.decode(airdropStatePda), bs58.decode(signer.address)],
-  })
-
-  const signature = await sendClaimTransaction(clientInstance, {
-    signer,
-    programAddress,
-    airdropStatePda,
-    userClaimPda,
-    proof,
-  })
-
-  return {
-    signature,
-    amount: proof.amount,
-    recipient: proof.recipient,
-  }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function validateClaim(clientInstance: any, signerAddress: string): Promise<void> {
-  const balance = await clientInstance.rpc.getBalance(address(signerAddress)).send()
-  const balanceLamports = Number(balance.value)
-
-  const minBalanceLamports = AIRDROP_CONFIG.MIN_SOL_BALANCE * 1e9
-  if (balanceLamports < minBalanceLamports) {
-    throw new Error(
-      `Insufficient SOL balance: ${balanceLamports / 1e9} SOL. Need at least ${AIRDROP_CONFIG.MIN_SOL_BALANCE} SOL for transaction fees.`,
-    )
-  }
-
-  const proof = generateProofForRecipient(signerAddress)
-  if (!proof) {
-    throw new Error(`Address ${signerAddress} is not eligible for this airdrop`)
-  }
-}
-
-async function sendClaimTransaction(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  clientInstance: any,
-  params: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    signer: any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    programAddress: any
-    airdropStatePda: string
-    userClaimPda: string
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    proof: any
-  },
-): Promise<string> {
-  const { signer, programAddress, airdropStatePda, userClaimPda, proof } = params
-
-  const instructionData = serializeClaimInstructionData({
-    amount: proof.amount,
-    proof: proof.proof,
-    leafIndex: proof.leafIndex,
-  })
-
-  const { value: latestBlockhash } = await clientInstance.rpc.getLatestBlockhash().send()
-
+  if (!proof) throw new Error('This wallet is not eligible for this airdrop.')
+  if (await checkClaimStatus(client, program, signer.address, signal))
+    throw new Error('Already claimed for this wallet.')
+  const { state, claim } = await claimAddresses(program, signer.address)
+  const stateInfo = await client.rpc
+    .getAccountInfo(state, { encoding: 'base64', commitment: 'confirmed' })
+    .send({ abortSignal: signal })
+  if (!stateInfo.value || stateInfo.value.owner !== program)
+    throw new Error('Airdrop is not initialized for this program.')
+  const stateBytes = getBase64Encoder().encode(stateInfo.value.data[0])
+  if (stateBytes.length < 89 || !hasDiscriminator(stateBytes, 'AirdropState')) throw new Error('Invalid airdrop state.')
+  const { merkleRoot } = await import('./recipients').then(({ RECIPIENTS_DATA }) => RECIPIENTS_DATA)
+  const rootHex = Array.from(stateBytes.slice(8, 40), (byte) => byte.toString(16).padStart(2, '0')).join('')
+  if (`0x${rootHex}` !== merkleRoot.toLowerCase())
+    throw new Error('Recipient data does not match the on-chain airdrop root. Regenerate the recipient data.')
   const instruction = {
-    programAddress,
+    programAddress: program,
     accounts: [
-      { address: address(airdropStatePda), role: ACCOUNT_ROLES.WRITABLE },
-      { address: address(userClaimPda), role: ACCOUNT_ROLES.WRITABLE },
-      { address: signer.address, role: ACCOUNT_ROLES.WRITABLE_SIGNER },
-      { address: address(PROGRAM_ADDRESSES.SYSTEM_PROGRAM), role: ACCOUNT_ROLES.READONLY },
+      { address: state, role: AccountRole.WRITABLE },
+      { address: claim, role: AccountRole.WRITABLE },
+      { address: signer.address, role: AccountRole.WRITABLE_SIGNER, signer },
+      { address: address('11111111111111111111111111111111'), role: AccountRole.READONLY },
     ],
-    data: instructionData,
+    data: serializeClaimInstructionData(proof),
   }
-
-  const transactionMessage = pipe(
-    createTransactionMessage({ version: 0 }),
-    (tx) => setTransactionMessageFeePayer(signer.address, tx),
-    (tx) => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, tx),
-    (tx) => appendTransactionMessageInstruction(instruction, tx),
-  )
-
-  const compiledTransaction = compileTransaction(transactionMessage)
-  const signedTransaction = await signTransaction([signer.keyPair], compiledTransaction)
-
-  await clientInstance.sendAndConfirmTransaction(signedTransaction, { commitment: 'confirmed' })
-
-  const signature = getSignatureFromTransaction(signedTransaction)
-  return signature
+  const rent = await client.rpc.getMinimumBalanceForRentExemption(8n).send({ abortSignal: signal })
+  const balance = await client.rpc.getBalance(signer.address, { commitment: 'confirmed' }).send({ abortSignal: signal })
+  if (balance.value < rent) throw new Error('Insufficient SOL for the claim account rent and transaction fee.')
+  const planned = await client.planTransaction([instruction], { abortSignal: signal })
+  if (planned.version !== 1) throw new Error('Expected a Version 1 transaction.')
+  const { value: blockhash } = await client.rpc
+    .getLatestBlockhash({ commitment: 'confirmed' })
+    .send({ abortSignal: signal })
+  const estimate = estimateAndSetResourceLimitsFactory(estimateResourceLimitsFactory({ rpc: client.rpc }))
+  const message = await estimate(setTransactionMessageLifetimeUsingBlockhash(blockhash, planned), {
+    abortSignal: signal,
+    commitment: 'confirmed',
+  })
+  const encoded = getBase64Decoder().decode(
+    getCompiledTransactionMessageEncoder().encode(compileTransactionMessage(message)),
+  ) as TransactionMessageBytesBase64
+  const fee = await client.rpc.getFeeForMessage(encoded, { commitment: 'confirmed' }).send({ abortSignal: signal })
+  if (fee.value === null) throw new Error('Unable to estimate the fee. Please retry.')
+  const freshBalance = await client.rpc
+    .getBalance(signer.address, { commitment: 'confirmed' })
+    .send({ abortSignal: signal })
+  if (freshBalance.value < rent + fee.value)
+    throw new Error('Insufficient SOL for the claim account rent and transaction fee.')
+  signal.throwIfAborted()
+  const current = client.wallet.getState().connected
+  if (current?.signer !== signer || !current.supportedTransactionVersions.has(1))
+    throw new Error('Wallet changed. Please retry.')
+  return { message, amount: proof.amount, recipient: signer.address }
 }
