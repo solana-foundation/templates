@@ -11,7 +11,10 @@ pub mod vault {
     use super::*;
 
     pub fn deposit(ctx: Context<VaultAction>, amount: u64) -> Result<()> {
-        require!(ctx.accounts.vault.lamports() == 0, VaultError::VaultAlreadyExists);
+        require!(
+            ctx.accounts.vault.lamports() == 0,
+            VaultError::VaultAlreadyExists
+        );
 
         let rent = Rent::get()?.minimum_balance(0);
         require!(amount > rent, VaultError::InvalidAmount);
