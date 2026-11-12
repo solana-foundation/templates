@@ -1,0 +1,17 @@
+{
+  "idl": "src/targets/solanatest/idl/solanatest.json",
+  "scripts": {
+    "js": {
+      "from": "@codama/renderers-js",
+      "args": [
+        "src/programs/solanatest/generated",
+        {
+          "generatedFolder": "",
+          "syncPackageJson": false,
+          "deleteFolderBeforeRendering": true,
+          "kitImportStrategy": "rootOnly"
+        }
+      ]
+    }
+  }
+}
