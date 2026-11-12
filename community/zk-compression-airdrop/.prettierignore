@@ -1,8 +1,12 @@
+node_modules
+.next
 /dist
 /coverage
-.next
 /tmp
-package-lock.json
-pnpm-lock.yaml
 yarn.lock
 pnpm-workspace.yaml
+next-env.d.ts
+*.tsbuildinfo
+package-lock.json
+pnpm-lock.yaml
+scripts/*.json

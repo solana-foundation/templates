@@ -1,6 +1,13 @@
 'use client'
 
-import * as React from 'react'
+import {
+  useConnect,
+  useConnectedWallet,
+  useDisconnect,
+  useIsWalletReady,
+  useWallets,
+} from '@solana/kit-plugin-wallet/react'
+import { getWalletForHandle } from '@wallet-standard/ui-registry'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,107 +16,88 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { cn, ellipsify } from '@/lib/utils'
-import { useWalletConnection, useWalletSession } from '@solana/react-hooks'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import { ellipsify } from '@/lib/utils'
+import { useSolana } from './solana/solana-provider'
 import { toast } from 'sonner'
 
-function WalletAvatar({ className, icon, label }: { className?: string; icon?: string; label?: string }) {
-  return (
-    <Avatar className={cn('rounded-md h-6 w-6', className)}>
-      {icon ? <AvatarImage src={icon} alt={label} /> : null}
-      <AvatarFallback>{label?.[0] ?? '?'}</AvatarFallback>
-    </Avatar>
-  )
+const ids = new WeakMap<object, number>()
+let nextId = 0
+function walletId(wallet: object) {
+  if (!ids.has(wallet)) ids.set(wallet, nextId++)
+  return ids.get(wallet)
 }
 
-function WalletDropdownItem({
-  connector,
-  onSelect,
-  disabled,
-}: {
-  connector: { id: string; name: string; icon?: string; ready?: boolean }
-  onSelect: (id: string) => Promise<void>
-  disabled?: boolean
-}) {
-  return (
-    <DropdownMenuItem
-      className="cursor-pointer"
-      key={connector.id}
-      disabled={disabled}
-      onClick={() => onSelect(connector.id)}
-    >
-      <WalletAvatar icon={connector.icon} label={connector.name} />
-      {connector.name}
-    </DropdownMenuItem>
-  )
-}
-
-function WalletDropdown() {
-  const { connectors, connect, disconnect, status: walletStatus, connected } = useWalletConnection()
-  const wallet = useWalletSession()
-  const [isConnecting, setIsConnecting] = React.useState<string | null>(null)
-
-  const handleConnect = async (connectorId: string) => {
+export function WalletDropdown() {
+  const { client } = useSolana()
+  const wallets = useWallets(client)
+  const wallet = useConnectedWallet(client)
+  const ready = useIsWalletReady(client)
+  const { dispatchAsync: connect, isRunning: connecting } = useConnect(client)
+  const { dispatchAsync: disconnect, isRunning: disconnecting } = useDisconnect(client)
+  const busy = !ready || connecting || disconnecting
+  async function handleConnect(candidate: (typeof wallets)[number]) {
     try {
-      setIsConnecting(connectorId)
-      await connect(connectorId)
+      await connect(candidate)
     } catch (error) {
-      console.error('Error connecting wallet:', error)
-      toast.error('Failed to connect wallet')
-    } finally {
-      setIsConnecting(null)
+      toast.error(error instanceof Error ? error.message : 'Connection failed')
     }
   }
-
-  const handleCopy = async () => {
-    const address = wallet?.account.address.toString()
-    if (!address) return
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      await navigator.clipboard.writeText(address)
-      toast.success('Address copied')
-    }
-  }
-
-  const displayLabel = connected
-    ? wallet?.account
-      ? ellipsify(wallet.account.address.toString())
-      : (wallet?.connector.name ?? 'Wallet')
-    : 'Select Wallet'
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="cursor-pointer">
-          {wallet?.connector.icon ? <WalletAvatar icon={wallet.connector.icon} label={wallet.connector.name} /> : null}
-          {displayLabel}
+        <Button variant="outline" disabled={busy}>
+          {wallet ? ellipsify(wallet.account.address) : 'Select Wallet'}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        {connected ? (
+        {wallet && (
           <>
-            <DropdownMenuItem className="cursor-pointer" onClick={handleCopy}>
+            <DropdownMenuItem
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(wallet.account.address)
+                  toast.success('Address copied')
+                } catch {
+                  toast.error('Could not copy address')
+                }
+              }}
+            >
               Copy address
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer" onClick={disconnect}>
+            <DropdownMenuItem
+              disabled={busy}
+              onClick={async () => {
+                try {
+                  await disconnect()
+                } catch (error) {
+                  toast.error(error instanceof Error ? error.message : 'Disconnect failed')
+                }
+              }}
+            >
               Disconnect
             </DropdownMenuItem>
             <DropdownMenuSeparator />
           </>
-        ) : null}
-        {connectors.length ? (
-          connectors.map((connector) => (
-            <WalletDropdownItem
-              key={connector.id}
-              connector={connector}
-              onSelect={handleConnect}
-              disabled={walletStatus === 'connecting' || isConnecting === connector.id || connector.ready === false}
-            />
-          ))
-        ) : (
-          <DropdownMenuItem className="cursor-pointer" asChild>
+        )}
+        {wallets.map((candidate) => (
+          <DropdownMenuItem
+            key={walletId(getWalletForHandle(candidate))}
+            disabled={busy}
+            onClick={() => void handleConnect(candidate)}
+          >
+            <Avatar className="h-5 w-5">
+              <AvatarImage src={candidate.icon} alt="" />
+              <AvatarFallback>{candidate.name[0]}</AvatarFallback>
+            </Avatar>
+            {candidate.name}
+            {wallet && getWalletForHandle(wallet.wallet) === getWalletForHandle(candidate) ? ' (Active)' : ''}
+          </DropdownMenuItem>
+        ))}
+        {!wallets.length && (
+          <DropdownMenuItem asChild>
             <a href="https://solana.com/solana-wallets" target="_blank" rel="noopener noreferrer">
-              Get a Solana wallet to connect.
+              Get a Solana wallet
             </a>
           </DropdownMenuItem>
         )}
@@ -117,5 +105,3 @@ function WalletDropdown() {
     </DropdownMenu>
   )
 }
-
-export { WalletDropdown }

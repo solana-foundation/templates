@@ -50,7 +50,6 @@ async function main() {
     wallets.push(wallet)
     console.log(`${wallet.name}`)
     console.log(`   Public:  ${wallet.publicKey}`)
-    console.log(`   Private: ${wallet.privateKey}\n`)
   }
 
   fs.writeFileSync(walletsPath, JSON.stringify(wallets, null, 2))

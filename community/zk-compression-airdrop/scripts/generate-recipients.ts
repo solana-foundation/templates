@@ -34,7 +34,7 @@ async function main() {
   console.log('Recipients:', RECIPIENTS.length)
 
   const recipientData = RECIPIENTS.map((r, index) => {
-    const amountLamports = BigInt(r.amount) * BigInt(10 ** config.decimals)
+    const amountLamports = BigInt(r.amount) * 10n ** BigInt(config.decimals)
 
     return {
       recipient: r.address,
