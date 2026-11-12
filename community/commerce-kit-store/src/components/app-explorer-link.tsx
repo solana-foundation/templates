@@ -1,4 +1,5 @@
 import { ArrowUpRightFromSquare } from 'lucide-react'
+import { resolveWalletChain } from '@/lib/solana-network'
 
 type PathType = 'address' | 'tx' | 'block'
 
@@ -10,13 +11,12 @@ interface ExplorerLinkProps {
 }
 
 function getExplorerUrl(path: string, type: PathType): string {
-  const baseUrl = 'https://itx-indexer.com'
-
-  if (type === 'tx') {
-    return `${baseUrl}/indexer/${path}`
-  }
-
-  return `${baseUrl}/${type}/${path}`
+  const chain = resolveWalletChain(
+    process.env.NEXT_PUBLIC_RPC_URL || 'https://api.mainnet-beta.solana.com',
+    process.env.NEXT_PUBLIC_SOLANA_CLUSTER,
+  )
+  const cluster = chain === 'solana:devnet' ? '?cluster=devnet' : ''
+  return `https://explorer.solana.com/${type}/${encodeURIComponent(path)}${cluster}`
 }
 
 export function AppExplorerLink({ path, type, label, className }: ExplorerLinkProps) {
