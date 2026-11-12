@@ -222,6 +222,14 @@ Templates maintained by the Solana community
 
 `nextjs` `react` `@solana/kit` `@solana-commerce/headless` `solana-pay` `tailwind` `typescript`
 
+### [confidential-chat](community/confidential-chat)
+
+`gh:solana-foundation/templates/community/confidential-chat`
+
+> Next.js chat, end-to-end encrypted from the browser to an attested enclave, through Nito
+
+`nextjs` `react` `typescript` `tailwind` `ai` `chat` `confidential-computing` `end-to-end-encryption` `attestation` `nito` `tinfoil`
+
 ### [eve-pay](community/eve-pay)
 
 `gh:solana-foundation/templates/community/eve-pay`

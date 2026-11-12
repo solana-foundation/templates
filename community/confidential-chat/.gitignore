@@ -1,0 +1,11 @@
+/node_modules
+/.next/
+/out/
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+
+# The API key lives in .env.local, which is never committed.
+.env*
+!.env.example

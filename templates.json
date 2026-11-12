@@ -492,6 +492,28 @@
         "usecase": "Starter"
       },
       {
+        "description": "Next.js chat, end-to-end encrypted from the browser to an attested enclave, through Nito",
+        "id": "gh:solana-foundation/templates/community/confidential-chat",
+        "image": "community/confidential-chat/og-image.png",
+        "keywords": [
+          "nextjs",
+          "react",
+          "typescript",
+          "tailwind",
+          "ai",
+          "chat",
+          "confidential-computing",
+          "end-to-end-encryption",
+          "attestation",
+          "nito",
+          "tinfoil"
+        ],
+        "name": "confidential-chat",
+        "path": "community/confidential-chat",
+        "displayName": "Confidential Chat",
+        "usecase": "Starter"
+      },
+      {
         "description": "Approval-gated Eve agent that buys sandbox API access with Pay.sh",
         "id": "gh:solana-foundation/templates/community/eve-pay",
         "image": "community/eve-pay/og-image.png",
