@@ -1,0 +1,6 @@
+# pnpm 10 and later no longer read the `pnpm` field from package.json, so the
+# overrides that npm, bun, and yarn take from `overrides`/`resolutions` there
+# have to be repeated here. Keep the three lists in step.
+overrides:
+  react-native-reanimated: 4.7.1
+  react-native-worklets: 0.13.0

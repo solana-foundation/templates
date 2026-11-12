@@ -1,0 +1,60 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+.env
+
+# typescript
+*.tsbuildinfo
+
+app-example
+
+# generated native folders
+/ios
+/android
+
+# Anchor
+/anchor/.anchor
+/anchor/.surfpool
+/anchor/target/.rustc_info.json
+/anchor/target/CACHEDIR.TAG
+/anchor/target/debug
+/anchor/target/deploy
+/anchor/target/flycheck*
+/anchor/target/package
+/anchor/target/release
+/anchor/target/sbf-solana-solana
+/anchor/target/sbpf-solana-solana
+/anchor/target/test-ledger
+/anchor/target/tmp
+**/*.rs.bk
+test-ledger

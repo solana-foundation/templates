@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "scheme": "expo-kit-pinocchio",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "web": {
+      "output": "static"
+    },
+    "name": "expo-kit-pinocchio",
+    "slug": "expo-kit-pinocchio",
+    "android": {
+      "package": "com.anonymous.expo_kit_pinocchio"
+    },
+    "plugins": [
+      [
+        "expo-dev-client",
+        {
+          "showMenuAtLaunch": false,
+          "skipOnboarding": true
+        }
+      ],
+      "expo-router"
+    ]
+  }
+}

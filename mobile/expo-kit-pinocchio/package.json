@@ -1,0 +1,113 @@
+{
+  "name": "expo-kit-pinocchio",
+  "displayName": "Expo Kit Pinocchio example",
+  "description": "A template for building a Solana mobile app with Expo, React Native, Solana Kit, Pinocchio, and Uniwind.",
+  "usecase": "Mobile",
+  "keywords": [
+    "expo",
+    "mobile-wallet-adapter",
+    "pinocchio",
+    "react-native",
+    "solana-kit",
+    "tailwind",
+    "uniwind"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Verify your Android development environment:",
+      "+npx -y solana-mobile@latest doctor",
+      "Build the Android app locally:",
+      "+{pm} run android",
+      "To configure the program keypair and generate the program client (requires the Rust and Solana toolchains):",
+      "+{pm} run program:setup",
+      "Build and test the program:",
+      "+{pm} run program:build | program:test",
+      "Run a local validator for your emulator or device, then deploy the program to it:",
+      "+{pm} run program:localnet",
+      "+{pm} run program:deploy:localnet | program:deploy:devnet"
+    ],
+    "rename": {
+      "Expo Kit Pinocchio": {
+        "paths": [
+          "src/app"
+        ],
+        "to": "{{name}}"
+      }
+    },
+    "skills": [
+      "https://github.com/solana-foundation/solana-dev-skill",
+      "https://github.com/solana-mobile/solana-mobile-dev-skill"
+    ],
+    "versions": {
+      "adb": "33.0.0",
+      "solana": "3.1.10"
+    }
+  },
+  "main": "./index.js",
+  "version": "1.0.0",
+  "scripts": {
+    "android": "expo run:android",
+    "android:build": "expo prebuild -p android",
+    "build": "tsc --noEmit && npm run android:build",
+    "ci": "tsc --noEmit && npm run lint:check && npm run format:check && npm run android:build",
+    "codama:js": "codama run js -c ./program/codama.mjs",
+    "dev": "expo start --clear --dev-client --reset-cache",
+    "doctor": "npx -y expo-doctor@latest",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "ios": "expo run:ios",
+    "lint": "expo lint --fix",
+    "lint:check": "expo lint",
+    "program:build": "cd program && cargo build-sbf",
+    "program:deploy:devnet": "cd program && cargo build-sbf && solana program deploy --url devnet --program-id target/deploy/hello_world-keypair.json target/deploy/hello_world.so",
+    "program:deploy:localnet": "cd program && cargo build-sbf && solana program deploy --url localhost --program-id target/deploy/hello_world-keypair.json target/deploy/hello_world.so",
+    "program:localnet": "npx -y solana-mobile@latest localnet start",
+    "program:setup": "node program/setup.mjs && npm run program:build && npm run codama:js",
+    "program:test": "cd program && cargo build-sbf && cargo test",
+    "start": "expo start",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "~58.0.15",
+    "@solana/kit": "^8.4.0",
+    "@solana/transaction-confirmation": "^8.4.0",
+    "@tanstack/react-query": "^5.90.7",
+    "@wallet-ui/react-native-kit": "^4.4.1",
+    "expo": "~58.0.20",
+    "expo-clipboard": "~58.0.4",
+    "expo-constants": "~58.0.13",
+    "expo-dev-client": "~58.0.16",
+    "expo-linking": "~58.0.14",
+    "expo-router": "~58.0.27",
+    "expo-status-bar": "~58.0.4",
+    "expo-system-ui": "~58.0.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-native": "0.88.0",
+    "react-native-nitro-modules": "^0.36.5",
+    "react-native-quick-base64": "^3.0.1",
+    "react-native-quick-crypto": "^1.1.6",
+    "react-native-safe-area-context": "~5.10.1",
+    "react-native-screens": "~4.30.0",
+    "tailwindcss": "~4.1.16",
+    "uniwind": "~1.13.0"
+  },
+  "devDependencies": {
+    "@codama/renderers-js": "^2.8.0",
+    "@types/react": "~19.3.0",
+    "codama": "^1.11.0",
+    "eslint": "^9.25.0",
+    "eslint-config-expo": "~58.0.4",
+    "prettier": "^3.9.6",
+    "typescript": "~6.0.3"
+  },
+  "overrides": {
+    "react-native-reanimated": "4.7.1",
+    "react-native-worklets": "0.13.0"
+  },
+  "resolutions": {
+    "react-native-reanimated": "4.7.1",
+    "react-native-worklets": "0.13.0"
+  },
+  "private": true
+}

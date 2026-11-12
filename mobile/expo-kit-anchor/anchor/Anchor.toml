@@ -1,0 +1,21 @@
+[toolchain]
+package_manager = "pnpm"
+solana_version = "3.1.10"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+hello_world = "BneHHhN7nSXgjZytQWLsi1TRY7xMz83FxpkKgoCb1n2d"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+# The default 5s timeout is enough for Surfpool, but not for the slower validator
+# that `anchor test --validator legacy` starts, which warms up on first invoke.
+test = "npx vitest run --testTimeout=60000"
+
+[hooks]
