@@ -1,10 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useWalletConnection, useWalletSession } from '@solana/react-hooks'
+import { useConnectedWallet } from '@solana/kit-plugin-wallet/react'
+import { useSolana } from '@/components/provider'
+import { signInWithWallet } from '@/lib/wallet-auth'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from './auth-provider'
 import { useCombinedSignOut } from '@/hooks/use-combined-signout'
@@ -12,48 +14,73 @@ import { useCombinedSignOut } from '@/hooks/use-combined-signout'
 export default function WalletLogin() {
   const [message, setMessage] = useState('')
   const router = useRouter()
-  const { connected, connectors } = useWalletConnection()
-  const session = useWalletSession()
+  const { client } = useSolana()
+  const session = useConnectedWallet(client)
+  const connected = Boolean(session)
   const { user } = useAuth()
   const { handleSignOut } = useCombinedSignOut()
+  const [pending, setPending] = useState(false)
+  const [selection, setSelection] = useState(session?.account.address)
+  if (selection !== session?.account.address) {
+    setSelection(session?.account.address)
+    setMessage('')
+  }
+  const busy = useRef(false)
+  const lifecycle = useRef<AbortController | null>(null)
+  useEffect(() => {
+    const controller = new AbortController()
+    lifecycle.current = controller
+    return () => controller.abort()
+  }, [client, session?.account.address])
 
   const handleWalletAuth = async () => {
     setMessage('')
-
-    if (!connectors.length) {
-      setMessage('No wallet connectors available. Please install a Solana wallet.')
-      return
-    }
 
     if (!connected || !session) {
       setMessage('Please connect a wallet first')
       return
     }
 
+    const controller = lifecycle.current
+    if (busy.current || !controller || controller.signal.aborted) return
+    busy.current = true
+    setPending(true)
     try {
-      const { data, error } = await supabase.auth.signInWithWeb3({
-        chain: 'solana',
-        statement: 'Please sign this message to authenticate with your wallet.',
-      })
-
-      if (error) {
-        setMessage(`Authentication failed: ${error.message}`)
-        return
-      }
-
-      if (data.user) {
+      const data = await signInWithWallet(supabase.auth, client, controller.signal)
+      if (data.user && !controller.signal.aborted) {
         setMessage('Wallet authenticated successfully!')
       }
     } catch (authError) {
       console.error('Supabase auth error:', authError)
-      setMessage('Failed to authenticate with wallet. Please try again.')
+      if (!controller.signal.aborted)
+        setMessage(`Authentication failed: ${authError instanceof Error ? authError.message : String(authError)}`)
+    } finally {
+      busy.current = false
+      setPending(false)
     }
   }
 
   const handleSignOutAndDisconnect = async () => {
-    await handleSignOut()
-    setMessage('Signed out successfully')
+    if (busy.current) return
+    busy.current = true
+    setPending(true)
+    setMessage('')
+    try {
+      await handleSignOut()
+      setMessage('Signed out successfully')
+    } catch (error) {
+      setMessage(`Sign out failed: ${error instanceof Error ? error.message : String(error)}`)
+    } finally {
+      busy.current = false
+      setPending(false)
+    }
   }
+
+  const feedback = message && (
+    <p role="status" className={`text-sm ${message.includes('failed') ? 'text-red-500' : 'text-green-500'}`}>
+      {message}
+    </p>
+  )
 
   if (user && session) {
     return (
@@ -69,9 +96,10 @@ export default function WalletLogin() {
               <Button onClick={() => router.push('/account')} className="w-full">
                 View Account Details
               </Button>
-              <Button onClick={handleSignOutAndDisconnect} variant="outline" className="w-full">
-                Sign Out
+              <Button onClick={handleSignOutAndDisconnect} disabled={pending} variant="outline" className="w-full">
+                {pending ? 'Signing out...' : 'Sign Out'}
               </Button>
+              {feedback}
             </div>
           </div>
         </CardContent>
@@ -101,18 +129,12 @@ export default function WalletLogin() {
               <p className="text-sm text-green-600">
                 Wallet Connected: {session.account.address.toString().slice(0, 8)}...
               </p>
-              <Button onClick={handleWalletAuth} className="w-full">
-                Sign in with Solana
+              <Button onClick={handleWalletAuth} disabled={pending} className="w-full">
+                {pending ? 'Signing in...' : 'Sign in with Solana'}
               </Button>
             </div>
           )}
-          {message && (
-            <p
-              className={`text-sm ${message.includes('error') || message.includes('failed') ? 'text-red-500' : 'text-green-500'}`}
-            >
-              {message}
-            </p>
-          )}
+          {feedback}
         </div>
       </CardContent>
     </Card>

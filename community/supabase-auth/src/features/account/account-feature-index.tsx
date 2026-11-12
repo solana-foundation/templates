@@ -1,11 +1,13 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import { useWalletSession } from '@solana/react-hooks'
+import { useConnectedWallet } from '@solana/kit-plugin-wallet/react'
+import { useSolana } from '@/components/provider'
 import { WalletDropdown } from '@/components/wallet-dropdown'
 
 export default function AccountFeatureIndex() {
-  const account = useWalletSession()
+  const { client } = useSolana()
+  const account = useConnectedWallet(client)
   const router = useRouter()
 
   useEffect(() => {

@@ -9,7 +9,7 @@ The template uses Supabase's managed PostgreSQL database, so there's no local da
 - **Supabase Authentication** with Solana wallet integration via Web3 auth
 - **[Zod](https://zod.dev)** for environment variable validation (T3 Stack style)
 - **[Tailwind CSS](https://tailwindcss.com)** and **[Shadcn UI](https://ui.shadcn.com)** for styling
-- **[@solana/client](https://github.com/solana-foundation/framework-kit/tree/main/packages/client)** and **[@solana/react-hooks](https://github.com/solana-foundation/framework-kit/tree/main/packages/react-hooks)** for Solana wallet and RPC functionality
+- **Kit 8**, **[@solana/react](https://www.npmjs.com/package/@solana/react)** and the Kit wallet/RPC plugins for wallet connection, account queries and V1 SOL transfers
 - **Protected Routes** with authentication middleware
 - **[TypeScript](https://www.typescriptlang.org)** throughout for type safety
 
@@ -17,7 +17,7 @@ The template uses Supabase's managed PostgreSQL database, so there's no local da
 
 Before you start, make sure you have:
 
-1. **Node.js 20.9+** installed - required to run [Next.js](https://nextjs.org)
+1. **Node.js 22+** installed; Node 22 and 24 are the validation targets
 2. **A Supabase account** - create one at [supabase.com](https://supabase.com) (free tier works)
 3. **A Solana wallet** - Phantom, Solflare, or Backpack installed in your browser
 4. **Git** - to clone or fork this repository
@@ -118,7 +118,7 @@ These are prefixed with `NEXT_PUBLIC_` because they're used in client-side code.
 
 ## Wallet Connection
 
-The template uses @solana/react-hooks to manage wallet connections. Here's how it works:
+The template uses `@solana/kit-plugin-wallet` to discover Wallet Standard wallets and manage connections. Here's how it works:
 
 1. **Select a wallet**: Click the wallet dropdown in the header (shows "Connect Wallet" if nothing is connected)
 2. **Choose your wallet**: Select Phantom, Solflare, or another supported wallet
@@ -152,7 +152,7 @@ Once your wallet is connected, you can authenticate with Supabase:
 
 If authentication succeeds, you'll see "Wallet authenticated successfully!" and the card will update to show a welcome message with your wallet address and buttons to view account details or sign out.
 
-**What happens behind the scenes**: The app calls `supabase.auth.signInWithWeb3()`, which uses your wallet to sign a message. Supabase verifies the signature and creates a session that persists across page refreshes.
+**What happens behind the scenes**: The app creates a standard SIWS challenge using `@solana/wallet-standard-util`, including the page origin, selected account, timestamp and a fresh nonce. The selected wallet signs those exact bytes; the app passes the message and signature to `supabase.auth.signInWithWeb3()` for verification instead of defaulting to `window.solana`. Supabase creates a session that persists across page refreshes. Signing in is off-chain and does not spend SOL. Changing or disconnecting the authenticated wallet requires signing in again.
 
 ### Common Authentication Errors
 
@@ -166,7 +166,7 @@ A 422 error usually means:
 
 - Web3 authentication isn't enabled (see above)
 - Your Supabase project doesn't support Web3 auth (check if you're on a supported plan)
-- The `window.solana` provider isn't properly connected
+- The selected wallet disconnected or changed during authentication
 
 #### "Solana wallet not detected"
 
@@ -230,6 +230,21 @@ supabase-auth/
 
 ## Scripts
 
+### SOL Transfers
+
+The account page's **Send** action builds V1 transactions. It requires a wallet that advertises V1 support; it never silently falls back to legacy or V0. Network selection updates both the RPC endpoints and the wallet chain. Start on devnet, check the destination and amount, and approve transactions yourself in the wallet. Signing in to Supabase is a separate, off-chain message signature.
+
+### Local Validation
+
+```bash
+npm test
+npm run ci
+```
+
+Provide your test project's Supabase URL and public key in `.env.local` before building or starting the app. Never use a service-role key in the frontend. Configure the local site URL as `http://localhost:3000` (or your selected port) and enable Solana Web3 authentication. Use `localhost` for the HTTP authentication test.
+
+The optional transaction integration test runs only when `SOLANA_TEST_RPC_URL` and `SOLANA_TEST_WS_URL` point to an isolated local validator with V1 support. It funds throwaway local accounts, sends a V1 transfer, and checks the received lamports and RPC transaction version. Without that runtime the test is skipped. Wallet tests use test Wallet Standard implementations; the Supabase SDK test intercepts the HTTP response. These do not replace a manual login, rejection, refresh and sign-out check against your own test project.
+
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run start` - Start production server
@@ -242,7 +257,7 @@ This template uses:
 
 - [Supabase](https://supabase.com) for authentication and database
 - [Next.js](https://nextjs.org) as the React framework
-- [@solana/client](https://github.com/solana-foundation/framework-kit/tree/main/packages/client) and [@solana/react-hooks](https://github.com/solana-foundation/framework-kit/tree/main/packages/react-hooks) for Solana wallet and RPC functionality
+- [Solana Kit](https://www.npmjs.com/package/@solana/kit), its wallet/RPC plugins and `@solana/react` for wallet and RPC functionality
 - [Shadcn UI](https://ui.shadcn.com) for component primitives
 
 ## License
