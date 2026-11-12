@@ -1,4 +1,3 @@
-import { randomBytes } from 'node:crypto'
 import { NITO_MODEL } from '@/lib/model'
 
 // Step 1: fetch the attestation of the enclave that serves the model. The server fetches it only because Nito wants the
@@ -10,7 +9,6 @@ export async function GET() {
 
   const url = new URL('https://app.trynito.ai/api/v1/attestation')
   url.searchParams.set('model', NITO_MODEL)
-  url.searchParams.set('nonce', randomBytes(32).toString('hex'))
 
   let upstream: Response
   try {

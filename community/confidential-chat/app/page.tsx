@@ -21,7 +21,7 @@ export default function Chat() {
     setDraft('')
     setError('')
     try {
-      // Steps 1 and 2: a fresh attestation for every message, verified here before anything is encrypted.
+      // Steps 1 and 2: the current attestation, fetched for every message and verified here before anything is encrypted.
       setStep('Verifying the enclave')
       const attestation = await fetch('/api/attestation')
       if (!attestation.ok) throw await routeError(attestation)

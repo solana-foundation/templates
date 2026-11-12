@@ -61,7 +61,7 @@ browser       decrypts the reply
 Three files hold the protocol:
 
 - [`lib/enclave.ts`](lib/enclave.ts) is the browser's side. `verifyEnclave` checks the attestation bundle with [`@tinfoilsh/verifier`](https://www.npmjs.com/package/@tinfoilsh/verifier), offline, against the repository pinned in that file. If the check fails, nothing is encrypted or sent. `sealedChat` encrypts an OpenAI-style chat request to the verified key with [`ehbp`](https://www.npmjs.com/package/ehbp), sends it, and decrypts the reply.
-- [`app/api/attestation/route.ts`](app/api/attestation/route.ts) fetches a fresh attestation from Nito and returns only the bundle.
+- [`app/api/attestation/route.ts`](app/api/attestation/route.ts) fetches the current attestation from Nito and returns only the bundle.
 - [`app/api/chat/route.ts`](app/api/chat/route.ts) accepts only ciphertext of a bounded size, checks the two headers it forwards, adds the API key and the model header, and passes the encrypted reply back with its response nonce. It never reads or logs the body.
 
 [`app/page.tsx`](app/page.tsx) is the chat screen, and [`lib/model.ts`](lib/model.ts) names the model (GPT-OSS 120B) under the two names Nito and the enclave use for it. The protocol is documented in Nito's [Encrypted Requests](https://docs.trynito.ai/api/api-reference/chat-and-text/encrypted.md) page.
@@ -74,6 +74,7 @@ Three files hold the protocol:
   - The page code you serve. The browser runs whatever your server sends it, including the code that verifies and encrypts. A changed page could send plaintext.
   - The hardware vendor's attestation. The verifier trusts the chip maker's signature on the enclave's report.
   - Tinfoil's published router code. Verification shows the enclave runs a published release of it, not that the release is free of bugs.
+  - The attestation is not tied to a fresh challenge. Verification shows the key belongs to a genuine enclave running a published release, not that the attestation was produced just now.
 - **The enclave reads the prompt.** It has to, to run the model.
 
 ## Before you ship this
