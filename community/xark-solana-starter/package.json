@@ -1,0 +1,39 @@
+{
+  "name": "xark-solana-starter",
+  "displayName": "xark ZK Starter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Zero-knowledge proofs in Rust: an xark circuit verified by Anchor and Pinocchio programs",
+  "usecase": "Starter",
+  "keywords": [
+    "solana",
+    "zk",
+    "zero-knowledge",
+    "groth16",
+    "privacy",
+    "xark",
+    "anchor",
+    "pinocchio",
+    "rust",
+    "litesvm"
+  ],
+  "scripts": {
+    "build": "just build",
+    "test": "just test",
+    "ci": "just ci"
+  },
+  "create-solana-dapp": {
+    "instructions": [
+      "Install the toolchain first (xark, the Solana CLI, Anchor CLI 1.2.1, just): see README.md.",
+      "",
+      "Build the circuit, keys and both programs, then run the tests:",
+      "+just build",
+      "+just test",
+      "",
+      "Try it on a local validator (run `solana-test-validator` in another terminal):",
+      "+just sync-ids",
+      "+just deploy anchor",
+      "+just demo anchor"
+    ]
+  }
+}

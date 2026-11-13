@@ -1,0 +1,3 @@
+# Needs `xark` on PATH. Layers on top of rustc checks.
+[check]
+overrideCommand = ["xark", "check", ".", "--message-format=json"]

@@ -19,6 +19,7 @@
   "community/supabase-solana-indexing",
   "community/x402-solana-rust",
   "community/x402-template",
+  "community/xark-solana-starter",
   "community/zk-compression-airdrop",
   "kit/axum-keychain",
   "kit/nextjs",
