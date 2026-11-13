@@ -5,7 +5,9 @@
  * Scaffold-free by default: copies each template into an isolated temp dir, installs,
  * runs its `ci`/`build` script, and reports across five dimensions — build health,
  * dependency freshness, known vulnerabilities, registry-deprecated packages, and
- * doc/reality drift. Optionally boots web templates to confirm the dev server responds.
+ * doc/reality drift. Optionally boots web templates to confirm the dev server responds,
+ * and (--qa) opens each booted page in a headless browser to catch error overlays, blank
+ * pages and console errors, with a screenshot per template.
  *
  * Outputs a machine-readable JSON artifact and a human Markdown report. Pass a previous
  * JSON as --baseline to surface regressions.
@@ -15,6 +17,7 @@
  *   pnpm health --only kit/nextjs        # one template (csv ok)
  *   pnpm health --group community        # one group
  *   pnpm health --boot                   # also boot web dev servers
+ *   pnpm health --qa                     # boot + open each page in a headless browser (screenshots)
  *   pnpm health --no-build               # install + deps/audit only (fast)
  *   pnpm health --baseline health-reports/2026-06-20T09-00-00.json
  *   pnpm health --out health-reports --concurrency 4
@@ -25,18 +28,14 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync } from 'fs'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
-import { enumerateTemplates } from './health/enumerate.js'
-import {
-  checkTemplate,
-  cleanupActiveTempDirs,
-  killActiveChildren,
-  sweepOrphanTempDirs,
-  type RunOptions,
-} from './health/checks.js'
+import { enumerateRepo } from './health/enumerate.js'
+import { checkTemplate, type RunOptions } from './health/checks.js'
+import { cleanupActiveTempDirs, sweepOrphanTempDirs } from './health/isolation.js'
+import { killActiveChildren } from './health/process.js'
 import { parseDotenv } from './health/env.js'
 import { diffReports, diffToMarkdown, toMarkdown } from './health/report.js'
 import { templateStatus } from './health/status.js'
-import type { HealthReport, Status, TemplateRef, TemplateReport } from './health/types.js'
+import type { HealthReport, Status, TemplateRef, TemplateReport, UnrecognizedEntry } from './health/types.js'
 import { writeFile, writeJsonFile } from './shared/fs-utils.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -46,6 +45,7 @@ type Cli = {
   group: string | null
   build: boolean
   boot: boolean
+  qa: boolean
   cargoTest: boolean
   pm: string | null
   /** dotenv-style file whose variables are forwarded to templates that declare them */
@@ -64,6 +64,7 @@ const parseArgs = (argv: string[]): Cli => {
     group: null,
     build: true,
     boot: false,
+    qa: false,
     cargoTest: false,
     pm: null,
     envFile: null,
@@ -90,7 +91,11 @@ const parseArgs = (argv: string[]): Cli => {
     else if (arg === '--group') cli.group = next()
     else if (arg === '--no-build') cli.build = false
     else if (arg === '--boot') cli.boot = true
-    else if (arg === '--cargo-test') cli.cargoTest = true
+    else if (arg === '--qa') {
+      // QA needs a live dev server, so it implies --boot.
+      cli.qa = true
+      cli.boot = true
+    } else if (arg === '--cargo-test') cli.cargoTest = true
     else if (arg === '--pm') cli.pm = next()
     else if (arg === '--env-file') cli.envFile = next()
     else if (arg === '--allow-env')
@@ -119,6 +124,8 @@ const printHelp = () => {
   --group <name>      limit to a repokit group (kit|web3js|mobile|community)
   --no-build          install + deps/audit only, skip the build/ci script
   --boot              boot web templates and confirm the dev server responds
+  --qa                boot, then open each web template in a headless browser: fails on error overlay,
+                      uncaught page error or blank page; warns on console errors; screenshots to <out>/screenshots/
   --cargo-test        also run cargo test for Rust templates (needs solana platform tools for programs)
   --pm <manager>      force a package manager (default: each template's pinned one, else npm)
   --env-file <path>   dotenv-style file of credentials to forward to templates that declare them
@@ -137,6 +144,8 @@ const printHelp = () => {
 const toTemplateReport = (ref: TemplateRef, checked: Awaited<ReturnType<typeof checkTemplate>>): TemplateReport => {
   const functional: Status[] = [checked.build.status]
   if (checked.boot) functional.push(checked.boot.status)
+  // qa fail means the page is visibly broken (overlay, uncaught error, blank), so it gates like boot.
+  if (checked.qa) functional.push(checked.qa.status)
   if (checked.rust) functional.push(checked.rust.status)
   const advisory: Status[] = [
     checked.deps.status,
@@ -159,6 +168,7 @@ const toTemplateReport = (ref: TemplateRef, checked: Awaited<ReturnType<typeof c
     docDrift: checked.docDrift,
     boot: checked.boot,
     rust: checked.rust,
+    qa: checked.qa,
   }
 }
 
@@ -220,11 +230,32 @@ const main = async () => {
     })
   }
 
-  let templates = enumerateTemplates(ROOT)
-  if (cli.group) templates = templates.filter((template) => template.group === cli.group)
-  if (cli.only) templates = templates.filter((template) => cli.only!.includes(template.id))
+  // Unrecognised entries (a group subdirectory with no package.json/Cargo.toml, a broken
+  // package.json, a missing group, ...) are carried through to the report instead of being
+  // dropped: a template that silently vanishes from the report is the failure mode we're
+  // guarding against. They're never checked and never counted.
+  const enumerated = enumerateRepo(ROOT)
+  let templates = enumerated.templates
+  let unrecognized = enumerated.unrecognized
+  if (cli.group) {
+    templates = templates.filter((template) => template.group === cli.group)
+    unrecognized = unrecognized.filter((entry) => inGroup(entry, cli.group!))
+  }
+  if (cli.only) {
+    templates = templates.filter((template) => cli.only!.includes(template.id))
+    unrecognized = unrecognized.filter((entry) => cli.only!.includes(entry.id))
+    // Say why an id can't be checked instead of a bare "no match".
+    for (const id of cli.only) {
+      if (templates.some((template) => template.id === id)) continue
+      const entry = unrecognized.find((candidate) => candidate.id === id)
+      console.error(entry ? `❓ ${id}: unrecognized — ${entry.reason}` : `unknown template: ${id}`)
+    }
+  }
 
-  if (templates.length === 0) {
+  // A selection that matches only unrecognised entries is still a result worth a report
+  // (zero templates, the entries listed with their reasons, exit 0). Only an empty match
+  // on both lists is an error.
+  if (templates.length === 0 && unrecognized.length === 0) {
     console.error('No templates matched the given filters.')
     process.exit(1)
   }
@@ -233,6 +264,8 @@ const main = async () => {
     packageManager: cli.pm,
     build: cli.build,
     boot: cli.boot,
+    qa: cli.qa,
+    outDir: cli.out,
     cargoTest: cli.cargoTest,
     installTimeoutMs: 8 * 60_000,
     buildTimeoutMs: 12 * 60_000,
@@ -287,9 +320,17 @@ const main = async () => {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
     packageManager: cli.pm ?? 'auto (per-template)',
-    options: { build: cli.build, boot: cli.boot, source: 'local', cargoTest: cli.cargoTest, pm: cli.pm },
+    options: {
+      build: cli.build,
+      boot: cli.boot,
+      ...(cli.qa ? { qa: true } : {}),
+      source: 'local',
+      cargoTest: cli.cargoTest,
+      pm: cli.pm,
+    },
     summary,
     templates: reports,
+    unrecognized,
   }
 
   // Read the baseline BEFORE writing anything, so a baseline that points at today's report
@@ -322,7 +363,12 @@ const main = async () => {
   // here we just trim the report history so dated files don't accumulate forever.
   const pruned = pruneReports(cli.out, cli.keep)
 
-  console.error(`\n${summary.pass} pass · ${summary.warn} warn · ${summary.fail} fail · ${summary.skip} skip`)
+  console.error(
+    `\n${summary.pass} pass · ${summary.warn} warn · ${summary.fail} fail · ${summary.skip} skip${
+      unrecognized.length ? ` · ${unrecognized.length} unrecognized` : ''
+    }`,
+  )
+  for (const entry of unrecognized) console.error(`    ❓ ${entry.id} — ${entry.reason}`)
   console.error(`Wrote ${jsonPath}`)
   console.error(`Wrote ${mdPath}`)
   if (pruned > 0) console.error(`Pruned ${pruned} old report file(s) (keeping ${cli.keep} most recent).`)
@@ -351,6 +397,10 @@ const forwardedEnv = (cli: Cli): Record<string, string> => {
   }
   return env
 }
+
+/** An unrecognised entry belongs to `--group <path>` when its id is that group or sits directly under it. */
+const inGroup = (entry: UnrecognizedEntry, group: string): boolean =>
+  entry.id === group || (entry.id.startsWith(`${group}/`) && !entry.id.slice(group.length + 1).includes('/'))
 
 const statusIcon = (status: Status) => ({ pass: '✅', warn: '⚠️', fail: '❌', skip: '⏭️' })[status]
 

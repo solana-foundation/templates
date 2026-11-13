@@ -17,6 +17,7 @@ This file gives AI coding agents the minimum context needed to work safely in th
 - `pnpm format` formats repo files.
 - `pnpm health` runs the templates health check (install + build + deps/audit/deprecation/doc-drift). See `docs/agents/health-check.md`.
 - `pnpm health:test` runs the health check's own unit tests.
+- `pnpm triage` classifies the latest health report into findings and draft issues, and `pnpm triage --patch` proposes diffs for the classes with a recipe. Nothing is filed or pushed automatically. See `docs/agents/triage.md`.
 
 ## Editing Rules
 
@@ -37,4 +38,5 @@ This file gives AI coding agents the minimum context needed to work safely in th
 - `docs/agents/review-checklist.md`
 - `docs/agents/known-gotchas.md`
 - `docs/agents/health-check.md`
+- `docs/agents/triage.md`
 - `docs/agents/ui-testing-plan.md`
