@@ -3,7 +3,7 @@
  */
 
 import type { Request, Response } from 'express';
-import type { Address } from '@solana/kit';
+import type { Address, KeyPairSigner } from '@solana/kit';
 import { PaymentRequest } from '../lib/payment-request.js';
 import { SolanaUtils } from '../lib/solana-utils.js';
 import type { NonceDatabase } from '../lib/nonce-database.js';
@@ -12,7 +12,7 @@ export interface SettleRouteContext {
   solanaUtils: SolanaUtils;
   nonceDb: NonceDatabase;
   facilitatorAddress: Address;
-  facilitatorKeypair: any; // Keypair from Gill
+  facilitatorKeypair: KeyPairSigner;
   simulateTransactions: boolean;
   config: {
     facilitatorPrivateKey: string;
@@ -35,6 +35,7 @@ export function settlePaymentRoute(context: SettleRouteContext) {
     }
 
     let paymentReq: PaymentRequest | null = null;
+    let reservedSignature: string | undefined;
     try {
       // Deserialize payment request to get nonce and other details
       paymentReq = PaymentRequest.deserialize(paymentRequest);
@@ -46,10 +47,28 @@ export function settlePaymentRoute(context: SettleRouteContext) {
       if (!nonceDetails) {
         return res.json({ status: 'error', error: 'Nonce not found - please verify payment first' });
       }
+      if (
+        !paymentReq.validate().isValid ||
+        paymentReq.clientPublicKey !== nonceDetails.clientPublicKey ||
+        (['amount', 'recipient', 'resourceId', 'resourceUrl', 'timestamp', 'expiry'] as const).some(
+          (key) => payload[key] !== nonceDetails[key]
+        ) ||
+        !context.solanaUtils.verifyStructuredDataSignature(
+          payload.createStructuredData(),
+          paymentReq.signature,
+          paymentReq.clientPublicKey
+        )
+      ) {
+        return res.json({ status: 'error', error: 'Payment does not match the verified authorization' });
+      }
 
-      // Check if nonce has already been settled (has transaction signature)
+      // A reserved signature prevents resubmission but does not prove confirmation.
       if (nonceDetails.transactionSignature) {
-        return res.json({ status: 'error', error: 'Payment already settled' });
+        return res.json({
+          status: 'error',
+          error: 'Payment already submitted or reserved; check the saved signature before retrying',
+          transactionSignature: nonceDetails.transactionSignature,
+        });
       }
 
       // Check if nonce has expired
@@ -100,7 +119,7 @@ export function settlePaymentRoute(context: SettleRouteContext) {
       let transactionSignature: string;
       if (context.simulateTransactions) {
         transactionSignature = 'x402-demo-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-        console.log('Transaction confirmed on-chain (simulated):', transactionSignature);
+        console.log('Simulation only; no transaction was sent:', transactionSignature);
       } else {
         // TRUE x402 ATOMIC SETTLEMENT (Sponsored Transaction)
         // Client must sign the transaction - their funds move instantly (instant finality)
@@ -118,7 +137,12 @@ export function settlePaymentRoute(context: SettleRouteContext) {
         try {
           transactionSignature = await context.solanaUtils.submitSponsoredTransaction(
             context.config.facilitatorPrivateKey, // facilitator private key (fee payer)
-            paymentReq.signedTransaction // client-signed transaction
+            paymentReq.signedTransaction,
+            nonceDetails,
+            async (signature) => {
+              await context.nonceDb.reserveSettlement(nonce, signature);
+              reservedSignature = signature;
+            }
           );
           console.log('ATOMIC SETTLEMENT complete!');
           console.log(
@@ -155,17 +179,23 @@ export function settlePaymentRoute(context: SettleRouteContext) {
 
       // Store failed transaction
       if (paymentReq && paymentReq.payload) {
-        await context.nonceDb.storeTransaction({
-          nonce: paymentReq.payload.nonce,
-          transactionSignature: null,
-          status: 'failed',
-          errorMessage: error instanceof Error ? error.message : 'Unknown error',
-        });
+        try {
+          await context.nonceDb.storeTransaction({
+            nonce: paymentReq.payload.nonce,
+            // The nonce retains the reserved signature; do not duplicate a unique transaction record.
+            transactionSignature: null,
+            status: 'failed',
+            errorMessage: error instanceof Error ? error.message : 'Unknown error',
+          });
+        } catch (loggingError) {
+          console.error('Could not record settlement error:', loggingError);
+        }
       }
 
       return res.json({
         status: 'error',
         error: error instanceof Error ? error.message : 'Unknown error',
+        transactionSignature: reservedSignature,
       });
     }
   };

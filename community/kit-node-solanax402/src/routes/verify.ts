@@ -45,6 +45,13 @@ export function verifyPaymentRoute(context: VerifyRouteContext) {
       }
 
       const { payload, signature, clientPublicKey } = paymentReq;
+      if (
+        BigInt(payload.amount) > context.maxPaymentAmount ||
+        !context.solanaUtils.isValidPublicKey(payload.recipient) ||
+        !context.solanaUtils.isValidPublicKey(clientPublicKey)
+      ) {
+        return res.json({ isValid: false, error: 'Invalid payment amount or address' });
+      }
 
       // 2. Check if nonce has been used
       const nonceStatus = await context.nonceDb.isNonceUsed(payload.nonce);
