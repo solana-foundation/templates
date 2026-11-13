@@ -139,7 +139,13 @@ The included vault program is already deployed to devnet. To deploy your own:
 
 ## Testing
 
-Tests use [LiteSVM](https://github.com/LiteSVM/litesvm), a fast lightweight Solana VM for testing.
+Frontend amount-validation tests (Node.js 22.18+):
+
+```bash
+npm test
+```
+
+Program tests use [LiteSVM](https://github.com/LiteSVM/litesvm), a fast lightweight Solana VM for testing.
 
 ```bash
 npm run anchor-build   # Build the program first

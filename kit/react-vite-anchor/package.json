@@ -27,14 +27,15 @@
     "anchor-build": "cd anchor && anchor build --ignore-keys",
     "anchor-test": "cd anchor && anchor build --ignore-keys && cargo test",
     "build": "tsc -b && vite build",
-    "ci": "npm run build && npm run lint && npm run format:check",
+    "ci": "npm run build && npm run lint && npm run format:check && npm test",
     "codama:js": "codama run js",
     "dev": "vite",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "preview": "vite preview",
-    "setup": "npm run anchor-build && npm run codama:js"
+    "setup": "npm run anchor-build && npm run codama:js",
+    "test": "node --test tests/lamports.test.mjs"
   },
   "dependencies": {
     "@solana/client": "^1.2.0",
