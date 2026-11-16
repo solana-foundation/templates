@@ -63,7 +63,8 @@ export const TxActionButtonIncrement = ({
       transactionsPool={transactionsPool}
       getLastTxKey={getLastTxKey}
       className={actionClassName}
-      disabled={!activeWallet?.isConnected}
+      // The counter is a u8: the program rejects an increment past 255 with its Overflow error
+      disabled={!activeWallet?.isConnected || currentCount === 255}
       walletAddress={activeWallet?.address}
     >
       <span className="inline-flex items-center gap-2">
