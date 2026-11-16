@@ -1,0 +1,58 @@
+{
+  "name": "confidential-chat",
+  "displayName": "Confidential Chat",
+  "description": "Next.js chat, end-to-end encrypted from the browser to an attested enclave, through Nito",
+  "usecase": "Starter",
+  "keywords": [
+    "nextjs",
+    "react",
+    "typescript",
+    "tailwind",
+    "ai",
+    "chat",
+    "confidential-computing",
+    "end-to-end-encryption",
+    "attestation",
+    "nito",
+    "tinfoil"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Copy the example environment file:",
+      "+cp .env.example .env.local",
+      "Put your Nito API key in NITO_API_KEY (README.md says how to get one), then start the app:",
+      "+{pm} dev",
+      "Open http://localhost:3000 and send a message."
+    ]
+  },
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "^24.22.1"
+  },
+  "scripts": {
+    "build": "next build",
+    "ci": "npm run typecheck && npm run lint && npm run build",
+    "dev": "next dev",
+    "lint": "eslint",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tinfoilsh/verifier": "1.4.0",
+    "ehbp": "0.5.0",
+    "next": "16.4.3",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^24",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.3",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

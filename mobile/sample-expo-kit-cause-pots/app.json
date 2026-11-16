@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "scheme": "sample-expo-kit-cause-pots",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "web": {
+      "output": "static"
+    },
+    "name": "sample-expo-kit-cause-pots",
+    "slug": "sample-expo-kit-cause-pots",
+    "android": {
+      "package": "com.anonymous.sample_expo_kit_cause_pots"
+    },
+    "plugins": [
+      [
+        "expo-dev-client",
+        {
+          "showMenuAtLaunch": false,
+          "skipOnboarding": true
+        }
+      ],
+      "expo-router",
+      "expo-sqlite"
+    ]
+  }
+}
