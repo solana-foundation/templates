@@ -1,14 +1,15 @@
 'use client';
 
-import { ArrowDownIcon } from '@heroicons/react/24/solid';
 import type { Address } from '@solana/kit';
 import { Connection } from '@tuwaio/sdk/nova-connect/satellite';
+import { ArrowDownIcon } from '@tuwaio/sdk/nova-icons/24/solid';
 import { TxActionButton as TAB } from '@tuwaio/sdk/nova-transactions';
 import { OrbitAdapter } from '@tuwaio/sdk/orbit';
 import { createSolanaClientWithCache, createSolanaTransactionSendingSigner } from '@tuwaio/solana-sdk/orbit';
 import { SolanaConnection } from '@tuwaio/solana-sdk/satellite';
 import React from 'react';
 
+import { actionClassName, secondaryActionClassName } from '@/components/classNames';
 import { usePulsarStore } from '@/hooks/pulsarStoreHook';
 import { txActions, TxType } from '@/transactions';
 
@@ -61,21 +62,15 @@ export const TxActionButtonDecrement = ({
       action={handleDecrement}
       transactionsPool={transactionsPool}
       getLastTxKey={getLastTxKey}
-      className={`
-        w-full p-2.5 rounded-[var(--tuwa-rounded-corners)] border border-transparent
-        text-white font-semibold shadow-md transition-all duration-200
-        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700
-        bg-none bg-gray-800
-        hover:bg-gray-700 hover:shadow-md
-        disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] select-none
-      `}
+      className={actionClassName}
+      classNames={{ idle: secondaryActionClassName }}
       disabled={!activeWallet?.isConnected || currentCount === 0}
       walletAddress={activeWallet?.address}
     >
-      <div className="flex items-center justify-center space-x-2">
-        <ArrowDownIcon className="w-5 h-5" />
-        <span className="text-sm leading-none">Decrement</span>
-      </div>
+      <span className="inline-flex items-center gap-2">
+        <ArrowDownIcon className="h-4 w-4" aria-hidden="true" />
+        Decrement
+      </span>
     </TAB>
   );
 };

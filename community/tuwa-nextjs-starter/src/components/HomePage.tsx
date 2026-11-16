@@ -1,18 +1,18 @@
 'use client';
 
-import { WalletIcon } from '@heroicons/react/24/outline';
 import { useSatelliteConnectStore } from '@tuwaio/sdk/nova-connect/satellite';
-import { cn } from '@tuwaio/sdk/nova-core/utils';
+import { WalletIcon } from '@tuwaio/sdk/nova-icons/24/outline';
 import { getAdapterFromConnectorType, OrbitAdapter } from '@tuwaio/sdk/orbit';
 import { motion } from 'framer-motion';
 
+import { Panel } from '@/components/Panel';
 import { TransactionsBlockWrapper as TransactionsBlockSolana } from '@/components/solana/TransactionsBlockWrapper';
 
 export default function HomePage() {
   const activeConnection = useSatelliteConnectStore((store) => store.activeConnection);
 
   return (
-    <div className="w-full flex justify-center items-center bg-[var(--tuwa-bg-secondary)] gap-4 flex-wrap relative min-h-[calc(100dvh-65px)]">
+    <main className="flex min-h-[calc(100dvh-65px)] w-full flex-wrap items-center justify-center gap-4 px-4 py-8 sm:px-6">
       {activeConnection ? (
         <>
           {getAdapterFromConnectorType(activeConnection.connectorType) === OrbitAdapter.SOLANA && (
@@ -21,24 +21,28 @@ export default function HomePage() {
         </>
       ) : (
         <motion.div
-          initial={{ y: 20, opacity: 0 }}
+          initial={{ y: 12, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, ease: [0.1, 0.1, 0.2, 1] }}
-          className={cn(
-            'flex flex-col items-center justify-center p-8 m-8 max-w-sm text-center',
-            'rounded-[var(--tuwa-rounded-corners)] shadow-2xl backdrop-blur-sm',
-            'bg-[var(--tuwa-bg-primary)] ring-1 ring-[var(--tuwa-border-primary)]',
-          )}
+          transition={{ duration: 0.4, ease: [0.1, 0.1, 0.2, 1] }}
+          className="w-full max-w-sm"
         >
-          <div className="w-12 h-12 p-2 rounded-full mb-4 bg-[var(--tuwa-bg-muted)] text-[var(--tuwa-text-primary)] border border-[var(--tuwa-border-primary)]">
-            <WalletIcon className="w-full h-full" />
-          </div>
-          <h2 className="text-xl font-bold text-[var(--tuwa-text-primary)] mb-2">Wallet Required</h2>
-          <p className="text-[var(--tuwa-text-secondary)]">
-            Connect your wallet to view and process transactions in the Pulsar module.
-          </p>
+          <Panel name="Wallet">
+            <div className="flex flex-col items-start gap-4 p-5">
+              <span className="flex h-11 w-11 items-center justify-center border border-[var(--tuwa-border-strong)] text-[var(--tuwa-text-primary)]">
+                <WalletIcon className="h-6 w-6" aria-hidden="true" />
+              </span>
+              <div>
+                <h1 className="font-mono text-lg leading-tight font-bold text-[var(--tuwa-text-primary)]">
+                  Wallet required
+                </h1>
+                <p className="mt-1.5 text-sm leading-6 text-[var(--tuwa-text-secondary)]">
+                  Connect your wallet to view and process transactions in the Pulsar module.
+                </p>
+              </div>
+            </div>
+          </Panel>
         </motion.div>
       )}
-    </div>
+    </main>
   );
 }

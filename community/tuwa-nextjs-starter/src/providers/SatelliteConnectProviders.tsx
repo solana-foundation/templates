@@ -39,6 +39,7 @@ const siwx: NovaConnectProviderProps['siwx'] = {
 export function SatelliteConnectProviders({ children }: { children: ReactNode }) {
   const transactionsPool = usePulsarStore((state) => state.transactionsPool);
   const getAdapter = usePulsarStore((state) => state.getAdapter);
+  const removeTxFromPool = usePulsarStore((state) => state.removeTxFromPool);
 
   return (
     // rememberWallet={false}: the wallet is reconnected only until the tab closes, unless the user ticks
@@ -50,6 +51,7 @@ export function SatelliteConnectProviders({ children }: { children: ReactNode })
         solanaRPCUrls={solanaRPCUrls}
         transactionPool={transactionsPool}
         pulsarAdapter={getAdapter() as NovaConnectProviderProps['pulsarAdapter']}
+        removeTxFromPool={removeTxFromPool}
         siwx={siwx}
         withBalance
         withChain

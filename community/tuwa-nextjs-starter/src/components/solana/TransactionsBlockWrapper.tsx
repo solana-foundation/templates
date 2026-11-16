@@ -2,6 +2,9 @@
 
 import { address } from '@solana/kit';
 import { useSatelliteConnectStore } from '@tuwaio/sdk/nova-connect/satellite';
+import { QuasarLoader } from '@tuwaio/sdk/nova-core';
+import { cn } from '@tuwaio/sdk/nova-core/utils';
+import { ArrowTopRightOnSquareIcon } from '@tuwaio/sdk/nova-icons/24/outline';
 import { HashLink } from '@tuwaio/sdk/nova-transactions';
 import { shortAddress } from '@tuwaio/sdk/orbit';
 import { OrbitAdapter, selectAdapterByKey, SOLANA_CHAIN_IDS } from '@tuwaio/sdk/orbit';
@@ -9,6 +12,8 @@ import { TransactionStatus, useTxFinished } from '@tuwaio/sdk/pulsar';
 import { SolanaConnection } from '@tuwaio/solana-sdk/satellite';
 import { useEffect } from 'react';
 
+import { chipClassName, labelClassName } from '@/components/classNames';
+import { Panel, PoweredBy } from '@/components/Panel';
 import { TxActionButtonClose } from '@/components/solana/TxActionButtonClose';
 import { TxActionButtonDecrement } from '@/components/solana/TxActionButtonDecrement';
 import { TxActionButtonIncrement } from '@/components/solana/TxActionButtonIncrement';
@@ -53,180 +58,121 @@ export const TransactionsBlockWrapper = () => {
   });
 
   // The counter program is deployed on devnet: its explorer links name the cluster, whatever the wallet is on
-  const openSolscan = () => {
-    window.open(
-      foundAdapter?.getExplorerUrl(`/account/${PROGRAM_ID}`, SOLANA_CHAIN_IDS.devnet),
-      '_blank',
-      'noopener,noreferrer',
-    );
-  };
+  const programUrl = foundAdapter?.getExplorerUrl(`/account/${PROGRAM_ID}`, SOLANA_CHAIN_IDS.devnet);
 
   const sortedAccounts = Object.entries(accounts).sort(([, countA], [, countB]) => countB - countA);
 
   return (
-    <div className="p-4 relative">
-      <div className="m-auto w-full max-w-md h-auto min-h-[680px] bg-[var(--tuwa-bg-primary)] rounded-[var(--tuwa-rounded-corners)] shadow-2xl border border-[var(--tuwa-border-primary)] overflow-hidden flex flex-col relative">
-        <header className="bg-[var(--tuwa-bg-secondary)] border-b border-[var(--tuwa-border-primary)] p-6 pt-12 flex items-start justify-between">
-          <div className="flex-1 pr-4">
-            <h1 className="text-2xl font-bold text-[var(--tuwa-text-primary)] mb-1 leading-tight">Solana Demo</h1>
-            <p className="text-[var(--tuwa-text-secondary)] text-sm leading-tight">Transaction Tracking Example</p>
-          </div>
-        </header>
-
-        <main className="flex-1 p-8 space-y-8">
-          <section className="text-center">
-            <h2 className="text-xl font-semibold text-[var(--tuwa-text-primary)] mb-2 leading-tight">
-              Solana Program Interaction
-            </h2>
-            <p className="text-[var(--tuwa-text-secondary)] text-sm leading-tight">
-              Test transaction tracking with a simple counter program
-            </p>
-          </section>
-
-          <hr className="border-t border-[var(--tuwa-border-primary)]" />
-
-          <article className="space-y-6 flex-1">
-            <div className="bg-[var(--tuwa-bg-secondary)] rounded-[var(--tuwa-rounded-corners)] p-4 border border-[var(--tuwa-border-secondary)] flex flex-col justify-center shadow-lg">
-              <div className="flex items-center justify-between w-full">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-[var(--tuwa-info-bg)] rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-[var(--tuwa-text-accent)] font-bold text-lg">#</span>
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-[var(--tuwa-text-primary)] leading-tight">Program</h3>
-                    <p className="text-xs text-[var(--tuwa-text-tertiary)] leading-tight">Solana Devnet</p>
-                  </div>
-                </div>
-
-                <div className="text-right flex-shrink-0">
-                  <div className="text-sm text-[var(--tuwa-text-secondary)] leading-tight">Account</div>
-                  <button
-                    onClick={openSolscan}
-                    className="text-xs font-mono text-[var(--tuwa-text-accent)] hover:opacity-80 leading-tight cursor-pointer transition-opacity duration-200 underline hover:no-underline"
-                  >
-                    {shortAddress(PROGRAM_ID.toString(), 6, 6)}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              {activeWalletSolana?.connectedAccount ? (
-                <div className="h-14">
-                  <TxActionButtonInitialize activeWallet={activeWalletSolana} />
-                </div>
-              ) : (
-                <p className="text-center text-sm text-[var(--tuwa-text-secondary)]">
-                  Connect wallet to initialize transaction.
-                </p>
-              )}
-            </div>
-
-            <section>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg text-[var(--tuwa-text-primary)] font-bold">Counters:</h3>
-                <h3 className="text-lg text-[var(--tuwa-text-primary)] font-bold">
-                  {accountsLoading ? (
-                    <div className="flex items-center space-x-2 text-[var(--tuwa-text-secondary)]">
-                      <div className="w-4 h-4 border-2 border-t-2 border-[var(--tuwa-border-primary)] rounded-full animate-spin"></div>
-                      <span>Loading...</span>
-                    </div>
-                  ) : (
-                    sortedAccounts.length
-                  )}
-                </h3>
-              </div>
-
-              <div className="grid gap-4 overflow-y-auto max-h-[320px] p-2 -m-2">
-                {accountsLoading ? (
-                  <div className="flex flex-col items-center justify-center h-40">
-                    <div className="w-8 h-8 border-4 border-t-4 border-[var(--tuwa-border-primary)] rounded-full animate-spin mb-4"></div>
-                    <p className="text-lg text-[var(--tuwa-text-secondary)]">Fetching accounts...</p>
-                  </div>
-                ) : accountsError ? (
-                  <div className="flex flex-col items-center justify-center h-40 text-center">
-                    <p className="text-lg text-[var(--tuwa-text-secondary)] mb-4">
-                      Could not fetch the counters from devnet.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => getAccounts()}
-                      className="px-4 py-2 text-sm font-medium text-[var(--tuwa-text-primary)] border border-[var(--tuwa-border-primary)] rounded-[var(--tuwa-rounded-corners)] hover:bg-[var(--tuwa-bg-secondary)] cursor-pointer"
-                    >
-                      Retry
-                    </button>
-                  </div>
-                ) : (
-                  sortedAccounts.map(([key, value]) => (
-                    <div
-                      className="bg-[var(--tuwa-bg-secondary)] rounded-[var(--tuwa-rounded-corners)] p-4 border border-[var(--tuwa-border-secondary)] min-h-[100px] flex flex-col justify-center"
-                      key={key}
-                    >
-                      <div className="flex items-center justify-between w-full mb-3">
-                        <div className="flex items-center space-x-3">
-                          <div className="min-w-0 flex-1">
-                            <h3 className="font-medium text-[var(--tuwa-text-primary)] leading-tight">
-                              Counter Program
-                            </h3>
-                            <p className="text-xs text-[var(--tuwa-text-tertiary)] leading-tight">Solana Devnet</p>
-                          </div>
-                        </div>
-
-                        <div className="text-right flex-shrink-0">
-                          <div className="text-sm text-[var(--tuwa-text-secondary)] leading-tight">Account</div>
-                          <HashLink
-                            hash={key}
-                            explorerUrl={foundAdapter?.getExplorerUrl(`/address/${key}`, SOLANA_CHAIN_IDS.devnet)}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-center pt-2 border-t border-[var(--tuwa-border-secondary)]">
-                        <div className="text-center">
-                          <div className="text-xs text-[var(--tuwa-text-tertiary)] mb-1">Current Value</div>
-                          <div className="text-2xl font-bold text-[var(--tuwa-text-accent)]">{value}</div>
-                        </div>
-                      </div>
-
-                      {activeWalletSolana?.connectedAccount && (
-                        <>
-                          <hr className="border-t border-[var(--tuwa-border-primary)] my-4" />
-                          <div className="flex flex-col gap-2">
-                            <div className="flex gap-2">
-                              <TxActionButtonIncrement
-                                activeWallet={activeWalletSolana}
-                                currentCount={value}
-                                solanatest={address(key)}
-                              />
-                              <TxActionButtonDecrement
-                                activeWallet={activeWalletSolana}
-                                currentCount={value}
-                                solanatest={address(key)}
-                              />
-                            </div>
-                            <TxActionButtonClose activeWallet={activeWalletSolana} solanatest={address(key)} />
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  ))
-                )}
-              </div>
-            </section>
-          </article>
-        </main>
-
-        <footer className="bg-[var(--tuwa-bg-secondary)] px-8 py-4 border-t border-[var(--tuwa-border-primary)] flex-shrink-0 h-16 flex items-center justify-center">
-          <div className="flex items-center space-x-2 text-xs text-[var(--tuwa-text-tertiary)]">
-            <span className="leading-none">Powered by</span>
-            <a href="https://github.com/TuwaIO" target="_blank">
-              <span className="font-semibold text-[var(--tuwa-text-accent)] leading-none">TUWA</span>
-            </a>
-            <span className="leading-none">•</span>
-            <span className="leading-none">Web3 Transaction Tracking</span>
-          </div>
-        </footer>
+    <Panel
+      name="Solana demo"
+      aside={<span className={chipClassName}>Devnet</span>}
+      footer={<PoweredBy />}
+      className="max-w-md"
+    >
+      <div className="border-b border-[var(--tuwa-border-primary)] p-5">
+        <h1 className="font-mono text-xl leading-tight font-bold text-[var(--tuwa-text-primary)]">
+          Solana program interaction
+        </h1>
+        <p className="mt-1.5 text-sm leading-6 text-[var(--tuwa-text-secondary)]">
+          Test transaction tracking with a simple counter program.
+        </p>
       </div>
-    </div>
+
+      <dl className="grid grid-cols-2 border-b border-[var(--tuwa-border-primary)]">
+        <div className="border-r border-[var(--tuwa-border-primary)] px-5 py-4">
+          <dt className={cn(labelClassName, 'text-[var(--tuwa-text-secondary)]')}>Counter program</dt>
+          <dd className="mt-2">
+            <a
+              href={programUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 font-mono text-sm text-[var(--tuwa-text-primary)] underline underline-offset-4 hover:no-underline"
+            >
+              {shortAddress(PROGRAM_ID.toString(), 6, 6)}
+              <ArrowTopRightOnSquareIcon className="h-4 w-4" aria-hidden="true" />
+            </a>
+          </dd>
+        </div>
+        <div className="px-5 py-4">
+          <dt className={cn(labelClassName, 'text-[var(--tuwa-text-secondary)]')}>Counters</dt>
+          <dd className="mt-1 font-mono text-2xl leading-8 font-bold text-[var(--tuwa-text-primary)] tabular-nums">
+            {accountsLoading ? <QuasarLoader size={20} /> : sortedAccounts.length}
+          </dd>
+        </div>
+      </dl>
+
+      <div className="border-b border-[var(--tuwa-border-primary)] p-5">
+        {activeWalletSolana?.connectedAccount ? (
+          <TxActionButtonInitialize activeWallet={activeWalletSolana} />
+        ) : (
+          <p className="text-sm text-[var(--tuwa-text-secondary)]">Connect a wallet to create a counter.</p>
+        )}
+      </div>
+
+      <div className="max-h-[420px] overflow-y-auto">
+        {accountsLoading ? (
+          <div className="flex h-40 flex-col items-center justify-center gap-3">
+            <QuasarLoader size={32} />
+            <p className="text-sm text-[var(--tuwa-text-secondary)]">Fetching the counters...</p>
+          </div>
+        ) : accountsError ? (
+          <div className="flex h-40 flex-col items-center justify-center gap-4 px-5 text-center">
+            <p className="text-sm text-[var(--tuwa-text-secondary)]">Could not fetch the counters from devnet.</p>
+            <button
+              type="button"
+              onClick={() => getAccounts()}
+              className={cn(
+                labelClassName,
+                'cursor-pointer border border-[var(--tuwa-border-strong)] px-4 py-2.5 text-[var(--tuwa-text-primary)] hover:bg-[var(--tuwa-standart-button-hover)]',
+              )}
+            >
+              Retry
+            </button>
+          </div>
+        ) : (
+          <ul>
+            {sortedAccounts.map(([key, value]) => (
+              <li key={key} className="border-b border-[var(--tuwa-border-primary)] p-5 last:border-b-0">
+                <div className="flex items-end justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className={cn(labelClassName, 'text-[var(--tuwa-text-secondary)]')}>Account</p>
+                    <div className="mt-2">
+                      <HashLink
+                        hash={key}
+                        explorerUrl={foundAdapter?.getExplorerUrl(`/address/${key}`, SOLANA_CHAIN_IDS.devnet)}
+                      />
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className={cn(labelClassName, 'text-[var(--tuwa-text-secondary)]')}>Value</p>
+                    <p className="mt-1 font-mono text-2xl leading-8 font-bold text-[var(--tuwa-text-primary)] tabular-nums">
+                      {value}
+                    </p>
+                  </div>
+                </div>
+
+                {activeWalletSolana?.connectedAccount && (
+                  <div className="mt-4 flex flex-col gap-2">
+                    <div className="flex gap-2">
+                      <TxActionButtonIncrement
+                        activeWallet={activeWalletSolana}
+                        currentCount={value}
+                        solanatest={address(key)}
+                      />
+                      <TxActionButtonDecrement
+                        activeWallet={activeWalletSolana}
+                        currentCount={value}
+                        solanatest={address(key)}
+                      />
+                    </div>
+                    <TxActionButtonClose activeWallet={activeWalletSolana} solanatest={address(key)} />
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </Panel>
   );
 };

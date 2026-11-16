@@ -1,35 +1,31 @@
 @import '@tuwaio/sdk/styles/all.css';
 @import 'tailwindcss';
 
-/* Nova UI Kit leaves the page of the app alone: the font of the page and its scrollbar gutter are set here */
+/* The fonts of the TUWA styles behind the `font-sans` and `font-mono` classes of the app */
+@theme inline {
+  --font-sans: var(--tuwa-font-sans);
+  --font-mono: var(--tuwa-font-mono);
+}
+
+/* Nova UI Kit leaves the page of the app alone: the font of the page, its paper and its scrollbar gutter are set here */
 html {
   scrollbar-gutter: stable;
 }
 
 body {
+  background: var(--tuwa-bg-secondary);
+  color: var(--tuwa-text-primary);
   font-family: var(--tuwa-font-sans);
 }
 
-:root {
-  --tuwa-text-accent: #27272a;
-  --tuwa-text-on-accent: #ffffff;
-  --tuwa-button-gradient-from: #27272a;
-  --tuwa-button-gradient-to: #27272a;
-  --tuwa-button-gradient-from-hover: #3f3f46;
-  --tuwa-button-gradient-to-hover: #3f3f46;
-  --tuwa-info-bg: #f4f4f5;
-  --tuwa-info-text: #27272a;
-  --tuwa-info-icon: #52525b;
-}
-
+/* A neutral look: the accent of the app is its ink, so the main button and the lit pixels of the icons are ink on the
+   paper (and paper on the ink under `.dark`). Put the colour of your brand here instead. */
+:root,
 .dark {
-  --tuwa-text-accent: #e4e4e7;
-  --tuwa-text-on-accent: #18181b;
-  --tuwa-button-gradient-from: #e4e4e7;
-  --tuwa-button-gradient-to: #e4e4e7;
-  --tuwa-button-gradient-from-hover: #d4d4d8;
-  --tuwa-button-gradient-to-hover: #d4d4d8;
-  --tuwa-info-bg: #27272a;
-  --tuwa-info-text: #e4e4e7;
-  --tuwa-info-icon: #a1a1aa;
+  --tuwa-text-accent: var(--tuwa-text-primary);
+  --tuwa-text-on-accent: var(--tuwa-bg-primary);
+  --tuwa-button-gradient-from: var(--tuwa-text-primary);
+  --tuwa-button-gradient-to: var(--tuwa-text-primary);
+  --tuwa-button-gradient-from-hover: color-mix(in srgb, var(--tuwa-text-primary) 84%, var(--tuwa-bg-primary));
+  --tuwa-button-gradient-to-hover: color-mix(in srgb, var(--tuwa-text-primary) 84%, var(--tuwa-bg-primary));
 }

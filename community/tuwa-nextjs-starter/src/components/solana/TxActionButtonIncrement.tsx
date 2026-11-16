@@ -1,14 +1,15 @@
 'use client';
 
-import { ArrowUpIcon } from '@heroicons/react/24/solid';
 import type { Address } from '@solana/kit';
 import { Connection } from '@tuwaio/sdk/nova-connect/satellite';
+import { ArrowUpIcon } from '@tuwaio/sdk/nova-icons/24/solid';
 import { TxActionButton as TAB } from '@tuwaio/sdk/nova-transactions';
 import { OrbitAdapter } from '@tuwaio/sdk/orbit';
 import { createSolanaClientWithCache, createSolanaTransactionSendingSigner } from '@tuwaio/solana-sdk/orbit';
 import { SolanaConnection } from '@tuwaio/solana-sdk/satellite';
 import React from 'react';
 
+import { actionClassName } from '@/components/classNames';
 import { usePulsarStore } from '@/hooks/pulsarStoreHook';
 import { txActions, TxType } from '@/transactions';
 
@@ -61,21 +62,14 @@ export const TxActionButtonIncrement = ({
       action={handleIncrement}
       transactionsPool={transactionsPool}
       getLastTxKey={getLastTxKey}
-      className={`
-        w-full p-2.5 rounded-[var(--tuwa-rounded-corners)] border border-transparent
-        text-[var(--tuwa-text-on-accent)] font-semibold shadow-md transition-all duration-200
-        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--tuwa-border-primary)]
-        bg-[var(--tuwa-button-gradient-from)]
-        hover:bg-[var(--tuwa-button-gradient-from-hover)] hover:shadow-md
-        disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] select-none
-      `}
+      className={actionClassName}
       disabled={!activeWallet?.isConnected}
       walletAddress={activeWallet?.address}
     >
-      <div className="flex items-center justify-center space-x-2">
-        <ArrowUpIcon className="w-5 h-5" />
-        <span className="text-sm leading-none">Increment</span>
-      </div>
+      <span className="inline-flex items-center gap-2">
+        <ArrowUpIcon className="h-4 w-4" aria-hidden="true" />
+        Increment
+      </span>
     </TAB>
   );
 };

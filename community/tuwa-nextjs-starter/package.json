@@ -40,11 +40,10 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@heroicons/react": "^2.2.0",
     "@solana/kit": "^8.6.0",
     "@solana/webcrypto-ed25519-polyfill": "^8.6.0",
-    "@tuwaio/sdk": "^0.7.1",
-    "@tuwaio/solana-sdk": "^0.7.0",
+    "@tuwaio/sdk": "^0.9.1",
+    "@tuwaio/solana-sdk": "^0.7.1",
     "@wallet-standard/app": "^1.1.1",
     "@wallet-standard/base": "^1.1.1",
     "@wallet-standard/features": "^1.1.1",
