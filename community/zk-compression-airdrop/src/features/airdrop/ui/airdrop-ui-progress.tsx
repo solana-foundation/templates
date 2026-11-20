@@ -23,6 +23,17 @@ export function AirdropProgressDisplay({ progress, mintAddress, clusterParam = '
       </CardHeader>
       <CardContent className="space-y-4">
         <Progress value={percentage} />
+        {progress.signatures.map((signature) => (
+          <a
+            key={signature}
+            href={`https://explorer.solana.com/tx/${signature}?cluster=${clusterParam}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block break-all text-xs underline"
+          >
+            {signature}
+          </a>
+        ))}
 
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
@@ -51,10 +62,8 @@ export function AirdropProgressDisplay({ progress, mintAddress, clusterParam = '
 
             <Alert>
               <AlertDescription className="text-xs">
-                <strong>About ZK Compression:</strong> Compressed token accounts are stored in Merkle trees on the
-                ledger, making them around 5000 times cheaper than regular SPL tokens. Individual transaction signatures
-                won&apos;t show token accounts on standard explorers, use the mint address above to see activity, or
-                query balances via the ZK Compression RPC indexer.
+                <strong>About ZK Compression:</strong> Transactions are visible on Solana Explorer. Query compressed
+                recipient balances through the ZK Compression indexer.
               </AlertDescription>
             </Alert>
           </div>

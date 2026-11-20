@@ -20,7 +20,7 @@ export function AirdropControls({
   maxBatchSize,
   onExecute,
 }: AirdropControlsProps) {
-  const [batchSize, setBatchSize] = useState(Math.min(10, maxBatchSize))
+  const [batchSize, setBatchSize] = useState(Math.max(1, Math.min(3, maxBatchSize)))
 
   const handleExecute = async () => {
     await onExecute(batchSize)
@@ -48,17 +48,21 @@ export function AirdropControls({
           <input
             type="range"
             min="1"
-            max={maxBatchSize}
+            max={Math.max(1, maxBatchSize)}
             value={batchSize}
             onChange={(e) => setBatchSize(Number(e.target.value))}
             className="w-full"
-            disabled={isExecuting}
+            disabled={isExecuting || maxBatchSize < 1}
           />
           <p className="text-xs text-muted-foreground">Recipients per transaction (max: {maxBatchSize})</p>
         </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleExecute} disabled={!hasWallet || !isAuthorized || isExecuting} className="w-full">
+        <Button
+          onClick={handleExecute}
+          disabled={!hasWallet || !isAuthorized || isExecuting || maxBatchSize < 1}
+          className="w-full"
+        >
           {isExecuting ? 'Executing...' : 'Execute Airdrop'}
         </Button>
       </CardFooter>
