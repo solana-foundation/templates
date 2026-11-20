@@ -1,0 +1,9 @@
+{
+  "background_color": "#0a0a0a",
+  "display": "standalone",
+  "icons": [{ "purpose": "maskable", "sizes": "512x512", "src": "/icon-512.png", "type": "image/png" }],
+  "name": "TypeScript Kit Minimal",
+  "short_name": "TypeScript Kit Minimal",
+  "start_url": "/",
+  "theme_color": "#0a0a0a"
+}
