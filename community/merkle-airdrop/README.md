@@ -110,8 +110,8 @@ cargo install --git https://github.com/solana-foundation/anchor avm --force
 Install the latest Anchor CLI:
 
 ```bash
-avm install latest
-avm use latest
+avm install 1.1.2
+avm use 1.1.2
 ```
 
 #### 4. Install Node.js and Yarn
@@ -234,6 +234,16 @@ This single command will:
 - ✅ Update all configuration files
 - ✅ Generate the Merkle tree for airdrop distribution
 
+When asked whether to generate a new program ID, answer `y` to create a new
+program address, or `n` to keep the current program address. Reusing an address
+does not reset its existing airdrop state or claim accounts.
+
+New program keys and backups of the previous deployment key are kept in
+`anchor/program-keypairs/<program-address>-keypair.json`. The active deployment
+key is also stored in `anchor/target/deploy/solana_distributor-keypair.json`.
+Keep these private files backed up outside the repository; they are ignored by
+Git. Generating another ID does not delete the previous keys.
+
 #### Initialize the on-chain airdrop state and makes it ready for claiming:
 
 ```bash
@@ -298,8 +308,8 @@ Gotcha: Proof order and the leaf encoding must match exactly. Any mismatch yield
 #### Accounts
 
 - Airdrop State PDA
-  - Purpose: Stores immutable Merkle root and global airdrop parameters.
-  - Example seeds: ["airdrop", authority, airdropId]
+  - Purpose: Stores the Merkle root and global airdrop parameters, and holds the distributed SOL.
+  - Seeds: ["merkle_tree"]
   - Data (typical):
     - `authority: Pubkey` — entity initializing the airdrop
     - `merkleRoot: [u8; 32]`
@@ -308,20 +318,13 @@ Gotcha: Proof order and the leaf encoding must match exactly. Any mismatch yield
     - `bump: u8`
   - Space: `8 (discriminator) + 32 + 32 + 8 + 8 + 1` ≈ 89 bytes; allocate with headroom (e.g., 128 bytes)
 
-- Vault PDA (System Account owned by program)
-  - Purpose: Holds SOL to be distributed.
-  - Example seeds: ["vault", airdropState]
-  - Data: lamports only; no data account needed if purely a System Account
-  - Property: Only the program can move lamports from this PDA.
+The program-owned airdrop state is also the vault; there is no separate vault PDA.
 
 - Claim Status PDA (per recipient)
   - Purpose: Prevents double-claim.
   - Example seeds: ["claim", airdropState, recipientPubkey]
-  - Data (typical):
-    - `claimed: bool`
-    - `amount: u64` (optional bookkeeping of claimed amount)
-    - `bump: u8`
-  - Space: `8 + 1 + 8 + 1` ≈ 18 bytes; allocate with headroom (e.g., 64 bytes)
+  - Data: the eight-byte Anchor discriminator. Its existence marks the wallet as claimed.
+  - Space: 8 bytes. The claimant pays its rent and the transaction fee.
 
 Gotcha: Seeds shown are representative. Use the seeds compiled into your program and generated client.
 
@@ -329,16 +332,15 @@ Gotcha: Seeds shown are representative. Use the seeds compiled into your program
 
 - initializeAirdrop
   - Inputs: `merkleRoot: [u8; 32]`, `totalAmount: u64`
-  - Accounts: `authority (signer)`, `airdropState (PDA)`, `vault (PDA)`, `systemProgram`
+  - Accounts: `authority (signer)`, `airdropState (PDA)`, `systemProgram`
   - Effects:
     - Creates/initializes `airdropState`
-    - Optionally creates `vault`
     - Records the Merkle root and total allocation
-    - May assert that sufficient SOL is present or transferred to `vault`
+    - Transfers the total allocation from the authority to the airdrop state
 
 - claimAirdrop
   - Inputs: `amount: u64`, `leafIndex: u32|u64`, `proof: [[u8; 32]]`
-  - Accounts: `signer (recipient)`, `airdropState`, `claimStatus (PDA)`, `vault (PDA)`, `systemProgram`
+  - Accounts: `signer (recipient)`, `airdropState`, `claimStatus (PDA)`, `systemProgram`
   - Effects:
     - Verifies the Merkle proof matches `(recipient, amount, index)`
     - Ensures `claimStatus` indicates not yet claimed
@@ -348,7 +350,7 @@ Gotcha: Seeds shown are representative. Use the seeds compiled into your program
 Safeguards:
 
 - Double-claim protection via `Claim Status` PDA.
-- Root immutability: once set, the airdrop membership is fixed.
+- Only the authority can update the root. Existing claim accounts remain claimed after an update.
 - Program-owned vault: only program logic moves funds.
 
 #### State transitions and funds flow
@@ -372,7 +374,7 @@ import { address } from '@solana/kit' // Solana Kit address helpers
 
 const initIx = getInitializeAirdropInstruction({
   airdropState: airdropStatePda, // PDA derived by client/helpers
-  authority: authorityPubkey, // wallet pubkey
+  authority: authoritySigner, // TransactionSigner
   merkleRoot: new Uint8Array(root32), // 32-byte root
   amount: BigInt(totalLamports), // u64
 })
@@ -392,7 +394,7 @@ const proofBytes = proofHexArray.map((h) => new Uint8Array(Buffer.from(h.slice(2
 const claimIx = getClaimAirdropInstruction({
   airdropState: airdropStatePda,
   userClaim: claimStatusPda, // PDA for this recipient
-  signer: recipientPubkey, // claimant wallet
+  signer: recipientSigner, // claimant TransactionSigner
   proof: proofBytes, // [[u8; 32]]
   amount: BigInt(recipientLamports),
   leafIndex: recipientIndex,
@@ -421,11 +423,45 @@ Gotcha: Ensure the proof, amount, and index fed to the instruction are exactly t
   - Account sizes: Reserve adequate space for PDAs (Anchor discriminator adds 8 bytes).
   - Transaction size: Large proofs or multiple instructions may approach limits; use single-claim per transaction.
 
-Gotcha: Root immutability means membership is fixed. Changing recipients requires a new root and a new airdrop state.
+Changing recipients requires an authority-approved root update and synchronized recipient data. Updating the root does not reset existing claim accounts.
 
 ---
 
+### Browser Wallet Claims
+
+The frontend uses Kit 8 RPC/wallet plugins and `@solana/react`. Connect an eligible
+Wallet Standard wallet that advertises V1 transaction support, then approve the
+claim in that wallet. The app does not load a claimant private key.
+
+Set `NEXT_PUBLIC_PROGRAM_ID` to your deployed distributor and
+`NEXT_PUBLIC_SOLANA_NETWORK` to `devnet`, `testnet`, or `mainnet` (default: devnet).
+Optional `NEXT_PUBLIC_RPC_URL` and `NEXT_PUBLIC_RPC_WS_URL` configure a matching
+RPC pair. Keep the wallet on that same network. Regenerate recipients after setup
+so the browser's Merkle root matches the initialized on-chain state.
+
+Never put secret keys into Next.js configuration or public environment variables.
+If an older build included `USER_PRIVATE_KEY` through `next.config.ts`, treat that
+key as exposed and replace it. Administrative signer files belong only in the
+local setup scripts and must not be committed or served to browsers.
+
+Claims use V1, estimate resource limits and fees, and check the payer's ability to
+fund the new claim account's rent. RPC failures are not treated as unclaimed
+accounts. Switching accounts or disconnecting cancels pending preparation.
+
 ### Testing and Validation
+
+`npm run ci` runs the production build, lint, formatting, and offline regression
+tests. `npm run type-check:node` checks setup scripts separately. Program tests
+are explicit: `npm run test:program` requires the generated client, a deployed
+program, and a funded local administrative signer; it is not part of frontend CI.
+The script-level `verifyGillProof` helper requires the original leaf index as its
+fourth argument; proofs are ordered, not sorted by hash value.
+
+The optional `tests/local-runtime.test.ts` requires `SOLANA_TEST_RPC_URL` and
+`SOLANA_TEST_WS_URL` for an already running local runtime with the distributor
+program loaded. It rejects non-local RPC hosts, uses ephemeral signers, and checks
+confirmed V1 initialization and claims for three recipients, exact balances, and
+double-claim protection. Ordinary offline CI skips that one test explicitly.
 
 The test suite validates:
 
@@ -505,7 +541,7 @@ The template and generated client target these versions for consistent behavior 
 ## Key Technologies
 
 - **[@solana/kit](https://github.com/anza-xyz/kit)**: Modern Solana JavaScript SDK
-- **[@solana/react-hooks](https://www.npmjs.com/package/@solana/react-hooks)**: React hooks for Solana
+- **[@solana/react](https://www.npmjs.com/package/@solana/react)**: React integration for the Kit client
 - **[Codama](https://github.com/codama-idl/codama)**: Automatic client generation
 - **[Anchor Framework](https://www.anchor-lang.com/)**: Solana program development
 - **[Vitest](https://vitest.dev/)**: Fast unit testing framework

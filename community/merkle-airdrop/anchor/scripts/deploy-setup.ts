@@ -78,7 +78,7 @@ function question(rl: readline.Interface, prompt: string): Promise<string> {
 }
 
 export async function runGillDeploymentSetup(config: GillDeploymentSetupConfig = {}): Promise<void> {
-  const { network = 'devnet', workingDir = '.', verbose = false } = config
+  const { network = 'devnet', workingDir = '.' } = config
 
   const rl = readline.createInterface({
     input: process.stdin,

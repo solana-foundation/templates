@@ -1,7 +1,6 @@
 import { keccak_256 } from 'js-sha3'
-import { type Address } from '@solana/kit'
-import bs58 from 'bs58'
-import { Recipient } from '../../types'
+import { Endian, getAddressEncoder, getU64Encoder, type Address } from '@solana/kit'
+import type { ExactAmount, Recipient } from '../../types'
 import { RECIPIENTS_DATA, RecipientsFile } from './recipients'
 
 export interface MerkleTreeData {
@@ -10,24 +9,39 @@ export interface MerkleTreeData {
   tree: Uint8Array[][]
 }
 
-function createLeaf(recipient: Address, amount: number): Uint8Array {
-  // Convert Address (string) to bytes - Address is base58 encoded
-  const recipientBytes = Buffer.from(bs58.decode(recipient))
+export function toU64(value: ExactAmount): bigint {
+  if (typeof value === 'number' && !Number.isSafeInteger(value)) {
+    throw new RangeError('Numeric u64 input must be a safe integer')
+  }
+  if (typeof value === 'string' && !/^\d+$/.test(value)) {
+    throw new TypeError('u64 string must contain decimal digits only')
+  }
+  if (!['bigint', 'string', 'number'].includes(typeof value)) {
+    throw new TypeError('Expected bigint, decimal string, or safe integer')
+  }
+  const result = BigInt(value)
+  if (result < 0n || result > 0xffffffffffffffffn) throw new RangeError('u64 out of range')
+  return result
+}
 
-  const data = Buffer.concat([
-    recipientBytes,
-    Buffer.from(new Uint8Array(new BigUint64Array([BigInt(amount)]).buffer)),
-    Buffer.from([0]),
-  ])
+export function createLeaf(recipient: Address, amount: ExactAmount, isClaimed = false): Uint8Array {
+  const data = new Uint8Array(41)
+  data.set(getAddressEncoder().encode(recipient), 0)
+  data.set(getU64Encoder({ endian: Endian.Little }).encode(toU64(amount)), 32)
+  data[40] = isClaimed ? 1 : 0
   return new Uint8Array(keccak_256.arrayBuffer(data))
 }
 
-function hashPair(left: Uint8Array, right: Uint8Array): Uint8Array {
-  const data = Buffer.concat([Buffer.from(left), Buffer.from(right)])
+export function hashPair(left: Uint8Array, right: Uint8Array): Uint8Array {
+  if (left.length !== 32 || right.length !== 32) throw new RangeError('Hashes must be 32 bytes')
+  const data = new Uint8Array(64)
+  data.set(left)
+  data.set(right, 32)
   return new Uint8Array(keccak_256.arrayBuffer(data))
 }
 
 export function buildMerkleTree(recipients: Recipient[]): MerkleTreeData {
+  if (recipients.length === 0) throw new RangeError('Cannot build an empty Merkle tree')
   const leaves = recipients.map((r) => createLeaf(r.recipient, r.amount))
   const tree = [leaves]
   let currentLevel = leaves
@@ -56,6 +70,9 @@ export function buildMerkleTree(recipients: Recipient[]): MerkleTreeData {
 }
 
 export function getProofFromTree(treeData: MerkleTreeData, leafIndex: number): Uint8Array[] {
+  if (!Number.isSafeInteger(leafIndex) || leafIndex < 0 || leafIndex >= treeData.leaves.length) {
+    throw new RangeError('Leaf index out of range')
+  }
   const proof: Uint8Array[] = []
   let index = leafIndex
 
@@ -63,9 +80,8 @@ export function getProofFromTree(treeData: MerkleTreeData, leafIndex: number): U
     const currentLevel = treeData.tree[level]
     const siblingIndex = index % 2 === 0 ? index + 1 : index - 1
 
-    if (siblingIndex < currentLevel.length) {
-      proof.push(currentLevel[siblingIndex])
-    }
+    // Odd levels hash the final node with itself, so include that duplicated sibling.
+    proof.push(currentLevel[siblingIndex] ?? currentLevel[index])
 
     index = Math.floor(index / 2)
   }
@@ -74,7 +90,7 @@ export function getProofFromTree(treeData: MerkleTreeData, leafIndex: number): U
 }
 
 export function getRootHex(root: Uint8Array): string {
-  return '0x' + Buffer.from(root).toString('hex')
+  return '0x' + Array.from(root, (byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 
 export function getLeafCount(leaves: Uint8Array[]): number {
@@ -87,7 +103,7 @@ export async function generateMerkleTree() {
 
     const recipients: Recipient[] = recipientsData.recipients.map((r) => ({
       recipient: r.publicKey as Address,
-      amount: parseInt(r.amount),
+      amount: toU64(r.amount),
     }))
 
     const merkleTreeData = buildMerkleTree(recipients)
@@ -121,12 +137,13 @@ export function generateProofForRecipient(recipientPublicKey: string): {
 
     const recipients: Recipient[] = recipientsData.recipients.map((r) => ({
       recipient: r.publicKey as Address,
-      amount: parseInt(r.amount),
+      amount: toU64(r.amount),
     }))
 
     const merkleTreeData = buildMerkleTree(recipients)
 
-    const leafIndex = recipientInfo.index
+    const leafIndex = recipientsData.recipients.indexOf(recipientInfo)
+    if (recipientInfo.index !== leafIndex) throw new RangeError('Recipient index does not match tree order')
     const proof = getProofFromTree(merkleTreeData, leafIndex)
 
     const proofArray = proof.map((p) => Array.from(p))

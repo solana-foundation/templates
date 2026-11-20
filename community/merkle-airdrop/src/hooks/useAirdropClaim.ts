@@ -1,61 +1,57 @@
 'use client'
 
-import { useState } from 'react'
-import { checkClaimStatus, claimAirdrop, type AirdropClaimConfig } from '../lib/airdrop-client'
-import { AIRDROP_CONFIG, validateConfig } from '@/lib/config'
+import { useEffect, useRef, useState } from 'react'
+import { useClient } from '@solana/react'
+import { useConnectedWallet } from '@solana/kit-plugin-wallet/react'
+import type { AppClient } from '@/lib/solana-client'
+import { prepareClaim } from '@/lib/airdrop-client'
 
-interface UseAirdropClaimResult {
-  isLoading: boolean
-  status: string
-  handleClaimAirdrop: () => Promise<void>
-}
-
-export function useAirdropClaim(): UseAirdropClaimResult {
-  const [isLoading, setIsLoading] = useState(false)
+export function useAirdropClaim() {
+  const client = useClient<AppClient>()
+  const wallet = useConnectedWallet(client)
+  const [isLoading, setLoading] = useState(false)
   const [status, setStatus] = useState('')
-
-  const handleClaimAirdrop = async () => {
-    setIsLoading(true)
-    setStatus('Initializing...')
-
+  const [signature, setSignature] = useState<string | null>(null)
+  const [selection, setSelection] = useState({ signer: wallet?.signer, address: wallet?.account.address })
+  if (selection.signer !== wallet?.signer || selection.address !== wallet?.account.address) {
+    setSelection({ signer: wallet?.signer, address: wallet?.account.address })
+    setLoading(false)
+    setStatus('')
+    setSignature(null)
+  }
+  const lifecycle = useRef<AbortController | null>(null)
+  const busy = useRef(false)
+  useEffect(() => {
+    const controller = new AbortController()
+    lifecycle.current = controller
+    busy.current = false
+    return () => controller.abort()
+  }, [wallet?.signer, wallet?.account.address])
+  const canClaim = Boolean(wallet?.signer && wallet.supportedTransactionVersions.has(1))
+  async function handleClaimAirdrop() {
+    const controller = lifecycle.current
+    if (!canClaim || busy.current || !controller || controller.signal.aborted) return
+    busy.current = true
+    setLoading(true)
+    setStatus('Preparing claim...')
+    setSignature(null)
     try {
-      validateConfig()
-
-      const config: AirdropClaimConfig = {
-        privateKey: AIRDROP_CONFIG.PRIVATE_KEY!,
-        network: AIRDROP_CONFIG.NETWORK,
+      const prepared = await prepareClaim(client, controller.signal)
+      controller.signal.throwIfAborted()
+      setStatus('Approve the claim in your wallet...')
+      const sent = await client.sendTransaction(prepared.message, { abortSignal: controller.signal })
+      if (!controller.signal.aborted) {
+        setSignature(sent.context.signature)
+        setStatus('Airdrop claim confirmed.')
       }
-
-      setStatus('Checking if airdrop has already been claimed...')
-
-      const alreadyClaimed = await checkClaimStatus(config, AIRDROP_CONFIG.PRIVATE_KEY!)
-
-      if (alreadyClaimed) {
-        setStatus('Already claimed')
-        return
-      }
-
-      setStatus('Claiming airdrop...')
-
-      const result = await claimAirdrop(config, AIRDROP_CONFIG.PRIVATE_KEY!)
-
-      setStatus('Success!')
-      console.log('Claim result:', result)
-      alert(
-        `Airdrop claimed successfully!\nAmount: ${parseInt(result.amount) / 1e9} SOL\nSignature: ${result.signature}`,
-      )
     } catch (error) {
-      console.error('Error:', error)
-      setStatus('Error occurred')
-      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      if (!controller.signal.aborted) setStatus(error instanceof Error ? error.message : 'Claim failed. Please retry.')
     } finally {
-      setIsLoading(false)
+      if (lifecycle.current === controller && !controller.signal.aborted) {
+        busy.current = false
+        setLoading(false)
+      }
     }
   }
-
-  return {
-    isLoading,
-    status,
-    handleClaimAirdrop,
-  }
+  return { isLoading, status, signature, canClaim, handleClaimAirdrop }
 }

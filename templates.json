@@ -615,7 +615,7 @@
           "react",
           "tailwind",
           "typescript",
-          "framework-kit"
+          "solana-kit"
         ],
         "name": "merkle-airdrop",
         "path": "community/merkle-airdrop",
