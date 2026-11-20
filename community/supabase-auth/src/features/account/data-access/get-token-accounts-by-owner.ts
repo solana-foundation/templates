@@ -1,16 +1,17 @@
-import type { SolanaClient } from '@solana/client'
-import { toAddress } from '@solana/client'
+import type { AppClient } from '@/lib/solana-client'
+import { address as toAddress } from '@solana/kit'
 
 export async function getTokenAccountsByOwner(
-  client: SolanaClient,
+  client: AppClient,
   { address, programId }: { address: string; programId: string },
+  signal?: AbortSignal,
 ) {
-  return await client.runtime.rpc
+  return await client.rpc
     .getTokenAccountsByOwner(
       toAddress(address),
       { programId: toAddress(programId) },
       { commitment: 'confirmed', encoding: 'jsonParsed' },
     )
-    .send()
+    .send({ abortSignal: signal })
     .then((res) => res.value ?? [])
 }

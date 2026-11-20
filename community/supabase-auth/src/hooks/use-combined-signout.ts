@@ -1,28 +1,28 @@
 'use client'
 import { useAuth } from '@/components/auth/auth-provider'
-import { useWalletConnection } from '@solana/react-hooks'
+import { useDisconnect } from '@solana/kit-plugin-wallet/react'
+import { useSolana } from '@/components/provider'
 
 export const useCombinedSignOut = () => {
   const { signOut } = useAuth()
-  const { disconnect } = useWalletConnection()
+  const { client } = useSolana()
+  const { dispatchAsync: disconnect } = useDisconnect(client)
 
   const handleSignOut = async () => {
+    let authError: unknown
     try {
-      // Sign out from Supabase first
       await signOut()
-
-      // Then disconnect the wallet
+    } catch (error) {
+      authError = error
+    }
+    try {
       await disconnect()
     } catch (error) {
-      console.error('Error during combined sign out:', error)
-
-      // Still try to disconnect wallet even if signOut failed
-      try {
-        await disconnect()
-      } catch (walletError) {
-        console.error('Error disconnecting wallet:', walletError)
-      }
+      if (authError)
+        throw new AggregateError([authError, error], 'Sign out and wallet disconnect failed. Please retry.')
+      throw error
     }
+    if (authError) throw authError
   }
 
   return { handleSignOut }

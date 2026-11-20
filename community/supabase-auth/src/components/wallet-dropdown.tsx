@@ -13,7 +13,15 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { cn, ellipsify } from '@/lib/utils'
 import { useAuth } from '@/components/auth/auth-provider'
 import { useCombinedSignOut } from '@/hooks/use-combined-signout'
-import { useWalletConnection, useWalletSession } from '@solana/react-hooks'
+import {
+  useConnect,
+  useConnectedWallet,
+  useDisconnect,
+  useIsWalletReady,
+  useWallets,
+} from '@solana/kit-plugin-wallet/react'
+import { getWalletForHandle } from '@wallet-standard/ui-registry'
+import { useSolana } from './provider'
 import { toast } from 'sonner'
 
 function WalletAvatar({ className, icon, label }: { className?: string; icon?: string; label?: string }) {
@@ -25,52 +33,49 @@ function WalletAvatar({ className, icon, label }: { className?: string; icon?: s
   )
 }
 
-function WalletDropdownItem({
-  connector,
-  onSelect,
-  disabled,
-}: {
-  connector: { id: string; name: string; icon?: string; ready?: boolean }
-  onSelect: (id: string) => Promise<void>
-  disabled?: boolean
-}) {
-  return (
-    <DropdownMenuItem
-      className="cursor-pointer"
-      key={connector.id}
-      disabled={disabled}
-      onClick={() => onSelect(connector.id)}
-    >
-      <WalletAvatar icon={connector.icon} label={connector.name} />
-      {connector.name}
-    </DropdownMenuItem>
-  )
+const walletIds = new WeakMap<object, number>()
+let nextWalletId = 0
+function walletId(wallet: object) {
+  if (!walletIds.has(wallet)) walletIds.set(wallet, nextWalletId++)
+  return walletIds.get(wallet)
 }
 
 function WalletDropdown() {
-  const { connectors, connect, disconnect, status: walletStatus, connected } = useWalletConnection()
-  const wallet = useWalletSession()
+  const { client } = useSolana()
+  const wallets = useWallets(client)
+  const wallet = useConnectedWallet(client)
+  const ready = useIsWalletReady(client)
+  const { dispatchAsync: connect, isRunning: connecting } = useConnect(client)
+  const { dispatchAsync: disconnect, isRunning: disconnecting } = useDisconnect(client)
+  const connected = Boolean(wallet)
   const { user } = useAuth()
   const { handleSignOut } = useCombinedSignOut()
-  const [isConnecting, setIsConnecting] = React.useState<string | null>(null)
-
-  const handleConnect = async (connectorId: string) => {
+  const [signingOut, setSigningOut] = React.useState(false)
+  const busy = React.useRef(false)
+  const handleConnect = async (candidate: (typeof wallets)[number]) => {
     try {
-      setIsConnecting(connectorId)
-      await connect(connectorId)
+      await connect(candidate)
     } catch (error) {
       console.error('Error connecting wallet:', error)
       toast.error('Failed to connect wallet')
-    } finally {
-      setIsConnecting(null)
     }
   }
 
   const handleDisconnect = async () => {
-    if (user) {
-      await handleSignOut()
-    } else {
-      await disconnect()
+    if (busy.current) return
+    busy.current = true
+    setSigningOut(true)
+    try {
+      if (user) {
+        await handleSignOut()
+      } else {
+        await disconnect()
+      }
+    } catch (error) {
+      toast.error(`Disconnect failed: ${error instanceof Error ? error.message : String(error)}`)
+    } finally {
+      busy.current = false
+      setSigningOut(false)
     }
   }
 
@@ -86,14 +91,18 @@ function WalletDropdown() {
   const displayLabel = connected
     ? wallet?.account
       ? ellipsify(wallet.account.address.toString())
-      : (wallet?.connector.name ?? 'Wallet')
+      : (wallet?.wallet.name ?? 'Wallet')
     : 'Select Wallet'
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="cursor-pointer">
-          {wallet?.connector.icon ? <WalletAvatar icon={wallet.connector.icon} label={wallet.connector.name} /> : null}
+        <Button
+          variant="outline"
+          className="cursor-pointer"
+          disabled={!ready || connecting || disconnecting || signingOut}
+        >
+          {wallet?.wallet.icon ? <WalletAvatar icon={wallet.wallet.icon} label={wallet.wallet.name} /> : null}
           {displayLabel}
         </Button>
       </DropdownMenuTrigger>
@@ -109,14 +118,17 @@ function WalletDropdown() {
             <DropdownMenuSeparator />
           </>
         ) : null}
-        {connectors.length ? (
-          connectors.map((connector) => (
-            <WalletDropdownItem
-              key={connector.id}
-              connector={connector}
-              onSelect={handleConnect}
-              disabled={walletStatus === 'connecting' || isConnecting === connector.id || connector.ready === false}
-            />
+        {wallets.length ? (
+          wallets.map((candidate) => (
+            <DropdownMenuItem
+              key={walletId(getWalletForHandle(candidate))}
+              disabled={connecting || disconnecting || signingOut}
+              onClick={() => void handleConnect(candidate)}
+            >
+              <WalletAvatar icon={candidate.icon} label={candidate.name} />
+              {candidate.name}
+              {wallet && getWalletForHandle(wallet.wallet) === getWalletForHandle(candidate) ? ' (Active)' : ''}
+            </DropdownMenuItem>
           ))
         ) : (
           <DropdownMenuItem className="cursor-pointer" asChild>
