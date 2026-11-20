@@ -1,0 +1,33 @@
+[package]
+name = "hello_world"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[features]
+no-entrypoint = []
+
+[dependencies]
+codama = "0.13.2"
+pinocchio = "0.11.2"
+pinocchio-system = "0.6.1"
+
+[target.'cfg(not(target_os = "solana"))'.dependencies]
+# Host builds (tests, clippy) need the curve to derive PDAs; on-chain builds use the syscall.
+solana-address = { version = "2", features = ["curve25519"] }
+
+[build-dependencies]
+codama = "0.13.2"
+
+[dev-dependencies]
+litesvm = "0.18.1"
+solana-instruction = "3.5.0"
+solana-keypair = "3.1.2"
+solana-signer = "3.0.1"
+solana-transaction = "4.1.5"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(target_os, values("solana"))'] }
