@@ -1,0 +1,117 @@
+{
+  "name": "expo-kit-anchor",
+  "displayName": "Expo Kit Anchor example",
+  "description": "A template for building a Solana mobile app with Expo, React Native, Solana Kit, Anchor, and Uniwind.",
+  "usecase": "Mobile",
+  "keywords": [
+    "anchor",
+    "expo",
+    "mobile-wallet-adapter",
+    "react-native",
+    "solana-kit",
+    "tailwind",
+    "uniwind"
+  ],
+  "create-solana-dapp": {
+    "instructions": [
+      "Verify your Android development environment:",
+      "+npx -y solana-mobile@latest doctor",
+      "Build the Android app locally:",
+      "+{pm} run android",
+      "To configure the Anchor deployment keypair and generate the program client (requires the Rust, Solana, and Anchor toolchains):",
+      "+{pm} run anchor:setup",
+      "Run Anchor commands:",
+      "+{pm} run anchor:build | anchor:test | anchor:localnet",
+      "Deploy the program to a cluster:",
+      "+{pm} run anchor:deploy:localnet | anchor:deploy:devnet"
+    ],
+    "rename": {
+      "Expo Kit Anchor": {
+        "paths": [
+          "src/app"
+        ],
+        "to": "{{name}}"
+      }
+    },
+    "skills": [
+      "https://github.com/solana-foundation/solana-dev-skill",
+      "https://github.com/solana-mobile/solana-mobile-dev-skill"
+    ],
+    "versions": {
+      "adb": "33.0.0",
+      "anchor": "1.1.2",
+      "solana": "3.1.10"
+    }
+  },
+  "main": "./index.js",
+  "version": "1.0.0",
+  "scripts": {
+    "anchor": "cd anchor && anchor",
+    "anchor:build": "cd anchor && anchor build",
+    "anchor:deploy:devnet": "cd anchor && anchor build && anchor program deploy --provider.cluster devnet",
+    "anchor:deploy:localnet": "cd anchor && anchor build && anchor program deploy --provider.cluster localnet",
+    "anchor:localnet": "cd anchor && anchor localnet",
+    "anchor:setup": "cd anchor && anchor keys sync && anchor build && cd .. && npm run codama:js",
+    "anchor:test": "cd anchor && anchor test",
+    "android": "expo run:android",
+    "android:build": "expo prebuild -p android",
+    "build": "tsc --noEmit && npm run android:build",
+    "ci": "tsc --noEmit && npm run lint:check && npm run format:check && npm run android:build",
+    "codama:js": "codama run js -c ./anchor/codama.mjs",
+    "dev": "expo start --clear --dev-client --reset-cache",
+    "doctor": "npx -y expo-doctor@latest",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "ios": "expo run:ios",
+    "lint": "expo lint --fix",
+    "lint:check": "expo lint",
+    "start": "expo start",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "~58.0.15",
+    "@solana/kit": "^8.4.0",
+    "@solana/transaction-confirmation": "^8.4.0",
+    "@tanstack/react-query": "^5.90.7",
+    "@wallet-ui/react-native-kit": "^4.4.1",
+    "expo": "~58.0.20",
+    "expo-clipboard": "~58.0.4",
+    "expo-constants": "~58.0.13",
+    "expo-dev-client": "~58.0.16",
+    "expo-linking": "~58.0.14",
+    "expo-router": "~58.0.27",
+    "expo-status-bar": "~58.0.4",
+    "expo-system-ui": "~58.0.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-native": "0.88.0",
+    "react-native-nitro-modules": "^0.36.5",
+    "react-native-quick-base64": "^3.0.1",
+    "react-native-quick-crypto": "^1.1.6",
+    "react-native-safe-area-context": "~5.10.1",
+    "react-native-screens": "~4.30.0",
+    "tailwindcss": "~4.1.16",
+    "uniwind": "~1.13.0"
+  },
+  "devDependencies": {
+    "@codama/cli": "^1.6.0",
+    "@codama/nodes-from-anchor": "^1.5.3",
+    "@codama/renderers-js": "^2.3.1",
+    "@types/react": "~19.3.0",
+    "eslint": "^9.25.0",
+    "eslint-config-expo": "~58.0.4",
+    "prettier": "^3.9.6",
+    "typescript": "~6.0.3",
+    "vite": "^8.0.5",
+    "vitest": "^5.0.2"
+  },
+  "overrides": {
+    "react-native-reanimated": "4.7.1",
+    "react-native-worklets": "0.13.0"
+  },
+  "resolutions": {
+    "react-native-reanimated": "4.7.1",
+    "react-native-worklets": "0.13.0"
+  },
+  "private": true
+}
