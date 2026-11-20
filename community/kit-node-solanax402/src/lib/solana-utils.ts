@@ -11,11 +11,10 @@ import {
   sendTransactionWithoutConfirmingFactory,
   getSignatureFromTransaction,
   assertIsTransactionWithinSizeLimit,
-  getBase64Codec,
-  getTransactionDecoder,
-  address,
 } from '@solana/kit';
-import type { Address, Rpc, RpcSubscriptions, SolanaRpcApi, SolanaRpcSubscriptionsApi } from '@solana/kit';
+import type { Rpc, RpcSubscriptions, SolanaRpcApi, SolanaRpcSubscriptionsApi } from '@solana/kit';
+import { address, type Address } from '@solana/kit';
+import { validateSponsoredPayment, type ExpectedPayment } from './sponsored-payment.js';
 import { SignatureVerificationError } from '../errors/index.js';
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
@@ -194,7 +193,12 @@ export class SolanaUtils {
    * @param serializedTransaction - Base64-encoded serialized transaction signed by client
    * @returns Transaction signature
    */
-  async submitSponsoredTransaction(facilitatorPrivateKey: string, serializedTransaction: string): Promise<string> {
+  async submitSponsoredTransaction(
+    facilitatorPrivateKey: string,
+    serializedTransaction: string,
+    expected: ExpectedPayment,
+    beforeBroadcast: (signature: string) => Promise<void>
+  ): Promise<string> {
     try {
       console.log('TRUE x402 ATOMIC SETTLEMENT: Sponsored Transaction');
       console.log('  Client has signed transaction (their SOL will move)');
@@ -207,12 +211,7 @@ export class SolanaUtils {
 
       console.log('  Facilitator (fee payer):', facilitatorSigner.address);
 
-      const base64Codec = getBase64Codec();
-      const transactionBytes = base64Codec.encode(serializedTransaction);
-
-      // Deserialize the transaction
-      const transactionDecoder = getTransactionDecoder();
-      const transaction = transactionDecoder.decode(transactionBytes);
+      const transaction = validateSponsoredPayment(serializedTransaction, facilitatorSigner.address, expected);
 
       console.log('  Transaction details:');
       console.log('     - Signatures:', transaction.signatures ? Object.keys(transaction.signatures).length : 0);
@@ -235,6 +234,7 @@ export class SolanaUtils {
       assertIsTransactionWithinSizeLimit(signedTransaction);
 
       const signature = getSignatureFromTransaction(signedTransaction);
+      await beforeBroadcast(signature);
 
       const sendTx = sendTransactionWithoutConfirmingFactory({ rpc: this.rpc });
       await sendTx(signedTransaction, { commitment: 'confirmed' });

@@ -154,11 +154,13 @@ Get the public key from `test-client-keypair.json` or from the script output.
 
 ### Run Tests
 
-**Main test (TRUE x402 instant finality):**
+**Offline regression tests (no keys or funds required):**
 
 ```bash
 npm test
 ```
+
+For an actual devnet payment, build first, configure isolated funded test keys, set `SIMULATE_TRANSACTIONS=false` and run `npm run test:payment`. It sends 0.01 devnet SOL to the configured merchant; the facilitator pays fees. Never use valuable keys for this example.
 
 This test:
 

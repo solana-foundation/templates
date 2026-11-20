@@ -12,20 +12,8 @@ import crypto from 'crypto';
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
 import { config } from 'dotenv';
-import {
-  createSolanaRpc,
-  createKeyPairSignerFromBytes,
-  createTransactionMessage,
-  setTransactionMessageFeePayer,
-  setTransactionMessageLifetimeUsingBlockhash,
-  appendTransactionMessageInstruction,
-  compileTransaction,
-  partiallySignTransaction,
-  getBase64EncodedWireTransaction,
-  address,
-  lamports,
-} from '@solana/kit';
-import { getTransferSolInstruction } from '@solana-program/system';
+import { createSolanaRpc, createKeyPairSignerFromBytes, getBase64EncodedWireTransaction, address } from '@solana/kit';
+import { createSponsoredPayment } from './dist/lib/sponsored-payment.js';
 
 // Load environment variables
 config();
@@ -39,6 +27,10 @@ const RPC_URL = process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com';
 
 // Create RPC client
 const rpc = createSolanaRpc(RPC_URL);
+if (process.env.SIMULATE_TRANSACTIONS !== 'false')
+  throw new Error('Set SIMULATE_TRANSACTIONS=false for the explicit live devnet replay test');
+if ((await rpc.getGenesisHash().send()) !== 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG')
+  throw new Error('Live payment tests require devnet');
 
 // Load client keypair
 const keypairData = JSON.parse(fs.readFileSync('./test-client-keypair.json', 'utf-8'));
@@ -104,25 +96,13 @@ async function createPaymentRequest(nonce) {
   // Create Solana transaction using @solana/kit
   const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();
 
-  // Create transfer instruction
-  const transferInstruction = getTransferSolInstruction({
-    source: clientSigner,
-    destination: address(MERCHANT_ADDRESS),
-    amount: lamports(BigInt(10000000)),
+  const signedTransaction = await createSponsoredPayment({
+    client: clientSigner,
+    facilitator: address(FACILITATOR_PUBLIC_KEY),
+    recipient: address(MERCHANT_ADDRESS),
+    amount: 10000000n,
+    lifetime: latestBlockhash,
   });
-
-  // Create transaction message
-  let transactionMessage = createTransactionMessage({ version: 0 });
-  transactionMessage = setTransactionMessageFeePayer(address(FACILITATOR_PUBLIC_KEY), transactionMessage);
-  transactionMessage = setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, transactionMessage);
-  transactionMessage = appendTransactionMessageInstruction(transferInstruction, transactionMessage);
-
-  // Sign the transaction
-  const signedTransaction = await partiallySignTransaction(
-    [clientSigner.keyPair],
-    compileTransaction(transactionMessage)
-  );
-
   // Serialize the transaction
   const serializedTransaction = getBase64EncodedWireTransaction(signedTransaction);
 

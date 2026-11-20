@@ -1,16 +1,18 @@
 # x402 Solana Protocol Implementation
 
-A TypeScript implementation of the x402 payment protocol for Solana blockchain, featuring instant finality, sponsored transactions, and replay attack protection.
+A TypeScript payment-gated Express example using Kit 8 and sponsored V1 SOL transfers. The client partially signs the transaction, and the facilitator validates and co-signs it before waiting for confirmation.
+
+This is an educational payment flow, not an audited production payment service. Simulation mode does not submit a transaction or prove settlement. A confirmed transaction is not the same as finalized settlement.
 
 ## Overview
 
 The x402 protocol enables payment-gated access to web resources through Solana blockchain payments. This implementation provides:
 
-- **Instant Finality**: Client funds move immediately to merchant (on-chain settlement)
+- **Confirmed Payments**: Real mode waits for confirmation before granting access
 - **Sponsored Transactions**: Facilitator pays gas fees, client authorizes SOL transfer
 - **Replay Protection**: Cryptographic nonce system prevents duplicate payments
 - **TypeScript**: Full type safety with Zod validation
-- **Production Ready**: PM2 process management, structured logging, error handling
+- **Process Management**: PM2 scripts for running the two example services
 
 ## Architecture
 
@@ -139,8 +141,12 @@ The facilitator runs on port 3001, server on port 3000 (configurable in .env).
 # Make sure apps are running first
 npm start
 
-# Run main test (TRUE x402 instant finality)
+# Run offline tests (no services, credentials or funds required)
 npm test
+
+# Explicit live devnet payment test: spends 0.01 devnet SOL plus facilitator fees
+# Requires a build, funded isolated test keys and SIMULATE_TRANSACTIONS=false
+npm run test:payment
 
 # Test HTTP 402 response (missing payment)
 npm run test:402
@@ -395,8 +401,10 @@ The `ecosystem.config.cjs` file configures PM2 process management:
 
 **Replay attack test succeeds twice**
 
-- Restart facilitator to reset nonce database
-- Check facilitator logs for nonce verification
+- Stop testing and inspect the persistent nonce database and logs. Restarting does not reset SQLite state.
+- A nonce is reserved atomically before broadcasting a real transaction. Concurrent settlements cannot both send it.
+- Submission errors and timeouts leave the reservation in place: reconcile the saved signature on-chain instead of automatically retrying or clearing the database.
+- If the settlement HTTP request fails, the merchant makes one bounded, read-only nonce status lookup to recover the reserved signature. This does not confirm payment or resubmit it. If status is unavailable or no signature is saved yet, the result remains uncertain; do not send another payment.
 
 **Transaction fails on-chain**
 
@@ -411,6 +419,7 @@ The `ecosystem.config.cjs` file configures PM2 process management:
 - **HTTPS**: Use HTTPS in production for all HTTP communication
 - **Rate Limiting**: Implement rate limiting on facilitator endpoints
 - **Input Validation**: All inputs validated with Zod schemas
+- **Sponsored V1 Policy**: The facilitator accepts only one SOL transfer matching the verified client, recipient and amount. Both the client signature and facilitator fee-payer address are checked before co-signing. Resource limits are bounded and client-selected priority fees are rejected.
 - **Error Handling**: Structured errors without sensitive data exposure
 
 ## License
