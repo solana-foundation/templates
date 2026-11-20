@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@project/program": ["./program/src"]
+    }
+  },
+  "exclude": ["node_modules", "program"]
+}

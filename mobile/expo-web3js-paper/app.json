@@ -1,0 +1,61 @@
+{
+  "expo": {
+    "name": "expo-web3js-paper",
+    "slug": "expo-web3js-paper",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "expo-web3js-paper",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.anonymous.expo_web3js_paper"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-dev-client",
+        {
+          "showMenuAtLaunch": false,
+          "skipOnboarding": true
+        }
+      ],
+      "expo-font",
+      "expo-image",
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FFFFFF",
+          "dark": {
+            "backgroundColor": "#000000",
+            "image": "./assets/images/splash-icon.png"
+          },
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain"
+        }
+      ],
+      "expo-status-bar",
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "reactCompiler": true,
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {}
+    }
+  }
+}
