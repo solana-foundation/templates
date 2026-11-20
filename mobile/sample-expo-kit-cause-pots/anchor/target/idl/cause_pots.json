@@ -1,0 +1,643 @@
+{
+  "address": "potsngHK65NFVwYXfSSJykdJ9WZfdQdsqeSFNk6fyMW",
+  "metadata": {
+    "name": "cause_pots",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "add_contributor",
+      "discriminator": [
+        125,
+        221,
+        162,
+        182,
+        191,
+        26,
+        206,
+        219
+      ],
+      "accounts": [
+        {
+          "name": "pot",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "pot"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "new_contributor",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "contribute",
+      "discriminator": [
+        82,
+        33,
+        68,
+        131,
+        32,
+        0,
+        205,
+        95
+      ],
+      "accounts": [
+        {
+          "name": "pot",
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pot"
+              }
+            ]
+          }
+        },
+        {
+          "name": "contributor_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  111,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pot"
+              },
+              {
+                "kind": "account",
+                "path": "contributor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "contributor",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "create_pot",
+      "discriminator": [
+        232,
+        45,
+        123,
+        181,
+        204,
+        121,
+        131,
+        9
+      ],
+      "accounts": [
+        {
+          "name": "pot",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              },
+              {
+                "kind": "arg",
+                "path": "name"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pot"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "category",
+          "type": {
+            "defined": {
+              "name": "PotCategory"
+            }
+          }
+        },
+        {
+          "name": "currency",
+          "type": {
+            "defined": {
+              "name": "Currency"
+            }
+          }
+        },
+        {
+          "name": "target_amount",
+          "type": "u64"
+        },
+        {
+          "name": "unlock_days",
+          "type": "i64"
+        },
+        {
+          "name": "signers_required",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "release_funds",
+      "discriminator": [
+        225,
+        88,
+        91,
+        108,
+        126,
+        52,
+        2,
+        26
+      ],
+      "accounts": [
+        {
+          "name": "pot",
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pot"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "pot"
+          ]
+        },
+        {
+          "name": "recipient",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "sign_release",
+      "discriminator": [
+        111,
+        211,
+        85,
+        96,
+        119,
+        69,
+        197,
+        105
+      ],
+      "accounts": [
+        {
+          "name": "pot",
+          "writable": true
+        },
+        {
+          "name": "signer",
+          "signer": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Contributor",
+      "discriminator": [
+        222,
+        222,
+        255,
+        212,
+        133,
+        49,
+        27,
+        93
+      ]
+    },
+    {
+      "name": "Pot",
+      "discriminator": [
+        238,
+        118,
+        60,
+        175,
+        178,
+        191,
+        59,
+        58
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "AlreadyAContributor",
+      "msg": "Already a contributor"
+    },
+    {
+      "code": 6001,
+      "name": "AlreadySigned",
+      "msg": "You have already signed the release"
+    },
+    {
+      "code": 6002,
+      "name": "DescriptionTooLong",
+      "msg": "Pot description is too long (max 200 characters)"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidAmount",
+      "msg": "Contribution amount must be greater than 0"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidSignersRequired",
+      "msg": "Signers required must be between 1 and the maximum number of contributors"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidTargetAmount",
+      "msg": "Target amount must be greater than 0"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidUnlockDays",
+      "msg": "Unlock days must not be negative"
+    },
+    {
+      "code": 6007,
+      "name": "InsufficientFunds",
+      "msg": "Insufficient funds in pot"
+    },
+    {
+      "code": 6008,
+      "name": "InsufficientSignatures",
+      "msg": "Insufficient signatures for release"
+    },
+    {
+      "code": 6009,
+      "name": "MaxContributorsReached",
+      "msg": "Pot has reached the maximum number of contributors"
+    },
+    {
+      "code": 6010,
+      "name": "NameTooLong",
+      "msg": "Pot name is too long (max 32 characters)"
+    },
+    {
+      "code": 6011,
+      "name": "NotAContributor",
+      "msg": "You are not a contributor to this pot"
+    },
+    {
+      "code": 6012,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6013,
+      "name": "PotAlreadyReleased",
+      "msg": "Pot has already been released"
+    },
+    {
+      "code": 6014,
+      "name": "RecipientIsPot",
+      "msg": "The pot cannot receive its own funds"
+    },
+    {
+      "code": 6015,
+      "name": "TimeLockNotExpired",
+      "msg": "Time-lock period has not expired yet"
+    }
+  ],
+  "types": [
+    {
+      "name": "Contributor",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pot",
+            "type": "pubkey"
+          },
+          {
+            "name": "contributor",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_contributed",
+            "type": "u64"
+          },
+          {
+            "name": "contribution_count",
+            "type": "u32"
+          },
+          {
+            "name": "last_contribution_at",
+            "type": "i64"
+          },
+          {
+            "name": "joined_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Currency",
+      "docs": [
+        "Display unit for amounts. Contributions always move SOL; `Usd` only changes",
+        "how the app renders the numbers."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Sol"
+          },
+          {
+            "name": "Usd"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pot",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Creator of the pot; the only account that can add contributors and release funds."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "docs": [
+              "Vault PDA that holds the pooled SOL."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "type": {
+              "defined": {
+                "name": "PotCategory"
+              }
+            }
+          },
+          {
+            "name": "currency",
+            "type": {
+              "defined": {
+                "name": "Currency"
+              }
+            }
+          },
+          {
+            "name": "target_amount",
+            "docs": [
+              "Savings target in lamports."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_contributed",
+            "type": "u64"
+          },
+          {
+            "name": "unlock_timestamp",
+            "docs": [
+              "Release becomes possible once the cluster clock passes this timestamp."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "signers_required",
+            "docs": [
+              "How many contributor signatures a release requires."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "signatures",
+            "docs": [
+              "Contributors that have approved the release. Each contributor can sign",
+              "once, so this never grows past the contributor list."
+            ],
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "contributors",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "is_released",
+            "type": "bool"
+          },
+          {
+            "name": "released_at",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "recipient",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "vault_bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PotCategory",
+      "docs": [
+        "Category shown in the app, stored on-chain so every contributor sees the same pot."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Goal"
+          },
+          {
+            "name": "Emergency"
+          },
+          {
+            "name": "Bills"
+          },
+          {
+            "name": "Events"
+          },
+          {
+            "name": "Others"
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "CONTRIBUTOR_SEED",
+      "type": "bytes",
+      "value": "[99, 111, 110, 116, 114, 105, 98, 117, 116, 111, 114]"
+    },
+    {
+      "name": "POT_SEED",
+      "type": "bytes",
+      "value": "[112, 111, 116]"
+    },
+    {
+      "name": "VAULT_SEED",
+      "type": "bytes",
+      "value": "[118, 97, 117, 108, 116]"
+    }
+  ]
+}
