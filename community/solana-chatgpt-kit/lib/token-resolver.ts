@@ -1,4 +1,5 @@
-import { TOKENS, TOKEN_DECIMALS } from '@/lib/solana-config'
+import { PublicKey } from '@solana/web3.js'
+import { TOKENS, TOKEN_DECIMALS, getSolanaConnection } from '@/lib/solana-config'
 
 export type ResolvedToken = {
   mint: string
@@ -35,6 +36,29 @@ async function searchLiteBySymbol(
   }
 }
 
+// A mint's decimals never change, so each mint is read from the chain at most once per server process.
+const mintDecimals = new Map<string, number>()
+
+async function readMintDecimals(mint: string): Promise<number> {
+  const cached = mintDecimals.get(mint)
+  if (cached !== undefined) return cached
+
+  let address: PublicKey
+  try {
+    address = new PublicKey(mint)
+  } catch {
+    throw new Error(`Not a valid token mint address: ${mint}`)
+  }
+  const { value } = await getSolanaConnection().getParsedAccountInfo(address)
+  const parsed = value && 'parsed' in value.data ? value.data.parsed : undefined
+  const decimals = parsed?.type === 'mint' ? parsed.info?.decimals : undefined
+  if (typeof decimals !== 'number') {
+    throw new Error(`Could not read decimals for token mint ${mint}`)
+  }
+  mintDecimals.set(mint, decimals)
+  return decimals
+}
+
 export async function resolveTokenParam(
   input: string | null | undefined,
   fallbackSymbol: keyof typeof TOKENS,
@@ -49,16 +73,11 @@ export async function resolveTokenParam(
 
   const raw = input.trim()
   if (isMintAddress(raw)) {
-    // Best effort decimals discovery via token list; default to 9
-    try {
-      const res = await fetch('https://tokens.jup.ag/tokens')
-      if (res.ok) {
-        const tokens: Array<{ address: string; symbol: string; decimals: number }> = await res.json()
-        const t = tokens.find((t) => t.address === raw)
-        if (t) return { mint: raw, symbol: t.symbol || raw, decimals: t.decimals ?? 9 }
-      }
-    } catch {}
-    return { mint: raw, symbol: raw, decimals: 9 }
+    // Decimals scale the swap amount, so never guess them: use the known list, else the mint account on-chain.
+    const known = (Object.keys(TOKENS) as Array<keyof typeof TOKENS>).find((symbol) => TOKENS[symbol] === raw)
+    if (known) return { mint: raw, symbol: known, decimals: TOKEN_DECIMALS[known] }
+
+    return { mint: raw, symbol: raw, decimals: await readMintDecimals(raw) }
   }
 
   // Symbol path

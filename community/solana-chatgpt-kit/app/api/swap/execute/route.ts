@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     const outputMint = outputResolved.mint
 
     // Convert amount to smallest unit
-    const inputDecimals = inputResolved.decimals || 9
+    const inputDecimals = inputResolved.decimals
     const scaledAmount = Math.floor(parseFloat(amount) * Math.pow(10, inputDecimals))
 
     console.log('Swap parameters:', {
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
     // If using external wallet, return unsigned transaction for client to sign
     if (externalWallet) {
       console.log('Prepared unsigned transaction for client signing.')
-      const outputAmount = parseFloat(quoteData.outAmount) / Math.pow(10, outputResolved.decimals || 6)
+      const outputAmount = parseFloat(quoteData.outAmount) / Math.pow(10, outputResolved.decimals)
 
       return NextResponse.json({
         success: true,
@@ -126,7 +126,7 @@ export async function POST(request: Request) {
     }
 
     // Calculate output amount for response
-    const outputAmount = parseFloat(quoteData.outAmount) / Math.pow(10, outputResolved.decimals || 6)
+    const outputAmount = parseFloat(quoteData.outAmount) / Math.pow(10, outputResolved.decimals)
 
     return NextResponse.json({
       success: true,
