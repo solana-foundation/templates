@@ -29,7 +29,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
-    "start": "next start"
+    "start": "next start",
+    "test": "node --test tests/mint-decimals.test.cjs"
   },
   "dependencies": {
     "@bonfida/spl-name-service": "^3.0.16",

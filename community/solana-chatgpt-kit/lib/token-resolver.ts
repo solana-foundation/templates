@@ -1,4 +1,5 @@
-import { TOKENS, TOKEN_DECIMALS } from '@/lib/solana-config'
+import { createMintDecimalsReader } from '@/lib/mint-decimals'
+import { TOKENS, TOKEN_DECIMALS, getSolanaConnection } from '@/lib/solana-config'
 
 export type ResolvedToken = {
   mint: string
@@ -35,6 +36,13 @@ async function searchLiteBySymbol(
   }
 }
 
+const tokenSymbols = Object.keys(TOKENS) as Array<keyof typeof TOKENS>
+
+const readMintDecimals = createMintDecimalsReader(
+  (address) => getSolanaConnection().getParsedAccountInfo(address),
+  Object.fromEntries(tokenSymbols.map((symbol) => [TOKENS[symbol], TOKEN_DECIMALS[symbol]])),
+)
+
 export async function resolveTokenParam(
   input: string | null | undefined,
   fallbackSymbol: keyof typeof TOKENS,
@@ -49,16 +57,8 @@ export async function resolveTokenParam(
 
   const raw = input.trim()
   if (isMintAddress(raw)) {
-    // Best effort decimals discovery via token list; default to 9
-    try {
-      const res = await fetch('https://tokens.jup.ag/tokens')
-      if (res.ok) {
-        const tokens: Array<{ address: string; symbol: string; decimals: number }> = await res.json()
-        const t = tokens.find((t) => t.address === raw)
-        if (t) return { mint: raw, symbol: t.symbol || raw, decimals: t.decimals ?? 9 }
-      }
-    } catch {}
-    return { mint: raw, symbol: raw, decimals: 9 }
+    const symbol = tokenSymbols.find((s) => TOKENS[s] === raw) ?? raw
+    return { mint: raw, symbol, decimals: await readMintDecimals(raw) }
   }
 
   // Symbol path

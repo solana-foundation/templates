@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     const outputMint = outputResolved.mint
 
     // Convert amount to smallest unit (lamports for SOL)
-    const inputDecimals = inputResolved.decimals || 9
+    const inputDecimals = inputResolved.decimals
     const scaledAmount = Math.floor(parseFloat(amount) * Math.pow(10, inputDecimals))
 
     // Build Jupiter quote URL
@@ -44,7 +44,7 @@ export async function GET(request: Request) {
     const quoteData = await response.json()
 
     // Calculate output amount in human-readable format
-    const outputDecimals = outputResolved.decimals || 6
+    const outputDecimals = outputResolved.decimals
     const outputAmount = parseFloat(quoteData.outAmount) / Math.pow(10, outputDecimals)
 
     return NextResponse.json({
