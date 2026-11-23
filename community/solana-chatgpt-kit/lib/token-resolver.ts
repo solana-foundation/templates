@@ -1,4 +1,4 @@
-import { PublicKey } from '@solana/web3.js'
+import { createMintDecimalsReader } from '@/lib/mint-decimals'
 import { TOKENS, TOKEN_DECIMALS, getSolanaConnection } from '@/lib/solana-config'
 
 export type ResolvedToken = {
@@ -36,28 +36,12 @@ async function searchLiteBySymbol(
   }
 }
 
-// A mint's decimals never change, so each mint is read from the chain at most once per server process.
-const mintDecimals = new Map<string, number>()
+const tokenSymbols = Object.keys(TOKENS) as Array<keyof typeof TOKENS>
 
-async function readMintDecimals(mint: string): Promise<number> {
-  const cached = mintDecimals.get(mint)
-  if (cached !== undefined) return cached
-
-  let address: PublicKey
-  try {
-    address = new PublicKey(mint)
-  } catch {
-    throw new Error(`Not a valid token mint address: ${mint}`)
-  }
-  const { value } = await getSolanaConnection().getParsedAccountInfo(address)
-  const parsed = value && 'parsed' in value.data ? value.data.parsed : undefined
-  const decimals = parsed?.type === 'mint' ? parsed.info?.decimals : undefined
-  if (typeof decimals !== 'number') {
-    throw new Error(`Could not read decimals for token mint ${mint}`)
-  }
-  mintDecimals.set(mint, decimals)
-  return decimals
-}
+const readMintDecimals = createMintDecimalsReader(
+  (address) => getSolanaConnection().getParsedAccountInfo(address),
+  Object.fromEntries(tokenSymbols.map((symbol) => [TOKENS[symbol], TOKEN_DECIMALS[symbol]])),
+)
 
 export async function resolveTokenParam(
   input: string | null | undefined,
@@ -73,11 +57,8 @@ export async function resolveTokenParam(
 
   const raw = input.trim()
   if (isMintAddress(raw)) {
-    // Decimals scale the swap amount, so never guess them: use the known list, else the mint account on-chain.
-    const known = (Object.keys(TOKENS) as Array<keyof typeof TOKENS>).find((symbol) => TOKENS[symbol] === raw)
-    if (known) return { mint: raw, symbol: known, decimals: TOKEN_DECIMALS[known] }
-
-    return { mint: raw, symbol: raw, decimals: await readMintDecimals(raw) }
+    const symbol = tokenSymbols.find((s) => TOKENS[s] === raw) ?? raw
+    return { mint: raw, symbol, decimals: await readMintDecimals(raw) }
   }
 
   // Symbol path
