@@ -1,0 +1,17 @@
+[package]
+name = "secret_code"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["lib"]
+
+[dependencies]
+xark = { git = "https://github.com/blueshift-gg/xark", rev = "74817fa37b17cf712abad40a5200adfd2643001c", default-features = false }
+xark-poseidon2 = { git = "https://github.com/blueshift-gg/xark", rev = "74817fa37b17cf712abad40a5200adfd2643001c" }
+
+[target.'cfg(not(xark))'.dependencies]
+xark-prover = { git = "https://github.com/blueshift-gg/xark", rev = "74817fa37b17cf712abad40a5200adfd2643001c" }
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(xark)'] }

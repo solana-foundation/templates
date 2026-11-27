@@ -1,0 +1,28 @@
+[package]
+name = "client"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[[bin]]
+name = "starter"
+path = "src/main.rs"
+
+[dependencies]
+interface.workspace = true
+anyhow.workspace = true
+ark-bn254.workspace = true
+ark-ff.workspace = true
+clap.workspace = true
+getrandom.workspace = true
+hex.workspace = true
+serde_json.workspace = true
+tempfile.workspace = true
+solana-address.workspace = true
+solana-commitment-config.workspace = true
+solana-instruction.workspace = true
+solana-keypair.workspace = true
+solana-message.workspace = true
+solana-rpc-client.workspace = true
+solana-signer.workspace = true
+solana-transaction.workspace = true
